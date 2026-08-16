@@ -1,290 +1,219 @@
 import React from 'react';
 import { 
-  Gauge, 
-  Layers, 
-  Printer, 
-  Scissors, 
-  ShieldCheck, 
-  Sparkles, 
-  ArrowUpRight, 
   TrendingUp, 
   Clock, 
-  CheckCircle2, 
-  AlertTriangle,
-  Zap,
-  Activity,
-  FileSpreadsheet,
-  Box,
-  PenTool,
-  LogOut,
-  ChevronRight
+  ShoppingCart, 
+  Truck, 
+  Package, 
+  Activity, 
+  AlertCircle, 
+  AlertTriangle, 
+  ChevronRight,
+  ShieldCheck,
+  Printer,
+  Scissors
 } from 'lucide-react';
-import { DashboardData, OrdenProduccion } from '../types';
 
 interface HomeViewProps {
   user: { name: string; role: string; email: string };
-  data: DashboardData | null;
-  ordenes: OrdenProduccion[];
   onNavigate: (tab: string) => void;
-  onOpenReporteModal: () => void;
-  onLogout: () => void;
 }
 
-export const HomeView: React.FC<HomeViewProps> = ({
-  user,
-  data,
-  ordenes,
-  onNavigate,
-  onOpenReporteModal,
-  onLogout
-}) => {
-  const kpis = data?.kpis || {
-    oee_global: 89.8,
-    oee_offset: 88.4,
-    oee_flexo: 91.2,
-    merma_promedio_pct: 2.85,
-    cumplimiento_entregas_pct: 96.4,
-    ordenes_activas: 18,
-    suajes_en_taller: 34,
-    lotes_qa_aprobados_hoy: 14,
-    tiempo_promedio_preparacion_min: 32.5
-  };
-
-  const maquinas = data?.resumen_maquinas || [
-    { maquina: "Heidelberg CD 102 (Offset)", estado: "Operando", velocidad_actual: "9,800 pliegos/h", orden_actual: "OP-2026-881", eficiencia: "92%" },
-    { maquina: "Komori Lithrone G40 (Offset)", estado: "Ajuste / CTP", velocidad_actual: "0 pliegos/h", orden_actual: "OP-2026-883", eficiencia: "78%" },
-    { maquina: "Mark Andy P7 (Flexo)", estado: "Operando", velocidad_actual: "120 m/min", orden_actual: "OP-2026-882", eficiencia: "94%" },
-    { maquina: "Nilpeter FA-Line (Flexo)", estado: "Lavado / Cambio", velocidad_actual: "0 m/min", orden_actual: "OP-2026-884", eficiencia: "88%" }
+export const HomeView: React.FC<HomeViewProps> = ({ user, onNavigate }) => {
+  const kpis = [
+    {
+      id: 'facturado',
+      value: '$4.8M MXN facturado',
+      subtext: 'Este mes — Impresos RTM',
+      icon: TrendingUp,
+      iconBg: '#ecfdf5',
+      iconColor: '#059669',
+    },
+    {
+      id: 'tiraje_offset',
+      value: '142,000 pliegos tirados',
+      subtext: 'Heidelberg CD 102 (Offset)',
+      icon: Clock,
+      iconBg: '#fffbeb',
+      iconColor: '#d97706',
+    },
+    {
+      id: 'ordenes_activas',
+      value: '18 órdenes abiertas',
+      subtext: '12 en prensa, 6 en CTP',
+      icon: ShoppingCart,
+      iconBg: '#eff6ff',
+      iconColor: '#2563eb',
+    },
+    {
+      id: 'remisiones_empaque',
+      value: '7 entregas programadas',
+      subtext: 'Listas en almacén de producto',
+      icon: Truck,
+      iconBg: '#fff7ed',
+      iconColor: '#ea580c',
+    },
+    {
+      id: 'suajes_taller',
+      value: '34 suajes en taller',
+      subtext: 'Rack A y B disponibles',
+      icon: Scissors,
+      iconBg: '#faf5ff',
+      iconColor: '#9333ea',
+    },
+    {
+      id: 'flexo_metros',
+      value: '85,400 metros bobina',
+      subtext: 'Mark Andy P7 (Flexo)',
+      icon: Activity,
+      iconBg: '#ecfeff',
+      iconColor: '#0891b2',
+    },
+    {
+      id: 'merma_planta',
+      value: '2.85% merma global',
+      subtext: 'Meta planta < 3.50%',
+      icon: AlertCircle,
+      iconBg: '#ecfdf5',
+      iconColor: '#059669',
+    },
+    {
+      id: 'lotes_qa',
+      value: '14 lotes QA liberados',
+      subtext: '0 no-conformidades hoy',
+      icon: ShieldCheck,
+      iconBg: '#fff1f2',
+      iconColor: '#e11d48',
+    }
   ];
 
   return (
-    <div className="home-view-wrapper">
-      {/* Top Welcome & Executive Bar */}
-      <div className="executive-hero-card">
-        <div className="hero-left">
-          <div className="hero-badge">
-            <span className="live-dot"></span>
-            <span>PLANTA CENTRAL RTM • TURNO MATUTINO ACTIVO</span>
-          </div>
-          <h1 className="hero-greeting">
-            Hola, <span className="greeting-name">{user.name}</span>
-          </h1>
-          <p className="hero-subtitle">
-            Has ingresado con el perfil de <strong>{user.role}</strong>. Todas las líneas Offset y Flexografía se encuentran reportando telemetría en tiempo real.
-          </p>
-        </div>
+    <div className="erp-content-area">
+      {/* Welcome Header from Image 2 */}
+      <div className="welcome-page-header">
+        <h1>Buenos días, {user.name}</h1>
+        <p>Estos son los puntos críticos de producción e impresión gráfica para agosto 2026.</p>
+      </div>
 
-        <div className="hero-actions">
-          <div className="user-profile-badge">
-            <div className="avatar-circle">
-              {user.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+      {/* 8 Clean KPI Cards Grid from Image 2 */}
+      <div className="reference-kpi-grid">
+        {kpis.map((card) => {
+          const Icon = card.icon;
+          return (
+            <div key={card.id} className="clean-kpi-card">
+              <div className="kpi-card-top-row">
+                <div 
+                  className="kpi-icon-pastel"
+                  style={{ backgroundColor: card.iconBg, color: card.iconColor }}
+                >
+                  <Icon size={18} strokeWidth={2.4} />
+                </div>
+                <ChevronRight size={16} className="kpi-chevron" />
+              </div>
+              <div>
+                <div className="kpi-value-text">{card.value}</div>
+                <div className="kpi-subtext-gray">{card.subtext}</div>
+              </div>
             </div>
-            <div className="user-details">
-              <span className="user-name-text">{user.name}</span>
-              <span className="user-role-text">{user.role}</span>
+          );
+        })}
+      </div>
+
+      {/* Split Section: Flujo Operativo (Left) & Radar Operativo (Right) from Image 2 */}
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' }}>
+        {/* Left: Flujo Operativo del Mes */}
+        <div className="flow-stepper-card">
+          <div className="flow-card-title">FLUJO OPERATIVO DEL MES — AGOSTO 2026</div>
+
+          <div className="stepper-badges-row">
+            <div className="step-box-item">
+              <div className="step-badge-number" style={{ backgroundColor: '#1e293b' }}>387</div>
+              <span className="step-box-label">Cotizaciones</span>
             </div>
-            <button 
-              className="logout-icon-btn" 
-              onClick={onLogout} 
-              title="Cerrar sesión y volver al Login"
-            >
-              <LogOut size={16} />
-            </button>
-          </div>
-        </div>
-      </div>
 
-      {/* Main KPI Stats Grid */}
-      <div className="grid-cards home-kpi-grid">
-        <div className="card highlight-card">
-          <div className="card-header">
-            <span className="card-title">OEE Global de Planta</span>
-            <Gauge size={20} color="#38bdf8" />
-          </div>
-          <div className="metric-value">{kpis.oee_global}%</div>
-          <div className="metric-subtext" style={{ color: 'var(--status-success)' }}>
-            <TrendingUp size={14} />
-            <span>+3.2% vs promedio trimestral</span>
-          </div>
-          <div className="mini-progress-bar">
-            <div className="fill" style={{ width: `${kpis.oee_global}%` }}></div>
-          </div>
-        </div>
+            <span className="stepper-arrow-sep">→</span>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Prensas Offset (Pliegos)</span>
-            <span className="badge badge-blue">Heidelberg & Komori</span>
-          </div>
-          <div className="metric-value">{kpis.oee_offset}%</div>
-          <div className="metric-subtext">
-            <span>9,800 pliegos/h en CD 102</span>
-          </div>
-          <div className="mini-progress-bar">
-            <div className="fill" style={{ width: `${kpis.oee_offset}%`, backgroundColor: '#3b82f6' }}></div>
-          </div>
-        </div>
+            <div className="step-box-item">
+              <div className="step-badge-number" style={{ backgroundColor: '#0284c7' }}>128</div>
+              <span className="step-box-label">Órdenes OP</span>
+            </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Flexografía (Bobinas)</span>
-            <span className="badge badge-cyan">Mark Andy & Nilpeter</span>
+            <span className="stepper-arrow-sep">→</span>
+
+            <div className="step-box-item">
+              <div className="step-badge-number" style={{ backgroundColor: '#2563eb' }}>64</div>
+              <span className="step-box-label">Placas CTP</span>
+            </div>
+
+            <span className="stepper-arrow-sep">→</span>
+
+            <div className="step-box-item">
+              <div className="step-badge-number" style={{ backgroundColor: '#4f46e5' }}>59</div>
+              <span className="step-box-label">En Prensas</span>
+            </div>
+
+            <span className="stepper-arrow-sep">→</span>
+
+            <div className="step-box-item">
+              <div className="step-badge-number" style={{ backgroundColor: '#9333ea' }}>41</div>
+              <span className="step-box-label">Suajado / QA</span>
+            </div>
+
+            <span className="stepper-arrow-sep">→</span>
+
+            <div className="step-box-item">
+              <div className="step-badge-number" style={{ backgroundColor: '#059669' }}>36</div>
+              <span className="step-box-label">Entregados</span>
+            </div>
           </div>
-          <div className="metric-value">{kpis.oee_flexo}%</div>
-          <div className="metric-subtext">
-            <span>120 m/min régimen constante</span>
-          </div>
-          <div className="mini-progress-bar">
-            <div className="fill" style={{ width: `${kpis.oee_flexo}%`, backgroundColor: '#06b6d4' }}></div>
+
+          <div className="closure-rate-row">
+            <span className="closure-rate-label">Cumplimiento de entrega a tiempo (OTD)</span>
+            <div className="closure-progress-track">
+              <div className="closure-progress-fill" style={{ width: '96.4%' }}></div>
+            </div>
+            <span className="closure-rate-val">96.4%</span>
           </div>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Índice de Merma Total</span>
-            <span className="badge badge-success">Meta &lt; 3.5%</span>
+        {/* Right: Radar Operativo */}
+        <div className="radar-operativo-card">
+          <div className="radar-header">
+            <span style={{ color: '#ef4444' }}>●</span>
+            <span>RADAR OPERATIVO DE PLANTA</span>
           </div>
-          <div className="metric-value" style={{ color: '#10b981' }}>{kpis.merma_promedio_pct}%</div>
-          <div className="metric-subtext">
-            <span>Ahorro estimado: $42,500 MXN</span>
-          </div>
-          <div className="mini-progress-bar">
-            <div className="fill" style={{ width: `28%`, backgroundColor: '#10b981' }}></div>
-          </div>
-        </div>
-      </div>
 
-      {/* Interactive Core Modules Launcher Grid */}
-      <div className="modules-section-header">
-        <h2 className="section-title">Módulos Estratégicos del Sistema</h2>
-        <span className="section-desc">Selecciona un área para comenzar la demostración interactiva con RTM</span>
-      </div>
+          <div className="radar-item-alert radar-alert-red">
+            <div className="radar-item-title">
+              <AlertCircle size={14} color="#ef4444" />
+              <span>OP-2026-881 (Heidelberg)</span>
+            </div>
+            <div className="radar-item-desc">Ajuste de registro y densidad de color en tiro</div>
+          </div>
 
-      <div className="modules-deck-grid">
-        <div className="module-deck-card" onClick={() => onNavigate('suajes')}>
-          <div className="module-deck-icon-wrap" style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa' }}>
-            <Scissors size={26} />
+          <div className="radar-item-alert radar-alert-amber">
+            <div className="radar-item-title">
+              <AlertTriangle size={14} color="#f59e0b" />
+              <span>SUJ-MED-442 (Taller)</span>
+            </div>
+            <div className="radar-item-desc">Suaje requiere afilado de pleca en 25K golpes</div>
           </div>
-          <div className="module-deck-info">
-            <div className="module-tag">INGENIERÍA & COSTOS</div>
-            <h3 className="module-title">Cálculo de Suajes & Imposición 2D</h3>
-            <p className="module-desc">
-              Algoritmo de aprovechamiento de pliego, distribución de poses $X \times Y$, margen de pinza y cotización de plecas.
-            </p>
-          </div>
-          <div className="module-footer-link">
-            <span>Abrir Simulador 2D</span>
-            <ChevronRight size={16} />
-          </div>
-        </div>
 
-        <div className="module-deck-card" onClick={() => onNavigate('produccion')}>
-          <div className="module-deck-icon-wrap" style={{ background: 'rgba(6, 182, 212, 0.15)', color: '#38bdf8' }}>
-            <Printer size={26} />
+          <div className="radar-item-alert radar-alert-amber">
+            <div className="radar-item-title">
+              <AlertTriangle size={14} color="#f59e0b" />
+              <span>LOT-AGRO-902 (QA)</span>
+            </div>
+            <div className="radar-item-desc">Auditoría final lista para firma de liberación</div>
           </div>
-          <div className="module-deck-info">
-            <div className="module-tag">PISO DE PLANTA</div>
-            <h3 className="module-title">Programación Master Offset & Flexo</h3>
-            <p className="module-desc">
-              Balance de colas de máquina, monitoreo de tirajes en vivo, paros de prensa y captura de reportes de operador.
-            </p>
-          </div>
-          <div className="module-footer-link">
-            <span>Ver Cola de Prensas</span>
-            <ChevronRight size={16} />
-          </div>
-        </div>
 
-        <div className="module-deck-card" onClick={() => onNavigate('calidad')}>
-          <div className="module-deck-icon-wrap" style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399' }}>
-            <ShieldCheck size={26} />
+          <div className="radar-item-alert radar-alert-orange">
+            <div className="radar-item-title">
+              <AlertTriangle size={14} color="#ea580c" />
+              <span>CTP-FLX-088 (Pre-prensa)</span>
+            </div>
+            <div className="radar-item-desc">Juego de clichés flexo listo para montaje</div>
           </div>
-          <div className="module-deck-info">
-            <div className="module-tag">CONTROL DE CALIDAD</div>
-            <h3 className="module-title">Auditorías QA & Liberación de Lote</h3>
-            <p className="module-desc">
-              Inspección de pre-prensa CTP, tolerancia de color $\Delta E$, adherencia de cinta 3M y lectura de código de barras.
-            </p>
-          </div>
-          <div className="module-footer-link">
-            <span>Revisar Auditorías</span>
-            <ChevronRight size={16} />
-          </div>
-        </div>
-
-        <div className="module-deck-card" onClick={() => onNavigate('diseno')}>
-          <div className="module-deck-icon-wrap" style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24' }}>
-            <PenTool size={26} />
-          </div>
-          <div className="module-deck-info">
-            <div className="module-tag">PRE-PRENSA & DISEÑO</div>
-            <h3 className="module-title">Muestras Plotter PE & Fotopolímeros</h3>
-            <p className="module-desc">
-              Trazabilidad de maquetas estructurales cortadas en plotter de cama plana y control de placas flexográficas.
-            </p>
-          </div>
-          <div className="module-footer-link">
-            <span>Gestionar Muestras</span>
-            <ChevronRight size={16} />
-          </div>
-        </div>
-      </div>
-
-      {/* Live Floor Snapshot Table */}
-      <div className="card live-floor-table-card" style={{ marginTop: '24px' }}>
-        <div className="card-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Activity size={20} color="var(--accent-blue-light)" />
-            <h2 style={{ fontSize: '1.125rem' }}>Telemetría en Vivo de Prensas Principales</h2>
-          </div>
-          <button className="btn btn-primary btn-sm" onClick={onOpenReporteModal}>
-            <Zap size={14} />
-            <span>Nuevo Reporte de Turno</span>
-          </button>
-        </div>
-
-        <div className="table-container" style={{ border: 'none' }}>
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Prensa / Equipo</th>
-                <th>Estado Operativo</th>
-                <th>Régimen Actual</th>
-                <th>Orden de Producción (OP)</th>
-                <th>Eficiencia OEE</th>
-              </tr>
-            </thead>
-            <tbody>
-              {maquinas.map((m, idx) => (
-                <tr key={idx}>
-                  <td style={{ fontWeight: 700 }}>{m.maquina}</td>
-                  <td>
-                    <span className={`badge ${
-                      m.estado.includes('Operando') ? 'badge-success' : 
-                      m.estado.includes('Ajuste') ? 'badge-warning' : 'badge-danger'
-                    }`}>
-                      <span className="live-dot" style={{ width: '6px', height: '6px' }}></span>
-                      {m.estado}
-                    </span>
-                  </td>
-                  <td className="mono-text">{m.velocidad_actual}</td>
-                  <td>
-                    <span className="mono-text" style={{ color: '#60a5fa', fontWeight: 700 }}>
-                      {m.orden_actual}
-                    </span>
-                  </td>
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontWeight: 700 }}>{m.eficiencia}</span>
-                      <div className="mini-progress-bar" style={{ width: '60px', margin: 0 }}>
-                        <div className="fill" style={{ width: m.eficiencia }}></div>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>

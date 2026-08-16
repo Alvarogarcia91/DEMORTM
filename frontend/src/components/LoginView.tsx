@@ -1,250 +1,133 @@
 import React, { useState } from 'react';
-import { 
-  Layers, 
-  Lock, 
-  Mail, 
-  ArrowRight, 
-  ShieldCheck, 
-  Printer, 
-  Scissors, 
-  CheckCircle2, 
-  Sparkles,
-  Zap,
-  Building2,
-  ChevronRight
-} from 'lucide-react';
+import { Layers } from 'lucide-react';
 
 interface LoginViewProps {
   onLogin: (userData: { name: string; role: string; email: string }) => void;
 }
 
 export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
-  const [email, setEmail] = useState('carlos.mendoza@rtmimpresos.com.mx');
-  const [password, setPassword] = useState('••••••••••••');
-  const [selectedRole, setSelectedRole] = useState<'Director' | 'Planta' | 'QA' | 'Suajes'>('Director');
+  const [email, setEmail] = useState('admin@rtmimpresos.com.mx');
+  const [password, setPassword] = useState('••••••••');
+  const [rememberSession, setRememberSession] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-
-  const demoRoles = [
-    {
-      id: 'Director' as const,
-      title: 'Dirección General & Finanzas',
-      name: 'Ing. Roberto Garza',
-      email: 'r.garza@rtmimpresos.com.mx',
-      desc: 'Acceso a OEE global, margen de mermas y KPIs ejecutivos'
-    },
-    {
-      id: 'Planta' as const,
-      title: 'Jefe de Producción (Offset & Flexo)',
-      name: 'Carlos Mendoza',
-      email: 'carlos.mendoza@rtmimpresos.com.mx',
-      desc: 'Control de prensas Heidelberg/Mark Andy y programación master'
-    },
-    {
-      id: 'Suajes' as const,
-      title: 'Ingeniería de Suajes & Pre-prensa',
-      name: 'Ana Luisa Morales',
-      email: 'ana.morales@rtmimpresos.com.mx',
-      desc: 'Aprovechamiento de pliego, imposición 2D y taller de troqueles'
-    },
-    {
-      id: 'QA' as const,
-      title: 'Aseguramiento de Calidad (QA)',
-      name: 'Mariana Gómez',
-      email: 'm.gomez@rtmimpresos.com.mx',
-      desc: 'Liberación de lotes farmacéuticos, Delta E y pruebas de cinta'
-    }
-  ];
-
-  const handleRoleSelect = (roleId: 'Director' | 'Planta' | 'QA' | 'Suajes') => {
-    setSelectedRole(roleId);
-    const roleInfo = demoRoles.find(r => r.id === roleId);
-    if (roleInfo) {
-      setEmail(roleInfo.email);
-    }
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const currentRole = demoRoles.find(r => r.id === selectedRole) || demoRoles[0];
-
-    // Smooth transition simulation
     setTimeout(() => {
       onLogin({
-        name: currentRole.name,
-        role: currentRole.title,
-        email: email || currentRole.email
+        name: 'Carlos Mendoza',
+        role: 'Jefe de Planta & Producción',
+        email: email || 'admin@rtmimpresos.com.mx'
       });
-    }, 600);
+    }, 350);
+  };
+
+  const handleApplyDemoCredentials = () => {
+    setEmail('admin@rtmimpresos.com.mx');
+    setPassword('••••••••');
   };
 
   return (
-    <div className="login-page-wrapper">
-      {/* Ambient background glow elements */}
-      <div className="ambient-glow glow-1"></div>
-      <div className="ambient-glow glow-2"></div>
-      <div className="ambient-grid-overlay"></div>
-
-      <div className="login-container">
-        {/* Left Brand Showcase Banner */}
-        <div className="login-showcase">
-          <div className="showcase-header">
-            <div className="nexora-brand-badge">
-              <div className="brand-icon">
-                <Layers size={24} strokeWidth={2.5} />
-              </div>
-              <div>
-                <span className="brand-name">NEXORA</span>
-                <span className="brand-accent">OS</span>
-              </div>
-            </div>
-            <div className="client-pill">
-              <span className="live-dot"></span>
-              <span>RTM IMPRESOS INDUSTRIAL</span>
-            </div>
+    <div className="login-split-page">
+      {/* Left Hero Section (Navy Grid with RTM Branding) */}
+      <div className="login-left-hero">
+        <div className="login-brand-top">
+          <div className="brand-icon-square">
+            <Layers size={26} strokeWidth={2.4} />
           </div>
-
-          <div className="showcase-content">
-            <div className="edition-tag">
-              <Sparkles size={14} />
-              <span>SISTEMA ERP A LA MEDIDA • EDICIÓN GRÁFICA</span>
-            </div>
-            <h1 className="showcase-title">
-              La plataforma de control que sincroniza tus <span className="highlight-text">prensas, suajes y calidad.</span>
-            </h1>
-            <p className="showcase-description">
-              Diseñado exclusivamente para la arquitectura operativa de <strong>Impresos RTM</strong>: Prensas Offset de pliego, rotativas Flexo, laboratorio de QA y taller de troquelado.
-            </p>
-
-            {/* Micro Feature Pills */}
-            <div className="feature-grid">
-              <div className="feature-item">
-                <div className="feature-icon"><Printer size={18} /></div>
-                <div>
-                  <div className="feature-title">Offset & Flexo Unificados</div>
-                  <div className="feature-subtitle">Heidelberg CD 102 & Mark Andy P7</div>
-                </div>
-              </div>
-
-              <div className="feature-item">
-                <div className="feature-icon"><Scissors size={18} /></div>
-                <div>
-                  <div className="feature-title">Algoritmo de Suajes 2D</div>
-                  <div className="feature-subtitle">Aprovechamiento de pliego &gt; 88%</div>
-                </div>
-              </div>
-
-              <div className="feature-item">
-                <div className="feature-icon"><ShieldCheck size={18} /></div>
-                <div>
-                  <div className="feature-title">QA Grado Farmacéutico</div>
-                  <div className="feature-subtitle">Trazabilidad Delta E & Cinta 3M</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="showcase-footer">
-            <div className="trust-text">
-              <span>Sistemas de Planta Operando • Cifrado TLS 1.3 • Nexora Engine v2.4</span>
-            </div>
+          <div className="brand-title-group">
+            <h2>NEXORA</h2>
+            <span>Impresos RTM • ERP</span>
           </div>
         </div>
 
-        {/* Right Authentication Form Card */}
-        <div className="login-card">
-          <div className="card-top">
-            <div className="security-icon-wrap">
-              <Lock size={20} />
-            </div>
-            <h2 className="login-heading">Acceso al Sistema</h2>
-            <p className="login-subheading">
-              Selecciona un perfil para la demo o haz clic directamente en <strong>Iniciar Sesión</strong>.
-            </p>
+        <div className="login-hero-body">
+          <h1 className="hero-main-title">
+            Centro de mando<br />operativo
+          </h1>
+          <p className="hero-sub-description">
+            Gestión completa de producción gráfica:<br />
+            <strong>Cotización → Pre-prensa → Prensas → Suajado → Calidad</strong>
+          </p>
+
+          <div className="hero-pills-row">
+            <span className="hero-pill">Offset CD 102</span>
+            <span className="hero-pill">Flexografía P7</span>
+            <span className="hero-pill">Ingeniería Suajes</span>
+            <span className="hero-pill">Auditorías QA</span>
+            <span className="hero-pill">Bobinas & Pliegos</span>
+          </div>
+        </div>
+
+        <div className="login-left-footer">
+          <span>© 2026 Nexora OS • Impresos RTM - Monterrey, México</span>
+        </div>
+      </div>
+
+      {/* Right Form Section (Pure White with Demo Box) */}
+      <div className="login-right-form-panel">
+        <div className="login-form-box">
+          <div className="login-header-text">
+            <h1>Bienvenido</h1>
+            <p>Ingresa a tu plataforma de gestión</p>
           </div>
 
-          {/* Quick Role Selector for Demo Presentation */}
-          <div className="role-selector-section">
-            <div className="section-label">PERFILES DISPONIBLES PARA LA DEMO:</div>
-            <div className="role-chips-grid">
-              {demoRoles.map((r) => (
-                <button
-                  key={r.id}
-                  type="button"
-                  onClick={() => handleRoleSelect(r.id)}
-                  className={`role-chip ${selectedRole === r.id ? 'active' : ''}`}
-                >
-                  <div className="chip-content">
-                    <span className="chip-title">{r.title}</span>
-                    <span className="chip-name">{r.name}</span>
-                  </div>
-                  <ChevronRight size={14} className="chip-arrow" />
-                </button>
-              ))}
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: '18px' }}>
+              <label className="input-label-clean">Correo electrónico</label>
+              <input 
+                type="text" 
+                className="input-clean" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="admin@rtmimpresos.com.mx"
+              />
             </div>
-          </div>
 
-          <form onSubmit={handleSubmit} className="login-form">
-            <div className="form-group">
-              <label className="form-label">Correo Corporativo / Usuario</label>
-              <div className="input-with-icon">
-                <Mail size={16} className="field-icon" />
+            <div style={{ marginBottom: '18px' }}>
+              <label className="input-label-clean">Contraseña</label>
+              <input 
+                type="password" 
+                className="input-clean" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+              />
+            </div>
+
+            <div className="login-options-row">
+              <label className="remember-me-label">
                 <input 
-                  type="text" 
-                  className="form-input custom-input" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="usuario@rtmimpresos.com.mx"
+                  type="checkbox" 
+                  checked={rememberSession} 
+                  onChange={(e) => setRememberSession(e.target.checked)} 
                 />
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Contraseña de Seguridad</label>
-              <div className="input-with-icon">
-                <Lock size={16} className="field-icon" />
-                <input 
-                  type="password" 
-                  className="form-input custom-input" 
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
-                />
-              </div>
-            </div>
-
-            <div className="form-extra-row">
-              <label className="remember-checkbox">
-                <input type="checkbox" defaultChecked />
-                <span>Recordar credenciales de estación</span>
+                <span>Recordar sesión</span>
               </label>
-              <span className="auth-mode-badge">DEMO INTERACTIVA</span>
             </div>
 
             <button 
               type="submit" 
-              className="btn btn-primary submit-login-btn"
+              className="btn-primary-blue"
               disabled={isLoading}
             >
-              {isLoading ? (
-                <span className="spinner-wrap">
-                  <span className="login-spinner"></span>
-                  <span>Autenticando en Nexora OS...</span>
-                </span>
-              ) : (
-                <>
-                  <span>Iniciar Sesión en Demo RTM</span>
-                  <ArrowRight size={18} />
-                </>
-              )}
+              {isLoading ? 'Ingresando al sistema...' : 'Ingresar al sistema'}
             </button>
           </form>
 
-          <div className="quick-access-hint">
-            <Zap size={14} color="#f59e0b" />
-            <span>Haz clic en el botón para ingresar al panel principal de inmediato.</span>
+          {/* Demo Credentials Box */}
+          <div className="demo-credentials-card" onClick={handleApplyDemoCredentials} style={{ cursor: 'pointer' }}>
+            <div className="demo-credentials-title">Credenciales de demostración</div>
+            <div className="demo-credentials-email">admin@rtmimpresos.com.mx</div>
+            <div className="demo-credentials-pass">••••••••</div>
           </div>
+        </div>
+
+        {/* Floating Help Circle */}
+        <div className="help-floating-btn" title="Ayuda y soporte">
+          ?
         </div>
       </div>
     </div>

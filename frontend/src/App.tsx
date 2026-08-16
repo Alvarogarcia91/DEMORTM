@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Header } from './components/Header';
+import { Sidebar } from './components/Sidebar';
+import { Topbar } from './components/Topbar';
 import { LoginView } from './components/LoginView';
 import { HomeView } from './components/HomeView';
 import { ProduccionView } from './components/ProduccionView';
 import { SuajesView } from './components/SuajesView';
 import { CalidadView } from './components/CalidadView';
 import { DisenoView } from './components/DisenoView';
+import { AnaliticaView } from './components/AnaliticaView';
+import { CuentasCobrarView } from './components/CuentasCobrarView';
 import { ReporteOperadorModal } from './components/ReporteOperadorModal';
 import { 
   fetchDashboardMetrics, 
@@ -20,11 +23,11 @@ export function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState({
     name: 'Carlos Mendoza',
-    role: 'Jefe de Producción (Offset & Flexo)',
-    email: 'carlos.mendoza@rtmimpresos.com.mx'
+    role: 'Jefe de Planta & Producción',
+    email: 'admin@rtmimpresos.com.mx'
   });
 
-  const [activeTab, setActiveTab] = useState<string>('home');
+  const [activeTab, setActiveTab] = useState<string>('inicio');
   const [backendOnline, setBackendOnline] = useState<boolean>(false);
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [ordenes, setOrdenes] = useState<OrdenProduccion[]>([]);
@@ -63,62 +66,89 @@ export function App() {
   const handleLogin = (user: { name: string; role: string; email: string }) => {
     setCurrentUser(user);
     setIsLoggedIn(true);
-    setActiveTab('home');
+    setActiveTab('inicio');
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
   };
 
-  // If not logged in, show the Login screen
+  // If not logged in, show the split Login screen matching reference
   if (!isLoggedIn) {
     return <LoginView onLogin={handleLogin} />;
   }
 
   return (
-    <div className="app-container app-fade-in">
-      <Header 
+    <div className="erp-app-shell">
+      {/* Dark Navy Sidebar from reference */}
+      <Sidebar 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
-        backendOnline={backendOnline} 
         user={currentUser}
         onLogout={handleLogout}
       />
 
-      <main className="main-content">
-        {activeTab === 'home' && (
+      <div className="erp-main-wrapper">
+        {/* Crisp White Topbar from reference */}
+        <Topbar 
+          user={currentUser} 
+          onBack={() => setActiveTab('inicio')} 
+        />
+
+        {/* Content routing */}
+        {activeTab === 'inicio' && (
           <HomeView 
             user={currentUser}
-            data={dashboardData}
-            ordenes={ordenes}
             onNavigate={(tab) => setActiveTab(tab)}
-            onOpenReporteModal={() => setIsReporteModalOpen(true)}
-            onLogout={handleLogout}
           />
         )}
 
         {activeTab === 'produccion' && (
-          <ProduccionView 
-            ordenes={ordenes} 
-            onOpenReporteModal={() => setIsReporteModalOpen(true)}
-          />
+          <div className="erp-content-area">
+            <ProduccionView 
+              ordenes={ordenes} 
+              onOpenReporteModal={() => setIsReporteModalOpen(true)}
+            />
+          </div>
         )}
 
         {activeTab === 'suajes' && (
-          <SuajesView suajesList={suajes} />
+          <div className="erp-content-area">
+            <SuajesView suajesList={suajes} />
+          </div>
         )}
 
         {activeTab === 'calidad' && (
-          <CalidadView 
-            inspecciones={inspeccionesQA} 
-            onRefresh={loadAllData} 
-          />
+          <div className="erp-content-area">
+            <CalidadView 
+              inspecciones={inspeccionesQA} 
+              onRefresh={loadAllData} 
+            />
+          </div>
         )}
 
         {activeTab === 'diseno' && (
-          <DisenoView muestras={muestras} />
+          <div className="erp-content-area">
+            <DisenoView muestras={muestras} />
+          </div>
         )}
-      </main>
+
+        {activeTab === 'cotizaciones' && (
+          <div className="erp-content-area">
+            <AnaliticaView />
+          </div>
+        )}
+
+        {activeTab === 'cuentas_cobrar' && (
+          <CuentasCobrarView />
+        )}
+
+        {activeTab === 'reportes' && (
+          <div className="erp-content-area">
+            <AnaliticaView />
+          </div>
+        )}
+      </div>
 
       <ReporteOperadorModal 
         isOpen={isReporteModalOpen}
