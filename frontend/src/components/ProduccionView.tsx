@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { OrdenProduccion } from '../types';
-import { Printer, Filter, Plus, Calendar, AlertCircle, CheckCircle2, User } from 'lucide-react';
+import { Printer, Plus, Search, Filter } from 'lucide-react';
 
 interface ProduccionViewProps {
   ordenes: OrdenProduccion[];
@@ -20,57 +20,61 @@ export const ProduccionView: React.FC<ProduccionViewProps> = ({ ordenes, onOpenR
   });
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
+    <div className="erp-content-area">
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '16px' }}>
         <div>
-          <h1 style={{ fontSize: '1.75rem', marginBottom: '4px' }}>Programación Master & Producción</h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-            Control de tirajes, balance de líneas Offset / Flexo y monitoreo de avance de órdenes RTM.
-          </p>
+          <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#0f172a', marginBottom: '4px' }}>Programación Master & Producción</h1>
+          <p style={{ fontSize: '0.9375rem', color: '#64748b' }}>Control de tirajes, balance de prensas Offset / Flexo y monitoreo de avance de órdenes RTM.</p>
         </div>
-        <button className="btn btn-primary" onClick={onOpenReporteModal}>
+
+        <button className="btn-primary-blue" style={{ width: 'auto', padding: '10px 20px' }} onClick={onOpenReporteModal}>
           <Plus size={16} />
           <span>Capturar Reporte de Operador</span>
         </button>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="card" style={{ padding: '16px', marginBottom: '20px', display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+      <div className="clean-kpi-card" style={{ padding: '14px 20px', marginBottom: '20px', display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', gap: '8px' }}>
           <button 
-            className={`btn btn-sm ${filterTech === 'ALL' ? 'btn-primary' : 'btn-secondary'}`}
+            className={`filter-chip-btn ${filterTech === 'ALL' ? 'active' : ''}`}
+            style={{ background: filterTech === 'ALL' ? '#0088cc' : '#f8fafc', color: filterTech === 'ALL' ? '#ffffff' : '#475569' }}
             onClick={() => setFilterTech('ALL')}
           >
             Todas las Tecnologías
           </button>
           <button 
-            className={`btn btn-sm ${filterTech === 'Offset' ? 'btn-primary' : 'btn-secondary'}`}
+            className={`filter-chip-btn ${filterTech === 'Offset' ? 'active' : ''}`}
+            style={{ background: filterTech === 'Offset' ? '#0088cc' : '#f8fafc', color: filterTech === 'Offset' ? '#ffffff' : '#475569' }}
             onClick={() => setFilterTech('Offset')}
           >
             Offset (Pliegos)
           </button>
           <button 
-            className={`btn btn-sm ${filterTech === 'Flexo' ? 'btn-primary' : 'btn-secondary'}`}
+            className={`filter-chip-btn ${filterTech === 'Flexo' ? 'active' : ''}`}
+            style={{ background: filterTech === 'Flexo' ? '#0088cc' : '#f8fafc', color: filterTech === 'Flexo' ? '#ffffff' : '#475569' }}
             onClick={() => setFilterTech('Flexo')}
           >
             Flexo (Bobinas)
           </button>
         </div>
+
         <div style={{ flex: 1, minWidth: '240px' }}>
           <input 
             type="text" 
             placeholder="Buscar por OP, Cliente o Producto..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="form-input"
-            style={{ padding: '8px 12px' }}
+            className="input-clean"
+            style={{ padding: '8px 14px' }}
           />
         </div>
       </div>
 
-      {/* Orders Table */}
-      <div className="table-container">
-        <table className="data-table">
+      {/* Clean Orders Table */}
+      <div className="clean-table-card">
+        <table className="clean-erp-table">
           <thead>
             <tr>
               <th>ID Orden</th>
@@ -88,57 +92,54 @@ export const ProduccionView: React.FC<ProduccionViewProps> = ({ ordenes, onOpenR
             {filtered.map((ord) => (
               <tr key={ord.id}>
                 <td>
-                  <span className="mono-text" style={{ fontWeight: 700, color: '#60a5fa' }}>{ord.id}</span>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Entrega: {ord.fecha_entrega}</div>
+                  <span className="mono-text" style={{ fontWeight: 800, color: '#0284c7' }}>{ord.id}</span>
+                  <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Entrega: {ord.fecha_entrega}</div>
                 </td>
                 <td style={{ maxWidth: '280px' }}>
-                  <div style={{ fontWeight: 600 }}>{ord.cliente}</div>
-                  <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                  <div style={{ fontWeight: 700, color: '#0f172a' }}>{ord.cliente}</div>
+                  <div style={{ fontSize: '0.8125rem', color: '#64748b', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
                     {ord.producto}
                   </div>
                 </td>
                 <td>
-                  <span className={`badge ${ord.tecnologia === 'Offset' ? 'badge-blue' : 'badge-cyan'}`} style={{ marginBottom: '4px' }}>
+                  <span className={`badge-clean ${ord.tecnologia === 'Offset' ? 'badge-blue' : 'badge-green'}`} style={{ marginBottom: '2px' }}>
                     {ord.tecnologia}
                   </span>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{ord.maquina}</div>
+                  <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{ord.maquina}</div>
                 </td>
-                <td className="mono-text" style={{ fontWeight: 600 }}>
+                <td className="mono-text" style={{ fontWeight: 700 }}>
                   {ord.tiraje_total.toLocaleString()} {ord.tecnologia === 'Offset' ? 'pliegos' : 'unid.'}
                 </td>
                 <td style={{ minWidth: '160px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', marginBottom: '4px' }}>
-                    <span>{ord.avance_pct}%</span>
-                    <span className="mono-text">{ord.pliegos_buenos.toLocaleString()} ok</span>
+                    <span style={{ fontWeight: 700 }}>{ord.avance_pct}%</span>
+                    <span className="mono-text" style={{ color: '#64748b' }}>{ord.pliegos_buenos.toLocaleString()} ok</span>
                   </div>
-                  <div className="progress-track">
+                  <div style={{ height: '6px', background: '#e2e8f0', borderRadius: '3px', overflow: 'hidden' }}>
                     <div 
-                      className="progress-bar" 
                       style={{ 
+                        height: '100%',
                         width: `${ord.avance_pct}%`,
-                        backgroundColor: ord.avance_pct === 100 ? 'var(--status-success)' : 'var(--accent-blue)' 
+                        backgroundColor: ord.avance_pct === 100 ? '#059669' : '#0088cc' 
                       }}
                     ></div>
                   </div>
                 </td>
-                <td className="mono-text" style={{ color: 'var(--status-warning)', fontSize: '0.8125rem' }}>
+                <td className="mono-text" style={{ color: '#ea580c', fontSize: '0.8125rem', fontWeight: 600 }}>
                   {ord.merma.toLocaleString()} ({((ord.merma / Math.max(ord.producido, 1)) * 100).toFixed(1)}%)
                 </td>
                 <td>
-                  <span className="badge badge-secondary mono-text" style={{ background: 'rgba(255,255,255,0.05)', color: '#38bdf8' }}>
+                  <span className="mono-text" style={{ background: '#f1f5f9', color: '#0284c7', padding: '3px 8px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 700 }}>
                     {ord.suaje_codigo}
                   </span>
                 </td>
-                <td style={{ fontSize: '0.8125rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <User size={14} color="var(--text-muted)" />
-                    <span>{ord.operador}</span>
-                  </div>
+                <td style={{ fontSize: '0.8125rem', color: '#475569' }}>
+                  {ord.operador}
                 </td>
                 <td>
-                  <span className={`badge ${
-                    ord.estado === 'En Producción' ? 'badge-success' :
-                    ord.estado.includes('Auditoría') ? 'badge-cyan' : 'badge-warning'
+                  <span className={`badge-clean ${
+                    ord.estado === 'En Producción' ? 'badge-green' :
+                    ord.estado.includes('Auditoría') ? 'badge-blue' : 'badge-orange'
                   }`}>
                     {ord.estado}
                   </span>

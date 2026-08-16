@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SuajeItem, SuajeCalcParams, SuajeCalcResult } from '../types';
 import { calcularSuajeAPI } from '../services/api';
-import { Scissors, Calculator, LayoutGrid, Check, Sparkles, AlertCircle, Wrench, Layers } from 'lucide-react';
+import { Scissors, Calculator, Sparkles, Wrench } from 'lucide-react';
 
 interface SuajesViewProps {
   suajesList: SuajeItem[];
@@ -43,137 +43,136 @@ export const SuajesView: React.FC<SuajesViewProps> = ({ suajesList }) => {
     handleCalcular();
   }, []);
 
-  // Parse columns and rows from distribution string e.g. "2 col x 3 filas" or "2 columnas x 3 filas"
   const parseGrid = () => {
-    if (!resultado) return { cols: 2, rows: 3 };
+    if (!resultado) return { cols: 2, rows: 2 };
     const match = resultado.distribucion.match(/(\d+)\s*(?:col|columnas).*?(\d+)\s*filas/i);
     if (match) {
-      return { cols: parseInt(match[1], 10) || 2, rows: parseInt(match[2], 10) || 3 };
+      return { cols: parseInt(match[1], 10) || 2, rows: parseInt(match[2], 10) || 2 };
     }
-    return { cols: 2, rows: Math.ceil(resultado.poses_totales_por_pliego / 2) };
+    return { cols: 2, rows: 2 };
   };
 
   const grid = parseGrid();
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
-        <div>
-          <h1 style={{ fontSize: '1.75rem', marginBottom: '4px' }}>Ingeniería de Suajes & Aprovechamiento de Pliego</h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-            Cálculo paramétrico de imposición de troqueles, optimización de sustrato y control de herramentales RTM.
-          </p>
-        </div>
+    <div className="erp-content-area">
+      {/* View Header */}
+      <div className="welcome-page-header">
+        <h1>Ingeniería de Suajes & Aprovechamiento de Pliego</h1>
+        <p>Cálculo paramétrico de imposición de troqueles, optimización de sustrato y control de herramentales RTM.</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '24px', marginBottom: '32px' }}>
-        {/* Input Parameters Card */}
-        <div className="card">
-          <div className="card-header">
-            <h2 style={{ fontSize: '1.125rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Calculator size={18} color="var(--accent-blue-light)" />
-              <span>Parámetros de la Pieza & Pliego</span>
-            </h2>
-            <span className="badge badge-blue">RTM Estándar</span>
+      {/* 2-Column Split: Form (Left) & 2D Preview (Right) */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}>
+        {/* Left: Input Parameters Card */}
+        <div className="clean-kpi-card" style={{ padding: '24px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div className="kpi-icon-pastel" style={{ background: '#eff6ff', color: '#0284c7' }}>
+                <Calculator size={18} strokeWidth={2.4} />
+              </div>
+              <h2 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0f172a' }}>Parámetros de la Pieza & Pliego</h2>
+            </div>
+            <span className="badge-clean badge-blue">RTM Estándar</span>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-            <div className="form-group" style={{ gridColumn: 'span 2' }}>
-              <label className="form-label">Nombre del Producto / Pieza</label>
+            <div style={{ gridColumn: 'span 2' }}>
+              <label className="input-label-clean">Nombre del Producto / Pieza</label>
               <input 
                 type="text" 
-                className="form-input" 
+                className="input-clean" 
                 value={params.nombre_pieza} 
                 onChange={(e) => setParams({ ...params, nombre_pieza: e.target.value })} 
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Ancho Extendido (mm)</label>
+            <div>
+              <label className="input-label-clean">Ancho Extendido (mm)</label>
               <input 
                 type="number" 
-                className="form-input" 
+                className="input-clean" 
                 value={params.ancho_desarrollo_mm} 
                 onChange={(e) => setParams({ ...params, ancho_desarrollo_mm: parseFloat(e.target.value) || 0 })} 
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Largo Extendido (mm)</label>
+            <div>
+              <label className="input-label-clean">Largo Extendido (mm)</label>
               <input 
                 type="number" 
-                className="form-input" 
+                className="input-clean" 
                 value={params.largo_desarrollo_mm} 
                 onChange={(e) => setParams({ ...params, largo_desarrollo_mm: parseFloat(e.target.value) || 0 })} 
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Ancho de Pliego (mm)</label>
+            <div>
+              <label className="input-label-clean">Ancho de Pliego (mm)</label>
               <input 
                 type="number" 
-                className="form-input" 
+                className="input-clean" 
                 value={params.ancho_pliego_mm} 
                 onChange={(e) => setParams({ ...params, ancho_pliego_mm: parseFloat(e.target.value) || 0 })} 
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Largo de Pliego (mm)</label>
+            <div>
+              <label className="input-label-clean">Largo de Pliego (mm)</label>
               <input 
                 type="number" 
-                className="form-input" 
+                className="input-clean" 
                 value={params.largo_pliego_mm} 
                 onChange={(e) => setParams({ ...params, largo_pliego_mm: parseFloat(e.target.value) || 0 })} 
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Margen de Pinza (mm)</label>
+            <div>
+              <label className="input-label-clean">Margen de Pinza (mm)</label>
               <input 
                 type="number" 
-                className="form-input" 
+                className="input-clean" 
                 value={params.margen_pinza_mm} 
                 onChange={(e) => setParams({ ...params, margen_pinza_mm: parseFloat(e.target.value) || 0 })} 
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Calle entre Piezas (mm)</label>
+            <div>
+              <label className="input-label-clean">Calle entre Piezas (mm)</label>
               <input 
                 type="number" 
-                className="form-input" 
+                className="input-clean" 
                 value={params.calle_entre_piezas_mm} 
                 onChange={(e) => setParams({ ...params, calle_entre_piezas_mm: parseFloat(e.target.value) || 0 })} 
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Tiraje Requerido (Piezas)</label>
+            <div>
+              <label className="input-label-clean">Tiraje Requerido (Piezas)</label>
               <input 
                 type="number" 
-                className="form-input" 
+                className="input-clean" 
                 value={params.cantidad_piezas_orden} 
                 onChange={(e) => setParams({ ...params, cantidad_piezas_orden: parseInt(e.target.value, 10) || 0 })} 
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Tipo de Suaje</label>
+            <div>
+              <label className="input-label-clean">Tipo de Suaje</label>
               <select 
-                className="form-select" 
+                className="input-clean" 
                 value={params.tipo_suaje} 
                 onChange={(e) => setParams({ ...params, tipo_suaje: e.target.value })}
               >
                 <option value="Plano">Plano (Plegadizas Offset)</option>
-                <option value="Rotativo">Rotativo / Magnético (Flexo)</option>
+                <option value="Rotativo">Rotativo (Flexo)</option>
               </select>
             </div>
           </div>
 
           <button 
-            className="btn btn-primary" 
-            style={{ width: '100%', marginTop: '10px' }} 
+            className="btn-primary-blue" 
+            style={{ marginTop: '18px' }} 
             onClick={handleCalcular}
             disabled={calculating}
           >
@@ -182,74 +181,74 @@ export const SuajesView: React.FC<SuajesViewProps> = ({ suajesList }) => {
           </button>
         </div>
 
-        {/* 2D Interactive Preview & Results Card */}
-        <div className="card">
-          <div className="card-header">
-            <h2 style={{ fontSize: '1.125rem' }}>Aprovechamiento & Imposición 2D</h2>
-            {resultado && (
-              <span className={`badge ${resultado.aprovechamiento_pliego_pct >= 80 ? 'badge-success' : 'badge-warning'}`}>
-                {resultado.aprovechamiento_pliego_pct}% Rendimiento
-              </span>
-            )}
+        {/* Right: 2D Imposition Preview Card */}
+        <div className="clean-kpi-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h2 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0f172a' }}>Aprovechamiento & Imposición 2D</h2>
+              {resultado && (
+                <span className={`badge-clean ${resultado.aprovechamiento_pliego_pct >= 80 ? 'badge-green' : 'badge-orange'}`}>
+                  {resultado.aprovechamiento_pliego_pct}% Rendimiento
+                </span>
+              )}
+            </div>
+
+            {/* 2D Sheet Canvas Box */}
+            <div className="sheet-visualizer-box">
+              <div className="sheet-gripper-strip" title="Pinza de Prensa (Heidelberg)"></div>
+              
+              <div 
+                className="sheet-canvas-grid"
+                style={{
+                  gridTemplateColumns: `repeat(${grid.cols}, 1fr)`,
+                  gridTemplateRows: `repeat(${grid.rows}, 1fr)`,
+                  width: '85%',
+                  height: '170px'
+                }}
+              >
+                {resultado && Array.from({ length: resultado.poses_totales_por_pliego }).map((_, i) => (
+                  <div key={i} className="sheet-pose-cell">
+                    <Scissors size={14} style={{ marginBottom: '2px' }} />
+                    <span>Pose #{i + 1}</span>
+                    <span style={{ fontSize: '0.625rem', opacity: 0.8 }}>{params.ancho_desarrollo_mm}x{params.largo_desarrollo_mm}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ position: 'absolute', bottom: '8px', fontSize: '0.6875rem', color: '#94a3b8' }}>
+                Pliego: {params.ancho_pliego_mm} x {params.largo_pliego_mm} mm | Distribución: {resultado?.distribucion}
+              </div>
+            </div>
           </div>
 
+          {/* 4 Summary Stat Boxes from Reference Style */}
           {resultado && (
-            <div>
-              {/* Sheet Visualizer */}
-              <div className="sheet-preview-container" style={{ marginBottom: '18px' }}>
-                <div className="gripper-indicator" title="Margen de Pinza (Heidelberg / Prensa)"></div>
-                
-                <div 
-                  className="sheet-canvas-mock"
-                  style={{
-                    gridTemplateColumns: `repeat(${grid.cols}, 1fr)`,
-                    gridTemplateRows: `repeat(${grid.rows}, 1fr)`,
-                    width: '85%',
-                    height: '220px'
-                  }}
-                >
-                  {Array.from({ length: resultado.poses_totales_por_pliego }).map((_, i) => (
-                    <div key={i} className="sheet-pose">
-                      <Scissors size={12} style={{ marginBottom: '2px', opacity: 0.8 }} />
-                      <span>Pose #{i + 1}</span>
-                      <span style={{ fontSize: '0.625rem', opacity: 0.75 }}>{params.ancho_desarrollo_mm}x{params.largo_desarrollo_mm}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div style={{ position: 'absolute', bottom: '8px', fontSize: '0.6875rem', color: 'var(--text-muted)' }}>
-                  Pliego: {params.ancho_pliego_mm} x {params.largo_pliego_mm} mm | Distribución: {resultado.distribucion}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '12px 16px', borderRadius: '12px' }}>
+                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>Poses por Pliego:</div>
+                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0284c7' }}>
+                  {resultado.poses_totales_por_pliego} poses
                 </div>
               </div>
 
-              {/* Numerical breakdown */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', fontSize: '0.8125rem' }}>
-                <div style={{ background: 'var(--bg-input)', padding: '10px 12px', borderRadius: 'var(--radius-md)' }}>
-                  <div style={{ color: 'var(--text-muted)' }}>Poses por Pliego:</div>
-                  <div className="mono-text" style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--accent-blue-light)' }}>
-                    {resultado.poses_totales_por_pliego} poses
-                  </div>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '12px 16px', borderRadius: '12px' }}>
+                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>Pliegos Brutos de Compra:</div>
+                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a' }}>
+                  {resultado.pliegos_brutos_compra.toLocaleString()} hojas
                 </div>
+              </div>
 
-                <div style={{ background: 'var(--bg-input)', padding: '10px 12px', borderRadius: 'var(--radius-md)' }}>
-                  <div style={{ color: 'var(--text-muted)' }}>Pliegos Brutos de Compra:</div>
-                  <div className="mono-text" style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                    {resultado.pliegos_brutos_compra.toLocaleString()} hojas
-                  </div>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '12px 16px', borderRadius: '12px' }}>
+                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>Metros Pleca (Corte/Doblez):</div>
+                <div style={{ fontSize: '0.9375rem', fontWeight: 800, color: '#334155' }}>
+                  {resultado.estimacion_tecnica_suaje.metros_pleca_corte}m / {resultado.estimacion_tecnica_suaje.metros_pleca_doblez}m
                 </div>
+              </div>
 
-                <div style={{ background: 'var(--bg-input)', padding: '10px 12px', borderRadius: 'var(--radius-md)' }}>
-                  <div style={{ color: 'var(--text-muted)' }}>Metros Pleca (Corte/Doblez):</div>
-                  <div className="mono-text" style={{ fontWeight: 700 }}>
-                    {resultado.estimacion_tecnica_suaje.metros_pleca_corte}m / {resultado.estimacion_tecnica_suaje.metros_pleca_doblez}m
-                  </div>
-                </div>
-
-                <div style={{ background: 'var(--bg-input)', padding: '10px 12px', borderRadius: 'var(--radius-md)' }}>
-                  <div style={{ color: 'var(--text-muted)' }}>Costo Estimado Suaje:</div>
-                  <div className="mono-text" style={{ fontWeight: 700, color: '#34d399' }}>
-                    ${resultado.estimacion_tecnica_suaje.costo_estimado_fabricacion_mxn.toLocaleString()} MXN
-                  </div>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '12px 16px', borderRadius: '12px' }}>
+                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>Costo Estimado Suaje:</div>
+                <div style={{ fontSize: '0.9375rem', fontWeight: 800, color: '#059669' }}>
+                  ${resultado.estimacion_tecnica_suaje.costo_estimado_fabricacion_mxn.toLocaleString()} MXN
                 </div>
               </div>
             </div>
@@ -257,57 +256,55 @@ export const SuajesView: React.FC<SuajesViewProps> = ({ suajesList }) => {
         </div>
       </div>
 
-      {/* Workshop Suajes Inventory */}
-      <div className="card">
-        <div className="card-header">
-          <h2 style={{ fontSize: '1.125rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Wrench size={18} color="var(--accent-blue-light)" />
-            <span>Inventario de Suajes Activos en Taller RTM</span>
-          </h2>
-          <span className="badge badge-secondary">{suajesList.length} Herramentales Registrados</span>
+      {/* Inventory Table Card */}
+      <div className="clean-table-card">
+        <div style={{ padding: '18px 24px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Wrench size={18} color="#0284c7" />
+            <h2 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>Inventario de Suajes Activos en Taller RTM</h2>
+          </div>
+          <span className="badge-clean badge-blue">{suajesList.length} Herramentales Registrados</span>
         </div>
 
-        <div className="table-container" style={{ border: 'none' }}>
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Código Suaje</th>
-                <th>Nombre / Cliente</th>
-                <th>Poses / Pliego</th>
-                <th>Aprovechamiento</th>
-                <th>Golpes Acumulados</th>
-                <th>Ubicación Rack</th>
-                <th>Estado</th>
+        <table className="clean-erp-table">
+          <thead>
+            <tr>
+              <th>Código Suaje</th>
+              <th>Nombre / Cliente</th>
+              <th>Poses / Pliego</th>
+              <th>Aprovechamiento</th>
+              <th>Golpes Acumulados</th>
+              <th>Ubicación Rack</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {suajesList.map((s) => (
+              <tr key={s.id}>
+                <td className="mono-text" style={{ fontWeight: 700, color: '#0284c7' }}>{s.id}</td>
+                <td>
+                  <div style={{ fontWeight: 700, color: '#0f172a' }}>{s.nombre}</div>
+                  <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{s.cliente}</div>
+                </td>
+                <td className="mono-text">{s.poses_por_pliego} poses ({s.disposicion})</td>
+                <td>
+                  <span className="badge-clean badge-green">{s.aprovechamiento_pct}%</span>
+                </td>
+                <td className="mono-text">
+                  {s.golpes_acumulados.toLocaleString()} / {s.vida_util_estimada.toLocaleString()}
+                </td>
+                <td>
+                  <span className="badge-clean badge-orange">{s.ubicacion_rack}</span>
+                </td>
+                <td>
+                  <span className={`badge-clean ${s.estado.includes('En Uso') ? 'badge-green' : 'badge-blue'}`}>
+                    {s.estado}
+                  </span>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {suajesList.map((s) => (
-                <tr key={s.id}>
-                  <td className="mono-text" style={{ fontWeight: 700, color: '#38bdf8' }}>{s.id}</td>
-                  <td>
-                    <div style={{ fontWeight: 600 }}>{s.nombre}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{s.cliente}</div>
-                  </td>
-                  <td className="mono-text">{s.poses_por_pliego} poses ({s.disposicion})</td>
-                  <td>
-                    <span className="badge badge-success">{s.aprovechamiento_pct}%</span>
-                  </td>
-                  <td className="mono-text">
-                    {s.golpes_acumulados.toLocaleString()} / {s.vida_util_estimada.toLocaleString()}
-                  </td>
-                  <td>
-                    <span className="badge badge-secondary">{s.ubicacion_rack}</span>
-                  </td>
-                  <td>
-                    <span className={`badge ${s.estado.includes('En Uso') ? 'badge-success' : 'badge-blue'}`}>
-                      {s.estado}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

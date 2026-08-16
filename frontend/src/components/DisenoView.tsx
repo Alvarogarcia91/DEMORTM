@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { MuestraDiseno } from '../types';
-import { PenTool, Scissors, Box, Layers, CheckCircle2, Clock, FileCheck } from 'lucide-react';
+import { Box, Scissors, Layers, Clock } from 'lucide-react';
 
 interface DisenoViewProps {
   muestras: MuestraDiseno[];
@@ -13,162 +13,155 @@ export const DisenoView: React.FC<DisenoViewProps> = ({ muestras }) => {
       cliente: "Bebidas & Jugos del Valle",
       producto: "Etiqueta Néctar Mango 1L",
       lineatura: "150 LPI",
-      polimero_tipo: "Cyrel FAST 1.14mm (Solvente 0)",
-      colores: "CMYK + Blanco Opaco + Amarillo Reflex + Barniz UV",
+      polimero_tipo: "Cyrel FAST 1.14mm",
+      colores: "CMYK + Blanco Opaco + Barniz UV",
       anilox_recomendado: "800 lpi / 2.8 BCM",
       estado: "Grabado Listo en Prensa"
     },
     {
       id: "GRAB-FLX-089",
       cliente: "Agroindustrias del Norte",
-      producto: "Etiqueta Térmica Directa 4x6''",
+      producto: "Etiqueta Térmica 4x6''",
       lineatura: "133 LPI",
       polimero_tipo: "Flexo Standard 1.70mm",
       colores: "Negro + Pantone 356C Verde",
       anilox_recomendado: "600 lpi / 3.5 BCM",
-      estado: "En Taller de Lavado / Montaje"
+      estado: "En Montaje"
     }
   ];
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
-        <div>
-          <h1 style={{ fontSize: '1.75rem', marginBottom: '4px' }}>Diseño Estructural, Muestras & Fotopolímeros</h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-            Control de prototipos en Plotter de Cama Plana PE, maquetas estructurales y placas flexográficas.
-          </p>
+    <div className="erp-content-area">
+      {/* Header */}
+      <div className="welcome-page-header">
+        <h1>Diseño Estructural, Muestras & Fotopolímeros</h1>
+        <p>Control de prototipos en Plotter de Cama Plana PE, maquetas estructurales y placas flexográficas.</p>
+      </div>
+
+      {/* 3 Metrics Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '24px' }}>
+        <div className="clean-kpi-card">
+          <div className="kpi-card-top-row">
+            <div className="kpi-icon-pastel" style={{ background: '#eff6ff', color: '#0284c7' }}>
+              <Box size={18} strokeWidth={2.4} />
+            </div>
+            <span className="badge-clean badge-blue">Plotter Activo</span>
+          </div>
+          <div className="kpi-value-text">{muestras.length} Prototipos en Proceso</div>
+          <div className="kpi-subtext-gray">Corte y hendido en cama plana PE</div>
+        </div>
+
+        <div className="clean-kpi-card">
+          <div className="kpi-card-top-row">
+            <div className="kpi-icon-pastel" style={{ background: '#fffbeb', color: '#d97706' }}>
+              <Clock size={18} strokeWidth={2.4} />
+            </div>
+            <span className="badge-clean badge-orange">Promedio</span>
+          </div>
+          <div className="kpi-value-text">18.5 Minutos / Maqueta</div>
+          <div className="kpi-subtext-gray">Calibración y corte estructural</div>
+        </div>
+
+        <div className="clean-kpi-card">
+          <div className="kpi-card-top-row">
+            <div className="kpi-icon-pastel" style={{ background: '#ecfdf5', color: '#059669' }}>
+              <Layers size={18} strokeWidth={2.4} />
+            </div>
+            <span className="badge-clean badge-green">HD Flexo</span>
+          </div>
+          <div className="kpi-value-text">12 Juegos de Placas</div>
+          <div className="kpi-subtext-gray">Lineaturas 133 / 150 / 175 LPI</div>
         </div>
       </div>
 
-      {/* Overview Metric Cards */}
-      <div className="grid-cards" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}>
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Muestras Estructurales Activas</span>
-            <Box size={20} color="var(--accent-blue-light)" />
+      {/* Samples Table */}
+      <div className="clean-table-card" style={{ marginBottom: '24px' }}>
+        <div style={{ padding: '18px 24px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Scissors size={18} color="#0284c7" />
+            <h2 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>Control de Muestras de Empaque (Plotter PE)</h2>
           </div>
-          <div className="metric-value">{muestras.length} prototipos</div>
-          <div className="metric-subtext">
-            Corte & Hendido Plotter PE
-          </div>
+          <span className="badge-clean badge-blue">Área de Diseño RTM</span>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Tiempo Promedio en Plotter</span>
-            <Clock size={20} color="var(--status-warning)" />
-          </div>
-          <div className="metric-value">18.5 min</div>
-          <div className="metric-subtext">
-            Por maqueta estructural
-          </div>
-        </div>
-
-        <div className="card">
-          <div className="card-header">
-            <span className="card-title">Juegos de Placas Flexo</span>
-            <Layers size={20} color="var(--status-cyan)" />
-          </div>
-          <div className="metric-value">12 Juegos</div>
-          <div className="metric-subtext">
-            HD Flexo 4000 DPI
-          </div>
-        </div>
-      </div>
-
-      {/* Prototipos y Muestras Table */}
-      <div className="card" style={{ marginBottom: '24px' }}>
-        <div className="card-header">
-          <h2 style={{ fontSize: '1.125rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Scissors size={18} color="var(--accent-blue-light)" />
-            <span>Control de Muestras de Empaque (Plotter PE)</span>
-          </h2>
-          <span className="badge badge-blue">Área de Diseño RTM</span>
-        </div>
-
-        <div className="table-container" style={{ border: 'none' }}>
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>ID Muestra</th>
-                <th>Cliente / Proyecto</th>
-                <th>Tipo de Maqueta</th>
-                <th>Sustrato / Calibre</th>
-                <th>Diseñador</th>
-                <th>Tiempo Plotter</th>
-                <th>Estado</th>
+        <table className="clean-erp-table">
+          <thead>
+            <tr>
+              <th>ID Muestra</th>
+              <th>Cliente / Proyecto</th>
+              <th>Tipo de Maqueta</th>
+              <th>Sustrato / Calibre</th>
+              <th>Diseñador</th>
+              <th>Tiempo Plotter</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {muestras.map((m) => (
+              <tr key={m.id}>
+                <td className="mono-text" style={{ fontWeight: 800, color: '#0284c7' }}>{m.id}</td>
+                <td>
+                  <div style={{ fontWeight: 700, color: '#0f172a' }}>{m.cliente}</div>
+                  <div style={{ fontSize: '0.8125rem', color: '#64748b' }}>{m.proyecto}</div>
+                </td>
+                <td>
+                  <span className="badge-clean badge-blue">{m.tipo}</span>
+                </td>
+                <td style={{ fontSize: '0.8125rem', color: '#475569' }}>{m.material}</td>
+                <td style={{ fontSize: '0.8125rem', color: '#475569' }}>{m.disenador}</td>
+                <td className="mono-text" style={{ fontWeight: 600 }}>{m.tiempo_corte_plotter_min} min</td>
+                <td>
+                  <span className={`badge-clean ${m.estado.includes('Aprobada') ? 'badge-green' : 'badge-orange'}`}>
+                    {m.estado}
+                  </span>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {muestras.map((m) => (
-                <tr key={m.id}>
-                  <td className="mono-text" style={{ fontWeight: 700, color: '#38bdf8' }}>{m.id}</td>
-                  <td>
-                    <div style={{ fontWeight: 600 }}>{m.cliente}</div>
-                    <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>{m.proyecto}</div>
-                  </td>
-                  <td>
-                    <span className="badge badge-secondary">{m.tipo}</span>
-                  </td>
-                  <td style={{ fontSize: '0.8125rem' }}>{m.material}</td>
-                  <td style={{ fontSize: '0.8125rem' }}>{m.disenador}</td>
-                  <td className="mono-text">{m.tiempo_corte_plotter_min} min</td>
-                  <td>
-                    <span className={`badge ${m.estado.includes('Aprobada') ? 'badge-success' : 'badge-warning'}`}>
-                      {m.estado}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {/* Grabados Guía & Fotopolímeros */}
-      <div className="card">
-        <div className="card-header">
-          <h2 style={{ fontSize: '1.125rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Layers size={18} color="var(--accent-blue-light)" />
-            <span>Grabados Guía & Fotopolímeros Flexográficos</span>
-          </h2>
-          <span className="badge badge-cyan">Flexo Prepress</span>
+      {/* Clichés Table */}
+      <div className="clean-table-card">
+        <div style={{ padding: '18px 24px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Layers size={18} color="#0284c7" />
+            <h2 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>Grabados Guía & Fotopolímeros Flexográficos</h2>
+          </div>
+          <span className="badge-clean badge-green">Flexo Pre-prensa</span>
         </div>
 
-        <div className="table-container" style={{ border: 'none' }}>
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Código Grabado</th>
-                <th>Cliente / Producto</th>
-                <th>Lineatura (LPI)</th>
-                <th>Tipo de Fotopolímero</th>
-                <th>Colores / Separación</th>
-                <th>Anilox Recomendado</th>
-                <th>Estado</th>
+        <table className="clean-erp-table">
+          <thead>
+            <tr>
+              <th>Código Grabado</th>
+              <th>Cliente / Producto</th>
+              <th>Lineatura</th>
+              <th>Polímero</th>
+              <th>Colores / Separación</th>
+              <th>Anilox Recomendado</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {grabadosGuia.map((g) => (
+              <tr key={g.id}>
+                <td className="mono-text" style={{ fontWeight: 800, color: '#0284c7' }}>{g.id}</td>
+                <td>
+                  <div style={{ fontWeight: 700, color: '#0f172a' }}>{g.cliente}</div>
+                  <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{g.producto}</div>
+                </td>
+                <td className="mono-text" style={{ fontWeight: 700 }}>{g.lineatura}</td>
+                <td style={{ fontSize: '0.8125rem', color: '#475569' }}>{g.polimero_tipo}</td>
+                <td style={{ fontSize: '0.8125rem', color: '#64748b' }}>{g.colores}</td>
+                <td className="mono-text" style={{ fontSize: '0.8125rem', color: '#0284c7' }}>{g.anilox_recomendado}</td>
+                <td>
+                  <span className="badge-clean badge-green">{g.estado}</span>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {grabadosGuia.map((g) => (
-                <tr key={g.id}>
-                  <td className="mono-text" style={{ fontWeight: 700, color: '#60a5fa' }}>{g.id}</td>
-                  <td>
-                    <div style={{ fontWeight: 600 }}>{g.cliente}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{g.producto}</div>
-                  </td>
-                  <td className="mono-text" style={{ fontWeight: 700 }}>{g.lineatura}</td>
-                  <td style={{ fontSize: '0.8125rem' }}>{g.polimero_tipo}</td>
-                  <td style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>{g.colores}</td>
-                  <td className="mono-text" style={{ fontSize: '0.8125rem' }}>{g.anilox_recomendado}</td>
-                  <td>
-                    <span className="badge badge-success">{g.estado}</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
