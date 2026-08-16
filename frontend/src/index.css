@@ -536,6 +536,11 @@ body {
   border-radius: 6px;
 }
 
+.topbar-back-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
 .topbar-search-wrap {
   position: relative;
   width: 100%;
@@ -671,6 +676,42 @@ body {
 .welcome-page-header p {
   font-size: 0.9375rem;
   color: #64748b;
+}
+
+/* Sub-tab Navigation Bar (Exact from Image 4) */
+.subtabs-clean-bar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  border-bottom: 1.5px solid #e2e8f0;
+  margin-bottom: 20px;
+  padding-left: 4px;
+}
+
+.subtab-clean-btn {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 10px 4px 12px 4px !important;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  position: relative;
+  font-family: inherit;
+  transition: color 0.15s ease;
+  margin-bottom: -1.5px;
+}
+
+.subtab-clean-btn:hover {
+  color: #0f172a;
+}
+
+.subtab-clean-btn.active {
+  color: #0088cc !important;
+  font-weight: 700 !important;
+  border-bottom: 2.5px solid #0088cc !important;
 }
 
 /* Clean White Card */
@@ -986,7 +1027,7 @@ body {
   background: #fafafa;
 }
 
-/* Suajes Sheet Visualizer Container (Clean High-Contrast Blueprint) */
+/* Suajes Sheet Visualizer Container */
 .sheet-visualizer-box {
   background: #091322;
   border: 1px solid #1e293b;
@@ -1043,6 +1084,39 @@ body {
   );
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
+}
+
+/* Filter Strip */
+.filter-strip-card {
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-chip-btn {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.filter-chip-btn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
 }
 
 /* Modal */
