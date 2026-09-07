@@ -4,7 +4,7 @@ import { NavItemKey } from '../components/Sidebar';
 export interface ModuleDefinition {
   key: NavItemKey;
   label: string;
-  category: 'operaciones' | 'compras' | 'ventas' | 'finanzas' | 'nomina' | 'sistema';
+  category: 'operaciones' | 'compras' | 'ventas' | 'finanzas' | 'nomina' | 'mantenimiento' | 'sistema';
   categoryLabel: string;
   description: string;
   isLocked?: boolean;
@@ -49,9 +49,9 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   },
   {
     key: 'mantenimiento',
-    label: 'Mantenimiento & OTs',
-    category: 'operaciones',
-    categoryLabel: 'Inventario y Operaciones',
+    label: 'Mantenimiento & Equipos',
+    category: 'mantenimiento',
+    categoryLabel: 'Mantenimiento & Planta',
     description: 'Control de maquinaria y equipos, órdenes de trabajo (OT), refacciones y mantenimiento preventivo.',
   },
   {
@@ -156,7 +156,7 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'configuracion': true,
 };
 
-const STORAGE_KEY = 'rtm_visible_navigation_modules_v5';
+const STORAGE_KEY = 'rtm_visible_navigation_modules_v6';
 
 interface NavigationModulesContextType {
   visibleModules: VisibilityMap;
@@ -183,6 +183,7 @@ export const NavigationModulesProvider: React.FC<{ children: React.ReactNode }> 
           return {
             ...DEFAULT_VISIBILITY,
             ...parsed,
+            'mantenimiento': parsed.mantenimiento !== undefined ? parsed.mantenimiento : true,
             'nomina': parsed.nomina !== undefined ? parsed.nomina : true,
           };
         } catch {
@@ -200,7 +201,10 @@ export const NavigationModulesProvider: React.FC<{ children: React.ReactNode }> 
   const isModuleVisible = (key: NavItemKey): boolean => {
     // Locked items are always visible
     if (key === 'inicio' || key === 'configuracion') return true;
-    return visibleModules[key] !== false;
+    if (visibleModules[key] === undefined) {
+      return DEFAULT_VISIBILITY[key] ?? true;
+    }
+    return visibleModules[key] === true;
   };
 
   const toggleModule = (key: NavItemKey) => {

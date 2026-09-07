@@ -119,6 +119,7 @@ export const ConfiguracionView: React.FC = () => {
 
   const categories = [
     { id: 'operaciones', label: 'Inventario y Operaciones', desc: 'Módulos de catálogo, almacén físico, control de calidad y logística' },
+    { id: 'mantenimiento', label: 'Mantenimiento & Planta', desc: 'Maquinaria y equipos industriales, órdenes de trabajo (OT), preventivos y refacciones' },
     { id: 'compras', label: 'Cadena de Suministro (Compras)', desc: 'Requisiciones internas, compras y directorio de proveedores' },
     { id: 'ventas', label: 'Gestión Comercial (Ventas)', desc: 'Cotizaciones, órdenes de venta y administración de clientes' },
     { id: 'finanzas', label: 'Finanzas & Facturación', desc: 'Facturación CFDI 4.0, Cuentas por Cobrar y Cuentas por Pagar' },

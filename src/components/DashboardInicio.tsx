@@ -23,7 +23,8 @@ import {
   Plus, 
   Search,
   Factory,
-  Activity
+  Activity,
+  Wrench
 } from 'lucide-react';
 import { NavItemKey } from './Sidebar';
 
@@ -74,6 +75,16 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
 
   // Requiere tu atención list (6 industrial cases)
   const attentionItems = [
+    {
+      id: 'att-0',
+      tag: 'Paro de Máquina',
+      tagColor: 'border-rose-500 text-rose-700',
+      reference: 'OT-MTTO-2026-0042',
+      facility: 'Prensa Flexo 02 [PRE-FLX-02]',
+      description: 'Prensa Flexo 02 detenida por vibración en estación 3. En espera de rodamiento SKF 6205.',
+      actionLabel: 'Ver OT de Mantenimiento',
+      targetTab: 'mantenimiento' as NavItemKey,
+    },
     {
       id: 'att-1',
       tag: 'Conteo cíclico',
@@ -256,6 +267,15 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
             >
               <PackageCheck className="w-3.5 h-3.5 text-purple-600" />
               <span>Surtido Interno</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onNavigate('mantenimiento')}
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-zinc-50 text-zinc-900 font-bold text-xs border border-zinc-300 shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer"
+            >
+              <Wrench className="w-3.5 h-3.5 text-amber-600" />
+              <span>Mantenimiento & Equipos</span>
             </button>
 
             <button

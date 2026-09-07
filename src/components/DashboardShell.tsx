@@ -539,6 +539,8 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  <Topbar
  onOpenMobileMenu={() => setIsOpenMobile(true)}
  onLogout={onLogout}
+ activeTab={activeTab}
+ onSelectTab={(tab) => setActiveTab(tab)}
  />
 
  <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1520px] w-full mx-auto">
