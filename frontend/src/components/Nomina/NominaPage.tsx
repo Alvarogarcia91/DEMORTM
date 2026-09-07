@@ -65,6 +65,52 @@ interface ToastNotification {
   type: 'success' | 'info' | 'warning' | 'error';
 }
 
+interface NominaNavTab {
+  id: NominaSubTab;
+  label: string;
+  icon: React.ReactNode;
+  badgeCount?: number;
+}
+
+const NavRow: React.FC<{
+  label: string;
+  tabs: NominaNavTab[];
+  activeTab: NominaSubTab;
+  onSelect: (tab: NominaSubTab) => void;
+}> = ({ label, tabs, activeTab, onSelect }) => (
+  <div className="flex flex-col sm:flex-row sm:items-center gap-1.5">
+    <span className="shrink-0 w-28 text-[9px] font-black tracking-wider text-zinc-400 px-1">
+      {label}
+    </span>
+    <div className="flex flex-wrap gap-1">
+      {tabs.map((tab) => {
+        const isActive = activeTab === tab.id;
+        return (
+          <button
+            key={tab.id}
+            onClick={() => onSelect(tab.id)}
+            className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+              isActive
+                ? 'bg-zinc-900 text-white shadow-xs'
+                : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
+            }`}
+          >
+            <span className={isActive ? 'text-white' : 'text-zinc-400'}>{tab.icon}</span>
+            <span>{tab.label}</span>
+            {tab.badgeCount !== undefined && tab.badgeCount > 0 && (
+              <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
+                isActive ? 'bg-white/20 text-white' : 'bg-zinc-200 text-zinc-700'
+              }`}>
+                {tab.badgeCount}
+              </span>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  </div>
+);
+
 export const NominaPage: React.FC = () => {
   // Navigation State
   const [activeTab, setActiveTab] = useState<NominaSubTab>('ciclos');
@@ -248,7 +294,7 @@ export const NominaPage: React.FC = () => {
   const timbradosCount = calculations.filter((c) => c.cfdiStatus === 'timbrado').length;
   const currentPeriod = periods.find((p) => p.id === currentPeriodId) || periods[0] || INITIAL_MOCK_PAYROLL_PERIODS[0];
 
-  const tabsConfig: { id: NominaSubTab; label: string; icon: React.ReactNode; badgeCount?: number }[] = [
+  const tabsConfig: NominaNavTab[] = [
     { id: 'ciclos', label: 'Ciclos', icon: <Calendar className="w-4 h-4" />, badgeCount: periods.length },
     { id: 'resumen', label: 'Resumen', icon: <LayoutDashboard className="w-4 h-4" /> },
     { id: 'personal', label: 'Personal', icon: <Users className="w-4 h-4" />, badgeCount: employees.length },
@@ -305,28 +351,26 @@ export const NominaPage: React.FC = () => {
       {/* Non-sticky Normal Header in page flow (Doc V2 Sección 2) */}
       <div className="bg-white border-b border-zinc-200 shadow-2xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Main Title Row */}
-          <div className="py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-100">
-            <div>
-              <div className="flex items-center gap-3">
+          {/* Nivel 1: identidad del módulo */}
+          <div className="py-4 flex items-center gap-3 border-b border-zinc-100">
                 <div className="w-9 h-9 rounded-xl bg-zinc-900 text-white flex items-center justify-center font-bold text-base shadow-sm">
                   RTM
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h1 className="text-lg font-bold text-zinc-900">Módulo de Nómina, Asistencia y CFDI</h1>
+                    <h1 className="text-lg font-bold text-zinc-900">Nómina</h1>
                     <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-white text-zinc-700 border border-zinc-300">
                       Planta Reynosa
                     </span>
                   </div>
                   <p className="text-xs text-zinc-500">
-                    Control de ciclos de nómina, checadas biométricas, incidencias de piso, cálculo fiscal y timbrado
+                    Control de asistencia, incidencias, ciclos, pagos y timbrado
                   </p>
                 </div>
-              </div>
-            </div>
+          </div>
 
-            {/* Cycle Selector & Quick Actions Bar (Doc V2 Sección 17) */}
+          {/* Nivel 2: ciclo activo y acciones */}
+          <div className="py-3 flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-zinc-100">
             <div className="flex flex-wrap items-center gap-2">
               {/* Selector de Ciclo Activo */}
               <div className="flex items-center gap-1.5 bg-zinc-100/90 border border-zinc-300 rounded-xl px-2.5 py-1.5 text-xs">
@@ -362,7 +406,8 @@ export const NominaPage: React.FC = () => {
                 <Plus className="w-3.5 h-3.5" />
                 <span>+ Nuevo ciclo</span>
               </button>
-
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={() => setIsAuditDrawerOpen(true)}
                 className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-zinc-700 bg-white border border-zinc-300 rounded-xl hover:bg-zinc-50 transition-colors shadow-2xs cursor-pointer"
@@ -371,7 +416,6 @@ export const NominaPage: React.FC = () => {
                 <History className="w-4 h-4 text-zinc-500" />
                 <span>Bitácora ({auditLog.length})</span>
               </button>
-
               <button
                 onClick={() => {
                   addToast('Recálculo Completo', `Pre-nómina recalculada con éxito para ${currentPeriod.codigo}.`, 'info');
@@ -386,36 +430,10 @@ export const NominaPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Subtabs Navigation (Navegación en flujo normal) */}
-          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar pt-1">
-            {tabsConfig.map((tab) => {
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`inline-flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium border-b-2 whitespace-nowrap transition-colors cursor-pointer ${
-                    isActive
-                      ? 'border-zinc-900 text-zinc-900 font-semibold'
-                      : 'border-transparent text-zinc-500 hover:text-zinc-800 hover:border-zinc-300'
-                  }`}
-                >
-                  <span className={isActive ? 'text-zinc-900' : 'text-zinc-400'}>{tab.icon}</span>
-                  <span>{tab.label}</span>
-                  {tab.badgeCount !== undefined && tab.badgeCount > 0 && (
-                    <span
-                      className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                        isActive
-                          ? 'bg-zinc-900 text-white'
-                          : 'bg-zinc-100 text-zinc-600'
-                      }`}
-                    >
-                      {tab.badgeCount}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
+          {/* Nivel 3: navegación agrupada para evitar una franja horizontal saturada */}
+          <div className="py-2.5 space-y-1.5">
+            <NavRow label="OPERACIÓN" tabs={tabsConfig.slice(0, 6)} activeTab={activeTab} onSelect={setActiveTab} />
+            <NavRow label="CIERRE Y CONSULTA" tabs={tabsConfig.slice(6)} activeTab={activeTab} onSelect={setActiveTab} />
           </div>
         </div>
       </div>
