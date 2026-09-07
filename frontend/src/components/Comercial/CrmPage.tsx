@@ -1,78 +1,419 @@
-// @ts-nocheck
-import React, { useMemo, useState } from 'react';
-import { Activity, BarChart3, BriefcaseBusiness, CalendarDays, CheckCircle2, ChevronRight, CircleAlert, CircleDollarSign, Clock3, Filter, Plus, Target, X } from 'lucide-react';
+import React, { useState, useMemo, useCallback } from 'react';
+import {
+  Briefcase, LayoutDashboard, Calendar, Users, Layers,
+  Building2, BarChart3, Clock, CheckCircle2, UserPlus,
+  Plus, Sparkles, Filter, RefreshCw, X, ArrowRight
+} from 'lucide-react';
 import { SalesCustomer, SalesOrder, SalesQuote } from '../../data/mockSalesData';
-import { ModalPortal } from '../common/ModalPortal';
-import { ActivityChart, ForecastChart, LeadOriginChart, OpportunityBubbleChart, OpportunityFunnel, PipelineStageChart } from './CRM/CrmCharts';
+import {
+  CrmOpportunity, CrmProspect, CrmActivity, CrmStage,
+  initialProspects, initialOpportunities, initialActivities
+} from '../../data/mockCrmData';
+import { CrmDashboard } from './CRM/CrmDashboard';
+import { CrmMyDay } from './CRM/CrmMyDay';
+import { CrmProspects } from './CRM/CrmProspects';
+import { CrmOpportunities } from './CRM/CrmOpportunities';
+import { CrmPipeline } from './CRM/CrmPipeline';
+import { CrmAccounts360 } from './CRM/CrmAccounts360';
+import { CrmActivities } from './CRM/CrmActivities';
+import { CrmAnalytics } from './CRM/CrmAnalytics';
+import { ProspectFormModal } from './CRM/ProspectFormModal';
+import { ActivityFormModal } from './CRM/ActivityFormModal';
+import { OpportunityDetailModal } from './CRM/OpportunityDetailModal';
 
-type Tab = 'today' | 'dashboard' | 'prospects' | 'opportunities' | 'pipeline' | 'activities' | 'accounts' | 'forecast' | 'analytics';
-type Stage = 'Calificado' | 'Levantamiento' | 'Cotización' | 'Negociación' | 'Ganada' | 'Perdida';
-type Opportunity = { id:string; folio:string; account:string; customerId?:string; title:string; line:string; stage:Stage; amount:number; probability:number; close:string; seller:string; next:string; days:number; risk:'Bajo'|'Medio'|'Alto'|'Crítico'; quote?:string; order?:string; lostReason?:string };
-type Prospect = { id:string; company:string; contact:string; industry:string; source:string; interest:string; seller:string; score:number; last:string; next:string; status:string; email:string };
-type CrmActivity = { id:string; type:string; account:string; subject:string; when:string; owner:string; status:'Hoy'|'Vencida'|'Próxima'|'Completada'; priority:string };
-const mxn=(n:number)=>n.toLocaleString('es-MX',{style:'currency',currency:'MXN',maximumFractionDigits:0});
-const Funnel=Filter;
-const prospectsSeed:Prospect[]=[
- {id:'lead-01',company:'ENTAIL',contact:'Mariana Ríos',industry:'Manufactura electrónica',source:'Referido',interest:'Offset',seller:'Lucía Torres',score:86,last:'06 Sep',next:'08 Sep',status:'En calificación',email:'mrios@entail-demo.com'},
- {id:'lead-02',company:'ILSCO',contact:'Daniel Vázquez',industry:'Componentes eléctricos',source:'Sitio web',interest:'Etiquetas',seller:'Marco Salinas',score:74,last:'05 Sep',next:'09 Sep',status:'Contactado',email:'dvazquez@ilsco-demo.com'},
- {id:'lead-03',company:'INVACARE',contact:'Patricia Soto',industry:'Equipo médico',source:'Evento / feria',interest:'Serigrafía',seller:'Lucía Torres',score:91,last:'07 Sep',next:'10 Sep',status:'Calificado',email:'psoto@invacare-demo.com'},
- {id:'lead-04',company:'TYCO',contact:'Jorge Guerra',industry:'Seguridad industrial',source:'Cliente existente',interest:'Flexografía',seller:'Andrea Peña',score:81,last:'26 Ago',next:'Vencida',status:'En calificación',email:'jguerra@tyco-demo.com'},
- {id:'lead-05',company:'Panasonic',contact:'Sofía Leal',industry:'Electrónica',source:'Prospección',interest:'Mixto',seller:'Marco Salinas',score:68,last:'03 Sep',next:'11 Sep',status:'Nuevo',email:'sleal@panasonic-demo.com'},
-];
-const opportunitiesSeed:Opportunity[]=[
- {id:'opp-41',folio:'OPP-2026-0041',account:'TYCO',title:'Etiquetas UL para línea de seguridad',line:'Flexografía',stage:'Negociación',amount:210000,probability:70,close:'12 Sep',seller:'Andrea Peña',next:'Seguimiento vencido',days:12,risk:'Crítico',quote:'COT-2026-0098'},
- {id:'opp-42',folio:'OPP-2026-0042',account:'BLACK & DECKER',customerId:'cli-001',title:'Manual técnico NA472050',line:'Offset',stage:'Levantamiento',amount:385000,probability:45,close:'25 Sep',seller:'Lucía Torres',next:'Visita 09 Sep',days:4,risk:'Bajo'},
- {id:'opp-43',folio:'OPP-2026-0043',account:'BISSELL',title:'Blister cards campaña Q4',line:'Acabados / conversión',stage:'Negociación',amount:286000,probability:80,close:'15 Sep',seller:'Marco Salinas',next:'Revisión comercial 08 Sep',days:7,risk:'Medio',quote:'COT-2026-0093',order:'PED-2026-0142'},
- {id:'opp-44',folio:'OPP-2026-0044',account:'TRICO TECHNOLOGIES CORPORATION',customerId:'cli-002',title:'Etiqueta IS-2420 automotriz',line:'Flexografía',stage:'Cotización',amount:178000,probability:60,close:'20 Sep',seller:'Andrea Peña',next:'Llamada 08 Sep',days:6,risk:'Alto',quote:'COT-2026-0096'},
- {id:'opp-45',folio:'OPP-2026-0045',account:'INVACARE',title:'Instructivo de uso bilingüe',line:'Offset',stage:'Calificado',amount:142000,probability:30,close:'30 Sep',seller:'Lucía Torres',next:'Definir tiraje',days:2,risk:'Bajo'},
- {id:'opp-46',folio:'OPP-2026-0046',account:'ENTAIL',title:'Tags de identificación industrial',line:'Serigrafía',stage:'Cotización',amount:96000,probability:50,close:'18 Sep',seller:'Marco Salinas',next:'Enviar prueba de color',days:9,risk:'Medio',quote:'COT-2026-0101'},
- {id:'opp-47',folio:'OPP-2026-0047',account:'Panasonic',title:'Etiquetas para empaque electrónico',line:'Mixto',stage:'Perdida',amount:154000,probability:0,close:'28 Ago',seller:'Andrea Peña',next:'—',days:0,risk:'Bajo',lostReason:'Precio'},
- {id:'opp-48',folio:'OPP-2026-0048',account:'BLACK & DECKER',customerId:'cli-001',title:'Instructivo NA698298',line:'Offset',stage:'Ganada',amount:324000,probability:100,close:'04 Sep',seller:'Lucía Torres',next:'Pedido en producción',days:0,risk:'Bajo',quote:'COT-2026-0089',order:'PED-2026-0148'},
- {id:'opp-49',folio:'OPP-2026-0049',account:'ILSCO',title:'Etiquetas de producto',line:'Flexografía',stage:'Ganada',amount:118000,probability:100,close:'01 Sep',seller:'Marco Salinas',next:'Pedido liberado',days:0,risk:'Bajo',order:'PED-2026-0139'},
- {id:'opp-50',folio:'OPP-2026-0050',account:'TYCO',title:'Manual de instalación',line:'Offset',stage:'Perdida',amount:89000,probability:0,close:'30 Ago',seller:'Andrea Peña',next:'—',days:0,risk:'Bajo',lostReason:'Proyecto detenido'},
-];
-const activitySeed:CrmActivity[]=[
- {id:'act-01',type:'Llamada',account:'TYCO',subject:'Definir condiciones de entrega',when:'07 Sep · 10:00',owner:'Andrea Peña',status:'Vencida',priority:'Crítica'},
- {id:'act-02',type:'Visita',account:'BLACK & DECKER',subject:'Levantamiento instructivo NA472050',when:'09 Sep · 11:30',owner:'Lucía Torres',status:'Próxima',priority:'Alta'},
- {id:'act-03',type:'Correo',account:'TRICO',subject:'Seguimiento a COT-2026-0096',when:'08 Sep · 09:00',owner:'Andrea Peña',status:'Hoy',priority:'Alta'},
- {id:'act-04',type:'Reunión',account:'BISSELL',subject:'Revisión final de propuesta',when:'08 Sep · 16:00',owner:'Marco Salinas',status:'Hoy',priority:'Alta'},
- {id:'act-05',type:'Seguimiento',account:'ENTAIL',subject:'Confirmar prueba de color',when:'06 Sep · 14:00',owner:'Marco Salinas',status:'Completada',priority:'Media'},
-];
-// Volumen de muestra para que filtros, gráficas y forecast se comporten como un Sales Hub real.
-const crmAccounts=['BLACK & DECKER','TRICO TECHNOLOGIES CORPORATION','BISSELL','TYCO','Panasonic','ILSCO','INVACARE','ENTAIL'];
-['Norte','Bajío','Reynosa','Monterrey','Centro','Occidente','Industrial'].forEach((region,index)=>prospectsSeed.push({id:`lead-${index+6}`,company:crmAccounts[index],contact:`Contacto comercial ${region} (Demo)`,industry:'Manufactura industrial',source:['Referido','Sitio web','Prospección','Evento / feria','Cliente existente'][index%5],interest:['Offset','Flexografía','Serigrafía','Mixto'][index%4],seller:['Lucía Torres','Marco Salinas','Andrea Peña'][index%3],score:62+index*4,last:`${index+1} Sep`,next:`${index+9} Sep`,status:['Nuevo','Contactado','En calificación'][index%3],email:`contacto${index+6}@rtm-demo.com`}));
-['Calificado','Levantamiento','Cotización','Negociación','Ganada','Perdida','Cotización','Calificado','Levantamiento','Perdida'].forEach((stage,index)=>opportunitiesSeed.push({id:`opp-${51+index}`,folio:`OPP-2026-00${51+index}`,account:crmAccounts[index%crmAccounts.length],title:['Manual técnico industrial','Etiquetas autoadheribles','Tags de identificación','Blister card para empaque'][index%4],line:['Offset','Flexografía','Serigrafía','Acabados / conversión'][index%4],stage:stage as Stage,amount:78000+index*21500,probability:stage==='Ganada'?100:stage==='Perdida'?0:[30,45,60,70][index%4],close:`${12+index} Sep`,seller:['Lucía Torres','Marco Salinas','Andrea Peña'][index%3],next:stage==='Perdida'?'—':'Seguimiento comercial',days:index%3===0?11:3+index,risk:index%4===0?'Alto':'Medio',lostReason:stage==='Perdida'?(index%2?'Competencia':'Sin presupuesto'):undefined}));
-Array.from({length:30},(_,index):CrmActivity=>({id:`act-${index+6}`,type:['Llamada','Correo','Reunión','Seguimiento','Visita'][index%5],account:crmAccounts[index%crmAccounts.length],subject:['Confirmar requerimiento','Revisar cotización','Validar tiraje','Programar visita'][index%4],when:`${8+Math.floor(index/4)} Sep · ${9+(index%6)}:00`,owner:['Lucía Torres','Marco Salinas','Andrea Peña'][index%3],status:index%9===0?'Vencida':index%5===0?'Hoy':index%4===0?'Completada':'Próxima',priority:index%7===0?'Alta':'Media'})).forEach(activity=>activitySeed.push(activity));
-const stages:Stage[]=['Calificado','Levantamiento','Cotización','Negociación','Ganada'];
-const health=(opportunity:Opportunity)=>Math.max(28,Math.min(96,opportunity.probability+(opportunity.quote?12:0)-(opportunity.days>8?26:0)-(opportunity.risk==='Crítico'?18:0)));
-const healthLabel=(score:number)=>score>=80?'Buena':score>=60?'Atención':'Riesgo';
-const setNoticeForDashboard = (_stage:string) => undefined;
+export type CrmTabKey =
+  | 'dashboard'
+  | 'today'
+  | 'prospects'
+  | 'opportunities'
+  | 'pipeline'
+  | 'accounts'
+  | 'activities'
+  | 'analytics';
 
-export const CrmPage:React.FC<{customers:SalesCustomer[];quotes:SalesQuote[];orders:SalesOrder[];onNavigate:(tab:'cotizaciones'|'pedidos'|'clientes',customerId?:string)=>void;onStartQuote:(customerId:string,opportunity:{id:string;folio:string})=>void;onOpenQuote:(folio:string)=>void}> = ({customers,quotes,orders,onNavigate,onStartQuote,onOpenQuote}) => {
- const [tab,setTab]=useState<Tab>('today'); const [prospects,setProspects]=useState(prospectsSeed); const [opps,setOpps]=useState(opportunitiesSeed); const [activities,setActivities]=useState(activitySeed); const [selected,setSelected]=useState<Opportunity|null>(null); const [notice,setNotice]=useState(''); const [search,setSearch]=useState(''); const [activityModal,setActivityModal]=useState(false);
- const crmOpps=useMemo(()=>opps.map(o=>{const linked=quotes.find(q=>q.crmOpportunityId===o.id)||quotes.find(q=>q.crmOpportunityFolio===o.folio);return linked?{...o,quote:linked.folio,stage:(['Calificado','Levantamiento'].includes(o.stage)?'Cotización':o.stage) as Stage}:o;}),[opps,quotes]);
- const open=useMemo(()=>crmOpps.filter(o=>!['Ganada','Perdida'].includes(o.stage)),[crmOpps]); const pipeline=open.reduce((s,o)=>s+o.amount,0); const weighted=open.reduce((s,o)=>s+o.amount*o.probability/100,0); const won=crmOpps.filter(o=>o.stage==='Ganada').reduce((s,o)=>s+o.amount,0);
- const qualify=(p:Prospect)=>{ const existing=customers.find(c=>c.name.toLowerCase().includes(p.company.toLowerCase())||p.company.toLowerCase().includes(c.name.split(' ')[0].toLowerCase())); const o:Opportunity={id:'opp-'+Date.now(),folio:'OPP-2026-'+String(Date.now()).slice(-4),account:p.company,customerId:existing?.id,title:p.interest+' · oportunidad calificada',line:p.interest,stage:'Calificado',amount:125000,probability:30,close:'30 Sep',seller:p.seller,next:'Agendar levantamiento',days:0,risk:'Bajo'}; setOpps(x=>[o,...x]); setProspects(x=>x.map(a=>a.id===p.id?{...a,status:'Calificado'}:a)); setSelected(o); setNotice(`Prospecto calificado · se creó ${o.folio}${existing?' y se vinculó la cuenta existente':''}`); };
- const update=(id:string,patch:Partial<Opportunity>)=>setOpps(x=>x.map(o=>o.id===id?{...o,...patch}:o));
- const nav:[Tab,string][]=[['today','Mi Día'],['dashboard','Dashboard'],['prospects','Prospectos'],['opportunities','Oportunidades'],['pipeline','Pipeline'],['activities','Actividades'],['accounts','Cuentas 360'],['forecast','Forecast'],['analytics','Analítica']];
- // Kept on one JSX line for compatibility with the previous CRM implementation.
- // @ts-ignore -- optional view props are wired incrementally below.
- return <div className="space-y-5 animate-in fade-in duration-200"><header className="flex flex-col lg:flex-row gap-4 lg:items-end justify-between"><div><div className="flex items-center gap-2 text-theme-primary"><span className="p-2 rounded-xl bg-theme-primary text-white"><BriefcaseBusiness className="w-5 h-5"/></span><span className="text-[10px] font-black tracking-[.18em]">COMERCIAL · RTM</span></div><h1 className="text-2xl font-black mt-2">CRM Comercial</h1><p className="text-xs text-theme-muted mt-1">Pipeline B2B, seguimiento de cuentas y forecast comercial. Datos demostrativos.</p></div><button onClick={()=>setTab('prospects')} className="px-4 py-2.5 rounded-xl bg-theme-primary text-white text-xs font-bold flex gap-2 items-center"><Plus className="w-4 h-4"/>Nuevo prospecto</button></header><div className="flex flex-wrap gap-1 p-1 bg-theme-muted/60 rounded-xl w-fit">{nav.map(([id,label])=><button key={id} onClick={()=>setTab(id)} className={'px-4 py-2 rounded-lg text-xs font-bold '+(tab===id?'bg-theme-surface shadow-2xs text-theme-main':'text-theme-muted')}>{label}</button>)}</div>{notice&&<div className="p-3 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-800 text-xs flex justify-between"><span>{notice}</span><button onClick={()=>setNotice('')}><X className="w-4 h-4"/></button></div>}
- {tab==='today'&&<MyDay opps={crmOpps} activities={activities} onOpen={setSelected} onComplete={id=>setActivities(x=>x.map(a=>a.id===id?{...a,status:'Completada'}:a))}/>} {tab==='dashboard'&&<Dashboard pipeline={pipeline} weighted={weighted} won={won} opps={crmOpps} activities={activities} onOpen={setSelected} onTab={setTab}/>} {tab==='prospects'&&<Prospects data={prospects} search={search} setSearch={setSearch} onQualify={qualify}/>} {tab==='opportunities'&&<Opportunities data={crmOpps} search={search} setSearch={setSearch} onOpen={setSelected}/>} {tab==='pipeline'&&<Pipeline data={crmOpps} onOpen={setSelected} onMove={(o,s)=>update(o.id,{stage:s,probability:s==='Ganada'?100:o.probability})}/>} {tab==='activities'&&<Activities data={activities} onComplete={id=>setActivities(x=>x.map(a=>a.id===id?{...a,status:'Completada'}:a))} onNew={()=>setActivityModal(true)}/>} {tab==='accounts'&&<Accounts360 customers={customers} opps={crmOpps} activities={activities} quotes={quotes} orders={orders} onOpen={setSelected} onNavigate={onNavigate}/>} {tab==='forecast'&&<Forecast opps={crmOpps} pipeline={pipeline} weighted={weighted} won={won}/>} {tab==='analytics'&&<Analytics opps={crmOpps} activities={activities} onOpen={setSelected}/>} {selected&&<OpportunityModal opportunity={crmOpps.find(o=>o.id===selected.id)||selected} customers={customers} onClose={()=>setSelected(null)} onUpdate={update} onNavigate={onNavigate} onStartQuote={onStartQuote} onOpenQuote={onOpenQuote}/>} {activityModal&&<ActivityModal onClose={()=>setActivityModal(false)} onSave={(a)=>{setActivities(x=>[{...a,id:'act-'+Date.now()},...x]);setActivityModal(false);setNotice('Actividad registrada correctamente');}}/>}</div>;
+export interface CrmPageProps {
+  customers: SalesCustomer[];
+  quotes: SalesQuote[];
+  orders: SalesOrder[];
+  onNavigate: (tab: 'cotizaciones' | 'pedidos' | 'clientes', customerId?: string) => void;
+  onStartQuote: (customerId: string, opportunity: { id: string; folio: string }) => void;
+  onOpenQuote: (folio: string) => void;
+}
+
+export const CrmPage: React.FC<CrmPageProps> = ({
+  customers,
+  quotes,
+  orders,
+  onNavigate,
+  onStartQuote,
+  onOpenQuote,
+}) => {
+  // Navigation
+  const [activeTab, setActiveTab] = useState<CrmTabKey>('dashboard');
+
+  // Core CRM collections (initialized from enterprise mock data)
+  const [prospects, setProspects] = useState<CrmProspect[]>(initialProspects);
+  const [baseOpportunities, setBaseOpportunities] = useState<CrmOpportunity[]>(initialOpportunities);
+  const [activities, setActivities] = useState<CrmActivity[]>(initialActivities);
+
+  // Modals & Selected items
+  const [selectedOpportunity, setSelectedOpportunity] = useState<CrmOpportunity | null>(null);
+  const [isProspectModalOpen, setIsProspectModalOpen] = useState(false);
+  const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
+
+  // Toast feedback
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const showToast = useCallback((msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 4000);
+  }, []);
+
+  // Enriched opportunities with active quotes from Ventas Básico
+  const opportunities = useMemo(() => {
+    return baseOpportunities.map((opp) => {
+      const linkedQuote = quotes.find(
+        (q) =>
+          q.crmOpportunityId === opp.id ||
+          q.crmOpportunityFolio === opp.folio ||
+          (q.folio && opp.quoteFolio && q.folio === opp.quoteFolio)
+      );
+
+      if (linkedQuote) {
+        return {
+          ...opp,
+          quoteId: String(linkedQuote.id),
+          quoteFolio: linkedQuote.folio,
+          stage: ['Calificado', 'Levantamiento'].includes(opp.stage)
+            ? ('Cotización' as CrmStage)
+            : opp.stage,
+        };
+      }
+      return opp;
+    });
+  }, [baseOpportunities, quotes]);
+
+  // Update opportunity patch
+  const handleUpdateOpportunity = useCallback((id: string, patch: Partial<CrmOpportunity>) => {
+    setBaseOpportunities((prev) =>
+      prev.map((o) => (o.id === id ? { ...o, ...patch } : o))
+    );
+    setSelectedOpportunity((prev) => (prev && prev.id === id ? { ...prev, ...patch } : prev));
+  }, []);
+
+  // Stage change handler
+  const handleUpdateStage = useCallback((id: string, newStage: CrmStage) => {
+    setBaseOpportunities((prev) =>
+      prev.map((opp) => {
+        if (opp.id !== id) return opp;
+        let newProb = opp.probability;
+        if (newStage === 'Calificado') newProb = 25;
+        if (newStage === 'Levantamiento') newProb = 45;
+        if (newStage === 'Cotización') newProb = 65;
+        if (newStage === 'Negociación') newProb = 85;
+        if (newStage === 'Ganada') newProb = 100;
+        if (newStage === 'Perdida') newProb = 0;
+
+        return {
+          ...opp,
+          stage: newStage,
+          probability: newProb,
+          daysInStage: 0,
+          risk: newStage === 'Ganada' ? 'Bajo' : opp.risk,
+        };
+      })
+    );
+    showToast(`Oportunidad movida a: ${newStage}`);
+  }, [showToast]);
+
+  // Prospect handlers
+  const handleAddProspect = useCallback((newProspect: CrmProspect) => {
+    setProspects((prev) => [newProspect, ...prev]);
+    setIsProspectModalOpen(false);
+    showToast(`Prospecto registrado: ${newProspect.company}`);
+  }, [showToast]);
+
+  const handleUpdateProspectStatus = useCallback((id: string, status: CrmProspect['status']) => {
+    setProspects((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, status } : p))
+    );
+    showToast(`Estado de prospecto actualizado a: ${status}`);
+  }, [showToast]);
+
+  const handleConvertToOpportunity = useCallback((prospect: CrmProspect) => {
+    const existingCust = customers.find(
+      (c) =>
+        c.name.toLowerCase().includes(prospect.company.toLowerCase()) ||
+        prospect.company.toLowerCase().includes(c.name.split(' ')[0].toLowerCase())
+    );
+
+    const newFolio = `OPP-2026-${String(Date.now()).slice(-4)}`;
+    const newOpp: CrmOpportunity = {
+      id: `opp-${Date.now()}`,
+      folio: newFolio,
+      account: prospect.company,
+      customerId: existingCust ? String(existingCust.id) : undefined,
+      title: `${prospect.interest} · Proyecto formal`,
+      line: prospect.line,
+      stage: 'Calificado',
+      amount: 145000,
+      currency: 'MXN',
+      probability: 30,
+      close: '15 Oct',
+      seller: prospect.seller,
+      contactName: prospect.contact || prospect.contactName,
+      contactEmail: prospect.email,
+      contactPhone: prospect.phone,
+      days: 0,
+      daysInStage: 0,
+      createdAt: 'Hoy',
+      risk: 'Bajo',
+      next: 'Agendar levantamiento técnico en planta',
+    };
+
+    setBaseOpportunities((prev) => [newOpp, ...prev]);
+    setProspects((prev) =>
+      prev.map((p) => (p.id === prospect.id ? { ...p, status: 'Convertido' as const } : p))
+    );
+    setSelectedOpportunity(newOpp);
+    showToast(`Prospecto convertido en oportunidad ${newFolio}`);
+  }, [customers, showToast]);
+
+  // Activity handlers
+  const handleAddActivity = useCallback((newActivity: CrmActivity) => {
+    setActivities((prev) => [newActivity, ...prev]);
+    setIsActivityModalOpen(false);
+    showToast(`Actividad agendada: ${newActivity.subject}`);
+  }, [showToast]);
+
+  const handleCompleteActivity = useCallback((id: string) => {
+    setActivities((prev) =>
+      prev.map((a) => (a.id === id ? { ...a, status: 'Completada' as const } : a))
+    );
+    showToast('Actividad comercial completada.');
+  }, [showToast]);
+
+  // Quote redirection helper
+  const handleStartQuote = useCallback((opp: CrmOpportunity) => {
+    const custId = opp.customerId || (customers.length > 0 ? String(customers[0].id) : 'cli-001');
+    onStartQuote(custId, { id: opp.id, folio: opp.folio });
+  }, [customers, onStartQuote]);
+
+  // Tabs configuration matching Inventory design system
+  const tabsConfig = [
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'today', label: 'Mi Día', icon: Clock },
+    { id: 'prospects', label: 'Prospectos', icon: UserPlus, badge: prospects.filter(p => p.status === 'Nuevo').length },
+    { id: 'opportunities', label: 'Oportunidades', icon: Briefcase },
+    { id: 'pipeline', label: 'Pipeline Kanban', icon: Layers },
+    { id: 'accounts', label: 'Cuentas 360', icon: Building2 },
+    { id: 'activities', label: 'Actividades', icon: Calendar, badge: activities.filter(a => a.status === 'Hoy' || a.status === 'Vencida').length },
+    { id: 'analytics', label: 'Analítica Enterprise', icon: BarChart3 },
+  ];
+
+  return (
+    <div className="space-y-6 max-w-[1520px] w-full mx-auto pb-16 animate-in fade-in duration-200">
+      {/* Module Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-theme-subtle">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-purple-600 text-white flex items-center justify-center shadow-md shadow-purple-600/20">
+              <Briefcase className="w-5 h-5 shrink-0" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl sm:text-2xl font-extrabold text-theme-main tracking-tight">
+                  CRM Comercial
+                </h1>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300 border border-purple-300 dark:border-purple-700">
+                  Enterprise v2
+                </span>
+              </div>
+              <p className="text-xs text-theme-muted">
+                Pipeline B2B, cuentas 360, agenda de seguimiento y analítica de conversión para manufactura industrial RTM.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Global Action Buttons */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsActivityModalOpen(true)}
+            className="px-3.5 py-2 bg-theme-card border border-theme-subtle hover:border-purple-300 rounded-xl text-xs font-semibold text-theme-primary flex items-center gap-1.5 shadow-2xs transition-all hover:scale-[1.01]"
+          >
+            <Calendar className="w-4 h-4 text-purple-600" />
+            <span className="hidden sm:inline">Agendar actividad</span>
+          </button>
+
+          <button
+            onClick={() => setIsProspectModalOpen(true)}
+            className="px-4 py-2 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm shadow-purple-600/20 transition-all hover:scale-[1.01]"
+          >
+            <UserPlus className="w-4 h-4" />
+            <span>+ Nuevo prospecto</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Horizontal Navigation Tabs (Level 1 Module Tabs) */}
+      <div className="flex flex-wrap items-center gap-1.5 border-b border-theme-subtle pb-3 text-xs font-semibold overflow-x-auto">
+        {tabsConfig.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as CrmTabKey)}
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+                isActive
+                  ? 'bg-purple-600 text-white font-bold shadow-xs'
+                  : 'text-theme-muted hover:text-theme-main hover:bg-theme-muted'
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              <span>{tab.label}</span>
+              {tab.badge !== undefined && tab.badge > 0 && (
+                <span
+                  className={`ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                    isActive ? 'bg-white text-purple-600' : 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300'
+                  }`}
+                >
+                  {tab.badge}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Floating Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-semibold shadow-2xl flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-150 border border-slate-700">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <span>{toastMessage}</span>
+          <button
+            onClick={() => setToastMessage(null)}
+            className="ml-2 text-slate-400 hover:text-white"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      {/* TAB CONTENTS */}
+      {activeTab === 'dashboard' && (
+        <CrmDashboard
+          opportunities={opportunities}
+          activities={activities}
+          onOpenOpportunity={setSelectedOpportunity}
+          onNavigateTab={(tabKey) => setActiveTab(tabKey as CrmTabKey)}
+          onNotice={showToast}
+        />
+      )}
+
+      {activeTab === 'today' && (
+        <CrmMyDay
+          opportunities={opportunities}
+          activities={activities}
+          onOpenOpportunity={setSelectedOpportunity}
+          onCompleteActivity={handleCompleteActivity}
+        />
+      )}
+
+      {activeTab === 'prospects' && (
+        <CrmProspects
+          prospects={prospects}
+          onOpenNewProspect={() => setIsProspectModalOpen(true)}
+          onUpdateProspectStatus={handleUpdateProspectStatus}
+          onConvertToOpportunity={handleConvertToOpportunity}
+        />
+      )}
+
+      {activeTab === 'opportunities' && (
+        <CrmOpportunities
+          opportunities={opportunities}
+          onSelectOpportunity={setSelectedOpportunity}
+          onOpenNewOpportunity={() => setIsProspectModalOpen(true)}
+          onUpdateStage={handleUpdateStage}
+          onStartQuote={handleStartQuote}
+          onOpenQuote={onOpenQuote}
+        />
+      )}
+
+      {activeTab === 'pipeline' && (
+        <CrmPipeline
+          opportunities={opportunities}
+          onSelectOpportunity={setSelectedOpportunity}
+          onUpdateStage={handleUpdateStage}
+          onStartQuote={handleStartQuote}
+          onOpenQuote={onOpenQuote}
+        />
+      )}
+
+      {activeTab === 'accounts' && (
+        <CrmAccounts360
+          customers={customers}
+          opportunities={opportunities}
+          activities={activities}
+          quotes={quotes}
+          orders={orders}
+          onSelectOpportunity={setSelectedOpportunity}
+          onOpenQuote={onOpenQuote}
+          onNavigate={(t) => onNavigate(t as any)}
+        />
+      )}
+
+      {activeTab === 'activities' && (
+        <CrmActivities
+          activities={activities}
+          onOpenNewActivity={() => setIsActivityModalOpen(true)}
+          onCompleteActivity={handleCompleteActivity}
+        />
+      )}
+
+      {activeTab === 'analytics' && (
+        <CrmAnalytics
+          opportunities={opportunities}
+          prospects={prospects}
+          activities={activities}
+          onSelectOpportunity={setSelectedOpportunity}
+          onNavigateTab={(tabKey) => setActiveTab(tabKey as CrmTabKey)}
+          onShowToast={showToast}
+        />
+      )}
+
+      {/* MODALS */}
+      {/* 1. Opportunity Detail Modal */}
+      {selectedOpportunity && (
+        <OpportunityDetailModal
+          opportunity={selectedOpportunity}
+          customers={customers}
+          onClose={() => setSelectedOpportunity(null)}
+          onUpdate={handleUpdateOpportunity}
+          onNavigate={onNavigate}
+          onStartQuote={onStartQuote}
+          onOpenQuote={onOpenQuote}
+        />
+      )}
+
+      {/* 2. New Prospect Modal */}
+      {isProspectModalOpen && (
+        <ProspectFormModal
+          onClose={() => setIsProspectModalOpen(false)}
+          onSave={handleAddProspect}
+        />
+      )}
+
+      {/* 3. New Activity Modal */}
+      {isActivityModalOpen && (
+        <ActivityFormModal
+          onClose={() => setIsActivityModalOpen(false)}
+          onSave={handleAddActivity}
+        />
+      )}
+    </div>
+  );
 };
-const Card=({children,className='' }:{children:React.ReactNode;className?:string})=><section className={'rounded-2xl border border-theme-subtle bg-theme-surface shadow-2xs '+className}>{children}</section>;
-const MyDay=({opps,activities,onOpen,onComplete}:{opps:Opportunity[];activities:CrmActivity[];onOpen:(o:Opportunity)=>void;onComplete:(id:string)=>void})=>{const focus=opps.filter(o=>!['Ganada','Perdida'].includes(o.stage)).sort((a,b)=>health(a)-health(b)).slice(0,4);return <div className="space-y-4"><div className="grid grid-cols-2 xl:grid-cols-5 gap-3"><Metric icon={CircleAlert} label="Requieren atención" value={String(focus.length)} note="reglas demo visibles" tone="text-rose-700"/><Metric icon={Clock3} label="Seguimientos pendientes" value={String(activities.filter(a=>a.status==='Vencida').length)} note="actividad vencida"/><Metric icon={CalendarDays} label="Actividades de hoy" value={String(activities.filter(a=>a.status==='Hoy').length)} note="agenda comercial"/><Metric icon={Target} label="Pipeline en riesgo" value={mxn(focus.reduce((s,o)=>s+o.amount,0))} note="salud menor a 60"/><Metric icon={CircleDollarSign} label="Cotizaciones por vencer" value="3" note="señal demo"/></div><div className="grid xl:grid-cols-[1.2fr_.8fr] gap-4"><Card><div className="p-5 border-b border-theme-subtle"><b>Tu foco de hoy</b><p className="text-xs text-theme-muted mt-1">Priorizado por actividad, cierre, monto y probabilidad; reglas demo.</p></div>{focus.map(o=><div key={o.id} className="p-4 border-b border-theme-subtle flex gap-3"><span className={health(o)<60?'text-rose-600':'text-amber-600'}>●</span><span className="flex-1"><b className="text-xs">{o.account} · {o.folio}</b><small className="block text-theme-muted">{o.title} · {mxn(o.amount)} · Salud {health(o)} ({healthLabel(health(o))})</small><small className="block text-theme-muted mt-1">Siguiente mejor acción: registrar seguimiento. Motivo: {o.days} días en etapa.</small></span><button onClick={()=>onOpen(o)} className="text-xs font-bold text-theme-primary">Ver oportunidad</button></div>)}</Card><Card><div className="p-5 border-b border-theme-subtle"><b>Agenda de hoy</b><p className="text-xs text-theme-muted mt-1">Completa o reprograma acciones de tu cadencia.</p></div>{activities.filter(a=>a.status==='Hoy'||a.status==='Vencida').slice(0,6).map(a=><div key={a.id} className="p-4 border-b border-theme-subtle flex justify-between gap-3"><span><b className="text-xs">{a.when} · {a.type}</b><small className="block text-theme-muted">{a.account} · {a.subject}</small></span><button onClick={()=>onComplete(a.id)} className="text-xs text-theme-primary font-bold">Completar</button></div>)}</Card></div><Card className="p-5"><b>Señales comerciales</b><div className="grid md:grid-cols-3 gap-3 mt-4"><Signal title="Relación enfriándose" account="TYCO" text="18 días sin actividad · regla demo" tone="border-amber-400"/><Signal title="Expansión" account="BISSELL" text="2 oportunidades nuevas en 30 días" tone="border-emerald-400"/><Signal title="CxC vencida" account="TRICO" text="Validar seguimiento con crédito" tone="border-rose-400"/></div></Card></div>};
-const Signal=({title,account,text,tone}:{title:string;account:string;text:string;tone:string})=><div className={'p-3 rounded-xl bg-theme-surface border '+tone}><b className="text-xs">{title}</b><small className="block font-bold mt-2">{account}</small><small className="text-theme-muted">{text}</small></div>;
-const Accounts360=({customers,opps,activities,quotes,orders,onOpen,onNavigate}:{customers:SalesCustomer[];opps:Opportunity[];activities:CrmActivity[];quotes:SalesQuote[];orders:SalesOrder[];onOpen:(o:Opportunity)=>void;onNavigate:(t:'cotizaciones'|'pedidos'|'clientes',c?:string)=>void})=>{const [account,setAccount]=useState(customers[0]?.id||'');const customer=customers.find(c=>c.id===account);const mine=opps.filter(o=>o.customerId===account||o.account===customer?.name||customer?.name.includes(o.account));const open=mine.filter(o=>!['Ganada','Perdida'].includes(o.stage));return <div className="space-y-4"><Card className="p-5"><div className="flex flex-wrap justify-between gap-3"><div><p className="text-[10px] font-black text-theme-primary">CUENTA 360 · DEMO</p><h2 className="text-lg font-black mt-1">{customer?.name||'Cuenta comercial'}</h2><p className="text-xs text-theme-muted mt-1">{customer?.industrialSector||'Cuenta industrial'} · {customer?.contacts[0]?.name||'Contacto principal'}</p></div><select value={account} onChange={e=>setAccount(e.target.value)} className="px-3 py-2 rounded-xl border border-theme-subtle text-xs bg-theme-base">{customers.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></div></Card><div className="grid grid-cols-2 xl:grid-cols-6 gap-3"><Metric icon={CircleDollarSign} label="Facturado histórico" value={mxn(customer?.totalSpent||0)} note="maestro clientes"/><Metric icon={Target} label="Pipeline abierto" value={mxn(open.reduce((s,o)=>s+o.amount,0))} note="CRM"/><Metric icon={CircleAlert} label="CxC pendiente" value={mxn((customer?.totalSpent||0)*.12)} note="referencia demo"/><Metric icon={BriefcaseBusiness} label="Oportunidades" value={String(open.length)} note="abiertas"/><Metric icon={Filter} label="Cotizaciones" value={String(quotes.filter(q=>q.customerId===account).length)} note="Ventas Básico"/><Metric icon={CheckCircle2} label="Pedidos" value={String(orders.filter(o=>o.customerId===account).length)} note="Ventas Básico"/></div><div className="grid xl:grid-cols-2 gap-4"><Card><div className="p-5 border-b border-theme-subtle"><b>Pipeline de la cuenta</b></div>{open.length?open.map(o=><button key={o.id} onClick={()=>onOpen(o)} className="w-full p-4 border-b border-theme-subtle text-left hover:bg-theme-muted/40"><b className="text-xs">{o.folio} · {o.title}</b><small className="block text-theme-muted">{o.stage} · {mxn(o.amount)} · Salud {health(o)} · {o.next}</small></button>):<p className="p-5 text-xs text-theme-muted">Sin oportunidades abiertas.</p>}</Card><Card><div className="p-5 border-b border-theme-subtle"><b>Documentos y actividad reciente</b></div>{activities.filter(a=>a.account.includes((customer?.name||'').split(' ')[0])).slice(0,4).map(a=><div key={a.id} className="p-4 border-b border-theme-subtle"><b className="text-xs">{a.type} · {a.when}</b><small className="block text-theme-muted">{a.subject}</small></div>)}<div className="p-4 flex gap-2"><button onClick={()=>onNavigate('clientes',account)} className="text-xs font-bold text-theme-primary">Abrir cliente</button><button onClick={()=>onNavigate('cotizaciones',account)} className="text-xs font-bold text-theme-primary">Cotizaciones</button><button onClick={()=>onNavigate('pedidos')} className="text-xs font-bold text-theme-primary">Pedidos</button></div></Card></div></div>};
-const Analytics=({opps}:{opps:Opportunity[];activities:CrmActivity[]})=>{const open=opps.filter(o=>!['Ganada','Perdida'].includes(o.stage));const lines=['Offset','Flexografía','Serigrafía','Acabados / conversión'];return <div className="space-y-4"><div className="grid grid-cols-2 xl:grid-cols-6 gap-3"><Metric icon={CheckCircle2} label="Win rate" value="46%" note="demo"/><Metric icon={Clock3} label="Ciclo promedio" value="19 días" note="por etapa"/><Metric icon={Target} label="Pipeline velocity" value={mxn(84000)} note="demo semanal"/><Metric icon={CircleDollarSign} label="Ticket promedio" value={mxn(opps.reduce((s,o)=>s+o.amount,0)/opps.length)} note="oportunidades"/><Metric icon={Filter} label="Conversión" value="31%" note="etapa a etapa"/><Metric icon={CircleAlert} label="Estancadas" value={String(open.filter(o=>o.days>8).length)} note="regla demo"/></div><div className="grid xl:grid-cols-2 gap-4"><Card className="p-5"><b>Mapa de oportunidades · probabilidad vs monto</b><p className="text-[11px] text-theme-muted mt-1">Cada punto muestra salud, monto y días sin actividad.</p><div className="mt-5 grid grid-cols-2 gap-2">{open.slice(0,12).map(o=><div key={o.id} title={`${o.account} · ${mxn(o.amount)} · ${o.probability}%`} className={'p-3 rounded-xl border '+(health(o)<60?'border-rose-400':health(o)<80?'border-amber-400':'border-emerald-400')}><b className="text-xs">{o.account}</b><small className="block text-theme-muted">{o.probability}% · {mxn(o.amount)} · Salud {health(o)}</small></div>)}</div></Card><Card className="p-5"><b>Pipeline por línea productiva</b>{lines.map(line=>{const value=open.filter(o=>o.line===line).reduce((s,o)=>s+o.amount,0);return <div key={line} className="mt-5"><div className="flex justify-between text-xs"><b>{line}</b><span className="font-mono">{mxn(value)}</span></div><div className="h-2 mt-2 rounded bg-theme-muted"><div className="h-full rounded bg-theme-primary" style={{width:`${Math.min(100,value/8000)}%`}}/></div></div>})}</Card></div><div className="grid xl:grid-cols-3 gap-4"><MiniChart title="Win / Loss últimos 6 meses" labels={['Abr','May','Jun','Jul','Ago','Sep']} values={[48,57,44,66,52,61]} colors="bg-emerald-500"/><MiniChart title="Tiempo promedio por etapa" labels={['Cal','Lev','Cot','Neg']} values={[35,62,81,54]} colors="bg-amber-500"/><MiniChart title="Actividad vs resultados" labels={['L','M','M','J','V']} values={[43,71,58,86,67]} colors="bg-theme-primary"/></div></div>};
-const Dashboard=({pipeline,weighted,won,opps,activities,onOpen,onTab}:{pipeline:number;weighted:number;won:number;opps:Opportunity[];activities:CrmActivity[];onOpen:(o:Opportunity)=>void;onTab:(t:Tab)=>void})=>{const risks=opps.filter(x=>x.risk==='Crítico'||x.risk==='Alto'); const [period,setPeriod]=useState('Mes actual'); const [seller,setSeller]=useState('Todos'); const [line,setLine]=useState('Todas'); const scoped=opps.filter(o=>(seller==='Todos'||o.seller===seller)&&(line==='Todas'||o.line===line)); const jumpStage=(stage:string)=>{setNoticeForDashboard?.(stage);onTab('pipeline');}; return <div className="space-y-4"><div className="flex flex-wrap gap-2 rounded-2xl border border-theme-subtle bg-theme-surface p-3"><select value={period} onChange={e=>setPeriod(e.target.value)} className="rounded-lg border border-theme-subtle bg-theme-base px-3 py-2 text-xs"><option>Mes actual</option><option>3 meses</option><option>6 meses</option><option>Año</option></select><select value={seller} onChange={e=>setSeller(e.target.value)} className="rounded-lg border border-theme-subtle bg-theme-base px-3 py-2 text-xs"><option>Todos</option><option>Lucía Torres</option><option>Marco Salinas</option><option>Andrea Peña</option></select><select value={line} onChange={e=>setLine(e.target.value)} className="rounded-lg border border-theme-subtle bg-theme-base px-3 py-2 text-xs"><option>Todas</option><option>Offset</option><option>Flexografía</option><option>Serigrafía</option><option>Acabados / conversión</option></select><span className="self-center text-[11px] text-theme-muted">Filtros demo aplicados a oportunidades visualizadas · {period}</span></div><div className="grid grid-cols-2 xl:grid-cols-4 gap-3"><button onClick={()=>onTab('opportunities')}><Metric icon={CircleDollarSign} label="Pipeline total" value={mxn(scoped.filter(o=>!['Ganada','Perdida'].includes(o.stage)).reduce((s,o)=>s+o.amount,0))} note="abrir oportunidades"/></button><button onClick={()=>onTab('pipeline')}><Metric icon={Target} label="Pipeline ponderado" value={mxn(scoped.filter(o=>!['Ganada','Perdida'].includes(o.stage)).reduce((s,o)=>s+o.amount*o.probability/100,0))} note="abrir pipeline"/></button><button onClick={()=>onTab('opportunities')}><Metric icon={CheckCircle2} label="Ganado este mes" value={mxn(won)} note="ver oportunidades ganadas"/></button><button onClick={()=>onTab('activities')}><Metric icon={CircleAlert} label="Atención comercial" value={String(risks.length+activities.filter(a=>a.status==='Vencida').length)} note="riesgos y vencidas" tone="text-rose-700"/></button></div><div className="grid xl:grid-cols-[1.22fr_.78fr] gap-4"><Card className="p-5"><div className="flex items-start justify-between"><div><b>Embudo de oportunidades</b><p className="mt-1 text-[11px] text-theme-muted">Click en una etapa para revisar pipeline. Conversión vs etapa anterior.</p></div><Funnel className="w-5 h-5 text-theme-primary"/></div><OpportunityFunnel opportunities={scoped} onStage={()=>onTab('pipeline')}/></Card><Card><div className="p-5 border-b border-theme-subtle"><b>Atención comercial</b><p className="text-[11px] text-theme-muted mt-1">Prioridades basadas en riesgo, días en etapa y actividad vencida.</p></div>{risks.concat(opps.filter(o=>o.days>8&&!['Ganada','Perdida'].includes(o.stage))).slice(0,4).map(o=><button key={o.id} onClick={()=>onOpen(o)} className="w-full p-4 border-b border-theme-subtle flex gap-3 text-left hover:bg-theme-muted/40"><CircleAlert className={'w-4 h-4 mt-0.5 '+(o.risk==='Crítico'?'text-rose-600':'text-amber-500')}/><span className="flex-1"><b className="text-xs block">{o.account} · {o.folio}</b><small className="text-theme-muted">{o.next} · {mxn(o.amount)}</small></span><ChevronRight className="w-4 h-4"/></button>)}</Card></div><div className="grid xl:grid-cols-2 gap-4"><Card className="p-5"><b>Pipeline por etapa</b><p className="mt-1 text-[11px] text-theme-muted">Monto total y oportunidades; click para ir al pipeline.</p><PipelineStageChart opportunities={scoped} onStage={()=>onTab('pipeline')}/></Card><Card className="p-5"><b>Forecast vs objetivo demo</b><p className="mt-1 text-[11px] text-theme-muted">Cerrado, commit y forecast para seis meses.</p><ForecastChart/></Card></div><div className="grid xl:grid-cols-2 gap-4"><Card className="p-5"><b>Prospectos por origen</b><p className="mt-1 text-[11px] text-theme-muted">Click en un segmento para abrir Prospectos.</p><LeadOriginChart onOrigin={()=>onTab('prospects')}/></Card><Card className="p-5"><b>Actividad comercial semanal</b><p className="mt-1 text-[11px] text-theme-muted">Llamadas, reuniones, seguimientos y visitas.</p><ActivityChart/></Card></div><div className="grid xl:grid-cols-2 gap-4"><Card className="p-5"><b>Top cuentas por pipeline</b>{[['BLACK & DECKER',709000],['BISSELL',286000],['TYCO',210000],['TRICO',178000],['ENTAIL',96000]].map(([n,v],i)=><button key={String(n)} onClick={()=>onTab('accounts')} className="mt-4 flex w-full items-center gap-3 text-left text-xs"><span className="w-5 font-mono text-theme-muted">0{i+1}</span><b className="w-44">{n}</b><div className="h-2 flex-1 rounded bg-theme-muted"><div className="h-full rounded bg-theme-primary" style={{width:`${Number(v)/7090}%`}}/></div><span className="font-mono">{mxn(Number(v))}</span></button>)}</Card><Card className="p-5"><b>Conversión por vendedor</b>{[['Lucía Torres','58%',709000],['Marco Salinas','50%',500000],['Andrea Peña','43%',388000]].map(([n,c,v])=><div key={String(n)} className="mt-4 grid grid-cols-[1fr_60px_105px] text-xs"><b>{n}</b><span className="text-emerald-700 font-bold">{c}</span><span className="font-mono text-right">{mxn(Number(v))}</span></div>)}</Card></div></div>};
-const Metric=({icon:Icon,label,value,note,tone='text-theme-main'}:{icon:any;label:string;value:string;note:string;tone?:string})=><Card className="p-4"><Icon className="w-4 h-4 text-theme-primary"/><p className="text-[10px] mt-3 uppercase font-bold tracking-wider text-theme-muted">{label}</p><p className={'font-mono font-black text-xl mt-1 '+tone}>{value}</p><p className="text-[10px] text-theme-muted mt-1">{note}</p></Card>;
-const MiniChart=({title,labels,values,colors}:{title:string;labels:string[];values:number[];colors:string})=><Card className="p-5"><b>{title}</b><p className="text-[11px] text-theme-muted mt-1">Datos demostrativos · 2026</p><div className="h-28 mt-4 flex items-end gap-3">{values.map((v,i)=><div key={labels[i]} className="flex-1"><div className={'rounded-t '+colors} style={{height:`${v}%`}}/><small className="text-[9px] text-theme-muted block text-center mt-2">{labels[i]}</small></div>)}</div></Card>;
-const Prospects=({data,search,setSearch,onQualify}:{data:Prospect[];search:string;setSearch:(x:string)=>void;onQualify:(p:Prospect)=>void})=><Card><div className="p-5 border-b border-theme-subtle flex flex-wrap gap-3 justify-between"><div><b>Prospectos</b><p className="text-xs text-theme-muted mt-1">Origen, prioridad y siguiente paso comercial.</p></div><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Buscar empresa o contacto" className="px-3 py-2 rounded-xl border border-theme-subtle text-xs bg-theme-base"/></div><div className="overflow-x-auto"><table className="w-full text-left text-xs"><thead className="text-[10px] uppercase text-theme-muted border-b border-theme-subtle"><tr>{['Empresa / contacto','Fuente','Interés','Vendedor','Score','Próxima actividad','Estado',''].map(x=><th key={x} className="p-4">{x}</th>)}</tr></thead><tbody>{data.filter(p=>(p.company+p.contact).toLowerCase().includes(search.toLowerCase())).map(p=><tr key={p.id} className="border-b border-theme-subtle"><td className="p-4"><b>{p.company}</b><small className="block text-theme-muted">{p.contact} · {p.industry}</small></td><td className="p-4">{p.source}</td><td className="p-4">{p.interest}</td><td className="p-4">{p.seller}</td><td className="p-4 font-mono">{p.score}</td><td className="p-4">{p.next}</td><td className="p-4"><span className="px-2 py-1 rounded-full bg-theme-muted text-[10px] font-bold">{p.status}</span></td><td className="p-4"><button onClick={()=>onQualify(p)} className="text-theme-primary font-bold whitespace-nowrap">Calificar</button></td></tr>)}</tbody></table></div></Card>;
-const Opportunities=({data,search,setSearch,onOpen}:{data:Opportunity[];search:string;setSearch:(x:string)=>void;onOpen:(o:Opportunity)=>void})=><Card><div className="p-5 border-b border-theme-subtle flex justify-between gap-3"><div><b>Oportunidades</b><p className="text-xs text-theme-muted mt-1">Pipeline abierto, probabilidad y riesgo de cierre.</p></div><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Buscar oportunidad" className="px-3 py-2 rounded-xl border border-theme-subtle text-xs bg-theme-base"/></div><div className="overflow-x-auto"><table className="w-full text-left text-xs"><thead className="text-[10px] uppercase text-theme-muted border-b border-theme-subtle"><tr>{['Oportunidad','Cuenta','Línea','Etapa','Monto','Prob.','Cierre','Riesgo',''].map(x=><th key={x} className="p-4">{x}</th>)}</tr></thead><tbody>{data.filter(o=>(o.account+o.title).toLowerCase().includes(search.toLowerCase())).map(o=><tr key={o.id} className="border-b border-theme-subtle hover:bg-theme-muted/30"><td className="p-4"><b>{o.folio}</b><small className="block text-theme-muted">{o.title}</small></td><td className="p-4">{o.account}</td><td className="p-4">{o.line}</td><td className="p-4">{o.stage}</td><td className="p-4 font-mono">{mxn(o.amount)}</td><td className="p-4">{o.probability}%</td><td className="p-4">{o.close}</td><td className="p-4"><span className={o.risk==='Crítico'?'text-rose-700 font-bold':'text-theme-muted'}>{o.risk}</span></td><td className="p-4"><button onClick={()=>onOpen(o)} className="text-theme-primary font-bold">Ver</button></td></tr>)}</tbody></table></div></Card>;
-const Pipeline=({data,onOpen,onMove}:{data:Opportunity[];onOpen:(o:Opportunity)=>void;onMove:(o:Opportunity,s:Stage)=>void})=><div className="overflow-x-auto"><div className="grid grid-cols-5 gap-3 min-w-[1120px]">{stages.map(s=>{const rows=data.filter(o=>o.stage===s); return <Card key={s} className="min-h-[470px]"><div className="p-4 border-b border-theme-subtle"><b className="text-xs">{s.toUpperCase()}</b><p className="font-mono text-[11px] mt-2">{rows.length} · {mxn(rows.reduce((a,b)=>a+b.amount,0))}</p></div><div className="p-2 space-y-2">{rows.map(o=><button key={o.id} onClick={()=>onOpen(o)} className="w-full p-3 rounded-xl border border-theme-subtle text-left hover:border-theme-primary"><div className="flex justify-between gap-2"><b className="text-xs">{o.account}</b><span className={o.risk==='Crítico'?'text-rose-600':'text-theme-muted'}>●</span></div><small className="block text-theme-muted mt-1">{o.title}</small><p className="font-mono text-xs mt-3">{mxn(o.amount)} · {o.probability}%</p><select value={o.stage} onClick={e=>e.stopPropagation()} onChange={e=>onMove(o,e.target.value as Stage)} className="mt-3 w-full text-[10px] p-1.5 rounded border border-theme-subtle bg-theme-base"><option>Calificado</option><option>Levantamiento</option><option>Cotización</option><option>Negociación</option><option>Ganada</option></select></button>)}</div></Card>})}</div></div>;
-const Activities=({data,onComplete,onNew}:{data:CrmActivity[];onComplete:(id:string)=>void;onNew:()=>void})=><div className="space-y-4"><div className="grid grid-cols-2 xl:grid-cols-4 gap-3">{[['Hoy',data.filter(x=>x.status==='Hoy').length],['Vencidas',data.filter(x=>x.status==='Vencida').length],['Próximos 7 días',data.filter(x=>x.status==='Próxima').length],['Completadas semana',data.filter(x=>x.status==='Completada').length]].map(([l,v])=><Metric key={String(l)} icon={CalendarDays} label={String(l)} value={String(v)} note="actividades demo"/>)}</div><Card><div className="p-5 border-b border-theme-subtle flex justify-between"><div><b>Agenda comercial</b><p className="text-xs text-theme-muted mt-1">Seguimiento agrupado por prioridad y fecha.</p></div><button onClick={onNew} className="px-3 py-2 rounded-xl bg-theme-primary text-white text-xs font-bold">Nueva actividad</button></div>{data.map(a=><div key={a.id} className="p-4 border-b border-theme-subtle flex flex-wrap gap-4 justify-between"><div className="flex gap-3"><Activity className="w-4 h-4 text-theme-primary mt-1"/><span><b className="text-xs">{a.type} · {a.account}</b><small className="block text-theme-muted">{a.subject} · {a.when} · {a.owner}</small></span></div><div className="flex gap-3 items-center"><span className={a.status==='Vencida'?'text-rose-700 font-bold text-xs':'text-xs text-theme-muted'}>{a.status}</span>{a.status!=='Completada'&&<button onClick={()=>onComplete(a.id)} className="text-xs text-theme-primary font-bold">Completar</button>}</div></div>)}</Card></div>;
-const Forecast=({opps,pipeline,weighted,won}:{opps:Opportunity[];pipeline:number;weighted:number;won:number})=>{const sellers=['Lucía Torres','Marco Salinas','Andrea Peña'];return <div className="space-y-4"><div className="grid grid-cols-2 xl:grid-cols-4 gap-3"><Metric icon={Target} label="Objetivo demo" value={mxn(1200000)} note="Septiembre 2026"/><Metric icon={CheckCircle2} label="Cerrado ganado" value={mxn(won)} note="resultado actual"/><Metric icon={BarChart3} label="Commit" value={mxn(opps.filter(o=>o.probability>=70&&o.stage!=='Ganada').reduce((s,o)=>s+o.amount,0))} note="alta probabilidad"/><Metric icon={CircleDollarSign} label="Forecast" value={mxn(weighted+won)} note="ponderado + ganado"/></div><div className="grid xl:grid-cols-2 gap-4"><MiniChart title="Meta vs cerrado vs forecast" labels={['Sep','Oct','Nov','Dic']} values={[72,64,83,91]} colors="bg-theme-primary"/><Card className="p-5"><b>Forecast por línea</b>{[['Offset',52],['Flexografía',76],['Serigrafía',31],['Acabados',43]].map(([l,v])=><div key={String(l)} className="mt-5 flex gap-3 items-center text-xs"><b className="w-28">{l}</b><div className="flex-1 h-3 rounded bg-theme-muted"><div className="h-full rounded bg-emerald-500" style={{width:`${v}%`}}/></div><span>{v}%</span></div>)}</Card></div><Card><div className="p-5 border-b border-theme-subtle"><b>Forecast por vendedor</b><p className="text-xs text-theme-muted mt-1">Meta demo, cerrado, commit, mejor caso y pipeline.</p></div><div className="overflow-x-auto"><table className="w-full text-xs"><thead className="text-[10px] uppercase text-theme-muted"><tr>{['Vendedor','Meta demo','Cerrado','Commit','Best case','Forecast','Cumplimiento'].map(h=><th key={h} className="p-4 text-left">{h}</th>)}</tr></thead><tbody>{sellers.map((s,i)=>{const mine=opps.filter(o=>o.seller===s); const forecast=mine.reduce((a,o)=>a+o.amount*o.probability/100,0);return <tr key={s} className="border-t border-theme-subtle"><td className="p-4 font-bold">{s}</td><td className="p-4 font-mono">{mxn(400000)}</td><td className="p-4 font-mono">{mxn(mine.filter(o=>o.stage==='Ganada').reduce((a,o)=>a+o.amount,0))}</td><td className="p-4 font-mono">{mxn(mine.filter(o=>o.probability>=70&&o.stage!=='Ganada').reduce((a,o)=>a+o.amount,0))}</td><td className="p-4 font-mono">{mxn(forecast)}</td><td className="p-4 font-mono">{mxn(forecast)}</td><td className="p-4 text-emerald-700 font-bold">{Math.round(forecast/4000)}%</td></tr>})}</tbody></table></div></Card></div>};
-const OpportunityModal=({opportunity,customers,onClose,onUpdate,onNavigate}:{opportunity:Opportunity;customers:SalesCustomer[];onClose:()=>void;onUpdate:(id:string,p:Partial<Opportunity>)=>void;onNavigate:(t:'cotizaciones'|'pedidos'|'clientes',c?:string)=>void})=>{const [view,setView]=useState<'Resumen'|'Actividad'|'Cotización'|'Historial'>('Resumen'); const [lost,setLost]=useState(false); const customer=customers.find(c=>c.id===opportunity.customerId); return <ModalPortal onClose={onClose} closeOnBackdropClick><div className="w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-3xl bg-theme-surface border border-theme-subtle shadow-2xl"><div className="sticky top-0 z-10 p-6 bg-theme-surface border-b border-theme-subtle flex justify-between"><div><p className="text-[10px] font-black tracking-widest text-theme-primary">OPORTUNIDAD · {opportunity.folio}</p><h2 className="text-xl font-black mt-1">{opportunity.title}</h2><p className="text-xs text-theme-muted mt-1">{opportunity.account} · {mxn(opportunity.amount)} · {opportunity.seller}</p></div><button onClick={onClose}><X className="w-5 h-5"/></button></div><div className="p-5 flex flex-wrap gap-2">{(['Resumen','Actividad','Cotización','Historial'] as const).map(x=><button key={x} onClick={()=>setView(x)} className={'px-3 py-2 rounded-lg text-xs font-bold '+(view===x?'bg-theme-primary text-white':'bg-theme-muted text-theme-muted')}>{x}</button>)}</div><div className="px-6 pb-6">{view==='Resumen'&&<div className="grid md:grid-cols-2 gap-4"><Card className="p-5"><b>Necesidad y requerimiento</b><p className="text-xs text-theme-muted mt-3">{opportunity.title}. Línea {opportunity.line}, con cierre estimado {opportunity.close}.</p><div className="grid grid-cols-2 gap-3 mt-5 text-xs"><span>Probabilidad <b className="block mt-1">{opportunity.probability}%</b></span><span>Ponderado <b className="block mt-1 font-mono">{mxn(opportunity.amount*opportunity.probability/100)}</b></span><span>Próxima actividad <b className="block mt-1">{opportunity.next}</b></span><span>Días en etapa <b className="block mt-1">{opportunity.days}</b></span></div></Card><Card className="p-5"><b>Acciones comerciales</b><div className="mt-4 grid gap-2">{customer&&<button onClick={()=>onNavigate('clientes',customer.id)} className="text-left px-3 py-2 rounded-xl border border-theme-subtle text-xs font-bold">Abrir cliente existente</button>}<button onClick={()=>onNavigate('cotizaciones',opportunity.customerId)} className="text-left px-3 py-2 rounded-xl border border-theme-subtle text-xs font-bold">{opportunity.quote?'Abrir cotización '+opportunity.quote:'Crear cotización'}</button>{opportunity.order&&<button onClick={()=>onNavigate('pedidos')} className="text-left px-3 py-2 rounded-xl border border-theme-subtle text-xs font-bold">Ver pedido {opportunity.order}</button>}<button onClick={()=>onUpdate(opportunity.id,{stage:'Ganada',probability:100,risk:'Bajo'})} className="text-left px-3 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold">Marcar ganada</button><button onClick={()=>setLost(true)} className="text-left px-3 py-2 rounded-xl text-rose-700 border border-rose-200 text-xs font-bold">Marcar perdida</button></div>{lost&&<div className="mt-3 flex gap-2"><select onChange={e=>onUpdate(opportunity.id,{stage:'Perdida',probability:0,lostReason:e.target.value})} className="flex-1 p-2 text-xs rounded border border-theme-subtle"><option>Seleccionar motivo</option><option>Precio</option><option>Tiempo de entrega</option><option>Competencia</option><option>Proyecto detenido</option><option>Sin presupuesto</option></select></div>}</Card></div>}{view==='Actividad'&&<Timeline/>}{view==='Cotización'&&<Card className="p-5"><b>{opportunity.quote||'Sin cotización vinculada'}</b><p className="text-xs text-theme-muted mt-2">{opportunity.quote?'Propuesta comercial vinculada a esta oportunidad.':'Crea una cotización desde Ventas Básico reutilizando la cuenta actual.'}</p></Card>}{view==='Historial'&&<Timeline/>}</div></div></ModalPortal>};
-const Timeline=()=> <Card className="p-5"><b>Timeline 360</b>{[['02 Sep','Llamada','Cliente solicita cotización para nuevo instructivo.'],['03 Sep','Reunión','Se confirma tiraje estimado y especificación.'],['04 Sep','Cotización','Propuesta enviada para revisión.'],['05 Sep','Seguimiento','Contacto programado con compras.']].map(([d,t,n])=><div key={d} className="mt-5 flex gap-3"><Clock3 className="w-4 h-4 text-theme-primary"/><span><b className="text-xs">{d} · {t}</b><small className="block text-theme-muted">{n}</small></span></div>)}</Card>;
-const ActivityModal=({onClose,onSave}:{onClose:()=>void;onSave:(a:Omit<CrmActivity,'id'>)=>void})=>{const [type,setType]=useState('Seguimiento');return <ModalPortal onClose={onClose}><div className="w-full max-w-lg rounded-3xl bg-theme-surface p-6"><div className="flex justify-between"><div><p className="text-[10px] font-black text-theme-primary">ACTIVIDAD COMERCIAL</p><h2 className="text-lg font-black">Nueva actividad</h2></div><button onClick={onClose}><X className="w-5 h-5"/></button></div><div className="mt-5 grid gap-3 text-xs"><select value={type} onChange={e=>setType(e.target.value)} className="p-3 rounded-xl border border-theme-subtle"><option>Llamada</option><option>Correo</option><option>Reunión</option><option>Seguimiento</option><option>Visita</option></select><input placeholder="Cuenta u oportunidad" className="p-3 rounded-xl border border-theme-subtle"/><input placeholder="Asunto / resultado esperado" className="p-3 rounded-xl border border-theme-subtle"/><input type="datetime-local" className="p-3 rounded-xl border border-theme-subtle"/></div><button onClick={()=>onSave({type,account:'Cuenta seleccionada',subject:'Seguimiento comercial registrado',when:'08 Sep · 12:00',owner:'Admin Demo',status:'Próxima',priority:'Media'})} className="mt-5 w-full p-3 rounded-xl bg-theme-primary text-white text-xs font-bold">Guardar actividad</button></div></ModalPortal>};
