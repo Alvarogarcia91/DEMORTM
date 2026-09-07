@@ -126,7 +126,7 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
  setIsScanning(false);
  setScanStatus('error');
  setFeedbackMessage(
- '✕ Artículo no esperado: El código de barras escaneado (SC-RES-ORT-MAT) no corresponde al artículo seleccionado en esta recepción.'
+ '✕ Artículo no esperado: El código de barras escaneado (PT-RES-001) no corresponde al artículo seleccionado en esta recepción.'
  );
  }, 450);
  };

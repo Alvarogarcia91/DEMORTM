@@ -179,11 +179,11 @@ export const ShippingRouteInteractiveMap: React.FC<ShippingRouteInteractiveMapPr
           </text>
 
           {/* Major Metropolitan Arteries / Road Network */}
-          {/* Av. Gonzalitos / Calzada San Pedro */}
+          {/* Av. Industrial del Norte / Libramiento Reynosa */}
           <path d="M 260,70 L 280,180 L 320,280 L 330,340" fill="none" stroke="#334155" strokeWidth="4" />
           <path d="M 260,70 L 280,180 L 320,280 L 330,340" fill="none" stroke="#22c55e" strokeWidth="1.5" strokeDasharray="6,3" />
 
-          {/* Av. Constitución / Morones Prieto (East - West Express) */}
+          {/* Carretera Matamoros - Reynosa */}
           <path d="M 80,325 L 300,315 L 500,295 L 750,280" fill="none" stroke="#334155" strokeWidth="5" />
           <path d="M 80,325 L 300,315 L 500,295 L 750,280" fill="none" stroke="#eab308" strokeWidth="2" strokeDasharray="10,4" />
 
@@ -195,20 +195,20 @@ export const ShippingRouteInteractiveMap: React.FC<ShippingRouteInteractiveMapPr
           <path d="M 120,180 L 220,195 L 280,210" fill="none" stroke="#334155" strokeWidth="4" />
           <path d="M 120,180 L 220,195 L 280,210" fill="none" stroke="#22c55e" strokeWidth="1.5" />
 
-          {/* Av. Garza Sada / Carretera Nacional */}
+          {/* Carretera Ribereña / Puente Internacional Pharr */}
           <path d="M 430,280 L 500,340 L 580,410 L 660,460" fill="none" stroke="#334155" strokeWidth="5" />
           <path d="M 430,280 L 500,340 L 580,410 L 660,460" fill="none" stroke="#ef4444" strokeWidth="2" strokeDasharray="12,5" />
 
-          {/* Anillo Periférico / Sendero Norte */}
+          {/* Libramiento Sur II */}
           <path d="M 180,60 L 260,70 L 420,90 L 600,100" fill="none" stroke="#334155" strokeWidth="4" />
 
           {/* Zone Watermark Labels */}
-          <text x="240" y="50" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Escobedo / San Nicolás</text>
+          <text x="240" y="50" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Parque Industrial Maquilpark</text>
           <text x="140" y="170" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Parque del Norte</text>
-          <text x="400" y="240" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Monterrey Centro</text>
-          <text x="310" y="295" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">San Pedro Garza García</text>
+          <text x="400" y="240" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Reynosa Centro</text>
+          <text x="310" y="295" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Parque Industrial Reynosa</text>
           <text x="430" y="375" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Parque Industrial</text>
-          <text x="560" y="390" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Zona Sur / Santiago</text>
+          <text x="560" y="390" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Parque Industrial Villa Florida</text>
 
           {/* ACTIVE DISPATCH TRAJECTORY PATH */}
           {routeD && (

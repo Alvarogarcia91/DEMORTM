@@ -144,9 +144,9 @@ export const EmbarquesDashboard: React.FC<EmbarquesDashboardProps> = ({ onNaviga
               onChange={(e) => setSelectedFacility(e.target.value)}
               className="px-3 py-1.5 rounded-xl border border-zinc-300 bg-white text-xs font-semibold text-zinc-800 focus:outline-none focus:ring-2 focus:ring-theme-primary"
             >
-              <option value="ALL">Todas las áreas de planta</option>
-              <option value="wh-mty-norte">Nave 1 — ALM-MP (Materias Primas)</option>
-              <option value="wh-mty-sur">Nave 2 — ALM-PT (Producto Terminado)</option>
+              <option value="ALL">Todas las naves / CEDIS</option>
+              <option value="alm-rtm-mp">ALM-MP (Materias Primas)</option>
+              <option value="alm-rtm-pt">ALM-PT (Producto Terminado)</option>
             </select>
           </div>
 

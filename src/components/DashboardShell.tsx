@@ -305,9 +305,10 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
 
  // Cross Navigation: From Compras to Mesa de Verificación
  const handleNavigateToInbound = (folio: string, targetWarehouseId?: string) => {
- if (targetWarehouseId && (targetWarehouseId === 'wh-mty-norte' || targetWarehouseId === 'wh-mty-sur')) {
- setSelectedCedisId(targetWarehouseId);
- }
+  if (targetWarehouseId && (targetWarehouseId === 'alm-rtm-mp' || targetWarehouseId === 'alm-rtm-pt')) {
+  setSelectedCedisId(targetWarehouseId);
+  }
+
  setTargetInboundFolio(folio);
  setActiveTab('mesa-verificacion');
  };
@@ -337,8 +338,6 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  );
  case 'logistica':
  return <EmbarquesPage />;
- case 'showroom-expos':
- return <DashboardInicio onNavigate={setActiveTab} />;
  case 'requisiciones':
  return (
  <div className="space-y-6 animate-in fade-in duration-200">

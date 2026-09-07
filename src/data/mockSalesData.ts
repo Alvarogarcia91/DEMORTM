@@ -1496,27 +1496,6 @@ export const INITIAL_MOCK_SALES_ORDERS: SalesOrder[] = [
   },
 ];
 
-// ============================================================================
-// 6. BALANCE Y EFECTIVIDAD COMERCIAL INDUSTRIAL (DEMANDA Y PT)
-// ============================================================================
-export interface ShowroomImpactItem {
-  id: string;
-  branchId: string;
-  branchName: string;
-  bayCode: string;
-  bayName: string;
-  sku: string;
-  productName: string;
-  brand: string;
-  size: string;
-  unitsSoldBefore30d: number;
-  unitsSoldAfter30d: number;
-  variationPct: number;
-  marginPct: number;
-  status: 'Alto impacto' | 'Impacto positivo' | 'Neutral' | 'Bajo impacto';
-  observation: string;
-}
-
 export interface ProductionDemandItem {
   id: string;
   plantId: string;
@@ -1537,78 +1516,6 @@ export interface ProductionDemandItem {
   observation: string;
 }
 
-export const MOCK_SHOWROOM_IMPACT_DATA: ShowroomImpactItem[] = [
-  {
-    id: 'shw-imp-01',
-    branchId: 'wh-alm-rtm',
-    branchName: 'Planta Principal RTM',
-    bayCode: 'L-OFF-01',
-    bayName: 'Prensa Heidelberg Speedmaster 74 (Offset)',
-    sku: 'BD-MAN-024',
-    productName: 'Manual instructivo 24 páginas (Rev B)',
-    brand: 'Stanley Black & Decker',
-    size: '24 páginas',
-    unitsSoldBefore30d: 15000,
-    unitsSoldAfter30d: 30000,
-    variationPct: 100.0,
-    marginPct: 8.7,
-    status: 'Alto impacto',
-    observation: 'Alto volumen en firme por pedido PO-SBD-88410. Requiere 4 tarimas de Couché 90 g.',
-  },
-  {
-    id: 'shw-imp-02',
-    branchId: 'wh-alm-rtm',
-    branchName: 'Planta Principal RTM',
-    bayCode: 'L-FLX-01',
-    bayName: 'Prensa Mark Andy 2200 8C (Flexo)',
-    sku: 'PT-ETQ-001',
-    productName: 'Etiqueta Autoadherible 4x6" en Rollo',
-    brand: 'Laboratorios Rex',
-    size: 'Rollo 4x6"',
-    unitsSoldBefore30d: 20000,
-    unitsSoldAfter30d: 50000,
-    variationPct: 150.0,
-    marginPct: 8.9,
-    status: 'Alto impacto',
-    observation: '24 cajas listas en PT; lote de 50,000 pzas autorizado para surtido continuo.',
-  },
-  {
-    id: 'shw-imp-03',
-    branchId: 'wh-alm-rtm',
-    branchName: 'Planta Principal RTM',
-    bayCode: 'L-OFF-02',
-    bayName: 'Prensa Komori Lithrone 40 (Offset)',
-    sku: 'BLI-CRD-001',
-    productName: 'Blister Card Termosellable (Rev C)',
-    brand: 'Electrodomésticos Monterrey',
-    size: 'Termosellable',
-    unitsSoldBefore30d: 18000,
-    unitsSoldAfter30d: 40000,
-    variationPct: 122.2,
-    marginPct: 7.2,
-    status: 'Impacto positivo',
-    observation: 'Tiraje de 40,000 piezas en espera de liberación de crédito comercial.',
-  },
-  {
-    id: 'shw-imp-04',
-    branchId: 'wh-alm-rtm',
-    branchName: 'Planta Principal RTM',
-    bayCode: 'L-OFF-01',
-    bayName: 'Prensa Heidelberg Speedmaster 74 (Offset)',
-    sku: 'BD-MAN-048',
-    productName: 'Manual instructivo 48 páginas (Rev A)',
-    brand: 'Stanley Black & Decker',
-    size: '48 páginas',
-    unitsSoldBefore30d: 5000,
-    unitsSoldAfter30d: 15000,
-    variationPct: 200.0,
-    marginPct: 2.5,
-    status: 'Impacto positivo',
-    observation: 'Cotización enviada al cliente. Insumos de papel Bond 75 g reservados.',
-  },
-];
-
-// ============================================================================
 // 7. DEMANDA INDUSTRIAL ALTA + MATERIAL CRÍTICO EN ALMACÉN
 // ============================================================================
 export interface HighDemandLowStockItem {

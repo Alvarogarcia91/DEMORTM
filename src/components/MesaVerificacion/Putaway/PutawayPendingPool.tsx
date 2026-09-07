@@ -82,7 +82,7 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  }, [units, selectedUids]);
 
  const activeWarehouseName = selectedUnitsObjects[0]?.warehouseName || 'Almacén Materia Prima';
- const activeWarehouseId = selectedUnitsObjects[0]?.warehouseId || 'wh-mty-norte';
+ const activeWarehouseId = selectedUnitsObjects[0]?.warehouseId || 'alm-rtm-mp';
 
  return (
  <div className="space-y-4">
@@ -119,8 +119,8 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  className="bg-theme-muted border border-theme-subtle rounded-2xl px-3 py-2 text-xs font-semibold text-theme-main focus:outline-none cursor-pointer"
  >
  <option value="ALL">Todas las ubicaciones</option>
- <option value="wh-mty-norte">Almacén Materia Prima</option>
- <option value="wh-mty-sur">Almacén Producto Terminado</option>
+ <option value="alm-rtm-mp">Almacén Materia Prima</option>
+ <option value="alm-rtm-pt">Almacén Producto Terminado</option>
  <option value="wh-suc-valle-oriente">Almacén Auxiliar Reynosa</option>
  </select>
 

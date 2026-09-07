@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { 
  Building2, 
  Store, 
@@ -546,22 +546,22 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
 
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
  
- {/* Showroom (For Branch) */}
- {activeNodeData.specialZones.showroom && (
+ {/* Muestras / QA (Planta) */}
+ {activeNodeData.specialZones.samples && (
  <div className="p-4 rounded-3xl bg-white border border-purple-500 space-y-1.5 shadow-2xs">
  <div className="flex items-center justify-between">
  <span className="text-[10px] font-bold uppercase text-zinc-900">Área de Muestras / QA</span>
  <span className="font-mono text-xs font-black text-zinc-900">
- {activeNodeData.specialZones.showroom.occupied}/{activeNodeData.specialZones.showroom.capacity}
+ {activeNodeData.specialZones.samples.occupied}/{activeNodeData.specialZones.samples.capacity}
  </span>
  </div>
  <strong className="text-xs font-bold text-theme-main block">
- {activeNodeData.specialZones.showroom.label}
+ {activeNodeData.specialZones.samples.label}
  </strong>
  <div className="w-full bg-theme-subtle h-1.5 rounded-full overflow-hidden">
  <div
  className="bg-purple-600 h-full rounded-full"
- style={{ width: `${(activeNodeData.specialZones.showroom.occupied / activeNodeData.specialZones.showroom.capacity) * 100}%` }}
+ style={{ width: `${(activeNodeData.specialZones.samples.occupied / activeNodeData.specialZones.samples.capacity) * 100}%` }}
  />
  </div>
  </div>

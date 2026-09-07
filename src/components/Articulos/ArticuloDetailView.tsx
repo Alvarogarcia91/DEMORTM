@@ -702,7 +702,7 @@ export const ArticuloDetailView: React.FC<ArticuloDetailViewProps> = ({
  <div className="p-3.5 rounded-xl bg-theme-muted/40 border border-theme-subtle space-y-1">
  <span className="text-[10px] uppercase font-bold text-theme-muted">FEFO</span>
  <p className="font-semibold text-theme-main">Configurable por lote</p>
- <p className="text-[10px] text-theme-muted">Monitoreo de tiempo en empaque Roll-Pack</p>
+ <p className="text-[10px] text-theme-muted">Monitoreo de tiempo y caducidad de insumos (tintas/químicos)</p>
  </div>
  </div>
  </div>
@@ -724,7 +724,7 @@ export const ArticuloDetailView: React.FC<ArticuloDetailViewProps> = ({
  <tr className="bg-theme-muted/50 border-b border-theme-subtle text-theme-muted font-bold uppercase text-[10px]">
  <th className="py-3 px-4">Fecha / Hora</th>
  <th className="py-3 px-4">Evento</th>
- <th className="py-3 px-4">CEDIS</th>
+ <th className="py-3 px-4">Almacén</th>
  <th className="py-3 px-4">Ubicación</th>
  <th className="py-3 px-4">Usuario / Operador</th>
  <th className="py-3 px-4">Detalles</th>

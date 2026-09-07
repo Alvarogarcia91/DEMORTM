@@ -81,17 +81,7 @@ export interface MasterArticle {
     formatDimensions?: string;
     unitPresentation?: string;
     qaApproved?: boolean;
-
-    // Backward-compatibility deprecated fields
-    firmness?: 'Suave' | 'Media' | 'Firme' | 'Extra Firme' | string;
-    heightCm?: number;
-    supportTechnology?: string;
     packagingType?: string;
-    isBoxed?: boolean;
-    isReversible?: boolean;
-    maxWeightPerPersonKg?: number;
-    fabricComposition?: string;
-    warrantyYears?: number;
   };
 
   // Control Logístico y de Almacén
@@ -431,17 +421,7 @@ const createIndustrialArticle = (data: {
       formatDimensions: data.size,
       unitPresentation: data.baseUnit,
       qaApproved: true,
-
-      // Deprecated fields preserved for backward compatibility
-      firmness: 'Media',
-      heightCm: 1,
-      supportTechnology: data.technology,
       packagingType: 'Empaque corrugado flejado / Tarima protegida',
-      isBoxed: false,
-      isReversible: false,
-      maxWeightPerPersonKg: 0,
-      fabricComposition: data.technology === 'Offset' ? 'Sustrato celulósico / Papel / Cartulina' : 'Película sintética / BOPP autoadherible',
-      warrantyYears: 1,
     },
     logisticControl: {
       requiresQr: false,

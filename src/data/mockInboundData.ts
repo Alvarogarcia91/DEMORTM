@@ -63,7 +63,7 @@ export const INITIAL_INBOUND_RECEIPT_ORDERS: InboundReceiptOrder[] = [
     type: 'Recepción de proveedor',
     originName: 'Bio-Pappel S.A.B. de C.V.',
     supplierRfc: 'BPA-820415-KT9',
-    destinationWarehouseId: 'wh-mty-norte',
+    destinationWarehouseId: 'alm-rtm-mp',
     destinationWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     receivingAreaCode: 'REC-01',
     expectedDate: '06 Sep 2026',
@@ -167,7 +167,7 @@ export const INITIAL_INBOUND_RECEIPT_ORDERS: InboundReceiptOrder[] = [
     type: 'Recepción de proveedor',
     originName: 'Avery Dennison Fasson de México',
     supplierRfc: 'ADF-940321-LM4',
-    destinationWarehouseId: 'wh-mty-norte',
+    destinationWarehouseId: 'alm-rtm-mp',
     destinationWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     receivingAreaCode: 'REC-01',
     expectedDate: '06 Sep 2026',
@@ -232,7 +232,7 @@ export const INITIAL_INBOUND_RECEIPT_ORDERS: InboundReceiptOrder[] = [
     type: 'Recepción de proveedor',
     originName: 'Sun Chemical S.A. de C.V.',
     supplierRfc: 'SCH-710920-RA8',
-    destinationWarehouseId: 'wh-mty-norte',
+    destinationWarehouseId: 'alm-rtm-mp',
     destinationWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     receivingAreaCode: 'REC-02',
     expectedDate: '05 Sep 2026',
@@ -338,7 +338,7 @@ export const INITIAL_INBOUND_RECEIPT_ORDERS: InboundReceiptOrder[] = [
     type: 'Recepción de proveedor',
     originName: 'Smurfit Westrock México',
     supplierRfc: 'SWM-990812-HJ1',
-    destinationWarehouseId: 'wh-mty-norte',
+    destinationWarehouseId: 'alm-rtm-mp',
     destinationWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     receivingAreaCode: 'REC-01',
     expectedDate: '06 Sep 2026',
@@ -404,7 +404,7 @@ export const INITIAL_INBOUND_RECEIPT_ORDERS: InboundReceiptOrder[] = [
     type: 'Recepción de proveedor',
     originName: 'Siegwerk México S. de R.L.',
     supplierRfc: 'SME-980115-TP2',
-    destinationWarehouseId: 'wh-mty-norte',
+    destinationWarehouseId: 'alm-rtm-mp',
     destinationWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     receivingAreaCode: 'REC-02',
     expectedDate: '07 Sep 2026',
@@ -443,7 +443,7 @@ export function buildInboundOrderFromPurchaseOrder(
   po: PurchaseOrder,
   existingUnitsBySku?: Record<string, ReceivedUnitRecord[]>
 ): InboundReceiptOrder {
-  const isPT = po.targetWarehouseId === 'wh-mty-sur';
+  const isPT = po.targetWarehouseId === 'alm-rtm-pt';
   const receivingAreaCode = isPT ? 'REC-02' : 'REC-01';
   const hasIncident = Boolean(
     po.notes &&

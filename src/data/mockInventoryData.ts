@@ -28,8 +28,8 @@ export interface PositionSerializedItem {
   notes?: string;
 }
 
-export type PositionSerializedMattress = PositionSerializedItem;
 export type PositionSerializedUnitItem = PositionSerializedItem;
+
 
 export interface LevelItem {
   levelCode: 'C' | 'B' | 'A';
@@ -85,13 +85,15 @@ export interface SpecialAreaSlot {
   }[];
 }
 
-export interface ShowroomBay {
+export interface SampleBayRecord {
   code: string;
   name: string;
   status: 'Ocupada' | 'Libre';
   unitItem?: PositionSerializedItem;
-  mattress?: PositionSerializedMattress;
 }
+export type SampleBay = SampleBayRecord;
+
+
 
 export interface WarehouseLayout {
   id: string;
@@ -112,8 +114,9 @@ export interface WarehouseLayout {
   stagingAreas: SpecialAreaSlot[];
   reworkZone: SpecialAreaSlot;
   shippingLanes: SpecialAreaSlot[];
-  showroomBays?: ShowroomBay[];
+  sampleBays?: SampleBay[];
 }
+
 
 export interface InventoryMovement {
   id: string;
@@ -845,8 +848,9 @@ export const MOCK_ALMACEN_MATERIA_PRIMA = MOCK_ALMACEN_PRINCIPAL_RTM;
 export const MOCK_ALMACEN_PRODUCTO_TERMINADO = MOCK_ALMACEN_PRINCIPAL_RTM;
 export const MOCK_SUCURSAL_VALLE_ORIENTE = MOCK_ALMACEN_VIRTUAL;
 export const MOCK_ALMACEN_MATAMOROS = MOCK_ALMACEN_VIRTUAL;
-export const MOCK_SHOWROOM_VALLE_ORIENTE: ShowroomBay[] = [];
-export const MOCK_STAGING_MATAMOROS: ShowroomBay[] = [];
+export const MOCK_SAMPLES_ALMACEN: SampleBayRecord[] = [];
+
+
 
 export const MOCK_WAREHOUSES_LIST: WarehouseLayout[] = [
   MOCK_ALMACEN_PRINCIPAL_RTM,

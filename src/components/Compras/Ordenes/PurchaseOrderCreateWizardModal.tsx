@@ -92,7 +92,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
 
  // STEP 4: Delivery & Commercial Conditions
  const [targetWarehouseId, setTargetWarehouseId] = useState(
- requisition.targetWarehouseId || 'wh-mty-norte'
+ requisition.targetWarehouseId || 'alm-rtm-mp'
  );
  
  // Calculate default delivery date based on current supplier lead time

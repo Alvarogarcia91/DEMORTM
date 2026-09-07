@@ -28,7 +28,6 @@ export type NavItemKey =
  | 'inventario'
  | 'mesa-verificacion'
  | 'logistica'
- | 'showroom-expos'
  | 'requisiciones'
  | 'compras'
  | 'proveedores'
@@ -93,7 +92,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
  },
  {
  title: 'VENTAS',
- badge: 'BÁSICO',
  items: [
  { key: 'cotizaciones', label: 'Cotizaciones', icon: FileText },
  { key: 'pedidos', label: 'Pedidos', icon: ShoppingBag },

@@ -61,7 +61,7 @@ export interface SummaryDataset {
 }
 
 export const CEDIS_SUMMARY_DATA: Record<string, Record<string, SummaryDataset>> = {
-  'wh-mty-norte': {
+  'alm-rtm-mp': {
     today: {
       kpis: [
         { id: 'kpi-inbound', label: 'RECEPCIÓN MATERIA PRIMA', count: 18, subtext: '2 órdenes en andén', tone: 'neutral', tabTarget: 'inbound' },
@@ -140,7 +140,7 @@ export const CEDIS_SUMMARY_DATA: Record<string, Record<string, SummaryDataset>> 
       agingUnits: [],
     },
   },
-  'wh-mty-sur': {
+  'alm-rtm-pt': {
     today: {
       kpis: [
         { id: 'kpi-inbound', label: 'PRODUCTO TERMINADO RECIBIDO', count: 28, subtext: 'Desde líneas de empaque', tone: 'neutral', tabTarget: 'inbound' },
@@ -216,44 +216,44 @@ export const CEDIS_SUMMARY_DATA: Record<string, Record<string, SummaryDataset>> 
 };
 
 export const getSummaryDataForCedis = (period: string, warehouseId: string): SummaryDataset => {
-  const cedisMap = CEDIS_SUMMARY_DATA[warehouseId] || CEDIS_SUMMARY_DATA['wh-mty-norte'];
+  const cedisMap = CEDIS_SUMMARY_DATA[warehouseId] || CEDIS_SUMMARY_DATA['alm-rtm-mp'];
   return cedisMap[period] || cedisMap.today;
 };
 
 export const MOCK_RECENT_AUDIT_EVENTS: SummaryAuditEvent[] = [
   // 1-10: Recepción & Entrada
-  { id: 'e-1', time: '14:20', activity: 'Remanente registrado', reference: 'REM-2026-0041', context: 'BOB-RTM-2026-00041 · 680 m BOPP retornado de Flexo 1', user: 'Carlos Medina', badgeType: 'incidents', warehouseId: 'wh-mty-norte' },
-  { id: 'e-2', time: '13:50', activity: 'Surtido OP asignado', reference: 'OP-2026-0882', context: '2 bobinas BOPP · Rampa OP-01', user: 'Carlos Medina', badgeType: 'picking', warehouseId: 'wh-mty-norte' },
-  { id: 'e-3', time: '13:40', activity: 'Incidencia QA de viscosidad', reference: 'REM-2026-0045', context: 'CUB-RTM-2026-00018 · Pantone Red 186 C', user: 'Laboratorio QA', badgeType: 'incidents', warehouseId: 'wh-mty-norte' },
-  { id: 'e-4', time: '13:20', activity: 'Acomodo en ALM-PT', reference: 'OA-2026-0038', context: 'CJ-RTM-2026-00211 · Pasillo A-A-01 PT', user: 'Valeria Torres', badgeType: 'putaway', warehouseId: 'wh-mty-sur' },
-  { id: 'e-5', time: '13:05', activity: 'Despacho validado en andén PT', reference: 'PED-2026-0410', context: 'Medifarma · Andén EMB-01 PT', user: 'Valeria Torres', badgeType: 'outbound', warehouseId: 'wh-mty-sur' },
-  { id: 'e-6', time: '12:45', activity: 'Surtido de tinta en proceso', reference: 'OP-2026-0891', context: '2 cubetas Process Black · Pasillo B', user: 'Carlos Medina', badgeType: 'picking', warehouseId: 'wh-mty-norte' },
-  { id: 'e-7', time: '12:40', activity: 'Incidencia por fleje roto', reference: 'INC-2026-0037', context: 'OC-2026-0085 · Tarima cajas Smurfit', user: 'Carlos Medina', badgeType: 'incidents', warehouseId: 'wh-mty-norte' },
-  { id: 'e-8', time: '12:35', activity: 'Salida validada en rampa', reference: 'PED-2026-0398', context: 'TAR-RTM-2026-00401 · Delphi Planta 2', user: 'Valeria Torres', badgeType: 'outbound', warehouseId: 'wh-mty-sur' },
-  { id: 'e-9', time: '12:00', activity: 'Etiqueta de tarima reimpresa', reference: 'REP-2026-0012', context: 'TAR-RTM-2026-00102 · Couché 90g', user: 'Carlos Medina', badgeType: 'reprint', warehouseId: 'wh-mty-norte' },
-  { id: 'e-10', time: '11:55', activity: 'Acomodo de Couché', reference: 'OA-2026-0037', context: 'TAR-RTM-2026-00103 · Pasillo A-B-02', user: 'Carlos Medina', badgeType: 'putaway', warehouseId: 'wh-mty-norte' },
+  { id: 'e-1', time: '14:20', activity: 'Remanente registrado', reference: 'REM-2026-0041', context: 'BOB-RTM-2026-00041 · 680 m BOPP retornado de Flexo 1', user: 'Carlos Medina', badgeType: 'incidents', warehouseId: 'alm-rtm-mp' },
+  { id: 'e-2', time: '13:50', activity: 'Surtido OP asignado', reference: 'OP-2026-0882', context: '2 bobinas BOPP · Rampa OP-01', user: 'Carlos Medina', badgeType: 'picking', warehouseId: 'alm-rtm-mp' },
+  { id: 'e-3', time: '13:40', activity: 'Incidencia QA de viscosidad', reference: 'REM-2026-0045', context: 'CUB-RTM-2026-00018 · Pantone Red 186 C', user: 'Laboratorio QA', badgeType: 'incidents', warehouseId: 'alm-rtm-mp' },
+  { id: 'e-4', time: '13:20', activity: 'Acomodo en ALM-PT', reference: 'OA-2026-0038', context: 'CJ-RTM-2026-00211 · Pasillo A-A-01 PT', user: 'Valeria Torres', badgeType: 'putaway', warehouseId: 'alm-rtm-pt' },
+  { id: 'e-5', time: '13:05', activity: 'Despacho validado en andén PT', reference: 'PED-2026-0410', context: 'Medifarma · Andén EMB-01 PT', user: 'Valeria Torres', badgeType: 'outbound', warehouseId: 'alm-rtm-pt' },
+  { id: 'e-6', time: '12:45', activity: 'Surtido de tinta en proceso', reference: 'OP-2026-0891', context: '2 cubetas Process Black · Pasillo B', user: 'Carlos Medina', badgeType: 'picking', warehouseId: 'alm-rtm-mp' },
+  { id: 'e-7', time: '12:40', activity: 'Incidencia por fleje roto', reference: 'INC-2026-0037', context: 'OC-2026-0085 · Tarima cajas Smurfit', user: 'Carlos Medina', badgeType: 'incidents', warehouseId: 'alm-rtm-mp' },
+  { id: 'e-8', time: '12:35', activity: 'Salida validada en rampa', reference: 'PED-2026-0398', context: 'TAR-RTM-2026-00401 · Delphi Planta 2', user: 'Valeria Torres', badgeType: 'outbound', warehouseId: 'alm-rtm-pt' },
+  { id: 'e-9', time: '12:00', activity: 'Etiqueta de tarima reimpresa', reference: 'REP-2026-0012', context: 'TAR-RTM-2026-00102 · Couché 90g', user: 'Carlos Medina', badgeType: 'reprint', warehouseId: 'alm-rtm-mp' },
+  { id: 'e-10', time: '11:55', activity: 'Acomodo de Couché', reference: 'OA-2026-0037', context: 'TAR-RTM-2026-00103 · Pasillo A-B-02', user: 'Carlos Medina', badgeType: 'putaway', warehouseId: 'alm-rtm-mp' },
 
   // 11-20: Acomodo, Picking y Salidas
-  { id: 'e-11', time: '11:45', activity: 'Etiqueta de bobina reimpresa', reference: 'REP-2026-0005', context: 'BOB-RTM-2026-00041 · QR actualizado con 680m', user: 'Carlos Medina', badgeType: 'reprint', warehouseId: 'wh-mty-norte' },
-  { id: 'e-12', time: '11:42', activity: 'Surtido registrado', reference: 'OP-2026-0882', context: 'BOB-RTM-2026-00041 · Pasillo A Nivel A', user: 'Carlos Medina', badgeType: 'picking', warehouseId: 'wh-mty-norte' },
-  { id: 'e-13', time: '11:32', activity: 'Ingreso PT de Prensa Offset', reference: 'PT-2026-0891', context: '4 tarimas folletos terminados en ALM-PT', user: 'Valeria Torres', badgeType: 'inbound', warehouseId: 'wh-mty-sur' },
-  { id: 'e-14', time: '11:15', activity: 'Acomodo registrado', reference: 'OA-2026-0033', context: 'TAR-RTM-2026-00151 · REC-01 → C-A-01', user: 'Carlos Medina', badgeType: 'putaway', warehouseId: 'wh-mty-norte' },
-  { id: 'e-15', time: '11:00', activity: 'Liberación QA de Lote', reference: 'COA-2026-011', context: 'Lote RTM-PT-260905-001 liberado con COA', user: 'Ing. Químico QA', badgeType: 'incidents', warehouseId: 'wh-mty-sur' },
-  { id: 'e-16', time: '10:48', activity: 'Acomodo registrado', reference: 'OA-2026-0031', context: 'TAR-RTM-2026-00101 · REC-01 → A-B-01', user: 'Carlos Medina', badgeType: 'putaway', warehouseId: 'wh-mty-norte' },
-  { id: 'e-17', time: '10:42', activity: 'Acomodo registrado', reference: 'OA-2026-0031', context: 'TAR-RTM-2026-00102 · REC-01 → A-B-02', user: 'Carlos Medina', badgeType: 'putaway', warehouseId: 'wh-mty-norte' },
-  { id: 'e-18', time: '10:30', activity: 'Etiqueta reimpresa por código ilegible', reference: 'REP-2026-0011', context: 'TAR-RTM-2026-00401 · Cartulina SBS', user: 'Carlos Medina', badgeType: 'reprint', warehouseId: 'wh-mty-norte' },
-  { id: 'e-19', time: '10:20', activity: 'Discrepancia en conteo cíclico', reference: 'INC-2026-0034', context: 'Diferencia -19,500 pliegos en A-B-03 Couché 90g', user: 'Auditor de Calidad', badgeType: 'incidents', warehouseId: 'wh-mty-norte' },
-  { id: 'e-20', time: '10:15', activity: 'Incidencia por fleje roto', reference: 'INC-2026-0042', context: 'OC-2026-0085 · Tarima cajas Smurfit', user: 'Carlos Medina', badgeType: 'incidents', warehouseId: 'wh-mty-norte' },
+  { id: 'e-11', time: '11:45', activity: 'Etiqueta de bobina reimpresa', reference: 'REP-2026-0005', context: 'BOB-RTM-2026-00041 · QR actualizado con 680m', user: 'Carlos Medina', badgeType: 'reprint', warehouseId: 'alm-rtm-mp' },
+  { id: 'e-12', time: '11:42', activity: 'Surtido registrado', reference: 'OP-2026-0882', context: 'BOB-RTM-2026-00041 · Pasillo A Nivel A', user: 'Carlos Medina', badgeType: 'picking', warehouseId: 'alm-rtm-mp' },
+  { id: 'e-13', time: '11:32', activity: 'Ingreso PT de Prensa Offset', reference: 'PT-2026-0891', context: '4 tarimas folletos terminados en ALM-PT', user: 'Valeria Torres', badgeType: 'inbound', warehouseId: 'alm-rtm-pt' },
+  { id: 'e-14', time: '11:15', activity: 'Acomodo registrado', reference: 'OA-2026-0033', context: 'TAR-RTM-2026-00151 · REC-01 → C-A-01', user: 'Carlos Medina', badgeType: 'putaway', warehouseId: 'alm-rtm-mp' },
+  { id: 'e-15', time: '11:00', activity: 'Liberación QA de Lote', reference: 'COA-2026-011', context: 'Lote RTM-PT-260905-001 liberado con COA', user: 'Ing. Químico QA', badgeType: 'incidents', warehouseId: 'alm-rtm-pt' },
+  { id: 'e-16', time: '10:48', activity: 'Acomodo registrado', reference: 'OA-2026-0031', context: 'TAR-RTM-2026-00101 · REC-01 → A-B-01', user: 'Carlos Medina', badgeType: 'putaway', warehouseId: 'alm-rtm-mp' },
+  { id: 'e-17', time: '10:42', activity: 'Acomodo registrado', reference: 'OA-2026-0031', context: 'TAR-RTM-2026-00102 · REC-01 → A-B-02', user: 'Carlos Medina', badgeType: 'putaway', warehouseId: 'alm-rtm-mp' },
+  { id: 'e-18', time: '10:30', activity: 'Etiqueta reimpresa por código ilegible', reference: 'REP-2026-0011', context: 'TAR-RTM-2026-00401 · Cartulina SBS', user: 'Carlos Medina', badgeType: 'reprint', warehouseId: 'alm-rtm-mp' },
+  { id: 'e-19', time: '10:20', activity: 'Discrepancia en conteo cíclico', reference: 'INC-2026-0034', context: 'Diferencia -19,500 pliegos en A-B-03 Couché 90g', user: 'Auditor de Calidad', badgeType: 'incidents', warehouseId: 'alm-rtm-mp' },
+  { id: 'e-20', time: '10:15', activity: 'Incidencia por fleje roto', reference: 'INC-2026-0042', context: 'OC-2026-0085 · Tarima cajas Smurfit', user: 'Carlos Medina', badgeType: 'incidents', warehouseId: 'alm-rtm-mp' },
 ];
 
 export const MOCK_CEDIS_STAGING_LANES_SUMMARY: Record<string, StagingLaneSummary[]> = {
-  'wh-mty-norte': [
+  'alm-rtm-mp': [
     { code: 'STG-OP-01', status: 'Ocupado', unitsCount: 2, orderRef: 'OP-2026-0882' },
     { code: 'STG-OP-02', status: 'Preparando salida', unitsCount: 4, orderRef: 'OP-2026-0891' },
     { code: 'STG-OP-03', status: 'Disponible' },
     { code: 'STG-REM-01', status: 'Ocupado', unitsCount: 1, orderRef: 'REM-2026-0041' },
   ],
-  'wh-mty-sur': [
+  'alm-rtm-pt': [
     { code: 'EMB-01', status: 'Ocupado', unitsCount: 3, orderRef: 'PED-2026-0410' },
     { code: 'EMB-02', status: 'Preparando salida', unitsCount: 3, orderRef: 'PED-2026-0398' },
     { code: 'EMB-03', status: 'Disponible' },
@@ -261,11 +261,11 @@ export const MOCK_CEDIS_STAGING_LANES_SUMMARY: Record<string, StagingLaneSummary
 };
 
 export const MOCK_CEDIS_INBOUND_BAYS_SUMMARY: Record<string, InboundBaySummary[]> = {
-  'wh-mty-norte': [
+  'alm-rtm-mp': [
     { code: 'REC-01', unitsCount: 6, pendingPutawayCount: 4, orderRef: 'OC-2026-0081' },
     { code: 'REC-02', unitsCount: 4, pendingPutawayCount: 2, orderRef: 'OC-2026-0083' },
   ],
-  'wh-mty-sur': [
+  'alm-rtm-pt': [
     { code: 'REC-01 PT', unitsCount: 12, pendingPutawayCount: 2, orderRef: 'PT-2026-0915' },
   ],
 };

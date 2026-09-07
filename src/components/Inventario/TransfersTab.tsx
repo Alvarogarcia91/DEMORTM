@@ -213,7 +213,7 @@ export const TransfersTab: React.FC<TransfersTabProps> = ({ onShowToast }) => {
  // Preload and Open Suggested Transfer
  const handleOpenSuggestedTransfer = () => {
  setWizardPrefill({
- sourceId: 'wh-mty-norte',
+ sourceId: 'alm-rtm-mp',
  destinationId: 'wh-suc-valle-oriente',
  sku: 'PT-MAN-001',
  quantity: 5,

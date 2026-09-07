@@ -100,7 +100,7 @@ const getReadableStrategyReason = (strategyKey: string, u: StockItemRecord, isFr
  badge: 'Vaciar ubicación',
  text: isFreedLocation ? `Completa la salida de ${u.location}` : `Completa lote en ${u.location}`
  };
- case 'SHOWROOM_PRIORITY':
+ case 'QA_PRIORITY':
  return {
  badge: 'Prioridad Alta',
  text: 'Prioridad de rotación en piso'
@@ -135,7 +135,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  const [createdSuccessData, setCreatedSuccessData] = useState<SuccessOrderData | null>(null);
 
  // Step 1: Origin & Destination
- const [sourceWarehouseId, setSourceWarehouseId] = useState(prefillData?.sourceId || 'wh-mty-norte');
+ const [sourceWarehouseId, setSourceWarehouseId] = useState(prefillData?.sourceId || 'alm-rtm-mp');
  const [destinationWarehouseId, setDestinationWarehouseId] = useState(prefillData?.destinationId || 'wh-suc-valle-oriente');
 
  // Step 1: Search, Selected Article / Unit & Origin Suggestion
@@ -157,7 +157,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  availableCount: number;
  } | null>(() => {
  return {
- warehouseId: 'wh-mty-norte',
+ warehouseId: 'alm-rtm-mp',
  warehouseName: 'Almacén Principal RTM',
  reason: 'Es la ubicación con mayor disponibilidad para este artículo.',
  availableCount: 24,
@@ -223,7 +223,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  } else {
  const defaultArt = MOCK_MASTER_ARTICLES[0];
  const avail = MOCK_STOCK_ITEMS.filter(
- u => u.warehouseId === (sourceWarehouseId || 'wh-mty-norte') && u.sku === defaultArt.sku && u.status === 'Disponible'
+ u => u.warehouseId === (sourceWarehouseId || 'alm-rtm-mp') && u.sku === defaultArt.sku && u.status === 'Disponible'
  ).length;
 
  const initialItem: TransferDraftItem = {
@@ -860,8 +860,8 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  [ARTÍCULO]
  </span>
  {step1MatchingArticles.map((art) => {
- const stockMtyN = MOCK_STOCK_ITEMS.filter(u => u.warehouseId === 'wh-mty-norte' && u.sku === art.sku && u.status === 'Disponible').length;
- const stockMtyS = MOCK_STOCK_ITEMS.filter(u => u.warehouseId === 'wh-mty-sur' && u.sku === art.sku && u.status === 'Disponible').length;
+ const stockMtyN = MOCK_STOCK_ITEMS.filter(u => u.warehouseId === 'alm-rtm-mp' && u.sku === art.sku && u.status === 'Disponible').length;
+ const stockMtyS = MOCK_STOCK_ITEMS.filter(u => u.warehouseId === 'alm-rtm-pt' && u.sku === art.sku && u.status === 'Disponible').length;
  const stockValle = MOCK_STOCK_ITEMS.filter(u => u.warehouseId === 'wh-suc-valle-oriente' && u.sku === art.sku && u.status === 'Disponible').length;
 
  return (

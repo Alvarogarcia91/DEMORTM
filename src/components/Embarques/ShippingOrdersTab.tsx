@@ -194,11 +194,11 @@ export const ShippingOrdersTab: React.FC<ShippingOrdersTabProps> = ({
               onChange={(e) => setTypeFilter(e.target.value as any)}
               className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-2.5 py-1.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
             >
-              <option value="Todos">Todos los tipos</option>
-              <option value="Venta">Venta</option>
-              <option value="Traspaso">Traspaso</option>
-              <option value="Exposición">Exposición</option>
-            </select>
+                <option value="Todos">Todos los tipos</option>
+                <option value="Venta">Venta</option>
+                <option value="Traspaso">Traspaso</option>
+                <option value="Despacho B2B">Despacho B2B</option>
+              </select>
           </div>
 
           {/* Filter Estado */}
@@ -310,7 +310,7 @@ export const ShippingOrdersTab: React.FC<ShippingOrdersTabProps> = ({
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border shadow-2xs bg-white ${
                           order.type === 'Venta'
                             ? 'border-blue-500 text-blue-800'
-                            : order.type === 'Exposición'
+                            : order.type === 'Despacho B2B'
                             ? 'border-emerald-500 text-emerald-800'
                             : 'border-purple-500 text-purple-800'
                         }`}>

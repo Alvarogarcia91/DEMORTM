@@ -404,7 +404,7 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  
  {isSucursal ? (
  <>
- {/* Showroom Bays Status */}
+ {/* QA Bays Status */}
  <div className="bg-theme-surface p-5 border border-theme-subtle rounded-3xl shadow-xs space-y-3">
  <div className="flex items-center justify-between">
  <h3 className="text-sm font-extrabold text-theme-main flex items-center gap-2">

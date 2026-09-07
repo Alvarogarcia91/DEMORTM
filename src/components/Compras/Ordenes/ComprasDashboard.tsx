@@ -374,8 +374,8 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  className="bg-theme-muted border border-theme-subtle rounded-2xl px-3 py-1.5 text-xs font-bold text-theme-main cursor-pointer focus:outline-none"
  >
  <option value="ALL">Todos los destinos</option>
- <option value="wh-mty-norte">Almacén Materia Prima</option>
- <option value="wh-mty-sur">Almacén Producto Terminado</option>
+ <option value="alm-rtm-mp">Almacén Materia Prima</option>
+ <option value="alm-rtm-pt">Almacén Producto Terminado</option>
  <option value="wh-reynosa-aux">Almacén Auxiliar Reynosa</option>
  <option value="wh-matamoros">Almacén Matamoros</option>
  </select>

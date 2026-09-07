@@ -30,7 +30,7 @@ export const ReturnCreateModal: React.FC<ReturnCreateModalProps> = ({
  onCreateOrder,
 }) => {
  const [sourceType, setSourceType] = useState<ReturnSourceType>('Cliente');
- const [warehouseId, setWarehouseId] = useState('wh-mty-norte');
+ const [warehouseId, setWarehouseId] = useState('alm-rtm-mp');
  const [originClientOrBranch, setOriginClientOrBranch] = useState('Cliente Final (Ruta Domiciliaria)');
  const [reference, setReference] = useState('PED-2026-0195');
  const [reason, setReason] = useState<ReturnReason>('Empaque dañado');
@@ -93,7 +93,7 @@ export const ReturnCreateModal: React.FC<ReturnCreateModalProps> = ({
  reference: reference.trim(),
  originClientOrBranch: originClientOrBranch.trim(),
  warehouseId,
- warehouseName: warehouseId === 'wh-mty-sur' ? 'Almacén Producto Terminado' : 'Almacén Materia Prima',
+ warehouseName: warehouseId === 'alm-rtm-pt' ? 'Almacén Producto Terminado' : 'Almacén Materia Prima',
  reason,
  customReason: reason === 'Otro' ? customReason.trim() : undefined,
  notes: notes.trim(),
@@ -172,8 +172,8 @@ export const ReturnCreateModal: React.FC<ReturnCreateModalProps> = ({
  onChange={(e) => setWarehouseId(e.target.value)}
  className="w-full bg-theme-muted border border-theme-subtle rounded-xl p-2.5 text-xs font-bold text-theme-main focus:outline-none cursor-pointer"
  >
- <option value="wh-mty-norte">Almacén Materia Prima</option>
- <option value="wh-mty-sur">Almacén Producto Terminado</option>
+ <option value="alm-rtm-mp">Almacén Materia Prima</option>
+ <option value="alm-rtm-pt">Almacén Producto Terminado</option>
  </select>
  </div>
 

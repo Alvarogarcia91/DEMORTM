@@ -57,7 +57,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  // General Info States
  const [requester] = useState('Admin Demo');
  const [targetWarehouseId, setTargetWarehouseId] = useState(
- initialRequisition?.targetWarehouseId || prefilledItem?.targetWarehouseId || 'wh-mty-norte'
+ initialRequisition?.targetWarehouseId || prefilledItem?.targetWarehouseId || 'alm-rtm-mp'
  );
  const [requiredDate, setRequiredDate] = useState(
  initialRequisition?.requiredDate || '30 Ago 2026'
@@ -719,7 +719,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  type="text"
  value={unregSize}
  onChange={(e) => setUnregSize(e.target.value)}
- placeholder="Ej. Individual, Queen Size..."
+ placeholder="Ej. Rollo 500m, Tarima 10,000 pzas..."
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-amber-500/30"
  />
  </div>
@@ -811,11 +811,11 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
 
  <button
  type="button"
- onClick={() => handleAddConsumablePreset('Bolsa Protectora de Polietileno Calibre 400 King Size', 'INS-BOLSA-POLI-KS', 'Pieza', 50)}
+ onClick={() => handleAddConsumablePreset('Bolsa Protectora de Polietileno Calibre 400 Extra Grande (1.80m x 2.20m)', 'INS-BOLSA-POLI-KS', 'Pieza', 50)}
  className="p-3 rounded-2xl bg-theme-muted/40 hover:bg-theme-muted border border-theme-subtle text-left space-y-1 transition-all cursor-pointer"
  >
  <span className="font-mono font-bold text-[10px] text-theme-primary block">INS-BOLSA-KS</span>
- <strong className="text-xs font-bold text-theme-main block">Bolsa Protectora King Size (50 pzas)</strong>
+ <strong className="text-xs font-bold text-theme-main block">Bolsa Protectora Extra Grande (50 pzas)</strong>
  <span className="text-[10px] text-theme-muted block">Protección contra humedad y polvo</span>
  </button>
  </div>

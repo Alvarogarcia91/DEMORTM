@@ -34,12 +34,12 @@ interface DashboardInicioProps {
 export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) => {
   const [selectedFacility, setSelectedFacility] = useState<string>('ALL');
   const [selectedPeriod, setSelectedPeriod] = useState<'Hoy' | '7 días' | '30 días'>('Hoy');
-  const [selectedMapFacility, setSelectedMapFacility] = useState<string | null>('wh-mty-norte');
+  const [selectedMapFacility, setSelectedMapFacility] = useState<string | null>('alm-rtm-mp');
 
   // Facilities data for interactive map and operational network
   const facilities = [
     {
-      id: 'wh-mty-norte',
+      id: 'alm-rtm-mp',
       code: 'ALM-MP',
       name: 'Almacén Materias Primas & Sustratos',
       type: 'Almacén Principal de Bobinas, Pliegos y Tintas',
@@ -54,7 +54,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
       accentColor: 'border-theme-primary',
     },
     {
-      id: 'wh-mty-sur',
+      id: 'alm-rtm-pt',
       code: 'ALM-PT',
       name: 'Almacén Producto Terminado & Embarques',
       type: 'Almacén de PT, Staging B2B y Andén EMB-01',
@@ -195,8 +195,8 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
                 className="px-3 py-1.5 rounded-xl border border-zinc-300 bg-white text-xs font-semibold text-zinc-800 focus:outline-none focus:ring-2 focus:ring-theme-primary"
               >
                 <option value="ALL">Todas las áreas de almacén</option>
-                <option value="wh-mty-norte">Almacén Materias Primas (ALM-MP)</option>
-                <option value="wh-mty-sur">Almacén Producto Terminado (ALM-PT / EMB-01)</option>
+                <option value="alm-rtm-mp">Almacén Materias Primas (ALM-MP)</option>
+                <option value="alm-rtm-pt">Almacén Producto Terminado (ALM-PT / EMB-01)</option>
               </select>
             </div>
 
@@ -425,8 +425,8 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               {/* Facility Nodes */}
               {facilities.map((fac) => {
                 const isSelected = selectedMapFacility === fac.id;
-                const isMP = fac.id === 'wh-mty-norte';
-                const isPT = fac.id === 'wh-mty-sur';
+                const isMP = fac.id === 'alm-rtm-mp';
+                const isPT = fac.id === 'alm-rtm-pt';
                 const colorHex = isMP ? 'var(--color-primary)' : isPT ? '#059669' : '#2563EB';
 
                 return (
@@ -498,8 +498,8 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
           <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-3">
               <div className={`w-9 h-9 rounded-xl bg-white border flex items-center justify-center shrink-0 shadow-2xs ${
-                activeSelectedFacility.id === 'wh-mty-norte' ? 'border-theme-primary text-theme-primary' :
-                activeSelectedFacility.id === 'wh-mty-sur' ? 'border-emerald-500 text-emerald-600' :
+                activeSelectedFacility.id === 'alm-rtm-mp' ? 'border-theme-primary text-theme-primary' :
+                activeSelectedFacility.id === 'alm-rtm-pt' ? 'border-emerald-500 text-emerald-600' :
                 'border-blue-500 text-blue-600'
               }`}>
                 <Factory className="w-5 h-5" />
@@ -522,7 +522,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
 
             <button
               type="button"
-              onClick={() => onNavigate(activeSelectedFacility.id === 'wh-mty-sur' ? 'logistica' : 'inventario')}
+              onClick={() => onNavigate(activeSelectedFacility.id === 'alm-rtm-pt' ? 'logistica' : 'inventario')}
               className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-zinc-100 text-zinc-900 font-bold text-xs border border-zinc-300 shadow-2xs shrink-0 cursor-pointer"
             >
               Abrir área
@@ -1135,12 +1135,12 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
           {facilities.map((fac) => (
             <div
               key={fac.id}
-              onClick={() => onNavigate(fac.id === 'wh-mty-sur' ? 'logistica' : 'inventario')}
+              onClick={() => onNavigate(fac.id === 'alm-rtm-pt' ? 'logistica' : 'inventario')}
               className="p-4 rounded-3xl bg-white border border-zinc-200 hover:border-zinc-300 hover:shadow-xs transition-all cursor-pointer group space-y-2.5"
             >
               <div className="flex items-center justify-between">
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border shadow-2xs bg-white ${
-                  fac.id === 'wh-mty-norte' ? 'border-theme-primary text-theme-primary' :
+                  fac.id === 'alm-rtm-mp' ? 'border-theme-primary text-theme-primary' :
                   'border-emerald-500 text-emerald-800'
                 }`}>
                   {fac.code}

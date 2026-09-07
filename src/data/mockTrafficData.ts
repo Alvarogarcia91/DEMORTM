@@ -112,7 +112,7 @@ export interface TrafficDataset {
 }
 
 export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> = {
-  'wh-mty-norte': {
+  'alm-rtm-mp': {
     today: {
       totalMoves: 184,
       pacePerHour: 23,
@@ -325,7 +325,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       insights: ['Consolidado mensual con 99.1% de exactitud en inventario serializado.'],
     },
   },
-  'wh-mty-sur': {
+  'alm-rtm-pt': {
     today: {
       totalMoves: 82,
       pacePerHour: 12,
@@ -369,14 +369,14 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
         { id: 'op-s2', name: 'Miguel Ángel Soto', role: 'Operador Sur', total: 34, inbound: 10, putaway: 6, picking: 10, outbound: 8, movesCount: 34, avgTimeMinutes: 16, errorRatePercentage: 1.1, status: 'Activo' },
       ],
       slowOrders: [
-        { id: 'so-s1', folio: 'OA-2026-0033', type: 'Acomodo', stage: 'Acomodo', progress: '1 / 4 unidades estibadas', timeActive: '45 min', tabTarget: 'putaway', elapsedMinutes: 45, thresholdMinutes: 35, responsible: 'Valeria Torres', reason: 'Acomodo de unidades King Size de alto peso' },
+        { id: 'so-s1', folio: 'OA-2026-0033', type: 'Acomodo', stage: 'Acomodo', progress: '1 / 4 unidades estibadas', timeActive: '45 min', tabTarget: 'putaway', elapsedMinutes: 45, thresholdMinutes: 35, responsible: 'Valeria Torres', reason: 'Acomodo de unidades Bobinas de alto gramaje' },
       ],
       timeBeforePutawayAvg: '19 min',
       timeBeforePutawayMax: '45 min',
       timeBeforeValidationAvg: '14 min',
       insights: [
-        'CEDIS Sur mantiene un flujo ágil con 82 movimientos en jornada matutina.',
-        'La ruta Guadalupe #04 fue despachada en tiempo y forma desde EMB-01.',
+        'Almacén PT mantiene un flujo ágil con 82 movimientos en jornada matutina.',
+        'La ruta Medifarma EMB-01 fue despachada en tiempo y forma desde EMB-01.',
       ],
     },
     yesterday: {
@@ -441,7 +441,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       timeBeforePutawayAvg: '20 min',
       timeBeforePutawayMax: '1 h 15 min',
       timeBeforeValidationAvg: '15 min',
-      insights: ['340 movimientos procesados en la semana en CEDIS Sur.'],
+      insights: ['340 movimientos procesados en la semana en Almacén PT.'],
     },
     '30d': {
       totalMoves: 1450,
@@ -473,7 +473,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       timeBeforePutawayAvg: '21 min',
       timeBeforePutawayMax: '1 h 30 min',
       timeBeforeValidationAvg: '16 min',
-      insights: ['Consolidado mensual en CEDIS Sur con alta eficiencia.'],
+      insights: ['Consolidado mensual en Almacén PT con alta eficiencia.'],
     },
   },
   'wh-suc-valle-oriente': {
@@ -718,8 +718,8 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
 };
 
 export const getTrafficDataForCedis = (period: string, warehouseId: string): TrafficDataset => {
-  const cedisMap = CEDIS_TRAFFIC_DATA[warehouseId] || CEDIS_TRAFFIC_DATA['wh-mty-norte'];
+  const cedisMap = CEDIS_TRAFFIC_DATA[warehouseId] || CEDIS_TRAFFIC_DATA['alm-rtm-mp'];
   return cedisMap[period] || cedisMap.today;
 };
 
-export const PERIOD_TRAFFIC_DATA = CEDIS_TRAFFIC_DATA['wh-mty-norte'];
+export const PERIOD_TRAFFIC_DATA = CEDIS_TRAFFIC_DATA['alm-rtm-mp'];

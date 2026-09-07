@@ -93,8 +93,8 @@ export const PendingOutboundList: React.FC<PendingOutboundListProps> = ({
  className="bg-theme-muted border border-theme-subtle rounded-2xl px-3 py-2 text-xs font-semibold text-theme-main focus:outline-none cursor-pointer"
  >
  <option value="ALL">Todos los orígenes</option>
- <option value="wh-mty-norte">Almacén Materia Prima</option>
- <option value="wh-mty-sur">Almacén Producto Terminado</option>
+ <option value="alm-rtm-mp">Almacén Materia Prima</option>
+ <option value="alm-rtm-pt">Almacén Producto Terminado</option>
  </select>
 
  <select

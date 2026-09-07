@@ -24,13 +24,13 @@ interface PutawayOrderCreateModalProps {
 
 // Available rack locations for autocomplete
 const VALID_RACK_LOCATIONS = [
- // Showroom & Piso de exhibición en sucursal
- { code: 'SHOW-01', aisle: 'Showroom', level: 'Bahía 01', desc: 'Piso de venta (En exhibición)' },
- { code: 'SHOW-02', aisle: 'Showroom', level: 'Bahía 02', desc: 'Piso de venta (En exhibición)' },
- { code: 'SHOW-03', aisle: 'Showroom', level: 'Bahía 03', desc: 'Piso de venta (En exhibición)' },
- { code: 'SHOW-04', aisle: 'Showroom', level: 'Bahía 04', desc: 'Piso de venta (En exhibición)' },
- { code: 'SHOW-05', aisle: 'Showroom', level: 'Bahía 05', desc: 'Piso de venta (En exhibición)' },
- { code: 'SHOW-06', aisle: 'Showroom', level: 'Bahía 06', desc: 'Piso de venta (En exhibición)' },
+ // Bahías de Muestras e Inspección QA
+ { code: 'QA-01', aisle: 'Inspección QA', level: 'Bahía 01', desc: 'Muestras de Retención / Pruebas QA' },
+ { code: 'QA-02', aisle: 'Inspección QA', level: 'Bahía 02', desc: 'Muestras de Retención / Pruebas QA' },
+ { code: 'QA-03', aisle: 'Inspección QA', level: 'Bahía 03', desc: 'Muestras de Retención / Pruebas QA' },
+ { code: 'QA-04', aisle: 'Inspección QA', level: 'Bahía 04', desc: 'Muestras de Retención / Pruebas QA' },
+ { code: 'QA-05', aisle: 'Inspección QA', level: 'Bahía 05', desc: 'Muestras de Retención / Pruebas QA' },
+ { code: 'QA-06', aisle: 'Inspección QA', level: 'Bahía 06', desc: 'Muestras de Retención / Pruebas QA' },
  // Mini Almacén / Reserva Sucursal
  { code: 'SUC-MINI-01', aisle: 'Mini Almacén', level: 'Bahía 01', desc: 'Reserva sucursal' },
  { code: 'SUC-MINI-02', aisle: 'Mini Almacén', level: 'Bahía 02', desc: 'Reserva sucursal' },

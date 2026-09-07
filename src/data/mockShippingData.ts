@@ -8,14 +8,14 @@ export type ShippingOrderStatus =
   | 'Completada' 
   | 'Cancelada';
 
-export type ShippingOrderType = 'Venta' | 'Traspaso' | 'Exposición';
+export type ShippingOrderType = 'Venta' | 'Traspaso' | 'Despacho B2B';
 
 export interface ShippingVehicle {
   id: string;
   code: string; // ej. 'Camión #08'
   name: string; // ej. 'Camión #08 · Isuzu NPR'
   brandModel: string; // ej. 'Isuzu NPR 4.5 Ton'
-  plate: string; // ej. 'NL-8492-B'
+  plate: string; // ej. 'TM-8492-B'
   maxUnitsCapacity: number; // ej. 32
   maxWeightKg: number; // ej. 4500
   status: 'Disponible' | 'En ruta' | 'Mantenimiento';
@@ -47,7 +47,7 @@ export interface RouteStop {
   id: string;
   sequenceNumber: number;
   destinationName: string;
-  zoneName: string; // ej. 'San Pedro Garza García', 'Parque Industrial Reynosa', 'Parque Industrial Del Norte', 'Zona Sur'
+  zoneName: string; // ej. 'Parque Industrial Reynosa', 'Parque Industrial Reynosa', 'Parque Industrial Del Norte', 'Zona Sur'
   address: string;
   coordinates: { x: number; y: number; lat?: number; lng?: number };
   totalUnits: number;
@@ -167,7 +167,7 @@ export interface ShippingOutboundOrder {
   folio: string; // ej. 'OS-2026-0048'
   type: ShippingOrderType;
   sourceDocumentFolio: string; // ej. 'PED-2026-0103' o 'OTP-2026-0044'
-  sourceDocumentType: 'Pedido' | 'OTP' | 'Exposición';
+  sourceDocumentType: 'Pedido' | 'OTP' | 'Orden de Salida';
   originWarehouseId: string;
   originWarehouseName: string; // ej. 'ALM-MP (Materia Prima - Nave 1 Reynosa)'
   originCoordinates: { x: number; y: number; name: string };
@@ -198,67 +198,67 @@ export const MOCK_SHIPPING_VEHICLES: ShippingVehicle[] = [
     code: 'Camión #08',
     name: 'Camión #08 · Isuzu NPR',
     brandModel: 'Isuzu NPR 4.5 Ton',
-    plate: 'NL-8492-B',
+    plate: 'TM-8492-B',
     maxUnitsCapacity: 32,
     maxWeightKg: 4500,
     status: 'Disponible',
-    warehouseId: 'wh-mty-norte',
+    warehouseId: 'alm-rtm-mp',
   },
   {
     id: 'veh-12',
     code: 'Camión #12',
     name: 'Camión #12 · Hino 300',
     brandModel: 'Hino Serie 300 4.0 Ton',
-    plate: 'NL-3910-C',
+    plate: 'TM-3910-C',
     maxUnitsCapacity: 28,
     maxWeightKg: 4000,
     status: 'Disponible',
-    warehouseId: 'wh-mty-norte',
+    warehouseId: 'alm-rtm-mp',
   },
   {
     id: 'veh-04',
     code: 'Unidad #04',
     name: 'Unidad #04 · Nissan Cabstar',
     brandModel: 'Nissan Cabstar 2.5 Ton',
-    plate: 'NL-7721-A',
+    plate: 'TM-7721-A',
     maxUnitsCapacity: 16,
     maxWeightKg: 2500,
     status: 'Disponible',
-    warehouseId: 'wh-mty-sur',
+    warehouseId: 'alm-rtm-pt',
   },
   {
     id: 'veh-15',
     code: 'Unidad #15',
     name: 'Unidad #15 · Freightliner M2',
     brandModel: 'Freightliner M2 106 8.0 Ton',
-    plate: 'NL-5520-C',
+    plate: 'TM-5520-C',
     maxUnitsCapacity: 45,
     maxWeightKg: 8000,
     status: 'Disponible',
-    warehouseId: 'wh-mty-norte',
+    warehouseId: 'alm-rtm-mp',
   },
   {
     id: 'veh-05',
     code: 'Camión #05',
     name: 'Camión #05 · Isuzu Forward',
     brandModel: 'Isuzu Forward 800 6.0 Ton',
-    plate: 'NL-1104-D',
+    plate: 'TM-1104-D',
     maxUnitsCapacity: 50,
     maxWeightKg: 6000,
     status: 'En ruta',
     currentDriverName: 'Raúl Morales',
-    warehouseId: 'wh-mty-sur',
+    warehouseId: 'alm-rtm-pt',
   },
   {
     id: 'veh-02',
     code: 'Unidad #02',
     name: 'Unidad #02 · Ram 4000',
     brandModel: 'Ram 4000 Heavy Duty',
-    plate: 'NL-9022-X',
+    plate: 'TM-9022-X',
     maxUnitsCapacity: 12,
     maxWeightKg: 3000,
     status: 'Mantenimiento',
-    warehouseId: 'wh-mty-sur',
+    warehouseId: 'alm-rtm-pt',
   },
 ];
 
@@ -269,7 +269,7 @@ export const MOCK_SHIPPING_DRIVERS: ShippingDriver[] = [
     licenseType: 'Federal Tipo B (Transporte de Carga)',
     phone: '81-1234-5678',
     status: 'Disponible',
-    warehouseId: 'wh-mty-norte',
+    warehouseId: 'alm-rtm-mp',
   },
   {
     id: 'drv-2',
@@ -277,7 +277,7 @@ export const MOCK_SHIPPING_DRIVERS: ShippingDriver[] = [
     licenseType: 'Estatal Tipo Chofer Particular y Comercial',
     phone: '81-2345-6789',
     status: 'Disponible',
-    warehouseId: 'wh-mty-norte',
+    warehouseId: 'alm-rtm-mp',
   },
   {
     id: 'drv-3',
@@ -285,7 +285,7 @@ export const MOCK_SHIPPING_DRIVERS: ShippingDriver[] = [
     licenseType: 'Federal Tipo B (Carga General)',
     phone: '81-3456-7890',
     status: 'Disponible',
-    warehouseId: 'wh-mty-norte',
+    warehouseId: 'alm-rtm-mp',
   },
   {
     id: 'drv-4',
@@ -293,7 +293,7 @@ export const MOCK_SHIPPING_DRIVERS: ShippingDriver[] = [
     licenseType: 'Federal Tipo B (Carga y Maniobras)',
     phone: '81-4567-8901',
     status: 'Disponible',
-    warehouseId: 'wh-mty-sur',
+    warehouseId: 'alm-rtm-pt',
   },
   {
     id: 'drv-5',
@@ -302,13 +302,13 @@ export const MOCK_SHIPPING_DRIVERS: ShippingDriver[] = [
     phone: '81-5678-9012',
     status: 'En ruta',
     assignedVehicleName: 'Camión #05 · Isuzu Forward',
-    warehouseId: 'wh-mty-sur',
+    warehouseId: 'alm-rtm-pt',
   },
 ];
 
 export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
   // =========================================================================
-  // 1. VENTA MULTI-PARADA (3 Entregas · 14 Unidades · San Pedro, Parque Industrial Reynosa, Sur)
+  // 1. VENTA MULTI-PARADA (3 Entregas · 14 Unidades · Parque Industrial Reynosa, Parque Industrial Reynosa, Sur)
   // =========================================================================
   {
     id: 'sh-ord-1',
@@ -316,10 +316,10 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
     type: 'Venta',
     sourceDocumentFolio: 'PED-2026-0103',
     sourceDocumentType: 'Pedido',
-    originWarehouseId: 'wh-mty-norte',
+    originWarehouseId: 'alm-rtm-mp',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
-    destinationName: 'Ruta Metropolitana San Pedro - Valle Ote. (3 Clientes)',
+    destinationName: 'Ruta Metropolitana Parque Industrial Reynosa - Parque Industrial del Norte (3 Clientes)',
     destinationAddress: 'Parque Industrial Reynosa',
     totalUnits: 14,
     remisionFolio: 'REM-2026-0061',
@@ -339,7 +339,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         sku: 'CJ-EMB-MED',
         productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
         brand: 'RTM Packaging',
-        size: 'Matrimonial',
+        size: 'Tarima 10,000 pzas',
         quantity: 4,
         lotNumber: 'LOTE-2026-W33',
         uids: ['CJ-RTM-2026-000131', 'CJ-RTM-2026-000132', 'CJ-RTM-2026-000133', 'CJ-RTM-2026-000134'],
@@ -357,7 +357,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         sku: 'FOL-MED-PLE',
         productName: 'RTM Packaging Blister Card Termosellable',
         brand: 'RTM Packaging',
-        size: 'King Size',
+        size: 'Tarima 20,000 pzas',
         quantity: 7,
         lotNumber: 'LOTE-2026-W34',
         uids: ['CJ-RTM-2026-000241', 'CJ-RTM-2026-000242', 'CJ-RTM-2026-000243', 'CJ-RTM-2026-000244', 'CJ-RTM-2026-000245', 'CJ-RTM-2026-000246', 'CJ-RTM-2026-000247'],
@@ -368,7 +368,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         id: 'stop-48-1',
         sequenceNumber: 1,
         destinationName: 'Schneider Electric México (Planta 3)',
-        zoneName: 'San Pedro Garza García',
+        zoneName: 'Parque Industrial Reynosa',
         address: 'Av. Roble 600, Col. Valle del Campestre, Reynosa, Tamps.',
         coordinates: { x: 330, y: 310 },
         totalUnits: 4,
@@ -384,7 +384,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
             sku: 'CJ-EMB-MED',
             productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
             brand: 'RTM Packaging',
-            size: 'Matrimonial',
+            size: 'Tarima 10,000 pzas',
             quantity: 4,
             uids: ['CJ-RTM-2026-000131', 'CJ-RTM-2026-000132', 'CJ-RTM-2026-000133', 'CJ-RTM-2026-000134'],
           },
@@ -436,7 +436,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
             sku: 'FOL-MED-PLE',
             productName: 'RTM Packaging Blister Card Termosellable',
             brand: 'RTM Packaging',
-            size: 'King Size',
+            size: 'Tarima 20,000 pzas',
             quantity: 7,
             uids: ['CJ-RTM-2026-000241', 'CJ-RTM-2026-000242', 'CJ-RTM-2026-000243', 'CJ-RTM-2026-000244', 'CJ-RTM-2026-000245', 'CJ-RTM-2026-000246', 'CJ-RTM-2026-000247'],
           },
@@ -496,7 +496,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
     type: 'Venta',
     sourceDocumentFolio: 'PED-2026-0107',
     sourceDocumentType: 'Pedido',
-    originWarehouseId: 'wh-mty-norte',
+    originWarehouseId: 'alm-rtm-mp',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
     destinationName: 'Ruta Parque Industrial Del Norte - Reynosa',
@@ -528,7 +528,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         sku: 'ETQ-FAR-VIL',
         productName: 'Folleto Plegable Médico 48 Páginas Medifarma',
         brand: 'RTM Packaging',
-        size: 'Matrimonial',
+        size: 'Tarima 10,000 pzas',
         quantity: 4,
         lotNumber: 'LOTE-2026-W34',
         uids: ['CJ-RTM-2026-000186', 'CJ-RTM-2026-000187', 'CJ-RTM-2026-000188', 'CJ-RTM-2026-000189'],
@@ -563,7 +563,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
             sku: 'ETQ-FAR-VIL',
             productName: 'Folleto Plegable Médico 48 Páginas Medifarma',
             brand: 'RTM Packaging',
-            size: 'Matrimonial',
+            size: 'Tarima 10,000 pzas',
             quantity: 2,
             uids: ['CJ-RTM-2026-000186', 'CJ-RTM-2026-000187'],
           },
@@ -597,7 +597,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
             sku: 'ETQ-FAR-VIL',
             productName: 'Folleto Plegable Médico 48 Páginas Medifarma',
             brand: 'RTM Packaging',
-            size: 'Matrimonial',
+            size: 'Tarima 10,000 pzas',
             quantity: 2,
             uids: ['CJ-RTM-2026-000188', 'CJ-RTM-2026-000189'],
           },
@@ -649,7 +649,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
   },
 
   // =========================================================================
-  // 3. VENTA PARADA ÚNICA (Ruta Directa · 6 Unidades · San Pedro Garza García)
+  // 3. VENTA PARADA ÚNICA (Ruta Directa · 6 Unidades · Parque Industrial Reynosa)
   // =========================================================================
   {
     id: 'sh-ord-5',
@@ -657,7 +657,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
     type: 'Venta',
     sourceDocumentFolio: 'PED-2026-0180',
     sourceDocumentType: 'Pedido',
-    originWarehouseId: 'wh-mty-norte',
+    originWarehouseId: 'alm-rtm-mp',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
     destinationName: 'Empaques Modernos del Norte S.A.',
@@ -680,7 +680,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         sku: 'FOL-MED-PLE',
         productName: 'RTM Packaging Blister Card Termosellable',
         brand: 'RTM Packaging',
-        size: 'King Size',
+        size: 'Tarima 20,000 pzas',
         quantity: 3,
         lotNumber: 'LOTE-2026-W34',
         uids: ['CJ-RTM-2026-000261', 'CJ-RTM-2026-000262', 'CJ-RTM-2026-000263'],
@@ -689,7 +689,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         sku: 'CJ-EMB-MED',
         productName: 'RTM Packaging Caja Plegadiza Farmacéutica 500u',
         brand: 'RTM Packaging',
-        size: 'King Size',
+        size: 'Tarima 20,000 pzas',
         quantity: 3,
         lotNumber: 'LOTE-2026-W34',
         uids: ['CJ-RTM-2026-000246', 'CJ-RTM-2026-000247', 'CJ-RTM-2026-000248'],
@@ -700,7 +700,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         id: 'stop-52-1',
         sequenceNumber: 1,
         destinationName: 'Empaques Modernos del Norte S.A.',
-        zoneName: 'San Pedro Garza García',
+        zoneName: 'Parque Industrial Reynosa',
         address: 'Av. Ricardo Margáin 555, Santa Engracia, Reynosa, Tamps.',
         coordinates: { x: 330, y: 310 },
         totalUnits: 6,
@@ -715,7 +715,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
             sku: 'FOL-MED-PLE',
             productName: 'RTM Packaging Blister Card Termosellable',
             brand: 'RTM Packaging',
-            size: 'King Size',
+            size: 'Tarima 20,000 pzas',
             quantity: 3,
             uids: ['CJ-RTM-2026-000261', 'CJ-RTM-2026-000262', 'CJ-RTM-2026-000263'],
           },
@@ -723,7 +723,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
             sku: 'CJ-EMB-MED',
             productName: 'RTM Packaging Caja Plegadiza Farmacéutica 500u',
             brand: 'RTM Packaging',
-            size: 'King Size',
+            size: 'Tarima 20,000 pzas',
             quantity: 3,
             uids: ['CJ-RTM-2026-000246', 'CJ-RTM-2026-000247', 'CJ-RTM-2026-000248'],
           },
@@ -743,7 +743,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         windowsMetCount: 1,
         totalWindowsCount: 1,
         stopsSequence: ['stop-52-1'],
-        description: 'Trayecto punto a punto directo desde ALM-MP (Materia Prima - Nave 1 Reynosa) hacia San Pedro Garza García vía Túnel de la Loma Larga.',
+        description: 'Trayecto punto a punto directo desde ALM-MP (Materia Prima - Nave 1 Reynosa) hacia Parque Industrial Reynosa vía Túnel de la Loma Larga.',
       },
     ],
   },
@@ -757,7 +757,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
     type: 'Venta',
     sourceDocumentFolio: 'PED-2026-0186',
     sourceDocumentType: 'Pedido',
-    originWarehouseId: 'wh-mty-sur',
+    originWarehouseId: 'alm-rtm-pt',
     originWarehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
     originCoordinates: { x: 580, y: 410, name: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)' },
     destinationName: 'Schneider Electric México (Planta 3)',
@@ -780,7 +780,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         sku: 'FOL-MED-PLE',
         productName: 'RTM Packaging Blister Card Termosellable',
         brand: 'RTM Packaging',
-        size: 'King Size',
+        size: 'Tarima 20,000 pzas',
         quantity: 1,
         lotNumber: 'LOTE-2026-W34',
         uids: ['CJ-RTM-2026-000137'],
@@ -789,7 +789,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         sku: 'CJ-EMB-MED',
         productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
         brand: 'RTM Packaging',
-        size: 'Matrimonial',
+        size: 'Tarima 10,000 pzas',
         quantity: 2,
         lotNumber: 'LOTE-2026-W33',
         uids: ['CJ-RTM-2026-000138', 'CJ-RTM-2026-000139'],
@@ -814,7 +814,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
             sku: 'FOL-MED-PLE',
             productName: 'RTM Packaging Blister Card Termosellable',
             brand: 'RTM Packaging',
-            size: 'King Size',
+            size: 'Tarima 20,000 pzas',
             quantity: 1,
             uids: ['CJ-RTM-2026-000137'],
           },
@@ -822,7 +822,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
             sku: 'CJ-EMB-MED',
             productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
             brand: 'RTM Packaging',
-            size: 'Matrimonial',
+            size: 'Tarima 10,000 pzas',
             quantity: 2,
             uids: ['CJ-RTM-2026-000138', 'CJ-RTM-2026-000139'],
           },
@@ -856,7 +856,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
     type: 'Traspaso',
     sourceDocumentFolio: 'OTP-2026-0044',
     sourceDocumentType: 'OTP',
-    originWarehouseId: 'wh-mty-norte',
+    originWarehouseId: 'alm-rtm-mp',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
     destinationName: 'Laboratorios Medifarma (Parque Industrial)',
@@ -897,7 +897,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         sku: 'CJ-EMB-MED',
         productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
         brand: 'RTM Packaging',
-        size: 'Matrimonial',
+        size: 'Tarima 10,000 pzas',
         quantity: 4,
         lotNumber: 'LOTE-2026-W33',
         uids: ['CJ-RTM-2026-000211', 'CJ-RTM-2026-000212', 'CJ-RTM-2026-000213', 'CJ-RTM-2026-000214'],
@@ -939,7 +939,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
             sku: 'CJ-EMB-MED',
             productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
             brand: 'RTM Packaging',
-            size: 'Matrimonial',
+            size: 'Tarima 10,000 pzas',
             quantity: 4,
             uids: ['CJ-RTM-2026-000211', 'CJ-RTM-2026-000212', 'CJ-RTM-2026-000213', 'CJ-RTM-2026-000214'],
           },
@@ -973,7 +973,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
     type: 'Traspaso',
     sourceDocumentFolio: 'OTP-2026-0047',
     sourceDocumentType: 'OTP',
-    originWarehouseId: 'wh-mty-sur',
+    originWarehouseId: 'alm-rtm-pt',
     originWarehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
     originCoordinates: { x: 580, y: 410, name: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)' },
     destinationName: 'Delphi Technologies (Parque Villa Florida)',
@@ -996,7 +996,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         sku: 'CJ-EMB-MED',
         productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
         brand: 'RTM Packaging',
-        size: 'Matrimonial',
+        size: 'Tarima 10,000 pzas',
         quantity: 5,
         lotNumber: 'LOTE-2026-W33',
         uids: ['CJ-RTM-2026-000135', 'CJ-RTM-2026-000136', 'CJ-RTM-2026-000215', 'CJ-RTM-2026-000216', 'CJ-RTM-2026-000217'],
@@ -1005,7 +1005,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         sku: 'EST-COS-PLE',
         productName: 'Tag Impreso Colgante con Barniz UV',
         brand: 'RTM Packaging',
-        size: 'King Size',
+        size: 'Tarima 20,000 pzas',
         quantity: 4,
         lotNumber: 'LOTE-2026-W35',
         uids: ['CJ-RTM-2026-000301', 'CJ-RTM-2026-000302', 'CJ-RTM-2026-000303', 'CJ-RTM-2026-000304'],
@@ -1031,7 +1031,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
             sku: 'CJ-EMB-MED',
             productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
             brand: 'RTM Packaging',
-            size: 'Matrimonial',
+            size: 'Tarima 10,000 pzas',
             quantity: 5,
             uids: ['CJ-RTM-2026-000135', 'CJ-RTM-2026-000136', 'CJ-RTM-2026-000215', 'CJ-RTM-2026-000216', 'CJ-RTM-2026-000217'],
           },
@@ -1039,7 +1039,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
             sku: 'EST-COS-PLE',
             productName: 'Tag Impreso Colgante con Barniz UV',
             brand: 'RTM Packaging',
-            size: 'King Size',
+            size: 'Tarima 20,000 pzas',
             quantity: 4,
             uids: ['CJ-RTM-2026-000301', 'CJ-RTM-2026-000302', 'CJ-RTM-2026-000303', 'CJ-RTM-2026-000304'],
           },
@@ -1064,18 +1064,18 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
     ],
   },
   // =========================================================================
-  // EXPOSICIÓN EXTERNA (Expo Hogar & Confort Cintermex)
+  // DESPACHO EXTERNO (Planta Ensambladora Autopartes)
   // =========================================================================
   {
     id: 'sh-ord-expo-56',
     folio: 'OS-2026-0056',
-    type: 'Exposición',
+    type: 'Despacho B2B',
     sourceDocumentFolio: 'EXPO-2026-0008',
-    sourceDocumentType: 'Exposición',
+    sourceDocumentType: 'Pedido',
     originWarehouseId: 'wh-suc-valle-oriente',
     originWarehouseName: 'Laboratorios Medifarma (Parque Industrial)',
     originCoordinates: { x: 440, y: 340, name: 'Laboratorios Medifarma (Parque Industrial)' },
-    destinationName: 'Cintermex - Sala C (Expo Hogar Monterrey 2026)',
+    destinationName: 'Parque Industrial Reynosa - Sala C (Expo Hogar Monterrey 2026)',
     destinationAddress: 'Av. Fundidora #501, Col. Obrera, Reynosa, Tamps.',
     totalUnits: 8,
     remisionFolio: 'REM-2026-0098',
@@ -1088,7 +1088,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
     status: 'Transporte asignado',
     createdAt: '28 Ago 2026, 08:30',
     assignedLane: 'EMB-01',
-    notes: 'Exhibición comercial externa en Cintermex Stand 42-B. Maniobra de montaje autorizada.',
+    notes: 'Exhibición comercial externa en Parque Industrial Reynosa Stand 42-B. Maniobra de montaje autorizada.',
     selectedStrategy: 'DIRECT',
     items: [
       {
@@ -1104,7 +1104,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         sku: 'ETQ-FAR-VIL',
         productName: 'Folleto Plegable Médico 48 Páginas Medifarma',
         brand: 'RTM Packaging',
-        size: 'Matrimonial',
+        size: 'Tarima 10,000 pzas',
         quantity: 1,
         lotNumber: 'LT-2026-N02',
         uids: ['CJ-RTM-2026-000303'],
@@ -1113,7 +1113,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         sku: 'PT-MAN-048',
         productName: 'RTM Packaging Manual Instructivo Industrial 48 Páginas',
         brand: 'RTM Packaging',
-        size: 'Queen Size',
+        size: 'Bobina 1,500 m',
         quantity: 1,
         lotNumber: 'LT-2026-N05',
         uids: ['CJ-RTM-2026-000304'],
@@ -1131,7 +1131,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         sku: 'FOL-MED-PLE',
         productName: 'RTM Packaging Folleto Plegable Médico 48 Páginas',
         brand: 'RTM Packaging',
-        size: 'Matrimonial',
+        size: 'Tarima 10,000 pzas',
         quantity: 1,
         lotNumber: 'LT-2026-S05',
         uids: ['CJ-RTM-2026-000306'],
@@ -1140,7 +1140,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         sku: 'CJ-EMB-MED',
         productName: 'RTM Packaging Etiqueta Farmacéutica 4x6 en Rollo',
         brand: 'RTM Packaging',
-        size: 'Matrimonial',
+        size: 'Tarima 10,000 pzas',
         quantity: 1,
         lotNumber: 'LT-2026-R07',
         uids: ['CJ-RTM-2026-000307'],
@@ -1149,7 +1149,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         sku: 'EST-COS-PLE',
         productName: 'RTM Packaging Blister Card Termosellable Stanley',
         brand: 'RTM Packaging',
-        size: 'King Size',
+        size: 'Tarima 20,000 pzas',
         quantity: 1,
         lotNumber: 'LT-2026-S09',
         uids: ['CJ-RTM-2026-000308'],
@@ -1159,7 +1159,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       {
         id: 'alt-56-dir',
         strategy: 'DIRECT',
-        title: 'Ruta directa a Cintermex',
+        title: 'Ruta directa a Parque Industrial Reynosa',
         badge: 'Ruta Directa',
         distanceKm: 9.4,
         estimatedTimeMinutes: 22,
@@ -1175,14 +1175,14 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       {
         id: 'stop-56-1',
         sequenceNumber: 1,
-        destinationName: 'Cintermex - Sala C',
+        destinationName: 'Parque Industrial Reynosa - Sala C',
         zoneName: 'Parque Fundidora / Obrera',
         address: 'Av. Fundidora #501, Col. Obrera, Reynosa, Tamps.',
         coordinates: { x: 520, y: 180 },
         totalUnits: 8,
         remisionFolio: 'REM-2026-0098',
         sourceDocumentFolio: 'EXPO-2026-0008',
-        customerType: 'Exposición Externa',
+        customerType: 'Cliente Industrial',
         contactName: 'Lic. Sofía Garza',
         timeWindow: '14:00 - 15:30 h',
         priority: 'Urgente',
@@ -1204,7 +1204,7 @@ export interface ArrivalRecord {
   coordinates: {
     lat: number;
     lng: number;
-    label: string; // ej. '25.6573, -100.3668 (San Pedro Garza García)'
+    label: string; // ej. '25.6573, -100.3668 (Parque Industrial Reynosa)'
   };
   driverName: string;
   routeFolio: string;
@@ -1225,7 +1225,7 @@ export interface ActiveShippingRoute {
   outboundOrderFolio: string; // ej. 'OS-2026-0048'
   outboundOrderId: string;
   sourceDocumentFolio: string; // ej. 'PED-2026-0103' o 'OTP-2026-0044'
-  sourceDocumentType: 'Pedido' | 'OTP' | 'Exposición';
+  sourceDocumentType: 'Pedido' | 'OTP' | 'Orden de Salida';
   vehicleId: string;
   vehicleName: string;
   driverId: string;
@@ -1250,7 +1250,7 @@ export interface ActiveShippingRoute {
 
 export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
   // =========================================================================
-  // 1. RUTA VENTA MULTI-PARADA (3 Paradas · 0/3 · San Pedro, Valle Ote, Sur)
+  // 1. RUTA VENTA MULTI-PARADA (3 Paradas · 0/3 · Parque Industrial Reynosa, Parque Industrial del Norte, Sur)
   // =========================================================================
   {
     id: 'rt-2026-0031',
@@ -1264,7 +1264,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
     vehicleName: 'Camión #08 · Isuzu NPR',
     driverId: 'drv-1',
     driverName: 'Roberto Garza',
-    originWarehouseId: 'wh-mty-norte',
+    originWarehouseId: 'alm-rtm-mp',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
     departureTime: '08:30',
@@ -1317,7 +1317,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         stopId: 'stop-48-1',
         stopSequenceNumber: 1,
         destinationName: 'Schneider Electric México (Planta 3)',
-        zoneName: 'San Pedro Garza García',
+        zoneName: 'Parque Industrial Reynosa',
         address: 'Av. Roble 600, Col. Valle del Campestre, Reynosa, Tamps.',
         remisionFolio: 'REM-2026-0061',
         totalUnits: 4,
@@ -1331,7 +1331,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         id: 'stop-48-1',
         sequenceNumber: 1,
         destinationName: 'Schneider Electric México (Planta 3)',
-        zoneName: 'San Pedro Garza García',
+        zoneName: 'Parque Industrial Reynosa',
         address: 'Av. Roble 600, Col. Valle del Campestre, Reynosa, Tamps.',
         coordinates: { x: 330, y: 310 },
         totalUnits: 4,
@@ -1348,7 +1348,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
             sku: 'CJ-EMB-MED',
             productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
             brand: 'RTM Packaging',
-            size: 'Matrimonial',
+            size: 'Tarima 10,000 pzas',
             quantity: 4,
             uids: ['CJ-RTM-2026-000131', 'CJ-RTM-2026-000132', 'CJ-RTM-2026-000133', 'CJ-RTM-2026-000134'],
           },
@@ -1400,7 +1400,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
             sku: 'FOL-MED-PLE',
             productName: 'RTM Packaging Blister Card Termosellable',
             brand: 'RTM Packaging',
-            size: 'King Size',
+            size: 'Tarima 20,000 pzas',
             quantity: 7,
             uids: ['CJ-RTM-2026-000241', 'CJ-RTM-2026-000242', 'CJ-RTM-2026-000243', 'CJ-RTM-2026-000244', 'CJ-RTM-2026-000245', 'CJ-RTM-2026-000246', 'CJ-RTM-2026-000247'],
           },
@@ -1424,7 +1424,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
     vehicleName: 'Camión #12 · Hino 300',
     driverId: 'drv-3',
     driverName: 'Luis Herrera',
-    originWarehouseId: 'wh-mty-norte',
+    originWarehouseId: 'alm-rtm-mp',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
     departureTime: '09:15',
@@ -1547,7 +1547,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
             sku: 'ETQ-FAR-VIL',
             productName: 'Folleto Plegable Médico 48 Páginas Medifarma',
             brand: 'RTM Packaging',
-            size: 'Matrimonial',
+            size: 'Tarima 10,000 pzas',
             quantity: 2,
             uids: ['CJ-RTM-2026-000317', 'CJ-RTM-2026-000318'],
           },
@@ -1573,7 +1573,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
             sku: 'CJ-EMB-MED',
             productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
             brand: 'RTM Packaging',
-            size: 'Matrimonial',
+            size: 'Tarima 10,000 pzas',
             quantity: 2,
             uids: ['CJ-RTM-2026-000319', 'CJ-RTM-2026-000320'],
           },
@@ -1598,7 +1598,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
             sku: 'FOL-MED-PLE',
             productName: 'RTM Packaging Blister Card Termosellable',
             brand: 'RTM Packaging',
-            size: 'King Size',
+            size: 'Tarima 20,000 pzas',
             quantity: 2,
             uids: ['CJ-RTM-2026-000321', 'CJ-RTM-2026-000322'],
           },
@@ -1622,7 +1622,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
     vehicleName: 'Unidad #04 · Nissan Cabstar',
     driverId: 'drv-2',
     driverName: 'Carlos Medina',
-    originWarehouseId: 'wh-mty-norte',
+    originWarehouseId: 'alm-rtm-mp',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
     departureTime: '09:00',
@@ -1688,7 +1688,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
     vehicleName: 'Camión #05 · Isuzu Forward',
     driverId: 'drv-5',
     driverName: 'Raúl Morales',
-    originWarehouseId: 'wh-mty-sur',
+    originWarehouseId: 'alm-rtm-pt',
     originWarehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
     originCoordinates: { x: 580, y: 410, name: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)' },
     departureTime: '10:30',
@@ -1762,7 +1762,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
     vehicleName: 'Unidad #15 · Freightliner M2',
     driverId: 'drv-4',
     driverName: 'Javier Salinas',
-    originWarehouseId: 'wh-mty-norte',
+    originWarehouseId: 'alm-rtm-mp',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
     departureTime: '11:00',
@@ -1785,7 +1785,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         stopId: 'stop-52-1',
         stopSequenceNumber: 1,
         destinationName: 'Empaques Modernos del Norte S.A.',
-        zoneName: 'San Pedro Garza García',
+        zoneName: 'Parque Industrial Reynosa',
         address: 'Av. Ricardo Margáin 555, Santa Engracia, Reynosa, Tamps.',
         remisionFolio: 'REM-2026-0064',
         totalUnits: 6,
@@ -1798,7 +1798,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         id: 'stop-52-1',
         sequenceNumber: 1,
         destinationName: 'Empaques Modernos del Norte S.A.',
-        zoneName: 'San Pedro Garza García',
+        zoneName: 'Parque Industrial Reynosa',
         address: 'Av. Ricardo Margáin 555, Santa Engracia, Reynosa, Tamps.',
         coordinates: { x: 330, y: 310 },
         totalUnits: 6,
@@ -1809,13 +1809,13 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         timeWindow: '11:00 - 12:30 h',
         priority: 'Alta',
         status: 'Próxima',
-        statusNotes: 'Unidad circulando por Calzada San Pedro hacia torre residencial.',
+        statusNotes: 'Unidad circulando por Av. Industrial Falcón hacia torre residencial.',
         items: [
           {
             sku: 'FOL-MED-PLE',
             productName: 'RTM Packaging Blister Card Termosellable',
             brand: 'RTM Packaging',
-            size: 'King Size',
+            size: 'Tarima 20,000 pzas',
             quantity: 3,
             uids: ['CJ-RTM-2026-000261', 'CJ-RTM-2026-000262', 'CJ-RTM-2026-000263'],
           },
@@ -1823,7 +1823,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
             sku: 'CJ-EMB-MED',
             productName: 'RTM Packaging Caja Plegadiza Farmacéutica 500u',
             brand: 'RTM Packaging',
-            size: 'King Size',
+            size: 'Tarima 20,000 pzas',
             quantity: 3,
             uids: ['CJ-RTM-2026-000246', 'CJ-RTM-2026-000247', 'CJ-RTM-2026-000248'],
           },
@@ -1847,7 +1847,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
     vehicleName: 'Unidad #04 · Nissan Cabstar',
     driverId: 'drv-2',
     driverName: 'Carlos Medina',
-    originWarehouseId: 'wh-mty-sur',
+    originWarehouseId: 'alm-rtm-pt',
     originWarehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
     originCoordinates: { x: 580, y: 410, name: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)' },
     departureTime: '10:00',
@@ -1906,7 +1906,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
             sku: 'FOL-MED-PLE',
             productName: 'RTM Packaging Blister Card Termosellable',
             brand: 'RTM Packaging',
-            size: 'King Size',
+            size: 'Tarima 20,000 pzas',
             quantity: 1,
             uids: ['CJ-RTM-2026-000137'],
           },
@@ -1914,7 +1914,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
             sku: 'CJ-EMB-MED',
             productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
             brand: 'RTM Packaging',
-            size: 'Matrimonial',
+            size: 'Tarima 10,000 pzas',
             quantity: 2,
             uids: ['CJ-RTM-2026-000138', 'CJ-RTM-2026-000139'],
           },
@@ -1938,7 +1938,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
     vehicleName: 'Camión #08 · Isuzu NPR',
     driverId: 'drv-1',
     driverName: 'Roberto Garza',
-    originWarehouseId: 'wh-mty-sur',
+    originWarehouseId: 'alm-rtm-pt',
     originWarehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
     originCoordinates: { x: 580, y: 410, name: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)' },
     departureTime: '11:15',
@@ -2038,7 +2038,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
     vehicleName: 'Unidad #15 · Freightliner M2',
     driverId: 'drv-4',
     driverName: 'Javier Salinas',
-    originWarehouseId: 'wh-mty-norte',
+    originWarehouseId: 'alm-rtm-mp',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
     departureTime: '12:00',
@@ -2401,7 +2401,7 @@ export interface ShippingHistoryRecord {
   type: ShippingOrderType;
   outboundOrderFolio: string;
   sourceDocumentFolio: string;
-  sourceDocumentType: 'Pedido' | 'OTP' | 'Exposición';
+  sourceDocumentType: 'Pedido' | 'OTP' | 'Orden de Salida';
   destinationSummary: string;
   vehicleId: string;
   vehicleName: string;
@@ -2441,7 +2441,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     vehicleName: 'Camión #08 · Isuzu NPR',
     driverId: 'drv-1',
     driverName: 'Roberto Garza',
-    originWarehouseId: 'wh-mty-norte',
+    originWarehouseId: 'alm-rtm-mp',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
     stopsCount: 3,
@@ -2460,7 +2460,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         destinationName: 'Schneider Electric México (Planta 3)',
         customerType: 'Cliente Industrial',
         address: 'Av. Roble 600, Col. Valle del Campestre, Reynosa, Tamps.',
-        zoneName: 'San Pedro Garza García',
+        zoneName: 'Parque Industrial Reynosa',
         remisionFolio: 'REM-2026-0061',
         sourceDocumentFolio: 'PED-2026-0098',
         totalUnits: 4,
@@ -2468,11 +2468,11 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         result: 'Entrega completa',
         arrivalDateTime: '27 Ago 2026 · 14:42',
         deliveryDateTime: '27 Ago 2026 · 14:48',
-        coordinates: { lat: 25.6573, lng: -100.3668, label: '25.6573, -100.3668 (San Pedro Garza García)' },
+        coordinates: { lat: 25.6573, lng: -100.3668, label: '25.6573, -100.3668 (Parque Industrial Reynosa)' },
         recipientName: 'Schneider Electric México (Planta 3)',
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'King Size', quantity: 2, uids: ['CJ-RTM-2026-000101', 'CJ-RTM-2026-000102'] },
-          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 2, uids: ['CJ-RTM-2026-000107', 'CJ-RTM-2026-000108'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'Tarima 20,000 pzas', quantity: 2, uids: ['CJ-RTM-2026-000101', 'CJ-RTM-2026-000102'] },
+          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo', brand: 'RTM Packaging', size: 'Tarima 10,000 pzas', quantity: 2, uids: ['CJ-RTM-2026-000107', 'CJ-RTM-2026-000108'] },
         ],
       },
       {
@@ -2491,7 +2491,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         coordinates: { lat: 25.6482, lng: -100.3275, label: '25.6482, -100.3275 (Parque Industrial Reynosa)' },
         recipientName: 'Ing. Fernando Lozano (Recepción Hotel)',
         items: [
-          { sku: 'PT-BLI-001', productName: 'RTM Packaging Blister Card Termosellable 1000u', brand: 'RTM Packaging', size: 'Queen Size', quantity: 3, uids: ['CJ-RTM-2026-000109', 'CJ-RTM-2026-000110', 'CJ-RTM-2026-000111'] },
+          { sku: 'PT-BLI-001', productName: 'RTM Packaging Blister Card Termosellable 1000u', brand: 'RTM Packaging', size: 'Bobina 1,500 m', quantity: 3, uids: ['CJ-RTM-2026-000109', 'CJ-RTM-2026-000110', 'CJ-RTM-2026-000111'] },
         ],
       },
       {
@@ -2510,7 +2510,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         coordinates: { lat: 25.6210, lng: -100.2830, label: '25.6210, -100.2830 (Zona Sur)' },
         recipientName: 'Lic. Mónica Treviño (Compras GH)',
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'King Size', quantity: 4, uids: ['CJ-RTM-2026-000112', 'CJ-RTM-2026-000113', 'CJ-RTM-2026-000114', 'CJ-RTM-2026-000115'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'Tarima 20,000 pzas', quantity: 4, uids: ['CJ-RTM-2026-000112', 'CJ-RTM-2026-000113', 'CJ-RTM-2026-000114', 'CJ-RTM-2026-000115'] },
           { sku: 'PT-TAG-001', productName: 'Tag Impreso Colgante con Barniz UV', brand: 'America', size: 'Individual', quantity: 3, uids: ['CJ-RTM-2026-000116', 'CJ-RTM-2026-000117', 'CJ-RTM-2026-000118'] },
         ],
       },
@@ -2543,7 +2543,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     vehicleName: 'Unidad #15 · Freightliner M2',
     driverId: 'drv-4',
     driverName: 'Javier Salinas',
-    originWarehouseId: 'wh-mty-norte',
+    originWarehouseId: 'alm-rtm-mp',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
     stopsCount: 1,
@@ -2562,7 +2562,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         destinationName: 'Empaques Modernos del Norte S.A.',
         customerType: 'Cliente Industrial',
         address: 'Av. Ricardo Margáin 555, Santa Engracia, Reynosa, Tamps.',
-        zoneName: 'San Pedro Garza García',
+        zoneName: 'Parque Industrial Reynosa',
         remisionFolio: 'REM-2026-0060',
         sourceDocumentFolio: 'PED-2026-0100',
         totalUnits: 6,
@@ -2573,8 +2573,8 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         coordinates: { lat: 25.6540, lng: -100.3620, label: '25.6540, -100.3620 (Santa Engracia)' },
         recipientName: 'Lic. Javier Cantú (Superintendente)',
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'King Size', quantity: 3, uids: ['CJ-RTM-2026-000121', 'CJ-RTM-2026-000122', 'CJ-RTM-2026-000123'] },
-          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Caja Plegadiza Farmacéutica 500u', brand: 'RTM Packaging', size: 'King Size', quantity: 3, uids: ['CJ-RTM-2026-000124', 'CJ-RTM-2026-000125', 'CJ-RTM-2026-000126'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'Tarima 20,000 pzas', quantity: 3, uids: ['CJ-RTM-2026-000121', 'CJ-RTM-2026-000122', 'CJ-RTM-2026-000123'] },
+          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Caja Plegadiza Farmacéutica 500u', brand: 'RTM Packaging', size: 'Tarima 20,000 pzas', quantity: 3, uids: ['CJ-RTM-2026-000124', 'CJ-RTM-2026-000125', 'CJ-RTM-2026-000126'] },
         ],
       },
     ],
@@ -2604,7 +2604,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     vehicleName: 'Camión #12 · Hino 300',
     driverId: 'drv-3',
     driverName: 'Luis Herrera',
-    originWarehouseId: 'wh-mty-norte',
+    originWarehouseId: 'alm-rtm-mp',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
     stopsCount: 1,
@@ -2636,7 +2636,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         incidentType: 'Unidad no localizada',
         incidentNotes: 'Se entregaron 3 de 4 paquetes / tarimas. Faltó 1 pieza SKU PT-TAG-001 (CJ-RTM-2026-000084). Pendiente reenvío en ruta vespertina.',
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Folleto Plegable Médico 48 Páginas', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 2, uids: ['CJ-RTM-2026-000081', 'CJ-RTM-2026-000082'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Folleto Plegable Médico 48 Páginas', brand: 'RTM Packaging', size: 'Tarima 10,000 pzas', quantity: 2, uids: ['CJ-RTM-2026-000081', 'CJ-RTM-2026-000082'] },
           { sku: 'PT-TAG-001', productName: 'Tag Impreso Colgante con Barniz UV', brand: 'America', size: 'Individual', quantity: 1, uids: ['CJ-RTM-2026-000083'] },
         ],
       },
@@ -2666,7 +2666,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     vehicleName: 'Camión #08 · Isuzu NPR',
     driverId: 'drv-1',
     driverName: 'Roberto Garza',
-    originWarehouseId: 'wh-mty-norte',
+    originWarehouseId: 'alm-rtm-mp',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
     stopsCount: 1,
@@ -2698,7 +2698,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         incidentType: 'Cliente rechaza unidad',
         incidentNotes: 'Cliente aceptó 5 paquetes / tarimas y rechazó 1 pieza (CJ-RTM-2026-000095) por plástico protector rasgado durante la maniobra.',
         items: [
-          { sku: 'PT-BLI-001', productName: 'RTM Packaging Blister Card Termosellable 1000u', brand: 'RTM Packaging', size: 'Queen Size', quantity: 5, uids: ['CJ-RTM-2026-000091', 'CJ-RTM-2026-000092', 'CJ-RTM-2026-000093', 'CJ-RTM-2026-000094', 'CJ-RTM-2026-000096'] },
+          { sku: 'PT-BLI-001', productName: 'RTM Packaging Blister Card Termosellable 1000u', brand: 'RTM Packaging', size: 'Bobina 1,500 m', quantity: 5, uids: ['CJ-RTM-2026-000091', 'CJ-RTM-2026-000092', 'CJ-RTM-2026-000093', 'CJ-RTM-2026-000094', 'CJ-RTM-2026-000096'] },
         ],
       },
     ],
@@ -2725,7 +2725,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     vehicleName: 'Unidad #04 · Nissan Cabstar',
     driverId: 'drv-2',
     driverName: 'Carlos Medina',
-    originWarehouseId: 'wh-mty-sur',
+    originWarehouseId: 'alm-rtm-pt',
     originWarehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
     originCoordinates: { x: 580, y: 410, name: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)' },
     stopsCount: 1,
@@ -2757,7 +2757,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         incidentType: 'Producto dañado',
         incidentNotes: 'El cliente recibió las 3 piezas pero firmó bajo reserva por leve raspadura en esquina inferior del empaque / tarima CJ-RTM-2026-000072.',
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'King Size', quantity: 3, uids: ['CJ-RTM-2026-000071', 'CJ-RTM-2026-000072', 'CJ-RTM-2026-000073'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'Tarima 20,000 pzas', quantity: 3, uids: ['CJ-RTM-2026-000071', 'CJ-RTM-2026-000072', 'CJ-RTM-2026-000073'] },
         ],
       },
     ],
@@ -2784,7 +2784,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     vehicleName: 'Camión #05 · Isuzu Forward',
     driverId: 'drv-5',
     driverName: 'Raúl Morales',
-    originWarehouseId: 'wh-mty-sur',
+    originWarehouseId: 'alm-rtm-pt',
     originWarehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
     originCoordinates: { x: 580, y: 410, name: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)' },
     stopsCount: 1,
@@ -2803,7 +2803,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         destinationName: 'Residencial Las Lajas (Sra. Patricia Benavides)',
         customerType: 'Cliente Industrial',
         address: 'Paseo de las Lajas 1420, Col. Las Lajas, Reynosa, Tamps.',
-        zoneName: 'San Pedro / Las Lajas',
+        zoneName: 'Parque Industrial Villa Florida',
         remisionFolio: 'REM-2026-0057',
         sourceDocumentFolio: 'PED-2026-0092',
         totalUnits: 2,
@@ -2816,7 +2816,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         incidentType: 'Otro',
         incidentNotes: 'Acceso denegado por administración del fraccionamiento después de las 17:00 h. Cliente no contestó llamada. Mercancía retornó a CEDIS para reprogramación.',
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'King Size', quantity: 2, uids: ['CJ-RTM-2026-000076', 'CJ-RTM-2026-000077'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'Tarima 20,000 pzas', quantity: 2, uids: ['CJ-RTM-2026-000076', 'CJ-RTM-2026-000077'] },
         ],
       },
     ],
@@ -2843,7 +2843,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     vehicleName: 'Camión #12 · Hino 300',
     driverId: 'drv-2',
     driverName: 'Carlos Medina',
-    originWarehouseId: 'wh-mty-norte',
+    originWarehouseId: 'alm-rtm-mp',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
     stopsCount: 1,
@@ -2874,8 +2874,8 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         recipientName: 'Brenda Cavazos (Encargada VO)',
         branchReceiptConfirmed: false,
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'King Size', quantity: 6, uids: ['CJ-RTM-2026-000051', 'CJ-RTM-2026-000052', 'CJ-RTM-2026-000053', 'CJ-RTM-2026-000054', 'CJ-RTM-2026-000055', 'CJ-RTM-2026-000056'] },
-          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 8, uids: ['CJ-RTM-2026-000061', 'CJ-RTM-2026-000062', 'CJ-RTM-2026-000063', 'CJ-RTM-2026-000064', 'CJ-RTM-2026-000065', 'CJ-RTM-2026-000066', 'CJ-RTM-2026-000067', 'CJ-RTM-2026-000068'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'Tarima 20,000 pzas', quantity: 6, uids: ['CJ-RTM-2026-000051', 'CJ-RTM-2026-000052', 'CJ-RTM-2026-000053', 'CJ-RTM-2026-000054', 'CJ-RTM-2026-000055', 'CJ-RTM-2026-000056'] },
+          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo', brand: 'RTM Packaging', size: 'Tarima 10,000 pzas', quantity: 8, uids: ['CJ-RTM-2026-000061', 'CJ-RTM-2026-000062', 'CJ-RTM-2026-000063', 'CJ-RTM-2026-000064', 'CJ-RTM-2026-000065', 'CJ-RTM-2026-000066', 'CJ-RTM-2026-000067', 'CJ-RTM-2026-000068'] },
         ],
       },
     ],
@@ -2904,7 +2904,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     vehicleName: 'Camión #05 · Isuzu Forward',
     driverId: 'drv-5',
     driverName: 'Raúl Morales',
-    originWarehouseId: 'wh-mty-sur',
+    originWarehouseId: 'alm-rtm-pt',
     originWarehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
     originCoordinates: { x: 580, y: 410, name: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)' },
     stopsCount: 1,
@@ -2935,8 +2935,8 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         recipientName: 'Ing. Jorge Villarreal (Recibo Schneider)',
         branchReceiptConfirmed: false,
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Folleto Plegable Médico 48 Páginas', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 5, uids: ['CJ-RTM-2026-000041', 'CJ-RTM-2026-000042', 'CJ-RTM-2026-000043', 'CJ-RTM-2026-000044', 'CJ-RTM-2026-000045'] },
-          { sku: 'PT-BLI-001', productName: 'RTM Packaging Blister Card Termosellable 1000u', brand: 'RTM Packaging', size: 'Queen Size', quantity: 4, uids: ['CJ-RTM-2026-000046', 'CJ-RTM-2026-000047', 'CJ-RTM-2026-000048', 'CJ-RTM-2026-000049'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Folleto Plegable Médico 48 Páginas', brand: 'RTM Packaging', size: 'Tarima 10,000 pzas', quantity: 5, uids: ['CJ-RTM-2026-000041', 'CJ-RTM-2026-000042', 'CJ-RTM-2026-000043', 'CJ-RTM-2026-000044', 'CJ-RTM-2026-000045'] },
+          { sku: 'PT-BLI-001', productName: 'RTM Packaging Blister Card Termosellable 1000u', brand: 'RTM Packaging', size: 'Bobina 1,500 m', quantity: 4, uids: ['CJ-RTM-2026-000046', 'CJ-RTM-2026-000047', 'CJ-RTM-2026-000048', 'CJ-RTM-2026-000049'] },
         ],
       },
     ],
@@ -2963,7 +2963,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     vehicleName: 'Unidad #15 · Freightliner M2',
     driverId: 'drv-4',
     driverName: 'Javier Salinas',
-    originWarehouseId: 'wh-mty-norte',
+    originWarehouseId: 'alm-rtm-mp',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
     stopsCount: 1,
@@ -2996,8 +2996,8 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         branchReceiptDateTime: '25 Ago 2026 · 11:35',
         branchReceiptOperator: 'Brenda Cavazos (Mesa de Verificación VO)',
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'King Size', quantity: 6, uids: ['CJ-RTM-2026-000031', 'CJ-RTM-2026-000032', 'CJ-RTM-2026-000033', 'CJ-RTM-2026-000034', 'CJ-RTM-2026-000035', 'CJ-RTM-2026-000036'] },
-          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 6, uids: ['CJ-RTM-2026-000037', 'CJ-RTM-2026-000038', 'CJ-RTM-2026-000039', 'CJ-RTM-2026-000040', 'CJ-RTM-2026-000021', 'CJ-RTM-2026-000022'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'Tarima 20,000 pzas', quantity: 6, uids: ['CJ-RTM-2026-000031', 'CJ-RTM-2026-000032', 'CJ-RTM-2026-000033', 'CJ-RTM-2026-000034', 'CJ-RTM-2026-000035', 'CJ-RTM-2026-000036'] },
+          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo', brand: 'RTM Packaging', size: 'Tarima 10,000 pzas', quantity: 6, uids: ['CJ-RTM-2026-000037', 'CJ-RTM-2026-000038', 'CJ-RTM-2026-000039', 'CJ-RTM-2026-000040', 'CJ-RTM-2026-000021', 'CJ-RTM-2026-000022'] },
         ],
       },
     ],
@@ -3024,7 +3024,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     vehicleName: 'Camión #08 · Isuzu NPR',
     driverId: 'drv-1',
     driverName: 'Roberto Garza',
-    originWarehouseId: 'wh-mty-sur',
+    originWarehouseId: 'alm-rtm-pt',
     originWarehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
     originCoordinates: { x: 580, y: 410, name: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)' },
     stopsCount: 1,
@@ -3057,8 +3057,8 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         branchReceiptDateTime: '26 Ago 2026 · 15:30',
         branchReceiptOperator: 'Ing. Jorge Villarreal (Almacén Schneider)',
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Folleto Plegable Médico 48 Páginas', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 4, uids: ['CJ-RTM-2026-000011', 'CJ-RTM-2026-000012', 'CJ-RTM-2026-000013', 'CJ-RTM-2026-000014'] },
-          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 4, uids: ['CJ-RTM-2026-000015', 'CJ-RTM-2026-000016', 'CJ-RTM-2026-000017', 'CJ-RTM-2026-000018'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Folleto Plegable Médico 48 Páginas', brand: 'RTM Packaging', size: 'Tarima 10,000 pzas', quantity: 4, uids: ['CJ-RTM-2026-000011', 'CJ-RTM-2026-000012', 'CJ-RTM-2026-000013', 'CJ-RTM-2026-000014'] },
+          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo', brand: 'RTM Packaging', size: 'Tarima 10,000 pzas', quantity: 4, uids: ['CJ-RTM-2026-000015', 'CJ-RTM-2026-000016', 'CJ-RTM-2026-000017', 'CJ-RTM-2026-000018'] },
         ],
       },
     ],
@@ -3085,7 +3085,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     vehicleName: 'Camión #08 · Isuzu NPR',
     driverId: 'drv-1',
     driverName: 'Roberto Garza',
-    originWarehouseId: 'wh-mty-norte',
+    originWarehouseId: 'alm-rtm-mp',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
     stopsCount: 1,
@@ -3140,7 +3140,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     vehicleName: 'Unidad #04 · Nissan Cabstar',
     driverId: 'drv-2',
     driverName: 'Carlos Medina',
-    originWarehouseId: 'wh-mty-norte',
+    originWarehouseId: 'alm-rtm-mp',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
     stopsCount: 1,
@@ -3271,7 +3271,7 @@ export const INITIAL_MOCK_FLEET: FleetVehicleItem[] = [
   {
     id: 'veh-08',
     vehicleName: 'Camión #08 · Isuzu NPR',
-    plate: 'NL-8492-B',
+    plate: 'TM-8492-B',
     status: 'En ruta',
     assignedRouteFolio: 'RT-2026-0031',
     driverName: 'Roberto Garza',
@@ -3284,7 +3284,7 @@ export const INITIAL_MOCK_FLEET: FleetVehicleItem[] = [
   {
     id: 'veh-15',
     vehicleName: 'Unidad #15 · Freightliner M2',
-    plate: 'NL-1590-C',
+    plate: 'TM-1590-C',
     status: 'En ruta',
     assignedRouteFolio: 'RT-2026-0032',
     driverName: 'Javier Salinas',
@@ -3297,7 +3297,7 @@ export const INITIAL_MOCK_FLEET: FleetVehicleItem[] = [
   {
     id: 'veh-04',
     vehicleName: 'Unidad #04 · Nissan Cabstar',
-    plate: 'NL-4421-A',
+    plate: 'TM-4421-A',
     status: 'En ruta',
     assignedRouteFolio: 'RT-2026-0034',
     driverName: 'Carlos Medina',
@@ -3310,7 +3310,7 @@ export const INITIAL_MOCK_FLEET: FleetVehicleItem[] = [
   {
     id: 'veh-05',
     vehicleName: 'Camión #05 · Isuzu Forward',
-    plate: 'NL-5510-D',
+    plate: 'TM-5510-D',
     status: 'En ruta',
     assignedRouteFolio: 'RT-2026-0037',
     driverName: 'Raúl Morales',
@@ -3323,7 +3323,7 @@ export const INITIAL_MOCK_FLEET: FleetVehicleItem[] = [
   {
     id: 'veh-12',
     vehicleName: 'Camión #12 · Hino 300',
-    plate: 'NL-1288-E',
+    plate: 'TM-1288-E',
     status: 'Disponible',
     driverName: 'Luis Herrera',
     capacityUnits: 26,
@@ -3335,7 +3335,7 @@ export const INITIAL_MOCK_FLEET: FleetVehicleItem[] = [
   {
     id: 'veh-02',
     vehicleName: 'Camioneta #02 · Toyota Hilux',
-    plate: 'NL-2201-F',
+    plate: 'TM-2201-F',
     status: 'Disponible',
     capacityUnits: 6,
     loadedUnits: 0,
@@ -3346,7 +3346,7 @@ export const INITIAL_MOCK_FLEET: FleetVehicleItem[] = [
   {
     id: 'veh-09',
     vehicleName: 'Camión #09 · Isuzu NPR',
-    plate: 'NL-9912-G',
+    plate: 'TM-9912-G',
     status: 'Disponible',
     capacityUnits: 32,
     loadedUnits: 0,
@@ -3357,7 +3357,7 @@ export const INITIAL_MOCK_FLEET: FleetVehicleItem[] = [
   {
     id: 'veh-14',
     vehicleName: 'Camión #14 · Hino 300',
-    plate: 'NL-1433-H',
+    plate: 'TM-1433-H',
     status: 'Disponible',
     capacityUnits: 26,
     loadedUnits: 0,
@@ -3368,7 +3368,7 @@ export const INITIAL_MOCK_FLEET: FleetVehicleItem[] = [
   {
     id: 'veh-07',
     vehicleName: 'Camión #07 · Isuzu Forward',
-    plate: 'NL-7720-J',
+    plate: 'TM-7720-J',
     status: 'Pendiente de carga',
     capacityUnits: 30,
     loadedUnits: 18,
@@ -3379,7 +3379,7 @@ export const INITIAL_MOCK_FLEET: FleetVehicleItem[] = [
   {
     id: 'veh-11',
     vehicleName: 'Unidad #11 · Nissan Cabstar',
-    plate: 'NL-1144-K',
+    plate: 'TM-1144-K',
     status: 'Pendiente de carga',
     capacityUnits: 18,
     loadedUnits: 10,
@@ -3390,7 +3390,7 @@ export const INITIAL_MOCK_FLEET: FleetVehicleItem[] = [
   {
     id: 'veh-03',
     vehicleName: 'Camión #03 · Hino 300',
-    plate: 'NL-3301-L',
+    plate: 'TM-3301-L',
     status: 'Pendiente de carga',
     capacityUnits: 26,
     loadedUnits: 14,
@@ -3401,7 +3401,7 @@ export const INITIAL_MOCK_FLEET: FleetVehicleItem[] = [
   {
     id: 'veh-06',
     vehicleName: 'Camión #06 · Freightliner M2',
-    plate: 'NL-6619-M',
+    plate: 'TM-6619-M',
     status: 'Mantenimiento',
     capacityUnits: 40,
     loadedUnits: 0,

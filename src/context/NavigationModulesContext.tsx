@@ -135,7 +135,6 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'inventario': true,
   'mesa-verificacion': true,
   'logistica': false,
-  'showroom-expos': false,
   'requisiciones': false,
   'compras': false,
   'proveedores': false,
@@ -149,7 +148,7 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'configuracion': true,
 };
 
-const STORAGE_KEY = 'rtm_visible_navigation_modules_v3';
+const STORAGE_KEY = 'rtm_visible_navigation_modules_v4';
 
 interface NavigationModulesContextType {
   visibleModules: VisibilityMap;
@@ -176,7 +175,6 @@ export const NavigationModulesProvider: React.FC<{ children: React.ReactNode }> 
           return {
             ...DEFAULT_VISIBILITY,
             ...parsed,
-            'showroom-expos': false,
             'nomina': parsed.nomina !== undefined ? parsed.nomina : true,
           };
         } catch {
@@ -192,8 +190,6 @@ export const NavigationModulesProvider: React.FC<{ children: React.ReactNode }> 
   }, [visibleModules]);
 
   const isModuleVisible = (key: NavItemKey): boolean => {
-    // Showroom & Expos is disabled in RTM
-    if (key === 'showroom-expos') return false;
     // Locked items are always visible
     if (key === 'inicio' || key === 'configuracion') return true;
     return visibleModules[key] !== false;

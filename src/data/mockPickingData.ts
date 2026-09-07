@@ -7,7 +7,7 @@ export type PickingStrategyType =
   | 'FEFO' 
   | 'SHORTEST_PATH' 
   | 'EMPTY_LOCATION'
-  | 'SHOWROOM_PRIORITY'
+  | 'QA_PRIORITY'
   | 'MANUAL';
 
 export interface PendingPickingDemand {
@@ -187,8 +187,8 @@ export const STRATEGY_COMPARISONS: Record<PickingStrategyType, StrategyMetricCom
     panelTitle: 'Vaciar Ubicación — Consolidación de Espacio',
     panelSubtitle: 'Prioriza posiciones que quedarán libres tras el surtido para habilitar recepción de nuevas bobinas.',
   },
-  SHOWROOM_PRIORITY: {
-    type: 'SHOWROOM_PRIORITY',
+  QA_PRIORITY: {
+    type: 'QA_PRIORITY',
     label: 'Prioridad Muestra / QA',
     badge: 'Muestreo',
     stopsCount: 5,
@@ -326,7 +326,7 @@ export const INITIAL_PENDING_PICKING_DEMANDS: PendingPickingDemand[] = [
     id: 'dem-1',
     referenceFolio: 'OP-2026-0882',
     type: 'Surtido a Producción',
-    warehouseId: 'wh-mty-norte',
+    warehouseId: 'alm-rtm-mp',
     warehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     destinationName: 'Línea Flexo 1 (Prensa Nilpeter FB-3300)',
     articlesCount: 2,
@@ -344,7 +344,7 @@ export const INITIAL_PENDING_PICKING_DEMANDS: PendingPickingDemand[] = [
     id: 'dem-2',
     referenceFolio: 'OP-2026-0891',
     type: 'Surtido a Producción',
-    warehouseId: 'wh-mty-norte',
+    warehouseId: 'alm-rtm-mp',
     warehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     destinationName: 'Línea Offset (Heidelberg CX 102 - 6 Colores)',
     articlesCount: 2,
@@ -362,7 +362,7 @@ export const INITIAL_PENDING_PICKING_DEMANDS: PendingPickingDemand[] = [
     id: 'dem-3',
     referenceFolio: 'OP-2026-0904',
     type: 'Surtido a Producción',
-    warehouseId: 'wh-mty-norte',
+    warehouseId: 'alm-rtm-mp',
     warehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     destinationName: 'Línea Troquel & Barniz (Bobst Novacut 106)',
     articlesCount: 2,
@@ -380,7 +380,7 @@ export const INITIAL_PENDING_PICKING_DEMANDS: PendingPickingDemand[] = [
     id: 'dem-4',
     referenceFolio: 'OP-2026-0912',
     type: 'Surtido a Producción',
-    warehouseId: 'wh-mty-norte',
+    warehouseId: 'alm-rtm-mp',
     warehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     destinationName: 'Línea Flexo 2 (Mark Andy 2200)',
     articlesCount: 2,
@@ -398,7 +398,7 @@ export const INITIAL_PENDING_PICKING_DEMANDS: PendingPickingDemand[] = [
     id: 'dem-5',
     referenceFolio: 'PED-2026-0410',
     type: 'Pedido de Cliente',
-    warehouseId: 'wh-mty-sur',
+    warehouseId: 'alm-rtm-pt',
     warehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
     destinationName: 'Laboratorios Medifarma S.A. de C.V. (Parque Industrial Reynosa)',
     articlesCount: 2,
@@ -425,7 +425,7 @@ export const INITIAL_PICK_ORDERS: PickOrder[] = [
     type: 'Surtido a Producción',
     strategyType: 'RECOMMENDED',
     strategyName: 'Recomendada',
-    warehouseId: 'wh-mty-norte',
+    warehouseId: 'alm-rtm-mp',
     warehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     destinationName: 'Línea Flexo 1 (Prensa Nilpeter FB-3300)',
     tempStagingLocation: 'STG-OP-01',
@@ -523,7 +523,7 @@ export const INITIAL_PICK_ORDERS: PickOrder[] = [
     type: 'Surtido a Producción',
     strategyType: 'FIFO',
     strategyName: 'FIFO Estricto',
-    warehouseId: 'wh-mty-norte',
+    warehouseId: 'alm-rtm-mp',
     warehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     destinationName: 'Línea Offset (Heidelberg CX 102 - 6 Colores)',
     tempStagingLocation: 'STG-OP-02',
@@ -551,7 +551,7 @@ export const INITIAL_PICK_ORDERS: PickOrder[] = [
     type: 'Surtido a Producción',
     strategyType: 'SHORTEST_PATH',
     strategyName: 'Menor Recorrido',
-    warehouseId: 'wh-mty-norte',
+    warehouseId: 'alm-rtm-mp',
     warehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     destinationName: 'Línea Troquel & Barniz (Bobst Novacut 106)',
     tempStagingLocation: 'STG-OP-03',
@@ -583,7 +583,7 @@ export const INITIAL_PICK_ORDERS: PickOrder[] = [
     type: 'Pedido de Cliente',
     strategyType: 'RECOMMENDED',
     strategyName: 'Recomendada',
-    warehouseId: 'wh-mty-sur',
+    warehouseId: 'alm-rtm-pt',
     warehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
     destinationName: 'Laboratorios Medifarma S.A. de C.V. (Parque Industrial Reynosa)',
     tempStagingLocation: 'STG-PT-01',
@@ -610,7 +610,7 @@ export const INITIAL_PICK_ORDERS: PickOrder[] = [
     type: 'Pedido de Cliente',
     strategyType: 'FIFO',
     strategyName: 'FIFO Estricto',
-    warehouseId: 'wh-mty-sur',
+    warehouseId: 'alm-rtm-pt',
     warehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
     destinationName: 'Delphi Technologies Reynosa (Planta 2)',
     tempStagingLocation: 'STG-PT-02',
