@@ -93,8 +93,8 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
   const totalUnitsOrdered = order.items.reduce((acc, i) => acc + i.quantity, 0);
 
   const customerPo = order.customerPo || 'PO-SBD-2026-9921';
-  const partNumber = order.partNumber || order.items[0]?.sku || 'BD-MAN-024';
-  const revision = order.revision || 'Rev B';
+  const partNumber = order.partNumber || order.items[0]?.sku || 'NA472050';
+  const revision = order.revision || 'Rev 08/23';
   const technology = order.technology || (order.items[0]?.sku?.startsWith('PT-ETQ') ? 'Flexografía' : 'Offset');
   const isObsoleteRevision = Boolean(order.isObsoleteRevision);
   const hasMaterialAlert = Boolean(order.hasMaterialAlert);

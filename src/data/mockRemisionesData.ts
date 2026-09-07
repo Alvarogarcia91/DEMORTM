@@ -77,7 +77,7 @@ export interface OutboundRemision {
 
 export const INITIAL_MOCK_REMISSIONES: OutboundRemision[] = [
   // =========================================================================
-  // REMISIÓN 1 (Laboratorios Medifarma - PT Farmacéutico / 100% validada)
+  // REMISIÓN 1 (TRICO TECHNOLOGIES - IS-2420 / 100% validada)
   // =========================================================================
   {
     id: 'rem-1',
@@ -85,18 +85,18 @@ export const INITIAL_MOCK_REMISSIONES: OutboundRemision[] = [
     type: 'Venta',
     status: 'Remisión generada',
     outboundOrderFolio: 'VS-2026-0040',
-    sourceDocumentFolio: 'PED-2026-0410',
+    sourceDocumentFolio: 'PED-RTM-2026-0141',
     sourceDocumentType: 'Pedido',
     createdAt: '06 Sep 2026, 11:45',
     originWarehouseId: 'alm-rtm-pt',
     originWarehouseName: 'ALM-PT (Almacén Producto Terminado RTM)',
-    destinationName: 'Laboratorios Medifarma S.A. de C.V.',
-    destinationAddress: 'Av. Industrial Falcon 1200, Parque Industrial Reynosa, Reynosa, Tamps.',
+    destinationName: 'TRICO TECHNOLOGIES CORPORATION',
+    destinationAddress: 'Av. Parque Industrial Reynosa #200, Reynosa, Tamps.',
     assignedLane: 'EMB-01',
     operatorAssigned: 'Valeria Torres (Operador PT)',
     totalUnits: 3,
-    observations: 'Entrega en área de almacén de empaque primario. Requiere certificado de análisis COA y verificación de sello de caja.',
-    qrPayload: 'REM=REM-2026-0061|TYPE=SALE|REF=PED-2026-0410',
+    observations: 'Slide-In Label Wiper Blade (IS-2420). Entrega en área de recibo de materiales. Requiere certificado de análisis COA.',
+    qrPayload: 'REM=REM-2026-0061|TYPE=SALE|REF=PED-RTM-2026-0141',
     carrierInfo: {
       driverName: 'Mario Cantú',
       unitPlate: 'TM-8492-B',
@@ -104,10 +104,10 @@ export const INITIAL_MOCK_REMISSIONES: OutboundRemision[] = [
     },
     items: [
       {
-        sku: 'ETQ-FAR-VIL',
-        productName: 'Etiqueta Farmacéutica Vial 10ml - PT',
-        brand: 'RTM Packaging',
-        size: 'Rollo 5,000 pzas',
+        sku: 'IS-2420',
+        productName: 'Slide-In Label Wiper Blade (Rev I-01)',
+        brand: 'TRICO',
+        size: 'Rollo 1,000 pzas',
         quantity: 3,
         lotNumber: 'RTM-PT-260905-001',
         uids: [
@@ -121,15 +121,15 @@ export const INITIAL_MOCK_REMISSIONES: OutboundRemision[] = [
       deliveredByLabel: 'Entregó (Chofer / Mesa de Salida PT)',
       deliveredByName: 'Mario Cantú (Transporte RTM)',
       receivedByLabel: 'Recibió de conformidad (QA Cliente)',
-      receivedByName: 'Lic. Roberto Cantú',
+      receivedByName: 'Lic. Roberto Cantú (Demo)',
       signeeNameLabel: 'Nombre del Receptor',
-      signeeName: 'Lic. Roberto Cantú',
+      signeeName: 'Lic. Roberto Cantú (Demo)',
       dateTimeLabel: 'Fecha y hora de entrega',
     },
   },
 
   // =========================================================================
-  // REMISIÓN 2 (Delphi Technologies - Cajas Corrugadas / En proceso)
+  // REMISIÓN 2 (TYCO - Instructivos e-Force / En proceso)
   // =========================================================================
   {
     id: 'rem-2',
@@ -137,24 +137,24 @@ export const INITIAL_MOCK_REMISSIONES: OutboundRemision[] = [
     type: 'Venta',
     status: 'Pendiente de remisión',
     outboundOrderFolio: 'VS-2026-0044',
-    sourceDocumentFolio: 'PED-2026-0398',
+    sourceDocumentFolio: 'PED-RTM-2026-0140',
     sourceDocumentType: 'Pedido',
     createdAt: '06 Sep 2026, 13:50',
     originWarehouseId: 'alm-rtm-pt',
     originWarehouseName: 'ALM-PT (Almacén Producto Terminado RTM)',
-    destinationName: 'Delphi Technologies Reynosa (Planta 2)',
-    destinationAddress: 'Av. Las Palmas 500, Parque Industrial Villa Florida, Reynosa, Tamps.',
+    destinationName: 'TYCO (Johnson Controls)',
+    destinationAddress: 'Av. Las Torres #500, Parque Industrial Finsa, Guadalupe N.L.',
     assignedLane: 'EMB-02',
     operatorAssigned: 'Valeria Torres (Operador PT)',
     totalUnits: 3,
-    observations: 'Entrega por rampa 4 de recepción de componentes. Solicitar pase de acceso en caseta norte.',
-    qrPayload: 'REM=REM-2026-0062|TYPE=SALE|REF=PED-2026-0398',
+    observations: 'Instructivo e-Force Seguridad Contra Incendios (02-814-556). Entrega por rampa 3 de proveedores.',
+    qrPayload: 'REM=REM-2026-0062|TYPE=SALE|REF=PED-RTM-2026-0140',
     items: [
       {
-        sku: 'CJ-EMB-MED',
-        productName: 'Cajas Corrugadas Flauta C 40x30x30 cm',
-        brand: 'RTM Packaging',
-        size: 'Tarima 500 pzas',
+        sku: '02-814-556',
+        productName: 'Instructivo e-Force Seguridad Contra Incendios (Rev B)',
+        brand: 'TYCO',
+        size: 'Tarima 5,000 pzas',
         quantity: 3,
         lotNumber: 'RTM-PT-260903-010',
         uids: [
@@ -173,7 +173,7 @@ export const INITIAL_MOCK_REMISSIONES: OutboundRemision[] = [
   },
 
   // =========================================================================
-  // REMISIÓN 3 (Empacadora del Golfo - Folletos y Plegadizos)
+  // REMISIÓN 3 (BLACK & DECKER - Manual DCS382 NA)
   // =========================================================================
   {
     id: 'rem-3',
@@ -181,24 +181,24 @@ export const INITIAL_MOCK_REMISSIONES: OutboundRemision[] = [
     type: 'Venta',
     status: 'Pendiente de remisión',
     outboundOrderFolio: 'VS-2026-0042',
-    sourceDocumentFolio: 'PED-2026-0402',
+    sourceDocumentFolio: 'PED-RTM-2026-0142',
     sourceDocumentType: 'Pedido',
     createdAt: '06 Sep 2026, 14:00',
     originWarehouseId: 'alm-rtm-pt',
     originWarehouseName: 'ALM-PT (Almacén Producto Terminado RTM)',
-    destinationName: 'Empacadora del Golfo S.A. de C.V.',
-    destinationAddress: 'Km 8.5 Carretera Matamoros-Reynosa, Reynosa, Tamps.',
+    destinationName: 'BLACK & DECKER (Stanley Black & Decker)',
+    destinationAddress: 'Av. Industria Pesada #1000, Parque Industrial Milimex, Apodaca N.L.',
     assignedLane: 'EMB-03',
     operatorAssigned: 'Valeria Torres (Operador PT)',
     totalUnits: 2,
-    observations: 'Lote de folletos médicos plegados y estuches de cartulina.',
-    qrPayload: 'REM=REM-2026-0063|TYPE=SALE|REF=PED-2026-0402',
+    observations: 'Manual Cordless Recip Saw DCS382 NA (NA472050). Entrega parcial lote de 5,000 pzas disponibles.',
+    qrPayload: 'REM=REM-2026-0063|TYPE=SALE|REF=PED-RTM-2026-0142',
     items: [
       {
-        sku: 'FOL-MED-PLE',
-        productName: 'Folleto Médico Farmacéutico Plegado 4 Cuerpos',
-        brand: 'RTM Packaging',
-        size: 'Caja 1,000 pzas',
+        sku: 'NA472050',
+        productName: 'Manual Cordless Recip Saw DCS382 NA (Rev 08/23)',
+        brand: 'BLACK & DECKER',
+        size: 'Caja 2,500 pzas',
         quantity: 2,
         lotNumber: 'RTM-PT-260904-003',
         uids: [

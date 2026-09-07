@@ -254,10 +254,10 @@ export const CotizacionesDashboard: React.FC<CotizacionesDashboardProps> = ({
 
           <div className="space-y-2 text-xs">
             {[
-              { sku: 'BD-MAN-024', name: 'Manual instructivo 24 páginas (Rev B)', count: 65000, pct: 'Offset · Stanley B&D' },
-              { sku: 'PT-ETQ-001', name: 'Etiqueta Autoadherible 4x6" en Rollo', count: 48000, pct: 'Flexo · Lab Rex' },
-              { sku: 'BLI-CRD-001', name: 'Blister Card Termosellable (Rev C)', count: 35000, pct: 'Offset · Electrodomésticos' },
-              { sku: 'BD-MAN-048', name: 'Manual instructivo 48 páginas (Rev A)', count: 18000, pct: 'Offset · Stanley B&D' },
+              { sku: 'NA472050', name: 'Manual Cordless Recip Saw DCS382 NA', count: 65000, pct: 'Offset · BLACK & DECKER' },
+              { sku: 'IS-2420', name: 'Slide-In Label Wiper Blade', count: 48000, pct: 'Flexo · TRICO' },
+              { sku: '02-814-556', name: 'Instructivo e-Force Incendios', count: 35000, pct: 'Offset · TYCO' },
+              { sku: 'NA698298', name: 'Manual Drill DCD777 NA', count: 18000, pct: 'Offset · BLACK & DECKER' },
             ].map((art, idx) => (
               <div
                 key={art.sku}

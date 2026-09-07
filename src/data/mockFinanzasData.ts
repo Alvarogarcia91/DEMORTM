@@ -184,14 +184,14 @@ export const INITIAL_SALES_INVOICES: SalesInvoice[] = [
     uuidSat: '4A9F21E3-88B2-4C10-90D1-6F7D2B91A401',
     fechaEmision: '2026-08-20T10:30:00',
     fechaTimbrado: '2026-08-20T10:32:15',
-    clienteId: 'cli-001',
-    clienteNombre: 'Laboratorios Medifarma S.A. de C.V.',
-    clienteRfc: 'LME820415HQ1',
+    clienteId: 'cli-002',
+    clienteNombre: 'TRICO TECHNOLOGIES CORPORATION',
+    clienteRfc: 'TTC880315PL1',
     clienteRegimen: '601 - General de Ley Personas Morales',
-    clienteCp: '03100',
-    remisionId: 'REM-2026-0062',
-    remisionFolio: 'REM-2026-0062',
-    pedidoFolio: 'PED-RTM-2026-0032',
+    clienteCp: '88780',
+    remisionId: 'REM-2026-0061',
+    remisionFolio: 'REM-2026-0061',
+    pedidoFolio: 'PED-RTM-2026-0141',
     status: 'timbrada',
     metodoPago: 'PPD',
     formaPago: '99',
@@ -206,34 +206,34 @@ export const INITIAL_SALES_INVOICES: SalesInvoice[] = [
     items: [
       {
         id: 'item-0048-1',
-        sku: 'CAJA-MED-01',
-        description: 'Caja Plegadiza Sulfatada 14 pts Farmacéutica 12x8x4 cm con barniz UV',
-        quantity: 50000,
+        sku: 'IS-2420',
+        description: 'Slide-In Label Wiper Blade (Rev I-01) Flexo UV en Rollo',
+        quantity: 150000,
         unit: 'PZA',
-        unitPrice: 2.10,
-        subtotal: 105000.00,
+        unitPrice: 0.92,
+        subtotal: 138000.00,
         taxRate: 0.16,
-        taxAmount: 16800.00,
-        total: 121800.00,
-        satKey: '14111500',
+        taxAmount: 22080.00,
+        total: 160080.00,
+        satKey: '55121600',
         satUnit: 'H87'
       },
       {
         id: 'item-0048-2',
-        sku: 'ETIQ-ROL-03',
-        description: 'Etiqueta en Rollo Transferencia Térmica Grado Pharma 4x6" Core 3"',
-        quantity: 100,
-        unit: 'MILLAR',
-        unitPrice: 435.00,
-        subtotal: 43500.00,
+        sku: 'A163833BHA',
+        description: 'Etiqueta Poliéster Grado Industrial 3M 7850 HL (Rev A)',
+        quantity: 10000,
+        unit: 'PZA',
+        unitPrice: 1.05,
+        subtotal: 10500.00,
         taxRate: 0.16,
-        taxAmount: 6960.00,
-        total: 50460.00,
+        taxAmount: 1680.00,
+        total: 12180.00,
         satKey: '55121600',
-        satUnit: 'MIL'
+        satUnit: 'H87'
       }
     ],
-    notas: 'Entrega en planta Tlalnepantla según orden de compra cliente MP-2026-904'
+    notas: 'Entrega en Parque Industrial Reynosa según orden de compra cliente PO-TRC-2026-991'
   },
   {
     id: 'fac-0049',
@@ -241,14 +241,14 @@ export const INITIAL_SALES_INVOICES: SalesInvoice[] = [
     uuidSat: '8C7B9011-3E55-40F1-AA32-901844BCC023',
     fechaEmision: '2026-08-10T14:15:00',
     fechaTimbrado: '2026-08-10T14:17:02',
-    clienteId: 'cli-002',
-    clienteNombre: 'Stanley Black & Decker México S.A.',
-    clienteRfc: 'SBD940912TC4',
+    clienteId: 'cli-001',
+    clienteNombre: 'BLACK & DECKER (Stanley Black & Decker)',
+    clienteRfc: 'SBD920412R34',
     clienteRegimen: '601 - General de Ley Personas Morales',
-    clienteCp: '54030',
+    clienteCp: '66637',
     remisionId: 'REM-2026-0059',
     remisionFolio: 'REM-2026-0059',
-    pedidoFolio: 'PED-RTM-2026-0028',
+    pedidoFolio: 'PED-RTM-2026-0139',
     status: 'timbrada',
     metodoPago: 'PUE',
     formaPago: '03',
@@ -263,33 +263,33 @@ export const INITIAL_SALES_INVOICES: SalesInvoice[] = [
     items: [
       {
         id: 'item-0049-1',
-        sku: 'CAJA-IND-02',
-        description: 'Caja Regular Ranurada Flauta C Kraft 40x30x30 cm ECT 32',
-        quantity: 10000,
+        sku: 'NA472050',
+        description: 'Manual Cordless Recip Saw DCS382 NA (Rev 08/23) 24 págs Offset',
+        quantity: 28771,
         unit: 'PZA',
-        unitPrice: 8.20,
+        unitPrice: 2.85,
         subtotal: 82000.00,
         taxRate: 0.16,
         taxAmount: 13120.00,
         total: 95120.00,
-        satKey: '14111500',
+        satKey: '55101500',
         satUnit: 'H87'
       }
     ],
-    notas: 'Pago recibido el 11/08/2026 vía SPEI BBVA.'
+    notas: 'Pago recibido el 11/08/2026 vía SPEI BBVA contra PO-SBD-87902.'
   },
   {
     id: 'fac-0050',
     folio: 'FAC-RTM-2026-0050',
     fechaEmision: '2026-09-02T11:00:00',
-    clienteId: 'cli-003',
-    clienteNombre: 'Alimentos del Norte Industrial S.A. de C.V.',
-    clienteRfc: 'ANI050622LK8',
+    clienteId: 'cli-004',
+    clienteNombre: 'TYCO (Johnson Controls)',
+    clienteRfc: 'TYC990708M12',
     clienteRegimen: '601 - General de Ley Personas Morales',
-    clienteCp: '64000',
-    remisionId: 'REM-2026-0061',
-    remisionFolio: 'REM-2026-0061',
-    pedidoFolio: 'PED-RTM-2026-0035',
+    clienteCp: '67132',
+    remisionId: 'REM-2026-0062',
+    remisionFolio: 'REM-2026-0062',
+    pedidoFolio: 'PED-RTM-2026-0140',
     status: 'lista_timbrar',
     metodoPago: 'PPD',
     formaPago: '99',
@@ -303,53 +303,53 @@ export const INITIAL_SALES_INVOICES: SalesInvoice[] = [
     items: [
       {
         id: 'item-0050-1',
-        sku: 'LINER-ALIM-01',
-        description: 'Lámina Corrugada Grado Alimenticio Kraft Liner 200/Flauta B 120x80 cm',
-        quantity: 8000,
+        sku: '02-814-556',
+        description: 'Instructivo e-Force Seguridad Contra Incendios (Rev B) Couché 100g',
+        quantity: 85925,
         unit: 'PZA',
-        unitPrice: 14.50,
+        unitPrice: 1.35,
         subtotal: 116000.00,
         taxRate: 0.16,
         taxAmount: 18560.00,
         total: 134560.00,
-        satKey: '14111500',
+        satKey: '55101500',
         satUnit: 'H87'
       }
     ],
-    notas: 'Validado con remisión REM-2026-0061 sellada por almacén de recibo.'
+    notas: 'Validado con remisión REM-2026-0062 sellada por almacén de recibo.'
   },
   {
     id: 'fac-0051',
     folio: 'FAC-RTM-2026-0051',
     fechaEmision: '2026-09-05T09:20:00',
-    clienteId: 'cli-004',
-    clienteNombre: 'Distribuidora Gráfica de Occidente S.A.',
-    clienteRfc: 'DGO110303TR9',
+    clienteId: 'cli-003',
+    clienteNombre: 'BISSELL INTERNATIONAL TRADING COMPANY B.V.',
+    clienteRfc: 'BIT041120TK8',
     clienteRegimen: '601 - General de Ley Personas Morales',
-    clienteCp: '44100',
+    clienteCp: '66050',
     status: 'borrador',
     metodoPago: 'PUE',
     formaPago: '03',
     usoCfdi: 'G03',
     moneda: 'MXN',
-    subtotal: 45000.00,
-    iva: 7200.00,
-    total: 52200.00,
-    saldoPendiente: 52200.00,
+    subtotal: 39000.00,
+    iva: 6240.00,
+    total: 45240.00,
+    saldoPendiente: 45240.00,
     estadoPago: 'pendiente',
     items: [
       {
         id: 'item-0051-1',
-        sku: 'SUSTR-COUCH-150',
-        description: 'Papel Couché Brillante 150g Pliego 70x100 cm para Offset',
-        quantity: 15000,
-        unit: 'PLIEGO',
-        unitPrice: 3.00,
-        subtotal: 45000.00,
+        sku: '1641301',
+        description: 'User Guide POWERFORCE HELIX (Rev .02/24) 16 páginas Papel Bond',
+        quantity: 20000,
+        unit: 'PZA',
+        unitPrice: 1.95,
+        subtotal: 39000.00,
         taxRate: 0.16,
-        taxAmount: 7200.00,
-        total: 52200.00,
-        satKey: '14111507',
+        taxAmount: 6240.00,
+        total: 45240.00,
+        satKey: '55101500',
         satUnit: 'H87'
       }
     ],
@@ -363,9 +363,9 @@ export const INITIAL_CXC_RECORDS: AccountReceivable[] = [
     facturaId: 'fac-0048',
     facturaFolio: 'FAC-RTM-2026-0048',
     uuidSat: '4A9F21E3-88B2-4C10-90D1-6F7D2B91A401',
-    clienteId: 'cli-001',
-    clienteNombre: 'Laboratorios Medifarma S.A. de C.V.',
-    clienteRfc: 'LME820415HQ1',
+    clienteId: 'cli-002',
+    clienteNombre: 'TRICO TECHNOLOGIES CORPORATION',
+    clienteRfc: 'TTC880315PL1',
     fechaEmision: '2026-08-20',
     fechaVencimiento: '2026-09-19', // 30 días crédito
     diasCredito: 30,
@@ -383,17 +383,17 @@ export const INITIAL_CXC_RECORDS: AccountReceivable[] = [
         fecha: '2026-08-28',
         monto: 100000.00,
         formaPago: 'Transferencia SPEI (03)',
-        referencia: 'SPEI-MED-99381',
+        referencia: 'SPEI-TRC-99381',
         bancoDestino: 'Banamex Cta 4819',
         comprobanteFolio: 'REP-RTM-2026-0012',
         registradoPor: 'L. Mendoza (Crédito y Cobranza)',
-        notas: 'Anticipo del 58% acordado para liberación de embarque 2'
+        notas: 'Abono acordado para liberación de entrega parcial'
       }
     ],
     contactoCobranza: {
-      nombre: 'Lic. Claudia Morales',
-      email: 'cmorales@medifarma.com.mx',
-      telefono: '55-5390-1122 ext 402'
+      nombre: 'Lic. Gabriela Lozano (Demo)',
+      email: 'glozano@trico-demo.com',
+      telefono: '(899) 921-4422'
     }
   },
   {
@@ -401,9 +401,9 @@ export const INITIAL_CXC_RECORDS: AccountReceivable[] = [
     facturaId: 'fac-0045',
     facturaFolio: 'FAC-RTM-2026-0045',
     uuidSat: '1E33A899-77D0-4211-BF90-C109419DF011',
-    clienteId: 'cli-003',
-    clienteNombre: 'Alimentos del Norte Industrial S.A. de C.V.',
-    clienteRfc: 'ANI050622LK8',
+    clienteId: 'cli-004',
+    clienteNombre: 'TYCO (Johnson Controls)',
+    clienteRfc: 'TYC990708M12',
     fechaEmision: '2026-07-15',
     fechaVencimiento: '2026-08-14', // 30 días crédito
     diasCredito: 30,
@@ -417,9 +417,9 @@ export const INITIAL_CXC_RECORDS: AccountReceivable[] = [
     metodoPago: 'PPD',
     historialPagos: [],
     contactoCobranza: {
-      nombre: 'Ing. Roberto Garza',
-      email: 'rgarza@alimentosdelnorte.mx',
-      telefono: '81-8311-9000 ext 155'
+      nombre: 'Ing. Ricardo Villalobos (Demo)',
+      email: 'rvillalobos@tyco-demo.com',
+      telefono: '(81) 8221-5510'
     }
   },
   {
@@ -427,9 +427,9 @@ export const INITIAL_CXC_RECORDS: AccountReceivable[] = [
     facturaId: 'fac-0041',
     facturaFolio: 'FAC-RTM-2026-0041',
     uuidSat: 'D2A10091-FF34-46E1-B001-A488091E47C2',
-    clienteId: 'cli-004',
-    clienteNombre: 'Distribuidora Gráfica de Occidente S.A.',
-    clienteRfc: 'DGO110303TR9',
+    clienteId: 'cli-003',
+    clienteNombre: 'BISSELL INTERNATIONAL TRADING COMPANY B.V.',
+    clienteRfc: 'BIT041120TK8',
     fechaEmision: '2026-06-25',
     fechaVencimiento: '2026-07-25',
     diasCredito: 30,
@@ -455,9 +455,9 @@ export const INITIAL_CXC_RECORDS: AccountReceivable[] = [
       }
     ],
     contactoCobranza: {
-      nombre: 'C.P. Mario Sandoval',
-      email: 'msandoval@dgoccidente.com',
-      telefono: '33-3615-8800'
+      nombre: 'Lic. Fernando Arteaga (Demo)',
+      email: 'farteaga@bissell-demo.com',
+      telefono: '(81) 8865-1215'
     }
   },
   {
@@ -465,9 +465,9 @@ export const INITIAL_CXC_RECORDS: AccountReceivable[] = [
     facturaId: 'fac-0049',
     facturaFolio: 'FAC-RTM-2026-0049',
     uuidSat: '8C7B9011-3E55-40F1-AA32-901844BCC023',
-    clienteId: 'cli-002',
-    clienteNombre: 'Stanley Black & Decker México S.A.',
-    clienteRfc: 'SBD940912TC4',
+    clienteId: 'cli-001',
+    clienteNombre: 'BLACK & DECKER (Stanley Black & Decker)',
+    clienteRfc: 'SBD920412R34',
     fechaEmision: '2026-08-10',
     fechaVencimiento: '2026-08-25',
     diasCredito: 15,
@@ -492,9 +492,9 @@ export const INITIAL_CXC_RECORDS: AccountReceivable[] = [
       }
     ],
     contactoCobranza: {
-      nombre: 'C.P. Fernando Valdés',
-      email: 'fvaldes@sbdinc.com',
-      telefono: '55-5804-5000'
+      nombre: 'Ing. Carlos Mendoza (Demo)',
+      email: 'carlos.mendoza@sbdinc-demo.com',
+      telefono: '(81) 8329-7010'
     }
   }
 ];
@@ -673,22 +673,22 @@ export const INITIAL_ELIGIBLE_REMISIONES: EligibleRemision[] = [
   {
     id: 'rem-elig-01',
     folio: 'REM-2026-0063',
-    pedidoFolio: 'PED-RTM-2026-0038',
+    pedidoFolio: 'PED-RTM-2026-0142',
     clienteId: 'cli-001',
-    clienteNombre: 'Laboratorios Medifarma S.A. de C.V.',
-    clienteRfc: 'LME820415HQ1',
+    clienteNombre: 'BLACK & DECKER (Stanley Black & Decker)',
+    clienteRfc: 'SBD920412R34',
     fechaEntrega: '2026-09-04',
     entregadoPor: 'Rogelio Castillo (Chofer Unidad RTM-03)',
-    recibidoPor: 'Almacén MP Medifarma - Sello de recibido #0441',
-    diasCredito: 30,
+    recibidoPor: 'Andén 3 Recibo Milimex - Sello de recibido #0441',
+    diasCredito: 45,
     formaPagoDefecto: '99',
     metodoPagoDefecto: 'PPD',
     usoCfdiDefecto: 'G01',
     items: [
       {
         id: 'item-rem-63-1',
-        sku: 'CAJA-MED-02',
-        description: 'Caja Plegadiza Jarabe Pediátrico 60ml Sulfatada 16 pts con estampado foil dorado',
+        sku: 'NA472050',
+        description: 'Manual Cordless Recip Saw DCS382 NA (Rev 08/23) 24 págs',
         quantity: 30000,
         unit: 'PZA',
         unitPrice: 2.85,
@@ -696,7 +696,7 @@ export const INITIAL_ELIGIBLE_REMISIONES: EligibleRemision[] = [
         taxRate: 0.16,
         taxAmount: 13680.00,
         total: 99180.00,
-        satKey: '14111500',
+        satKey: '55101500',
         satUnit: 'H87'
       }
     ],
@@ -707,35 +707,35 @@ export const INITIAL_ELIGIBLE_REMISIONES: EligibleRemision[] = [
   {
     id: 'rem-elig-02',
     folio: 'REM-2026-0064',
-    pedidoFolio: 'PED-RTM-2026-0040',
-    clienteId: 'cli-002',
-    clienteNombre: 'Stanley Black & Decker México S.A.',
-    clienteRfc: 'SBD940912TC4',
+    pedidoFolio: 'PED-RTM-2026-0138',
+    clienteId: 'cli-003',
+    clienteNombre: 'BISSELL INTERNATIONAL TRADING COMPANY B.V.',
+    clienteRfc: 'BIT041120TK8',
     fechaEntrega: '2026-09-06',
     entregadoPor: 'Transportes Logísticos del Centro',
-    recibidoPor: 'Patio de Maniobras SBD - Andén 4',
-    diasCredito: 15,
+    recibidoPor: 'Almacén Central Nexxus - Andén 4',
+    diasCredito: 30,
     formaPagoDefecto: '03',
     metodoPagoDefecto: 'PUE',
     usoCfdiDefecto: 'G03',
     items: [
       {
         id: 'item-rem-64-1',
-        sku: 'TARIMA-CORR-01',
-        description: 'Separador de Tarima Doble Corrugado Flauta BC Heavy Duty 120x100 cm',
-        quantity: 2500,
+        sku: '1641301',
+        description: 'User Guide POWERFORCE HELIX (Rev .02/24) 16 págs',
+        quantity: 20000,
         unit: 'PZA',
-        unitPrice: 24.00,
-        subtotal: 60000.00,
+        unitPrice: 1.95,
+        subtotal: 39000.00,
         taxRate: 0.16,
-        taxAmount: 9600.00,
-        total: 69600.00,
-        satKey: '14111500',
+        taxAmount: 6240.00,
+        total: 45240.00,
+        satKey: '55101500',
         satUnit: 'H87'
       }
     ],
-    subtotal: 60000.00,
-    iva: 9600.00,
-    total: 69600.00
+    subtotal: 39000.00,
+    iva: 6240.00,
+    total: 45240.00
   }
 ];

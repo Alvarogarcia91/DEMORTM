@@ -90,10 +90,10 @@ export const QuoteDetailModal: React.FC<QuoteDetailModalProps> = ({
 
   const totalUnits = quote.items.reduce((acc, i) => acc + i.quantity, 0);
   const technology = quote.technology || (quote.items[0]?.sku?.startsWith('PT-ETQ') ? 'Flexografía' : 'Offset');
-  const partNumber = quote.partNumber || quote.items[0]?.sku || 'BD-MAN-024';
-  const revision = quote.revision || 'Rev B';
-  const specSummary = quote.specSummary || 'Interiores papel couché 90 g a 1x1 tintas, portada couché 150 g a 4x4 tintas con barniz UV brillante. Doblez y grapa a caballo.';
-  const requiredDate = quote.requiredDate || '30 Ago 2026';
+  const partNumber = quote.partNumber || quote.items[0]?.sku || 'NA472050';
+  const revision = quote.revision || 'Rev 08/23';
+  const specSummary = quote.specSummary || 'Papel Bond 75 g (BOND_75_B17), 1x1 tinta negra, doblado y grapado al lomo.';
+  const requiredDate = quote.requiredDate || '25 Sep 2026';
 
   // Costing Estimate Mock
   const costing = quote.costingEstimate || {
