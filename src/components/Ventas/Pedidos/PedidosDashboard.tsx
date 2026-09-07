@@ -11,11 +11,13 @@ import {
   ArrowRight,
   Boxes,
   CheckCircle2,
-  Clock
+  Clock,
+  Printer,
+  Sliders,
+  AlertCircle
 } from 'lucide-react';
 import {
   SalesOrder,
-  MOCK_SHOWROOM_IMPACT_DATA,
   MOCK_HIGH_DEMAND_LOW_STOCK_DATA
 } from '../../../data/mockSalesData';
 import { SemanticBadge } from '../../common/SemanticBadge';
@@ -41,11 +43,14 @@ export const PedidosDashboard: React.FC<PedidosDashboardProps> = ({
   onNavigateToRequisitions,
 }) => {
   const [period, setPeriod] = useState<'hoy' | '7d' | '30d' | '90d' | '6m'>('30d');
-  const [branchFilter, setBranchFilter] = useState('all');
+  const [techFilter, setTechFilter] = useState<'all' | 'Offset' | 'Flexografía'>('all');
 
-  // Filter orders by branch
+  // Filter orders by technology
   const filteredOrders = orders.filter((o) => {
-    if (branchFilter !== 'all' && o.branchId !== branchFilter) return false;
+    if (techFilter !== 'all') {
+      const qTech = o.technology || (o.items[0]?.sku?.startsWith('PT-ETQ') ? 'Flexografía' : 'Offset');
+      if (qTech !== techFilter) return false;
+    }
     return true;
   });
 
@@ -60,18 +65,29 @@ export const PedidosDashboard: React.FC<PedidosDashboardProps> = ({
   
   // Real pending auth count
   const pendingAuthCount = orders.filter(
-    (o) => o.status === 'Pendiente de autorización' && (branchFilter === 'all' || o.branchId === branchFilter)
+    (o) => o.status === 'Pendiente de autorización'
   ).length;
 
-  // Branch breakdown
-  const voOrders = filteredOrders.filter((o) => o.branchId === 'wh-suc-valle-oriente');
-  const cumbresOrders = filteredOrders.filter((o) => o.branchId === 'wh-suc-cumbres');
+  // Technology breakdown
+  const offsetOrders = filteredOrders.filter((o) => {
+    const qTech = o.technology || (o.items[0]?.sku?.startsWith('PT-ETQ') ? 'Flexografía' : 'Offset');
+    return qTech === 'Offset';
+  });
+  const flexoOrders = filteredOrders.filter((o) => {
+    const qTech = o.technology || (o.items[0]?.sku?.startsWith('PT-ETQ') ? 'Flexografía' : 'Offset');
+    return qTech === 'Flexografía';
+  });
 
-  const voSales = voOrders.reduce((acc, o) => acc + o.financials.total, 0);
-  const cumbresSales = cumbresOrders.reduce((acc, o) => acc + o.financials.total, 0);
+  const offsetSales = offsetOrders.reduce((acc, o) => acc + o.financials.total, 0);
+  const flexoSales = flexoOrders.reduce((acc, o) => acc + o.financials.total, 0);
 
-  const voUnits = voOrders.reduce((acc, o) => acc + o.items.reduce((s, i) => s + i.quantity, 0), 0);
-  const cumbresUnits = cumbresOrders.reduce((acc, o) => acc + o.items.reduce((s, i) => s + i.quantity, 0), 0);
+  const offsetUnits = offsetOrders.reduce((acc, o) => acc + o.items.reduce((s, i) => s + i.quantity, 0), 0);
+  const flexoUnits = flexoOrders.reduce((acc, o) => acc + o.items.reduce((s, i) => s + i.quantity, 0), 0);
+
+  // Availability and production demand aggregations
+  const totalPtStock = filteredOrders.reduce((acc, o) => acc + (o.finishedGoodsStock || 0), 0);
+  const totalMissingToProduce = filteredOrders.reduce((acc, o) => acc + (o.missingToProduce || 0), 0);
+  const ordersWithMaterialAlert = filteredOrders.filter((o) => o.hasMaterialAlert);
 
   // Dynamic Product Stats Aggregation from filteredOrders
   const productStatsMap = new Map<string, {
@@ -115,40 +131,21 @@ export const PedidosDashboard: React.FC<PedidosDashboardProps> = ({
 
   const productStatsList = Array.from(productStatsMap.values());
 
-  // 1. Más vendido (Top seller)
   const topSeller = productStatsList.length > 0
     ? [...productStatsList].sort((a, b) => b.unitsSold - a.unitsSold)[0]
     : null;
 
-  // 2. Menor movimiento (Lowest mover)
-  const lowestSeller = productStatsList.length > 0
-    ? [...productStatsList].sort((a, b) => a.unitsSold - b.unitsSold)[0]
-    : null;
-
-  // 3. Mayor margen (Top margin %)
   const topMargin = productStatsList.length > 0
     ? [...productStatsList].sort((a, b) => b.marginPct - a.marginPct)[0]
     : null;
 
-  // 4. En tendencia (Second highest mover or top mover)
   const trendingArticle = productStatsList.length > 1
     ? [...productStatsList].sort((a, b) => b.unitsSold - a.unitsSold)[1]
     : topSeller;
 
-  // Filtered Showroom & High Demand data
-  const filteredShowroomData = MOCK_SHOWROOM_IMPACT_DATA.filter((s) => {
-    if (branchFilter !== 'all' && s.branchId !== branchFilter) return false;
-    return true;
-  });
-
-  const filteredHighDemandData = MOCK_HIGH_DEMAND_LOW_STOCK_DATA.filter((h) => {
-    if (branchFilter !== 'all' && h.branchId !== branchFilter) return false;
-    return true;
-  });
-
   return (
     <div className="space-y-6">
-      {/* Top Filter Bar */}
+      {/* Top Filter Toolbar */}
       <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Periodo:</span>
@@ -160,408 +157,272 @@ export const PedidosDashboard: React.FC<PedidosDashboardProps> = ({
                 onClick={() => setPeriod(p)}
                 className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   period === p
-                    ? 'bg-white text-rose-600 border border-rose-500/30 shadow-2xs font-black'
+                    ? 'bg-theme-primary text-white shadow-xs font-black'
                     : 'text-zinc-600 hover:text-zinc-900'
                 }`}
               >
-                {p === 'hoy' ? 'Hoy' : p === '7d' ? '7 días' : p === '30d' ? '30 días' : p === '90d' ? '90 días' : '6 meses'}
+                {p === 'hoy' ? 'Hoy' : p === '7d' ? '7 días' : p === '30d' ? '30 días' : '90 días'}
               </button>
             ))}
           </div>
         </div>
 
         <div className="flex items-center gap-3 w-full md:w-auto">
-          <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider hidden sm:inline-block">Sucursal:</span>
+          <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider hidden sm:inline-block">Tecnología:</span>
           <select
-            value={branchFilter}
-            onChange={(e) => setBranchFilter(e.target.value)}
-            className="p-2 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs font-semibold shadow-2xs cursor-pointer focus:outline-none"
+            value={techFilter}
+            onChange={(e) => setTechFilter(e.target.value as any)}
+            className="p-2 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs font-bold shadow-2xs cursor-pointer focus:outline-none"
           >
-            <option value="all">Todas las sucursales</option>
-            <option value="wh-suc-valle-oriente">Sucursal Valle Oriente</option>
-            <option value="wh-suc-cumbres">Sucursal Cumbres</option>
+            <option value="all">Todas las tecnologías</option>
+            <option value="Offset">Offset (Prensas Planas)</option>
+            <option value="Flexografía">Flexografía (Rollos / Etiquetas)</option>
           </select>
         </div>
       </div>
 
-      {/* KPIs 6 Grid (100% White + Semantic Borders) */}
+      {/* KPI Cards Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
+        {/* KPI 1: PEDIDOS ACTIVOS */}
         <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-1">
-          <span className="text-[10px] uppercase font-bold text-zinc-500 block">Pedidos Totales</span>
-          <span className="text-2xl font-black font-mono text-zinc-900 block">{totalOrdersCount}</span>
-          <span className="text-[10px] text-zinc-500">Pedidos del periodo</span>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-1">
-          <span className="text-[10px] uppercase font-bold text-zinc-500 block">Unidades Vendidas</span>
-          <span className="text-2xl font-black font-mono text-zinc-900 block">{formatUnits(totalUnitsSold)}</span>
-          <span className="text-[10px] text-zinc-500">Unidades del periodo</span>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-1">
-          <span className="text-[10px] uppercase font-bold text-zinc-500 block">Venta Estimada</span>
-          <span className="text-lg font-black font-mono text-zinc-900 block truncate" title={formatCurrencyMXN(totalSalesAmount, false)}>
-            {formatKpiCurrency(totalSalesAmount)}
-          </span>
-          <span className="text-[10px] text-emerald-600 font-bold">+18% vs. periodo anterior</span>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-white border border-emerald-600/50 shadow-2xs space-y-1">
-          <span className="text-[10px] uppercase font-bold text-emerald-800 block">Margen Bruto</span>
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] uppercase font-bold text-zinc-500 flex items-center gap-1.5">
+              <ShoppingBag className="w-3.5 h-3.5 text-theme-primary" />
+              Total Pedidos
+            </span>
+          </div>
           <span className="text-2xl font-black font-mono text-zinc-900 block">
-            {formatPercentage(avgMarginPct, 1)}
+            {totalOrdersCount}
           </span>
-          <span className="text-[10px] text-emerald-700 font-semibold">Rentabilidad comercial</span>
+          <span className="text-[10px] text-zinc-500">En cartera comercial</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-1">
-          <span className="text-[10px] uppercase font-bold text-zinc-500 block">Ticket Promedio</span>
-          <span className="text-lg font-black font-mono text-zinc-900 block truncate" title={formatCurrencyMXN(avgTicket, false)}>
-            {formatCurrencyMXN(avgTicket, false)}
-          </span>
-          <span className="text-[10px] text-zinc-500">Por pedido cerrado</span>
-        </div>
-
+        {/* KPI 2: PENDIENTES DE AUTORIZACIÓN */}
         <div
           onClick={onNavigateToPendingAuth}
-          className="p-4 rounded-2xl bg-white border border-amber-500/60 shadow-2xs space-y-1 cursor-pointer hover:bg-zinc-50 transition-colors"
+          className="p-4 rounded-2xl bg-white border border-amber-500/50 shadow-2xs space-y-1 cursor-pointer hover:border-amber-500 transition-colors"
         >
-          <span className="text-[10px] uppercase font-bold text-amber-800 block">Pendientes de Autorización</span>
-          <span className="text-2xl font-black font-mono text-zinc-900 block">{pendingAuthCount}</span>
-          <span className="text-[10px] text-amber-700 font-bold underline">Ver pendientes &rarr;</span>
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] uppercase font-bold text-zinc-700 flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-amber-600" />
+              Por Autorizar
+            </span>
+          </div>
+          <span className="text-2xl font-black font-mono text-zinc-900 block">
+            {pendingAuthCount}
+          </span>
+          <span className="text-[10px] text-amber-700 font-semibold">Requiere dictamen</span>
+        </div>
+
+        {/* KPI 3: VOLUMEN TOTAL */}
+        <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] uppercase font-bold text-zinc-500 flex items-center gap-1.5">
+              <Package className="w-3.5 h-3.5 text-blue-600" />
+              Volumen Piezas
+            </span>
+          </div>
+          <span className="text-2xl font-black font-mono text-zinc-900 block">
+            {formatUnits(totalUnitsSold)}
+          </span>
+          <span className="text-[10px] text-zinc-500">Tiraje total pedido</span>
+        </div>
+
+        {/* KPI 4: FALTANTE POR PRODUCIR */}
+        <div className="p-4 rounded-2xl bg-white border border-theme-primary/40 shadow-2xs space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] uppercase font-bold text-zinc-700 flex items-center gap-1.5">
+              <Printer className="w-3.5 h-3.5 text-theme-primary" />
+              Por Producir
+            </span>
+          </div>
+          <span className="text-2xl font-black font-mono text-theme-primary block">
+            {formatUnits(totalMissingToProduce)}
+          </span>
+          <span className="text-[10px] text-theme-primary font-medium">Demanda neta a prensas</span>
+        </div>
+
+        {/* KPI 5: VENTA TOTAL */}
+        <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] uppercase font-bold text-zinc-500 flex items-center gap-1.5">
+              <DollarSign className="w-3.5 h-3.5 text-theme-primary" />
+              Venta Total
+            </span>
+          </div>
+          <span className="text-lg font-black font-mono text-zinc-900 block truncate" title={formatCurrencyMXN(totalSalesAmount)}>
+            {formatKpiCurrency(totalSalesAmount)}
+          </span>
+          <span className="text-[10px] text-zinc-500">Facturación global</span>
+        </div>
+
+        {/* KPI 6: MARGEN PROMEDIO */}
+        <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] uppercase font-bold text-zinc-500 flex items-center gap-1.5">
+              <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
+              Margen Prom.
+            </span>
+          </div>
+          <span className="text-2xl font-black font-mono text-emerald-600 block">
+            {formatPercentage(avgMarginPct, 1)}
+          </span>
+          <span className="text-[10px] text-zinc-500">Rentabilidad de cartera</span>
         </div>
       </div>
 
-      {/* Highlights 4 Cards (Dynamically calculated from active filtered orders) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {topSeller ? (
-          <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-2">
-            <span className="text-[10px] uppercase font-bold text-rose-600 block flex items-center gap-1">
-              <Sparkles className="w-3.5 h-3.5" />
-              Más Vendido
-            </span>
-            <div>
-              <h4 className="font-bold text-zinc-900 text-xs truncate" title={topSeller.productName}>
-                {topSeller.productName}
-              </h4>
-              <span className="text-[10px] font-mono text-zinc-500 block">{topSeller.sku}</span>
-            </div>
-            <div className="flex items-center justify-between text-xs font-mono pt-1 border-t border-zinc-200">
-              <span className="font-bold text-zinc-900">{formatUnits(topSeller.unitsSold)}</span>
-              <span className="font-extrabold text-rose-600">{formatCurrencyMXN(topSeller.totalRevenue, false)}</span>
-              <span className="text-emerald-600 font-bold">{formatPercentage(topSeller.marginPct, 1)}</span>
-            </div>
-          </div>
-        ) : (
-          <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-2 text-zinc-400">
-            <span className="text-[10px] uppercase font-bold block">Más Vendido</span>
-            <p className="text-xs italic">Sin datos en el periodo.</p>
-          </div>
-        )}
-
-        {lowestSeller ? (
-          <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-2">
-            <span className="text-[10px] uppercase font-bold text-zinc-500 block flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5" />
-              Menor Movimiento
-            </span>
-            <div>
-              <h4 className="font-bold text-zinc-900 text-xs truncate" title={lowestSeller.productName}>
-                {lowestSeller.productName}
-              </h4>
-              <span className="text-[10px] font-mono text-zinc-500 block">{lowestSeller.sku}</span>
-            </div>
-            <div className="flex items-center justify-between text-xs font-mono pt-1 border-t border-zinc-200">
-              <span className="text-zinc-700 font-bold">{formatUnits(lowestSeller.unitsSold)}</span>
-              <span className="text-amber-600 font-semibold text-[11px]">Baja rotación</span>
-            </div>
-          </div>
-        ) : (
-          <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-2 text-zinc-400">
-            <span className="text-[10px] uppercase font-bold block">Menor Movimiento</span>
-            <p className="text-xs italic">Sin datos en el periodo.</p>
-          </div>
-        )}
-
-        {trendingArticle ? (
-          <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-2">
-            <span className="text-[10px] uppercase font-bold text-purple-600 block flex items-center gap-1">
-              <TrendingUp className="w-3.5 h-3.5" />
-              En Tendencia
-            </span>
-            <div>
-              <h4 className="font-bold text-zinc-900 text-xs truncate" title={trendingArticle.productName}>
-                {trendingArticle.productName}
-              </h4>
-              <span className="text-[10px] font-mono text-zinc-500 block">{trendingArticle.sku}</span>
-            </div>
-            <div className="flex items-center justify-between text-xs font-mono pt-1 border-t border-zinc-200">
-              <span className="text-zinc-900 font-bold">{formatUnits(trendingArticle.unitsSold)}</span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white border border-emerald-600 text-zinc-900 shadow-2xs">
-                +25% vs. periodo anterior
-              </span>
-            </div>
-          </div>
-        ) : (
-          <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-2 text-zinc-400">
-            <span className="text-[10px] uppercase font-bold block">En Tendencia</span>
-            <p className="text-xs italic">Sin datos en el periodo.</p>
-          </div>
-        )}
-
-        {topMargin ? (
-          <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-2">
-            <span className="text-[10px] uppercase font-bold text-emerald-600 block flex items-center gap-1">
-              <DollarSign className="w-3.5 h-3.5" />
-              Mayor Margen
-            </span>
-            <div>
-              <h4 className="font-bold text-zinc-900 text-xs truncate" title={topMargin.productName}>
-                {topMargin.productName}
-              </h4>
-              <span className="text-[10px] font-mono text-zinc-500 block">{topMargin.sku}</span>
-            </div>
-            <div className="flex items-center justify-between text-xs font-mono pt-1 border-t border-zinc-200">
-              <span className="text-zinc-600">{formatCurrencyMXN(topMargin.totalRevenue, false)}</span>
-              <span className="font-black text-emerald-600">{formatPercentage(topMargin.marginPct, 1)} margen</span>
-            </div>
-          </div>
-        ) : (
-          <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-2 text-zinc-400">
-            <span className="text-[10px] uppercase font-bold block">Mayor Margen</span>
-            <p className="text-xs italic">Sin datos en el periodo.</p>
-          </div>
-        )}
-      </div>
-
-      {/* Ventas por Sucursal Comparativo */}
-      <div className="p-5 rounded-3xl bg-white border border-zinc-200 shadow-xs space-y-4">
-        <h3 className="text-xs font-black text-zinc-900 uppercase tracking-wider flex items-center justify-between">
-          <span>Desempeño Comercial por Sucursal</span>
-          <Building2 className="w-4 h-4 text-zinc-400" />
-        </h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <div className="p-4 rounded-2xl bg-zinc-50/70 border border-zinc-200 shadow-2xs space-y-3">
-            <div className="flex justify-between items-center">
-              <h4 className="font-bold text-zinc-900 text-sm">Sucursal Valle Oriente</h4>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white border border-rose-500 text-zinc-900 shadow-2xs">
-                Líder en volumen
-              </span>
-            </div>
-            <div className="grid grid-cols-3 gap-2 text-center font-mono">
-              <div className="p-2 rounded-xl bg-white border border-zinc-200 shadow-2xs">
-                <span className="text-[10px] text-zinc-500 block">Pedidos</span>
-                <span className="font-bold text-zinc-900">{voOrders.length}</span>
-              </div>
-              <div className="p-2 rounded-xl bg-white border border-zinc-200 shadow-2xs">
-                <span className="text-[10px] text-zinc-500 block">Unidades</span>
-                <span className="font-bold text-zinc-900">{formatUnits(voUnits)}</span>
-              </div>
-              <div className="p-2 rounded-xl bg-white border border-zinc-200 shadow-2xs">
-                <span className="text-[10px] text-zinc-500 block">Venta Total</span>
-                <span className="font-extrabold text-rose-600">{formatCurrencyMXN(voSales, false)}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-zinc-50/70 border border-zinc-200 shadow-2xs space-y-3">
-            <div className="flex justify-between items-center">
-              <h4 className="font-bold text-zinc-900 text-sm">Sucursal Cumbres</h4>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white border border-purple-500 text-zinc-900 shadow-2xs">
-                Ticket promedio alto
-              </span>
-            </div>
-            <div className="grid grid-cols-3 gap-2 text-center font-mono">
-              <div className="p-2 rounded-xl bg-white border border-zinc-200 shadow-2xs">
-                <span className="text-[10px] text-zinc-500 block">Pedidos</span>
-                <span className="font-bold text-zinc-900">{cumbresOrders.length}</span>
-              </div>
-              <div className="p-2 rounded-xl bg-white border border-zinc-200 shadow-2xs">
-                <span className="text-[10px] text-zinc-500 block">Unidades</span>
-                <span className="font-bold text-zinc-900">{formatUnits(cumbresUnits)}</span>
-              </div>
-              <div className="p-2 rounded-xl bg-white border border-zinc-200 shadow-2xs">
-                <span className="text-[10px] text-zinc-500 block">Venta Total</span>
-                <span className="font-extrabold text-purple-600">{formatCurrencyMXN(cumbresSales, false)}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* SHOWROOM — EFECTIVIDAD & DESEMPEÑO OBSERVADO */}
+      {/* DEMANDA DE PRODUCCIÓN & DISPONIBILIDAD PT */}
       <div className="p-5 rounded-3xl bg-white border border-zinc-200 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h3 className="text-xs font-black text-zinc-900 uppercase tracking-wider flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-rose-600" />
-              Efectividad de Showroom &bull; Desempeño Observado después de Exhibición
+              <Printer className="w-4 h-4 text-theme-primary" />
+              Demanda de Producción & Disponibilidad de Producto Terminado (PT)
             </h3>
             <p className="text-[11px] text-zinc-500 mt-0.5">
-              Comparativa independiente: 30 días antes vs. 30 días después de exhibición física en bahías de showroom.
+              Monitoreo operativo: Cruce de pedidos autorizados contra existencias en Almacén Principal RTM y requerimientos de producción.
             </p>
           </div>
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white border border-zinc-300 text-zinc-900 self-start shadow-2xs">
-            Impacto Demo
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-theme-primary/10 border border-theme-primary/30 text-theme-primary self-start shadow-2xs">
+            Enlace Comercial &rarr; Planta
           </span>
         </div>
 
         <div className="border border-zinc-200 rounded-2xl overflow-hidden shadow-xs bg-white">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse min-w-[750px]">
+            <table className="w-full text-left text-xs border-collapse min-w-[780px]">
               <thead>
                 <tr className="bg-zinc-50 border-b border-zinc-200 text-zinc-500 font-bold text-[10px] uppercase tracking-wider">
-                  <th className="py-3 px-3">Sucursal / Bahía</th>
-                  <th className="py-3 px-3">Artículo Exhibido</th>
-                  <th className="py-3 px-2 text-center">Antes (30d)</th>
-                  <th className="py-3 px-2 text-center">Después (30d)</th>
-                  <th className="py-3 px-2 text-center">Variación</th>
-                  <th className="py-3 px-2 text-center">Margen</th>
-                  <th className="py-3 px-3 text-center">Estado</th>
+                  <th className="py-3 px-3">Pedido / PO Cliente</th>
+                  <th className="py-3 px-3">Cliente & Trabajo</th>
+                  <th className="py-3 px-2 text-center">Tecnología</th>
+                  <th className="py-3 px-2 text-center">Cant. Pedida</th>
+                  <th className="py-3 px-2 text-center">PT Disponible</th>
+                  <th className="py-3 px-2 text-center">Faltante a Producir</th>
+                  <th className="py-3 px-3 text-center">Alerta de Material</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-200">
-                {filteredShowroomData.map((item) => (
-                  <tr key={item.id} className="hover:bg-zinc-50/60 transition-colors">
-                    <td className="py-3 px-3">
-                      <span className="font-bold text-zinc-900 block">{item.branchName}</span>
-                      <span className="font-mono text-[10px] text-zinc-500">{item.bayCode} &bull; {item.bayName}</span>
-                    </td>
-                    <td className="py-3 px-3">
-                      <strong className="text-zinc-900 block">{item.productName}</strong>
-                      <span className="text-[10px] text-zinc-500 font-mono">{item.sku}</span>
-                    </td>
-                    <td className="py-3 px-2 text-center font-mono text-zinc-500 font-bold">
-                      {formatUnits(item.unitsSoldBefore30d)}
-                    </td>
-                    <td className="py-3 px-2 text-center font-mono font-black text-zinc-900">
-                      {formatUnits(item.unitsSoldAfter30d)}
-                    </td>
-                    <td className="py-3 px-2 text-center font-mono font-bold text-emerald-600">
-                      +{formatPercentage(item.variationPct, 1)}
-                    </td>
-                    <td className="py-3 px-2 text-center font-mono font-semibold text-zinc-900">
-                      {formatPercentage(item.marginPct, 1)}
-                    </td>
-                    <td className="py-3 px-3 text-center whitespace-nowrap">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border shadow-2xs bg-white text-zinc-900 ${
-                        item.status === 'Alto impacto'
-                          ? 'border-emerald-600'
-                          : item.status === 'Impacto positivo'
-                          ? 'border-blue-500'
-                          : 'border-zinc-300'
-                      }`}>
-                        {item.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                {filteredOrders.map((order) => {
+                  const totalUnits = order.items.reduce((acc, i) => acc + i.quantity, 0);
+                  const pt = order.finishedGoodsStock !== undefined ? order.finishedGoodsStock : 5000;
+                  const missing = order.missingToProduce !== undefined ? order.missingToProduce : Math.max(0, totalUnits - pt);
+                  const tech = order.technology || (order.items[0]?.sku?.startsWith('PT-ETQ') ? 'Flexografía' : 'Offset');
+
+                  return (
+                    <tr key={order.id} className="hover:bg-zinc-50/60 transition-colors">
+                      <td className="py-3 px-3">
+                        <span className="font-mono font-bold text-theme-primary block">{order.folio}</span>
+                        <span className="text-[10px] text-zinc-500 font-mono">PO: {order.customerPo || 'PO-2026-9921'}</span>
+                      </td>
+                      <td className="py-3 px-3">
+                        <strong className="text-zinc-900 block">{order.customerName}</strong>
+                        <span className="text-[11px] text-zinc-600 block truncate max-w-xs">{order.items[0]?.productName}</span>
+                        <span className="text-[10px] font-mono text-zinc-400">{order.partNumber || order.items[0]?.sku} &bull; {order.revision || 'Rev B'}</span>
+                      </td>
+                      <td className="py-3 px-2 text-center">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-theme-primary/10 text-theme-primary border border-theme-primary/20">
+                          {tech}
+                        </span>
+                      </td>
+                      <td className="py-3 px-2 text-center font-mono font-bold text-zinc-900">
+                        {formatUnits(totalUnits)}
+                      </td>
+                      <td className="py-3 px-2 text-center font-mono font-bold text-emerald-600">
+                        {formatUnits(pt)}
+                      </td>
+                      <td className="py-3 px-2 text-center font-mono font-black text-theme-primary">
+                        {missing > 0 ? `${formatUnits(missing)} pzas` : 'Cubierto 100%'}
+                      </td>
+                      <td className="py-3 px-3 text-center">
+                        {order.hasMaterialAlert ? (
+                          <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white border border-rose-500 text-rose-700 shadow-2xs">
+                            <AlertTriangle className="w-3 h-3 text-rose-600" />
+                            <span>Couché 90g (-4 tarimas)</span>
+                          </div>
+                        ) : order.isObsoleteRevision ? (
+                          <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white border border-amber-500 text-amber-700 shadow-2xs">
+                            <AlertCircle className="w-3 h-3 text-amber-600" />
+                            <span>Rev A Obsoleta</span>
+                          </div>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white border border-emerald-600 text-emerald-700 shadow-2xs">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                            <span>Insumos OK</span>
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      {/* BUENA VENTA + BAJA EXISTENCIA */}
+      {/* Desempeño por Tecnología (Offset vs Flexografía) */}
       <div className="p-5 rounded-3xl bg-white border border-zinc-200 shadow-xs space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="space-y-0.5">
-            <h3 className="text-xs font-black text-zinc-900 uppercase tracking-wider flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-500" />
-              Alta Demanda Comercial & Baja Existencia Local
-            </h3>
-            <p className="text-[11px] text-zinc-500">
-              Artículos con alta tasa de venta reciente y cobertura de inventario menor a 7 días en sucursal.
-            </p>
-          </div>
-        </div>
+        <h3 className="text-xs font-black text-zinc-900 uppercase tracking-wider flex items-center justify-between">
+          <span>Distribución de Demanda por Línea Tecnológica</span>
+          <Sliders className="w-4 h-4 text-zinc-400" />
+        </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filteredHighDemandData.map((hls) => (
-            <div
-              key={hls.id}
-              className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs flex flex-col justify-between gap-3"
-            >
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-[10px] font-bold text-rose-600">{hls.sku}</span>
-                  <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold border shadow-2xs bg-white text-zinc-900 ${
-                    hls.urgency === 'Alta' ? 'border-rose-500' : 'border-amber-500'
-                  }`}>
-                    Urgencia {hls.urgency}
-                  </span>
-                </div>
-                <h4 className="font-bold text-zinc-900 text-xs">{hls.productName}</h4>
-                <p className="text-[11px] text-zinc-500">{hls.branchName}</p>
-
-                <div className="grid grid-cols-3 gap-2 text-center text-xs font-mono pt-2 border-t border-zinc-200">
-                  <div>
-                    <span className="text-[10px] text-zinc-500 block">Venta 30d</span>
-                    <span className="font-bold text-zinc-900">{formatUnits(hls.recentSales30d)}</span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-zinc-500 block">Disp. Local</span>
-                    <span className="font-bold text-rose-600">{formatUnits(hls.availableStock)}</span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-zinc-500 block">Cobertura</span>
-                    <span className="font-bold text-amber-600">{hls.coverageDays} días</span>
-                  </div>
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          {/* Offset */}
+          <div className="p-4 rounded-2xl bg-zinc-50/70 border border-zinc-200 shadow-2xs space-y-3">
+            <div className="flex justify-between items-center">
+              <h4 className="font-bold text-zinc-900 text-sm flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-theme-primary inline-block" />
+                Prensa Offset Plana (Manuales, Blister Cards, Folletos)
+              </h4>
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white border border-theme-primary text-zinc-900 shadow-2xs">
+                Líder en Facturación
+              </span>
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-center font-mono">
+              <div className="p-2 rounded-xl bg-white border border-zinc-200 shadow-2xs">
+                <span className="text-[10px] text-zinc-500 block">Pedidos</span>
+                <span className="font-bold text-zinc-900">{offsetOrders.length}</span>
               </div>
-
-              <div className="pt-2 border-t border-zinc-200 flex items-center justify-between">
-                <span className="text-[10px] text-zinc-500">
-                  Sugerido: <strong>+{formatUnits(hls.suggestedRequisitionQty, 'pza', 'pzas')}</strong>
-                </span>
-                {onNavigateToRequisitions && (
-                  <button
-                    type="button"
-                    onClick={() => onNavigateToRequisitions(hls.sku)}
-                    className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center gap-1"
-                  >
-                    <span>Crear requisición</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                )}
+              <div className="p-2 rounded-xl bg-white border border-zinc-200 shadow-2xs">
+                <span className="text-[10px] text-zinc-500 block">Tiraje</span>
+                <span className="font-bold text-zinc-900">{formatUnits(offsetUnits)}</span>
+              </div>
+              <div className="p-2 rounded-xl bg-white border border-zinc-200 shadow-2xs">
+                <span className="text-[10px] text-zinc-500 block">Venta Total</span>
+                <span className="font-extrabold text-theme-primary">{formatCurrencyMXN(offsetSales, false)}</span>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
 
-      {/* OBSERVACIONES DEL PERIODO */}
-      <div className="p-5 rounded-3xl bg-white border border-zinc-200 shadow-xs space-y-3">
-        <span className="text-xs font-black text-zinc-900 uppercase tracking-wider block">
-          Observaciones del Periodo Comercial
-        </span>
-        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-zinc-700">
-          <li className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 flex items-start gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-            <span>
-              <strong>Artículo más vendido:</strong> {topSeller ? topSeller.productName : 'Línea Nayt'} concentra la mayor rotación del periodo con {topSeller ? formatUnits(topSeller.unitsSold) : '0 unidades'}.
-            </span>
-          </li>
-          <li className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 flex items-start gap-2">
-            <Building2 className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
-            <span>
-              <strong>Sucursal líder en ticket:</strong> Cumbres registra un ticket promedio superior impulsado por pedidos corporativos y residenciales.
-            </span>
-          </li>
-          <li className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 flex items-start gap-2">
-            <DollarSign className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-            <span>
-              <strong>Líder en rentabilidad:</strong> {topMargin ? topMargin.productName : 'Línea King Size'} aporta el mayor margen comercial ({topMargin ? formatPercentage(topMargin.marginPct, 1) : '53,6 %'}).
-            </span>
-          </li>
-          <li className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 flex items-start gap-2">
-            <Sparkles className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-            <span>
-              <strong>Showroom destacado:</strong> Bahía SHOW-02 en Valle Oriente duplicó la tasa de cierre en la misma visita de clientes.
-            </span>
-          </li>
-        </ul>
+          {/* Flexografía */}
+          <div className="p-4 rounded-2xl bg-zinc-50/70 border border-zinc-200 shadow-2xs space-y-3">
+            <div className="flex justify-between items-center">
+              <h4 className="font-bold text-zinc-900 text-sm flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block" />
+                Flexografía Rotativa (Etiquetas en Rollo, Tags Continuos)
+              </h4>
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white border border-blue-500 text-zinc-900 shadow-2xs">
+                Alto Volumen
+              </span>
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-center font-mono">
+              <div className="p-2 rounded-xl bg-white border border-zinc-200 shadow-2xs">
+                <span className="text-[10px] text-zinc-500 block">Pedidos</span>
+                <span className="font-bold text-zinc-900">{flexoOrders.length}</span>
+              </div>
+              <div className="p-2 rounded-xl bg-white border border-zinc-200 shadow-2xs">
+                <span className="text-[10px] text-zinc-500 block">Tiraje</span>
+                <span className="font-bold text-zinc-900">{formatUnits(flexoUnits)}</span>
+              </div>
+              <div className="p-2 rounded-xl bg-white border border-zinc-200 shadow-2xs">
+                <span className="text-[10px] text-zinc-500 block">Venta Total</span>
+                <span className="font-extrabold text-blue-600">{formatCurrencyMXN(flexoSales, false)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

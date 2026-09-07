@@ -28,16 +28,20 @@ import {
   Boxes,
   Scan,
   Truck,
-  Store,
   ClipboardList,
   ShoppingCart,
   Building2,
   FileText,
   ShoppingBag,
   Users,
+  Receipt,
+  CreditCard,
+  Scale,
+  UserCheck,
   LayoutDashboard,
   CheckCheck,
-  ShieldCheck
+  ShieldCheck,
+  Wrench
 } from 'lucide-react';
 import { NavItemKey } from './Sidebar';
 
@@ -97,13 +101,17 @@ export const ConfiguracionView: React.FC = () => {
       case 'inventario': return Boxes;
       case 'mesa-verificacion': return Scan;
       case 'logistica': return Truck;
-      case 'showroom-expos': return Store;
       case 'requisiciones': return ClipboardList;
       case 'compras': return ShoppingCart;
       case 'proveedores': return Building2;
       case 'cotizaciones': return FileText;
       case 'pedidos': return ShoppingBag;
       case 'clientes': return Users;
+      case 'facturacion': return Receipt;
+      case 'cxc': return CreditCard;
+      case 'cxp': return Scale;
+      case 'nomina': return UserCheck;
+      case 'mantenimiento': return Wrench;
       case 'configuracion': return Palette;
       default: return Layers;
     }
@@ -111,8 +119,12 @@ export const ConfiguracionView: React.FC = () => {
 
   const categories = [
     { id: 'operaciones', label: 'Inventario y Operaciones', desc: 'Módulos de catálogo, almacén físico, control de calidad y logística' },
+    { id: 'mantenimiento', label: 'Mantenimiento & Planta', desc: 'Maquinaria y equipos industriales, órdenes de trabajo (OT), preventivos y refacciones' },
     { id: 'compras', label: 'Cadena de Suministro (Compras)', desc: 'Requisiciones internas, compras y directorio de proveedores' },
-    { id: 'ventas', label: 'Gestión Comercial (Ventas)', desc: 'Cotizaciones, órdenes de venta y administración de clientes' },
+    { id: 'comercial', label: 'Comercial', desc: 'CRM independiente: prospectos, oportunidades, actividades, pipeline y forecast' },
+    { id: 'ventas', label: 'Ventas Básico', desc: 'Cotizaciones, pedidos y clientes sin requerir CRM' },
+    { id: 'finanzas', label: 'Finanzas & Facturación', desc: 'Facturación CFDI 4.0, Cuentas por Cobrar y Cuentas por Pagar' },
+    { id: 'nomina', label: 'Nómina & Recursos Humanos', desc: 'Gestión de asistencia de planta, pre-nómina y timbrado fiscal CFDI' },
     { id: 'sistema', label: 'Módulos Centrales del Sistema', desc: 'Accesos esenciales de administración y control general' },
   ];
 
@@ -516,7 +528,7 @@ export const ConfiguracionView: React.FC = () => {
         <div className="bg-theme-surface border border-theme-subtle rounded-2xl p-6 shadow-xs space-y-4">
           <h2 className="text-sm font-bold text-theme-main">Dispositivos de Escaneo / Terminales RF</h2>
           <p className="text-xs text-theme-muted">
-            El sistema soporta lectores de código de barras USB/Bluetooth y cámaras de smartphones Android para escaneo individual de empaques, rollos y lotes.
+            Lectores QR/código de barras para lotes, rollos, bobinas, tarimas, producto terminado y ubicaciones físicas.
           </p>
           <div className="p-4 rounded-xl bg-white border border-emerald-600 shadow-2xs text-xs text-zinc-900 flex items-center gap-3">
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />

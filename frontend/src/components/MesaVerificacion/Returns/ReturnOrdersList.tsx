@@ -94,8 +94,8 @@ export const ReturnOrdersList: React.FC<ReturnOrdersListProps> = ({
  className="bg-theme-muted border border-theme-subtle rounded-2xl px-3 py-2 text-xs font-bold text-theme-main focus:outline-none cursor-pointer"
  >
  <option value="all">Todos los CEDIS</option>
- <option value="wh-mty-norte">CEDIS Monterrey Norte</option>
- <option value="wh-mty-sur">CEDIS Monterrey Sur</option>
+ <option value="alm-rtm-mp">Almacén Materia Prima</option>
+ <option value="alm-rtm-pt">Almacén Producto Terminado</option>
  </select>
  </div>
  </div>
@@ -139,7 +139,7 @@ export const ReturnOrdersList: React.FC<ReturnOrdersListProps> = ({
  onClick={() => onSelectOrder(order)}
  >
  <td className="py-3.5 px-4">
- <strong className="font-mono text-rose-600 block text-xs font-bold">
+ <strong className="font-mono text-theme-primary block text-xs font-bold">
  {order.folio}
  </strong>
  <span className="text-[10px] text-theme-muted truncate block max-w-xs">

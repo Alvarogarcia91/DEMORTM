@@ -13,7 +13,23 @@ import { CotizacionesPage } from './Ventas/CotizacionesPage';
 import { PedidosPage } from './Ventas/PedidosPage';
 import { ClientesPage } from './Ventas/ClientesPage';
 import { EmbarquesPage } from './Embarques/EmbarquesPage';
-import { ShowroomExposPage } from './ShowroomExpos/ShowroomExposPage';
+import { FacturacionPage } from './Finanzas/FacturacionPage';
+import { CxcPage } from './Finanzas/CxcPage';
+import { CxpPage } from './Finanzas/CxpPage';
+import { FinanceHub } from './Finanzas/FinanceHub';
+import { NominaPage } from './Nomina/NominaPage';
+import { MantenimientoPage } from './Mantenimiento/MantenimientoPage';
+import { CentroAlertasPage } from './CentroAlertasPage';
+import { CrmPage } from './Comercial/CrmPage';
+import { DemoAlert } from '../data/mockAlertasData';
+import {
+  SalesInvoice,
+  AccountReceivable,
+  SupplierInvoice,
+  INITIAL_SALES_INVOICES,
+  INITIAL_CXC_RECORDS,
+  INITIAL_CXP_RECORDS
+} from '../data/mockFinanzasData';
 import { Requisition, INITIAL_MOCK_REQUISITIONS } from '../data/mockRequisitionsData';
 import { SupplierMaster, INITIAL_MOCK_SUPPLIERS } from '../data/mockSuppliersData';
 import { PurchaseOrder, INITIAL_MOCK_PURCHASE_ORDERS } from '../data/mockPurchasesOrdersData';
@@ -51,11 +67,69 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  const [customers, setCustomers] = useState<SalesCustomer[]>(INITIAL_MOCK_SALES_CUSTOMERS);
  const [priceLists] = useState<SalesPriceList[]>(INITIAL_MOCK_SALES_PRICE_LISTS);
 
- // Cross-module targeted navigation state
- const [targetPurchaseOrderFolio, setTargetPurchaseOrderFolio] = useState<string | null>(null);
- const [targetInboundFolio, setTargetInboundFolio] = useState<string | null>(null);
+  // Shared Master Data State (Finanzas & Facturación)
+  const [salesInvoices, setSalesInvoices] = useState<SalesInvoice[]>(INITIAL_SALES_INVOICES);
+  const [cxcRecords, setCxcRecords] = useState<AccountReceivable[]>(INITIAL_CXC_RECORDS);
+  const [cxpRecords, setCxpRecords] = useState<SupplierInvoice[]>(INITIAL_CXP_RECORDS);
+  const [targetCxcId, setTargetCxcId] = useState<string | null>(null);
 
- const handleUpdateRequisition = (updated: Requisition) => {
+  // Cross-module targeted navigation state
+  const [targetPurchaseOrderFolio, setTargetPurchaseOrderFolio] = useState<string | null>(null);
+  const [targetInboundFolio, setTargetInboundFolio] = useState<string | null>(null);
+  const [targetQuoteCustomerId, setTargetQuoteCustomerId] = useState<string | null>(null);
+  const [targetQuoteFolio, setTargetQuoteFolio] = useState<string | null>(null);
+  const [targetOrderFolio, setTargetOrderFolio] = useState<string | null>(null);
+  const [targetRequisitionPrefilledItem, setTargetRequisitionPrefilledItem] = useState<{
+    sku: string;
+    productName: string;
+    brand: string;
+    quantity: number;
+    targetWarehouseId?: string;
+    note?: string;
+  } | null>(null);
+
+  const handleInvoiceStamped = (inv: SalesInvoice) => {
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 30);
+    const newCxcId = `cxc-${Date.now()}`;
+
+    const newCxc: AccountReceivable = {
+      id: newCxcId,
+      facturaId: inv.id,
+      facturaFolio: inv.folio,
+      uuidSat: inv.uuidSat,
+      clienteId: inv.clienteId,
+      clienteNombre: inv.clienteNombre,
+      clienteRfc: inv.clienteRfc,
+      fechaEmision: inv.fechaEmision.split('T')[0],
+      fechaVencimiento: dueDate.toISOString().split('T')[0],
+      diasCredito: 30,
+      diasMora: 0,
+      diasParaVencer: 30,
+      montoOriginal: inv.total,
+      saldoPendiente: inv.total,
+      totalPagado: 0,
+      status: 'por_vencer',
+      bucket: 'vigente',
+      metodoPago: inv.metodoPago,
+      historialPagos: [],
+      contactoCobranza: {
+        nombre: 'Dpto. Cuentas por Cobrar',
+        email: `cobranza@${inv.clienteRfc.toLowerCase().substring(0, 4)}.com.mx`,
+        telefono: '55-5000-0000',
+      },
+    };
+
+    // Update invoice with cxc link
+    setSalesInvoices((prev) =>
+      prev.map((i) => (i.id === inv.id ? { ...i, cxcId: newCxcId } : i))
+    );
+
+    // Activate in CxC
+    setCxcRecords((prev) => [newCxc, ...prev]);
+  };
+
+  const handleUpdateRequisition = (updated: Requisition) => {
  setRequisitions((prev) =>
  prev.map((r) => (r.id === updated.id ? updated : r))
  );
@@ -119,10 +193,10 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  branchId: quote.branchId,
  branchName: quote.branchName,
  priceListName: quote.priceListName,
- sellerName: quote.sellerName || 'Admin Demo (Ventas Retail)',
+ sellerName: quote.sellerName || 'Admin Demo (Ventas Industriales)',
  status: 'Pendiente de autorización',
  paymentConditions: quote.paymentConditions || 'Contado / Transferencia SPEI',
- deliveryAddress: 'Av. Vasconcelos #450, Col. del Valle, San Pedro Garza García N.L.',
+ deliveryAddress: 'Av. Industria Pesada #1000, Parque Industrial Milimex, Apodaca N.L.',
  items: quote.items.map((it) => ({
  id: 'ord-it-' + it.id,
  sku: it.sku,
@@ -168,7 +242,8 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  )
  );
 
- // 4. Navigate to pedidos
+ // 4. Navigate to pedidos with selected order
+ setTargetOrderFolio(orderFolio);
  setActiveTab('pedidos');
  };
 
@@ -235,15 +310,18 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  setCustomers((prev) => [newCustomer, ...prev]);
  };
 
- const handleStartQuoteForCustomer = (customer: SalesCustomer) => {
- setActiveTab('cotizaciones');
- };
+  const handleStartQuoteForCustomer = (customer: SalesCustomer) => {
+    setTargetQuoteCustomerId(customer.id);
+    setTargetQuoteFolio(null);
+    setActiveTab('cotizaciones');
+  };
 
  // Cross Navigation: From Compras to Mesa de Verificación
  const handleNavigateToInbound = (folio: string, targetWarehouseId?: string) => {
- if (targetWarehouseId && (targetWarehouseId === 'wh-mty-norte' || targetWarehouseId === 'wh-mty-sur')) {
- setSelectedCedisId(targetWarehouseId);
- }
+  if (targetWarehouseId && (targetWarehouseId === 'alm-rtm-mp' || targetWarehouseId === 'alm-rtm-pt')) {
+  setSelectedCedisId(targetWarehouseId);
+  }
+
  setTargetInboundFolio(folio);
  setActiveTab('mesa-verificacion');
  };
@@ -253,6 +331,25 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  setTargetPurchaseOrderFolio(orderFolio);
  setActiveTab('compras');
  };
+
+  // Cross Navigation: From Transversal Alerts to Origin Modules
+  const handleNavigateAlert = (alert: DemoAlert) => {
+    const { tab, targetId, targetFolio, secondaryPrefilledItem } = alert.destino;
+
+    if (tab === 'cxc' && targetId) {
+      setTargetCxcId(targetId);
+    } else if (tab === 'pedidos' && targetFolio) {
+      setTargetOrderFolio(targetFolio);
+    } else if (tab === 'compras' && targetFolio) {
+      setTargetPurchaseOrderFolio(targetFolio);
+    } else if (tab === 'requisiciones') {
+      if (secondaryPrefilledItem) {
+        setTargetRequisitionPrefilledItem(secondaryPrefilledItem);
+      }
+    }
+
+    setActiveTab(tab);
+  };
 
  const renderContent = () => {
  switch (activeTab) {
@@ -273,13 +370,11 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  );
  case 'logistica':
  return <EmbarquesPage />;
- case 'showroom-expos':
- return <ShowroomExposPage />;
  case 'requisiciones':
  return (
  <div className="space-y-6 animate-in fade-in duration-200">
  <div className="space-y-1">
- <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-rose-500 shadow-2xs">
+ <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-theme-primary shadow-2xs">
  Cadena de Suministro & Abastecimiento
  </span>
  <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-theme-main">
@@ -290,21 +385,22 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  </p>
  </div>
 
- <RequisicionesTab
- requisitions={requisitions}
- onSetRequisitions={setRequisitions}
- onNavigateToPurchasesTab={() => {
- setTargetPurchaseOrderFolio(null);
- setActiveTab('compras');
- }}
- />
+        <RequisicionesTab
+          requisitions={requisitions}
+          onSetRequisitions={setRequisitions}
+          initialPrefilledItem={targetRequisitionPrefilledItem}
+          onNavigateToPurchasesTab={() => {
+            setTargetPurchaseOrderFolio(null);
+            setActiveTab('compras');
+          }}
+        />
  </div>
  );
  case 'compras':
  return (
  <div className="space-y-6 animate-in fade-in duration-200">
  <div className="space-y-1">
- <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-rose-500 shadow-2xs">
+ <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-theme-primary shadow-2xs">
  Cadena de Suministro & Abastecimiento
  </span>
  <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-theme-main">
@@ -330,7 +426,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  return (
  <div className="space-y-6 animate-in fade-in duration-200">
  <div className="space-y-1">
- <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-rose-500 shadow-2xs">
+ <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-theme-primary shadow-2xs">
  Cadena de Suministro & Abastecimiento
  </span>
  <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-theme-main">
@@ -347,64 +443,124 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  />
  </div>
  );
- case 'cotizaciones':
- return (
- <CotizacionesPage
- quotes={quotes}
- customers={customers}
- priceLists={priceLists}
- onSaveQuote={handleSaveQuote}
- onUpdateQuoteStatus={handleUpdateQuoteStatus}
- onSaveCustomer={handleSaveCustomer}
- onGenerateOrderFromQuote={handleGenerateOrderFromQuote}
- onNavigateToOrder={(folio) => {
- setActiveTab('pedidos');
- }}
- />
- );
- case 'pedidos':
- return (
- <PedidosPage
- orders={salesOrders}
- quotes={quotes}
- onAuthorizeOrder={handleAuthorizeSalesOrder}
- onRequestAdjustmentOrder={handleRequestAdjustmentSalesOrder}
- onRejectOrder={handleRejectSalesOrder}
- onNavigateToRequisitions={(sku) => {
- setActiveTab('requisiciones');
- }}
- onNavigateToQuote={(folio) => {
- setActiveTab('cotizaciones');
- }}
- />
- );
- case 'clientes':
- return (
- <ClientesPage
- customers={customers}
- quotes={quotes}
- orders={salesOrders}
- onSaveCustomer={handleSaveCustomer}
- onStartQuoteForCustomer={handleStartQuoteForCustomer}
- />
- );
- case 'configuracion':
- return <ConfiguracionView />;
- default:
- return <DashboardInicio onNavigate={(tab) => setActiveTab(tab)} />;
- }
- };
+  case 'cotizaciones':
+  return (
+  <CotizacionesPage
+  quotes={quotes}
+  customers={customers}
+  priceLists={priceLists}
+  onSaveQuote={handleSaveQuote}
+  onUpdateQuoteStatus={handleUpdateQuoteStatus}
+  onSaveCustomer={handleSaveCustomer}
+  onGenerateOrderFromQuote={handleGenerateOrderFromQuote}
+  onNavigateToOrder={(folio) => {
+    setTargetOrderFolio(folio);
+    setActiveTab('pedidos');
+  }}
+  initialPreselectedCustomerId={targetQuoteCustomerId}
+  initialSelectedQuoteFolio={targetQuoteFolio}
+  />
+  );
+  case 'pedidos':
+  return (
+  <PedidosPage
+  orders={salesOrders}
+  quotes={quotes}
+  onAuthorizeOrder={handleAuthorizeSalesOrder}
+  onRequestAdjustmentOrder={handleRequestAdjustmentSalesOrder}
+  onRejectOrder={handleRejectSalesOrder}
+  onNavigateToRequisitions={(sku) => {
+  setActiveTab('requisiciones');
+  }}
+  onNavigateToQuote={(folio) => {
+    setTargetQuoteFolio(folio);
+    setTargetQuoteCustomerId(null);
+    setActiveTab('cotizaciones');
+  }}
+  initialSelectedOrderFolio={targetOrderFolio}
+  />
+  );
+      case 'clientes':
+        return (
+          <ClientesPage
+            customers={customers}
+            quotes={quotes}
+            orders={salesOrders}
+            onSaveCustomer={handleSaveCustomer}
+            onStartQuoteForCustomer={handleStartQuoteForCustomer}
+          />
+        );
+      case 'crm':
+        return <CrmPage customers={customers} quotes={quotes} orders={salesOrders} onNavigate={(tab, customerId) => { if (tab === 'cotizaciones' && customerId) setTargetQuoteCustomerId(customerId); setActiveTab(tab); }} />;
+      case 'facturacion':
+        return (
+          <FacturacionPage
+            invoices={salesInvoices}
+            onInvoicesChange={setSalesInvoices}
+            onNavigateToCxc={(cxcId) => {
+              setTargetCxcId(cxcId || null);
+              setActiveTab('cxc');
+            }}
+            onInvoiceStamped={handleInvoiceStamped}
+          />
+        );
+      case 'cxc':
+        return (
+          <CxcPage
+            records={cxcRecords}
+            onRecordsChange={setCxcRecords}
+            onNavigateToInvoice={() => {
+              setActiveTab('facturacion');
+            }}
+            targetCxcId={targetCxcId}
+          />
+        );
+      case 'cxp':
+        return (
+          <CxpPage
+            invoices={cxpRecords}
+            onInvoicesChange={setCxpRecords}
+            onNavigateToPurchases={() => setActiveTab('compras')}
+          />
+        );
+      case 'finanzas':
+      case 'tesoreria':
+      case 'contabilidad':
+      case 'reportes-financieros':
+        return <FinanceHub salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
+      case 'nomina':
+        return <NominaPage />;
+      case 'mantenimiento':
+        return (
+          <MantenimientoPage
+            onNavigateToRequisitions={(prefilledItem) => {
+              setTargetRequisitionPrefilledItem(prefilledItem);
+              setActiveTab('requisiciones');
+            }}
+          />
+        );
+      case 'centro-alertas':
+        return <CentroAlertasPage onNavigateAlert={handleNavigateAlert} />;
+      case 'configuracion':
+        return <ConfiguracionView />;
+      default:
+        return <DashboardInicio onNavigate={(tab) => setActiveTab(tab)} />;
+    }
+  };
 
  return (
  <div className="min-h-screen bg-theme-base text-theme-main flex flex-col lg:flex-row font-sans transition-colors duration-200">
  {/* Sidebar Navigation */}
  <Sidebar
  activeTab={activeTab}
- onSelectTab={(tab) => {
- setTargetPurchaseOrderFolio(null);
- setTargetInboundFolio(null);
- setActiveTab(tab);
- }}
+        onSelectTab={(tab) => {
+          setTargetPurchaseOrderFolio(null);
+          setTargetInboundFolio(null);
+          if (tab !== 'requisiciones') {
+            setTargetRequisitionPrefilledItem(null);
+          }
+          setActiveTab(tab);
+        }}
  isOpenMobile={isOpenMobile}
  onCloseMobile={() => setIsOpenMobile(false)}
  onLogout={onLogout}
@@ -415,6 +571,9 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  <Topbar
  onOpenMobileMenu={() => setIsOpenMobile(true)}
  onLogout={onLogout}
+ activeTab={activeTab}
+ onSelectTab={(tab) => setActiveTab(tab)}
+ onNavigateAlert={handleNavigateAlert}
  />
 
  <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1520px] w-full mx-auto">

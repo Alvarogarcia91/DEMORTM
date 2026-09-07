@@ -54,12 +54,12 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({
  {/* Header */}
  <div className="p-6 border-b border-zinc-200 flex items-center justify-between bg-white">
  <div className="flex items-center gap-3">
- <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 shadow-2xs text-rose-600 flex items-center justify-center">
+ <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 shadow-2xs text-theme-primary flex items-center justify-center">
  <User className="w-6 h-6" />
  </div>
  <div>
  <div className="flex items-center gap-2.5 flex-wrap">
- <span className="font-mono text-base font-black text-rose-600">{customer.code}</span>
+ <span className="font-mono text-base font-black text-theme-primary">{customer.code}</span>
  <h3 className="text-base font-bold text-zinc-900">{customer.name}</h3>
  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold border border-zinc-300 shadow-2xs bg-white text-zinc-900">
  {customer.type}
@@ -96,7 +96,7 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({
  onClick={() => setActiveTab(tab.id as any)}
  className={`px-3.5 py-1.5 rounded-full font-bold whitespace-nowrap transition-all cursor-pointer ${
  activeTab === tab.id
- ? 'bg-rose-600 text-white shadow-xs'
+ ? 'bg-theme-primary text-white shadow-xs'
  : 'bg-white border border-zinc-200 text-zinc-700 hover:bg-zinc-100 shadow-2xs'
  }`}
  >
@@ -149,22 +149,25 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({
           {/* Info General Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-2">
-              <span className="text-[10px] uppercase font-bold text-zinc-500 block">Datos Fiscales y Generales</span>
+              <span className="text-[10px] uppercase font-bold text-zinc-500 block">Datos Fiscales y Comerciales</span>
               <div className="space-y-1">
                 <p className="font-bold text-zinc-900 text-sm">{customer.legalName}</p>
                 <p className="font-mono text-zinc-600">RFC: {customer.rfc}</p>
-                <p className="text-zinc-600">Tipo de Cliente: <strong className="text-zinc-900">{customer.type}</strong></p>
-                <p className="text-zinc-600">Sucursal Preferida: <strong className="text-zinc-900">{customer.preferredBranchName}</strong></p>
-                <p className="text-zinc-600">Lista Asignada: <strong className="text-zinc-900">{customer.preferredPriceListName}</strong></p>
+                <p className="text-zinc-600">Tipo de Cuenta: <strong className="text-zinc-900">{customer.type}</strong></p>
+                <p className="text-zinc-600">Contacto Principal: <strong className="text-zinc-900">{customer.contacts[0]?.name || customer.name} ({customer.phone})</strong></p>
+                <p className="text-zinc-600">Correo Electrónico: <strong className="text-zinc-900">{customer.email}</strong></p>
+                <p className="text-zinc-600">Moneda de Facturación: <strong className="text-zinc-900 font-mono">MXN (Pesos Mexicanos)</strong></p>
+                <p className="text-zinc-600">Planta / Destino Habitual: <strong className="text-zinc-900">{customer.preferredBranchName || 'Planta Principal RTM'}</strong></p>
+                <p className="text-zinc-600">Tarifa Comercial Asignada: <strong className="text-zinc-900">{customer.preferredPriceListName}</strong></p>
               </div>
             </div>
 
             <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-2">
-              <span className="text-[10px] uppercase font-bold text-zinc-500 block">Condiciones y Notas</span>
+              <span className="text-[10px] uppercase font-bold text-zinc-500 block">Condiciones Comerciales y Crédito</span>
               <div className="space-y-1">
-                <p className="text-zinc-600">Descuento Base: <strong className="text-emerald-700 font-mono">{formatPercentage(customer.baseDiscountPct, 0)}</strong></p>
-                <p className="text-zinc-600">Días de Crédito: <strong className="text-zinc-900 font-mono">{customer.creditDays} días naturales</strong></p>
-                <p className="text-zinc-600">Estado de Cuenta: <strong className="text-emerald-700">{customer.status}</strong></p>
+                <p className="text-zinc-600">Descuento Base Autorizado: <strong className="text-emerald-700 font-mono">{formatPercentage(customer.baseDiscountPct, 0)}</strong></p>
+                <p className="text-zinc-600">Condición de Pago / Crédito: <strong className="text-zinc-900 font-mono">{customer.creditDays > 0 ? `Crédito comercial ${customer.creditDays} días` : 'Contado'}</strong></p>
+                <p className="text-zinc-600">Estado de Cartera: <strong className="text-emerald-700">{customer.status}</strong></p>
                 {customer.notes && (
                   <p className="text-zinc-500 text-[11px] italic pt-1 border-t border-zinc-100">
                     "{customer.notes}"
@@ -221,7 +224,7 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({
                 <div key={addr.id} className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-zinc-900 text-xs uppercase flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-rose-600" />
+                      <MapPin className="w-3.5 h-3.5 text-theme-primary" />
                       {addr.type}
                     </span>
                   </div>
@@ -257,7 +260,7 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({
                     <tr className="bg-zinc-50 border-b border-zinc-200 text-zinc-500 font-bold text-[10px] uppercase">
                       <th className="py-2.5 px-3">Folio</th>
                       <th className="py-2.5 px-3">Fecha</th>
-                      <th className="py-2.5 px-3">Sucursal</th>
+                      <th className="py-2.5 px-3">Planta Destino</th>
                       <th className="py-2.5 px-3 text-right">Total</th>
                       <th className="py-2.5 px-3 text-center">Estado</th>
                     </tr>
@@ -265,7 +268,7 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({
                   <tbody className="divide-y divide-zinc-200">
                     {customerQuotes.map((q) => (
                       <tr key={q.id}>
-                        <td className="py-2.5 px-3 font-mono font-bold text-rose-600">{q.folio}</td>
+                        <td className="py-2.5 px-3 font-mono font-bold text-theme-primary">{q.folio}</td>
                         <td className="py-2.5 px-3 text-zinc-500">{formatDateMX(q.createdAt)}</td>
                         <td className="py-2.5 px-3 text-zinc-600">{q.branchName}</td>
                         <td className="py-2.5 px-3 text-right font-mono font-bold text-zinc-900">
@@ -304,7 +307,7 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({
                   <tbody className="divide-y divide-zinc-200">
                     {customerOrders.map((o) => (
                       <tr key={o.id}>
-                        <td className="py-2.5 px-3 font-mono font-bold text-rose-600">{o.folio}</td>
+                        <td className="py-2.5 px-3 font-mono font-bold text-theme-primary">{o.folio}</td>
                         <td className="py-2.5 px-3 font-mono text-zinc-500">{o.originQuoteFolio || '-'}</td>
                         <td className="py-2.5 px-3 text-zinc-500">{formatDateMX(o.createdAt)}</td>
                         <td className="py-2.5 px-3 text-right font-mono font-bold text-zinc-900">
@@ -358,27 +361,55 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({
         )}
  </div>
 
- {/* Modal Footer */}
- <div className="p-4 bg-white border-t border-zinc-200 flex items-center justify-between gap-3">
- {onStartQuoteForCustomer && (
- <button
- type="button"
- onClick={() => onStartQuoteForCustomer(customer)}
- className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
- >
- <FileText className="w-4 h-4" />
- <span>Cotizar a este cliente</span>
- </button>
- )}
+        {/* Modal Footer */}
+        <div className="p-4 bg-white border-t border-zinc-200 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            {onStartQuoteForCustomer && (
+              <button
+                type="button"
+                onClick={() => onStartQuoteForCustomer(customer)}
+                className="px-4 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Nueva cotización</span>
+              </button>
+            )}
 
- <button
- type="button"
- onClick={onClose}
- className="px-4 py-2.5 rounded-xl bg-white hover:bg-zinc-50 border border-zinc-300 text-zinc-900 font-semibold text-xs transition-colors cursor-pointer"
- >
- Cerrar
- </button>
- </div>
+            <button
+              type="button"
+              onClick={() => setActiveTab('cotizaciones')}
+              className={`px-3.5 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeTab === 'cotizaciones'
+                  ? 'bg-zinc-100 text-zinc-900 border-zinc-400'
+                  : 'bg-white border-zinc-300 text-zinc-700 hover:bg-zinc-50'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5 text-zinc-600" />
+              <span>Ver cotizaciones ({customerQuotes.length})</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('pedidos')}
+              className={`px-3.5 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeTab === 'pedidos'
+                  ? 'bg-zinc-100 text-zinc-900 border-zinc-400'
+                  : 'bg-white border-zinc-300 text-zinc-700 hover:bg-zinc-50'
+              }`}
+            >
+              <ShoppingBag className="w-3.5 h-3.5 text-zinc-600" />
+              <span>Ver pedidos ({customerOrders.length})</span>
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2.5 rounded-xl bg-white hover:bg-zinc-50 border border-zinc-300 text-zinc-900 font-semibold text-xs transition-colors cursor-pointer"
+          >
+            Cerrar
+          </button>
+        </div>
  </div>
  </div>
  );

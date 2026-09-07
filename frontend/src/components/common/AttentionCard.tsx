@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { SemanticVariant, SEMANTIC_TOKENS } from './semanticTokens';
 import { SemanticBadge } from './SemanticBadge';
@@ -60,7 +60,7 @@ export const AttentionCard: React.FC<AttentionCardProps> = ({
  </div>
 
  {actionText && (
- <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-zinc-900 group-hover:text-rose-600 transition-colors">
+ <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-zinc-900 group-hover:text-theme-primary transition-colors">
  <span>{actionText}</span>
  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
  </div>

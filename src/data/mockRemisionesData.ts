@@ -1,6 +1,6 @@
-﻿import { OutboundVerificationOrder } from './mockOutboundVerificationData';
+import { OutboundVerificationOrder } from './mockOutboundVerificationData';
 
-export type RemisionType = 'Venta' | 'Traspaso' | 'Exposición';
+export type RemisionType = 'Venta' | 'Traspaso' | 'Despacho B2B';
 export type RemisionStatus = 
   | 'Pendiente de remisión' 
   | 'Remisión generada' 
@@ -9,8 +9,8 @@ export type RemisionStatus =
   | 'Entrega parcial';
 
 export interface DeliveryProof {
-  deliveredAt: string; // ej. '28 Ago 2026 · 14:48'
-  recipientName: string; // ej. 'Roberto Cantú Garza'
+  deliveredAt: string; // ej. '06 Sep 2026 · 14:48'
+  recipientName: string; // ej. 'Ing. Roberto Cantú'
   driverName: string;
   vehicleName?: string;
   coordinates: {
@@ -39,24 +39,24 @@ export interface RemisionItem {
 
 export interface OutboundRemision {
   id: string;
-  folio: string; // ej. 'REM-2026-0061' (Venta) o 'REM-TR-2026-0021' (Traspaso)
+  folio: string; // ej. 'REM-2026-0061'
   type: RemisionType;
   status: RemisionStatus;
   outboundOrderFolio: string; // ej. 'VS-2026-0040'
-  sourceDocumentFolio: string; // ej. 'PED-2026-0103' o 'OTP-2026-0044'
-  sourceDocumentType: 'Pedido' | 'OTP' | 'Exposición';
+  sourceDocumentFolio: string; // ej. 'PED-2026-0410'
+  sourceDocumentType: 'Pedido' | 'OTP' | 'Orden de Salida';
   createdAt: string;
   printedAt?: string;
   originWarehouseId: string;
-  originWarehouseName: string; // ej. 'CEDIS Monterrey Norte'
-  destinationName: string; // ej. 'Roberto Cantú Garza' o 'Sucursal Valle Oriente'
-  destinationAddress?: string; // para Venta
-  destinationFacility?: string; // para Traspaso
+  originWarehouseName: string; // ej. 'ALM-PT (Almacén Producto Terminado RTM)'
+  destinationName: string; // ej. 'Laboratorios Medifarma S.A. de C.V.'
+  destinationAddress?: string;
+  destinationFacility?: string;
   assignedLane?: string; // ej. 'EMB-01'
-  operatorAssigned: string; // ej. 'Valeria Torres (Operador Mesa 02)'
+  operatorAssigned: string; // ej. 'Valeria Torres (Operador PT)'
   totalUnits: number;
   observations?: string;
-  qrPayload: string; // ej. 'REM=REM-2026-0061|TYPE=SALE|REF=PED-2026-0103'
+  qrPayload: string;
   items: RemisionItem[];
   carrierInfo?: {
     driverName: string;
@@ -77,7 +77,7 @@ export interface OutboundRemision {
 
 export const INITIAL_MOCK_REMISSIONES: OutboundRemision[] = [
   // =========================================================================
-  // VENTA 1 (100% validada / Lista para carga / Lista para imprimir)
+  // REMISIÓN 1 (TRICO TECHNOLOGIES - IS-2420 / 100% validada)
   // =========================================================================
   {
     id: 'rem-1',
@@ -85,51 +85,51 @@ export const INITIAL_MOCK_REMISSIONES: OutboundRemision[] = [
     type: 'Venta',
     status: 'Remisión generada',
     outboundOrderFolio: 'VS-2026-0040',
-    sourceDocumentFolio: 'PED-2026-0103',
+    sourceDocumentFolio: 'PED-RTM-2026-0141',
     sourceDocumentType: 'Pedido',
-    createdAt: '26 Ago 2026, 15:45',
-    originWarehouseId: 'wh-mty-sur',
-    originWarehouseName: 'CEDIS Monterrey Sur',
-    destinationName: 'Roberto Cantú Garza',
-    destinationAddress: 'Av. Eugenio Garza Sada 3820, Col. Contry, Monterrey, N.L., C.P. 64860',
+    createdAt: '06 Sep 2026, 11:45',
+    originWarehouseId: 'alm-rtm-pt',
+    originWarehouseName: 'ALM-PT (Almacén Producto Terminado RTM)',
+    destinationName: 'TRICO TECHNOLOGIES CORPORATION',
+    destinationAddress: 'Av. Parque Industrial Reynosa #200, Reynosa, Tamps.',
     assignedLane: 'EMB-01',
-    operatorAssigned: 'Valeria Torres (Operador Mesa 02)',
+    operatorAssigned: 'Valeria Torres (Operador PT)',
     totalUnits: 3,
-    observations: 'Entrega a domicilio residencial en planta alta. Incluye maniobra autorizada y retiro de empaque.',
-    qrPayload: 'REM=REM-2026-0061|TYPE=SALE|REF=PED-2026-0103',
+    observations: 'Slide-In Label Wiper Blade (IS-2420). Entrega en área de recibo de materiales. Requiere certificado de análisis COA.',
+    qrPayload: 'REM=REM-2026-0061|TYPE=SALE|REF=PED-RTM-2026-0141',
     carrierInfo: {
       driverName: 'Mario Cantú',
-      unitPlate: 'NL-8492-B',
+      unitPlate: 'TM-8492-B',
       vehicleType: 'Camioneta Isuzu 3.5 Ton',
     },
     items: [
       {
-        sku: 'SC-RES-ORT-MAT',
-        productName: 'Restonic Colchón Ortopedic Matrimonial',
-        brand: 'Restonic',
-        size: 'Matrimonial',
+        sku: 'IS-2420',
+        productName: 'Slide-In Label Wiper Blade (Rev I-01)',
+        brand: 'TRICO',
+        size: 'Rollo 1,000 pzas',
         quantity: 3,
-        lotNumber: 'LOTE-2026-W33',
+        lotNumber: 'RTM-PT-260905-001',
         uids: [
-          'SC-UID-2026-000131',
-          'SC-UID-2026-000132',
-          'SC-UID-2026-000133',
+          'CJ-RTM-2026-00211',
+          'CJ-RTM-2026-00212',
+          'CJ-RTM-2026-00213',
         ],
       },
     ],
     signatures: {
-      deliveredByLabel: 'Entregó (Chofer / Mesa de Salida)',
-      deliveredByName: 'Mario Cantú (Chofer Ruta Guadalupe)',
-      receivedByLabel: 'Recibió de conformidad',
-      receivedByName: 'Roberto Cantú Garza',
+      deliveredByLabel: 'Entregó (Chofer / Mesa de Salida PT)',
+      deliveredByName: 'Mario Cantú (Transporte RTM)',
+      receivedByLabel: 'Recibió de conformidad (QA Cliente)',
+      receivedByName: 'Lic. Roberto Cantú (Demo)',
       signeeNameLabel: 'Nombre del Receptor',
-      signeeName: 'Roberto Cantú Garza',
+      signeeName: 'Lic. Roberto Cantú (Demo)',
       dateTimeLabel: 'Fecha y hora de entrega',
     },
   },
 
   // =========================================================================
-  // VENTA 2 (Pendiente de validación 100% / No disponible para impresión definitiva)
+  // REMISIÓN 2 (TYCO - Instructivos e-Force / En proceso)
   // =========================================================================
   {
     id: 'rem-2',
@@ -137,46 +137,35 @@ export const INITIAL_MOCK_REMISSIONES: OutboundRemision[] = [
     type: 'Venta',
     status: 'Pendiente de remisión',
     outboundOrderFolio: 'VS-2026-0044',
-    sourceDocumentFolio: 'PED-2026-0107',
+    sourceDocumentFolio: 'PED-RTM-2026-0140',
     sourceDocumentType: 'Pedido',
-    createdAt: '27 Ago 2026, 13:50',
-    originWarehouseId: 'wh-mty-norte',
-    originWarehouseName: 'CEDIS Monterrey Norte',
-    destinationName: 'Hotel Boutique Las Lomas S.A. de C.V.',
-    destinationAddress: 'Av. Vasconcelos 1400, Col. Del Valle, San Pedro Garza García, N.L., C.P. 66220',
-    assignedLane: 'EMB-05',
-    operatorAssigned: 'Roberto Garza (Operador Salidas)',
-    totalUnits: 4,
-    observations: 'Recepción en bahía de proveedores de 09:00 a 17:00 h. Solicitar acceso con Jefe de Compras.',
-    qrPayload: 'REM=REM-2026-0062|TYPE=SALE|REF=PED-2026-0107',
+    createdAt: '06 Sep 2026, 13:50',
+    originWarehouseId: 'alm-rtm-pt',
+    originWarehouseName: 'ALM-PT (Almacén Producto Terminado RTM)',
+    destinationName: 'TYCO (Johnson Controls)',
+    destinationAddress: 'Av. Las Torres #500, Parque Industrial Finsa, Guadalupe N.L.',
+    assignedLane: 'EMB-02',
+    operatorAssigned: 'Valeria Torres (Operador PT)',
+    totalUnits: 3,
+    observations: 'Instructivo e-Force Seguridad Contra Incendios (02-814-556). Entrega por rampa 3 de proveedores.',
+    qrPayload: 'REM=REM-2026-0062|TYPE=SALE|REF=PED-RTM-2026-0140',
     items: [
       {
-        sku: 'SC-REST-ORTO-MAT',
-        productName: 'Restonic Colchón Ortopedic Matrimonial',
-        brand: 'Restonic',
-        size: 'Matrimonial',
-        quantity: 2,
-        lotNumber: 'LOTE-2026-W33',
+        sku: '02-814-556',
+        productName: 'Instructivo e-Force Seguridad Contra Incendios (Rev B)',
+        brand: 'TYCO',
+        size: 'Tarima 5,000 pzas',
+        quantity: 3,
+        lotNumber: 'RTM-PT-260903-010',
         uids: [
-          'SC-UID-2026-000211',
-          'SC-UID-2026-000212',
-        ],
-      },
-      {
-        sku: 'SC-REST-ORTO-KS',
-        productName: 'Restonic Colchón Ortopedic King Size',
-        brand: 'Restonic',
-        size: 'King Size',
-        quantity: 2,
-        lotNumber: 'LOTE-2026-W34',
-        uids: [
-          'SC-UID-2026-000244',
-          'SC-UID-2026-000245',
+          'TAR-RTM-2026-00401',
+          'TAR-RTM-2026-00402',
+          'TAR-RTM-2026-00403',
         ],
       },
     ],
     signatures: {
-      deliveredByLabel: 'Entregó (Chofer / Mesa de Salida)',
+      deliveredByLabel: 'Entregó (Chofer / Mesa de Salida PT)',
       receivedByLabel: 'Recibió de conformidad',
       signeeNameLabel: 'Nombre del Receptor',
       dateTimeLabel: 'Fecha y hora de entrega',
@@ -184,7 +173,7 @@ export const INITIAL_MOCK_REMISSIONES: OutboundRemision[] = [
   },
 
   // =========================================================================
-  // VENTA 3 (Con diferencia / En atención)
+  // REMISIÓN 3 (BLACK & DECKER - Manual DCS382 NA)
   // =========================================================================
   {
     id: 'rem-3',
@@ -192,213 +181,37 @@ export const INITIAL_MOCK_REMISSIONES: OutboundRemision[] = [
     type: 'Venta',
     status: 'Pendiente de remisión',
     outboundOrderFolio: 'VS-2026-0042',
-    sourceDocumentFolio: 'PED-2026-0180',
+    sourceDocumentFolio: 'PED-RTM-2026-0142',
     sourceDocumentType: 'Pedido',
-    createdAt: '27 Ago 2026, 10:00',
-    originWarehouseId: 'wh-mty-norte',
-    originWarehouseName: 'CEDIS Monterrey Norte',
-    destinationName: 'Grupo Hotelero Sierra Madre S.A.',
-    destinationAddress: 'Av. Constitución 2050 Pte., Centro, Monterrey, N.L., C.P. 64000',
-    assignedLane: 'EMB-02',
-    operatorAssigned: 'Carlos Medina (Operador Mesa 01)',
-    totalUnits: 3,
-    observations: 'Discrepancia serial registrada. Documento en espera de validación de supervisor.',
-    qrPayload: 'REM=REM-2026-0063|TYPE=SALE|REF=PED-2026-0180',
+    createdAt: '06 Sep 2026, 14:00',
+    originWarehouseId: 'alm-rtm-pt',
+    originWarehouseName: 'ALM-PT (Almacén Producto Terminado RTM)',
+    destinationName: 'BLACK & DECKER (Stanley Black & Decker)',
+    destinationAddress: 'Av. Industria Pesada #1000, Parque Industrial Milimex, Apodaca N.L.',
+    assignedLane: 'EMB-03',
+    operatorAssigned: 'Valeria Torres (Operador PT)',
+    totalUnits: 2,
+    observations: 'Manual Cordless Recip Saw DCS382 NA (NA472050). Entrega parcial lote de 5,000 pzas disponibles.',
+    qrPayload: 'REM=REM-2026-0063|TYPE=SALE|REF=PED-RTM-2026-0142',
     items: [
       {
-        sku: 'SC-NAYT-FLOW-IND',
-        productName: 'Nayt Colchón Flow Basic White Individual',
-        brand: 'Nayt',
-        size: 'Individual',
-        quantity: 3,
-        lotNumber: 'LOTE-2026-W31',
+        sku: 'NA472050',
+        productName: 'Manual Cordless Recip Saw DCS382 NA (Rev 08/23)',
+        brand: 'BLACK & DECKER',
+        size: 'Caja 2,500 pzas',
+        quantity: 2,
+        lotNumber: 'RTM-PT-260904-003',
         uids: [
-          'SC-UID-2026-000103',
-          'SC-UID-2026-000104',
-          'SC-UID-2026-000105',
+          'CJ-RTM-2026-00301',
+          'CJ-RTM-2026-00302',
         ],
       },
     ],
     signatures: {
-      deliveredByLabel: 'Entregó (Chofer / Mesa de Salida)',
+      deliveredByLabel: 'Entregó (Chofer / Mesa de Salida PT)',
       receivedByLabel: 'Recibió de conformidad',
       signeeNameLabel: 'Nombre del Receptor',
       dateTimeLabel: 'Fecha y hora de entrega',
-    },
-  },
-
-  // =========================================================================
-  // TRASPASO 1 (100% validada / Lista para carga / Lista para imprimir)
-  // =========================================================================
-  {
-    id: 'rem-4',
-    folio: 'REM-TR-2026-0021',
-    type: 'Traspaso',
-    status: 'Remisión generada',
-    outboundOrderFolio: 'VS-2026-0039',
-    sourceDocumentFolio: 'OTP-2026-0044',
-    sourceDocumentType: 'OTP',
-    createdAt: '26 Ago 2026, 16:25',
-    originWarehouseId: 'wh-mty-norte',
-    originWarehouseName: 'CEDIS Monterrey Norte',
-    destinationName: 'Sucursal Valle Oriente',
-    destinationFacility: 'Sucursal Valle Oriente · Av. Lázaro Cárdenas 2400, Valle Oriente, San Pedro Garza García, N.L.',
-    assignedLane: 'EMB-01',
-    operatorAssigned: 'Carlos Medina (Operador Mesa 01)',
-    totalUnits: 4,
-    observations: 'Reabastecimiento regular de inventario para piso de venta y showroom.',
-    qrPayload: 'REM=REM-TR-2026-0021|TYPE=TRANSFER|REF=OTP-2026-0044',
-    carrierInfo: {
-      driverName: 'Raúl Morales (Ruta CEDIS-Sucursales)',
-      unitPlate: 'NL-5520-C',
-      vehicleType: 'Torton Freightliner M2',
-    },
-    items: [
-      {
-        sku: 'SC-SPA-REC-IND',
-        productName: 'Spring Air Colchón Record Individual',
-        brand: 'Spring Air',
-        size: 'Individual',
-        quantity: 4,
-        lotNumber: 'LOTE-2026-W33',
-        uids: [
-          'SC-UID-2026-000151',
-          'SC-UID-2026-000152',
-          'SC-UID-2026-000153',
-          'SC-UID-2026-000154',
-        ],
-      },
-    ],
-    signatures: {
-      deliveredByLabel: 'Entregó (CEDIS Emisor)',
-      deliveredByName: 'Carlos Medina (Operador Mesa 01)',
-      receivedByLabel: 'Recibió en instalación',
-      receivedByName: 'Brenda Cavazos (Encargada Sucursal VO)',
-      signeeNameLabel: 'Responsable de Sucursal',
-      signeeName: 'Brenda Cavazos',
-      dateTimeLabel: 'Fecha y hora de recepción',
-    },
-  },
-
-  // =========================================================================
-  // TRASPASO 2 (En validación / No disponible para impresión definitiva)
-  // =========================================================================
-  {
-    id: 'rem-5',
-    folio: 'REM-TR-2026-0022',
-    type: 'Traspaso',
-    status: 'Pendiente de remisión',
-    outboundOrderFolio: 'VS-2026-0043',
-    sourceDocumentFolio: 'OTP-2026-0047',
-    sourceDocumentType: 'OTP',
-    createdAt: '27 Ago 2026, 12:55',
-    originWarehouseId: 'wh-mty-sur',
-    originWarehouseName: 'CEDIS Monterrey Sur',
-    destinationName: 'Sucursal Cumbres',
-    destinationFacility: 'Sucursal Cumbres · Av. Paseo de los Leones 1200, Cumbres 1er Sector, Monterrey, N.L.',
-    assignedLane: 'EMB-01',
-    operatorAssigned: 'Valeria Torres (Operador Mesa 02)',
-    totalUnits: 4,
-    observations: 'Traspaso inter-sucursales de alta prioridad para exhibición en tienda.',
-    qrPayload: 'REM=REM-TR-2026-0022|TYPE=TRANSFER|REF=OTP-2026-0047',
-    items: [
-      {
-        sku: 'SC-REST-ORTO-MAT',
-        productName: 'Restonic Colchón Ortopedic Matrimonial',
-        brand: 'Restonic',
-        size: 'Matrimonial',
-        quantity: 2,
-        lotNumber: 'LOTE-2026-W33',
-        uids: [
-          'SC-UID-2026-000135',
-          'SC-UID-2026-000136',
-        ],
-      },
-      {
-        sku: 'SC-SEA-CLB-KS',
-        productName: 'Sealy Colchón Celebration Plus King Size',
-        brand: 'Sealy',
-        size: 'King Size',
-        quantity: 2,
-        lotNumber: 'LOTE-2026-W35',
-        uids: [
-          'SC-UID-2026-000301',
-          'SC-UID-2026-000302',
-        ],
-      },
-    ],
-    signatures: {
-      deliveredByLabel: 'Entregó (CEDIS Emisor)',
-      receivedByLabel: 'Recibió en instalación',
-      signeeNameLabel: 'Responsable de Sucursal',
-      dateTimeLabel: 'Fecha y hora de recepción',
-    },
-  },
-
-  // =========================================================================
-  // TRASPASO 3 (En validación / Traspaso Norte a VO)
-  // =========================================================================
-  {
-    id: 'rem-6',
-    folio: 'REM-TR-2026-0023',
-    type: 'Traspaso',
-    status: 'Pendiente de remisión',
-    outboundOrderFolio: 'VS-2026-0041',
-    sourceDocumentFolio: 'OTP-2026-0044',
-    sourceDocumentType: 'OTP',
-    createdAt: '27 Ago 2026, 12:30',
-    originWarehouseId: 'wh-mty-norte',
-    originWarehouseName: 'CEDIS Monterrey Norte',
-    destinationName: 'Sucursal Valle Oriente',
-    destinationFacility: 'Sucursal Valle Oriente · Av. Lázaro Cárdenas 2400, Valle Oriente, San Pedro Garza García, N.L.',
-    assignedLane: 'EMB-03',
-    operatorAssigned: 'Carlos Medina (Operador Mesa 01)',
-    totalUnits: 6,
-    observations: 'Validación en rampa en proceso (4 de 6 unidades confirmadas).',
-    qrPayload: 'REM=REM-TR-2026-0023|TYPE=TRANSFER|REF=OTP-2026-0044',
-    items: [
-      {
-        sku: 'SC-NAYT-FLOW-IND',
-        productName: 'Nayt Colchón Flow Basic White Individual',
-        brand: 'Nayt',
-        size: 'Individual',
-        quantity: 2,
-        lotNumber: 'LOTE-2026-W31',
-        uids: [
-          'SC-UID-2026-000101',
-          'SC-UID-2026-000102',
-        ],
-      },
-      {
-        sku: 'SC-NAYT-FLOW-MAT',
-        productName: 'Nayt Colchón Flow Basic White Matrimonial',
-        brand: 'Nayt',
-        size: 'Matrimonial',
-        quantity: 2,
-        lotNumber: 'LOTE-2026-W34',
-        uids: [
-          'SC-UID-2026-000184',
-          'SC-UID-2026-000185',
-        ],
-      },
-      {
-        sku: 'SC-SPA-REC-IND',
-        productName: 'Spring Air Colchón Record Individual',
-        brand: 'Spring Air',
-        size: 'Individual',
-        quantity: 2,
-        lotNumber: 'LOTE-2026-W32',
-        uids: [
-          'SC-UID-2026-000121',
-          'SC-UID-2026-000122',
-        ],
-      },
-    ],
-    signatures: {
-      deliveredByLabel: 'Entregó (CEDIS Emisor)',
-      receivedByLabel: 'Recibió en instalación',
-      signeeNameLabel: 'Responsable de Sucursal',
-      dateTimeLabel: 'Fecha y hora de recepción',
     },
   },
 ];
@@ -421,7 +234,6 @@ export function getRemisionByFolio(folio: string): OutboundRemision | undefined 
 export function getOrCreateRemisionForOrder(order: OutboundVerificationOrder): OutboundRemision {
   const existing = remisionesStore.find((r) => r.outboundOrderFolio === order.folio);
   if (existing) {
-    // If order became 'Lista para carga', update remision status if it was pending
     if (order.status === 'Lista para carga' && existing.status === 'Pendiente de remisión') {
       existing.status = 'Remisión generada';
     }
@@ -431,7 +243,6 @@ export function getOrCreateRemisionForOrder(order: OutboundVerificationOrder): O
   const isTransfer = order.type === 'Orden de Traspaso' || order.referenceFolio.startsWith('OTP');
   const type: RemisionType = isTransfer ? 'Traspaso' : 'Venta';
   
-  // Deterministic numbering based on order folio
   const orderNumber = order.folio.replace(/\D/g, '') || '0050';
   const folio = isTransfer 
     ? `REM-TR-2026-00${(parseInt(orderNumber, 10) % 50 + 20).toString().padStart(2, '0')}`
@@ -441,7 +252,6 @@ export function getOrCreateRemisionForOrder(order: OutboundVerificationOrder): O
   const refType = isTransfer ? 'TRANSFER' : 'SALE';
   const qrPayload = `REM=${folio}|TYPE=${refType}|REF=${order.referenceFolio}`;
 
-  // Group items by SKU for remision lines
   const groupedItemsMap: Record<string, RemisionItem> = {};
   order.items.forEach((it) => {
     if (!groupedItemsMap[it.sku]) {
@@ -467,26 +277,26 @@ export function getOrCreateRemisionForOrder(order: OutboundVerificationOrder): O
     outboundOrderFolio: order.folio,
     sourceDocumentFolio: order.referenceFolio,
     sourceDocumentType: isTransfer ? 'OTP' : 'Pedido',
-    createdAt: order.createdAt || '27 Ago 2026, 12:00',
+    createdAt: order.createdAt || '06 Sep 2026, 12:00',
     originWarehouseId: order.warehouseId,
     originWarehouseName: order.warehouseName,
     destinationName: order.destinationName,
-    destinationAddress: isTransfer ? undefined : 'Av. Eugenio Garza Sada 3820, Col. Contry, Monterrey, N.L.',
-    destinationFacility: isTransfer ? `${order.destinationName} - Instalación Operativa` : undefined,
+    destinationAddress: isTransfer ? undefined : 'Parque Industrial Reynosa, Tamps.',
+    destinationFacility: isTransfer ? `${order.destinationName} - Planta RTM` : undefined,
     assignedLane: order.assignedLane,
     operatorAssigned: order.operatorAssigned,
     totalUnits: order.totalUnits,
     observations: isTransfer 
-      ? 'Traspaso de mercancía entre instalaciones de Impresos RTM.'
-      : 'Entrega de pedido comercial con productos verificados en rampa de salida.',
+      ? 'Traspaso interno de bobinas/materiales entre naves operativas de Impresos RTM.'
+      : 'Despacho de producto terminado industrial con liberación de calidad.',
     qrPayload,
     items: Object.values(groupedItemsMap),
     signatures: {
-      deliveredByLabel: isTransfer ? 'Entregó (CEDIS Emisor)' : 'Entregó (Chofer / Mesa de Salida)',
+      deliveredByLabel: isTransfer ? 'Entregó (Nave Emisora)' : 'Entregó (Chofer / Mesa PT)',
       deliveredByName: order.operatorAssigned,
-      receivedByLabel: isTransfer ? 'Recibió en instalación' : 'Recibió de conformidad',
+      receivedByLabel: isTransfer ? 'Recibió en nave' : 'Recibió de conformidad',
       receivedByName: order.destinationName,
-      signeeNameLabel: isTransfer ? 'Responsable de Sucursal' : 'Nombre del Receptor',
+      signeeNameLabel: isTransfer ? 'Responsable de Nave' : 'Nombre del Receptor',
       signeeName: order.destinationName,
       dateTimeLabel: isTransfer ? 'Fecha y hora de recepción' : 'Fecha y hora de entrega',
     },
@@ -502,7 +312,7 @@ export function markRemisionAsPrinted(folio: string): OutboundRemision | undefin
     rem.status = 'Impresa';
     const now = new Date();
     const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-    rem.printedAt = `27 Ago 2026, ${timeStr}`;
+    rem.printedAt = `06 Sep 2026, ${timeStr}`;
   }
   return rem;
 }

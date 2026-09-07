@@ -1,4 +1,4 @@
-﻿import { MOCK_MASTER_ARTICLES, MasterArticle } from './mockArticlesData';
+import { MOCK_MASTER_ARTICLES, MasterArticle } from './mockArticlesData';
 
 export type SupplierType = 'Nacional' | 'Extranjero';
 export type SupplierStatus = 'Activo' | 'Inactivo';
@@ -22,7 +22,7 @@ export interface PriceListItem {
   unit: string;
   currentPrice: number;
   previousPrice?: number;
-  variationPercent?: number; // ((current - previous) / previous) * 100
+  variationPercent?: number;
   minQuantity: number;
   status: 'Activo' | 'Inactivo';
   tiers?: PriceListTier[];
@@ -33,11 +33,11 @@ export interface PriceListItem {
 export interface SupplierPriceList {
   id: string;
   supplierId: string;
-  name: string; // e.g. "Lista General 2026", "Lista Promoción Agosto"
-  currency: PriceListCurrency; // MXN | USD
-  startDate: string; // e.g. "01 Ago 2026"
-  endDate: string; // e.g. "31 Dic 2026"
-  status: PriceListStatus; // 'Vigente' | 'Programada' | 'Vencida' | 'Inactiva'
+  name: string;
+  currency: PriceListCurrency;
+  startDate: string;
+  endDate: string;
+  status: PriceListStatus;
   description?: string;
   items: PriceListItem[];
   createdAt: string;
@@ -58,38 +58,62 @@ export interface SupplierAddress {
   id: string;
   type: 'Fiscal' | 'Planta' | 'Entrega' | 'Oficina';
   street: string;
-  extNumber: string;
+  exteriorNumber?: string;
+  extNumber?: string;
+  interiorNumber?: string;
   intNumber?: string;
   neighborhood: string;
   city: string;
   state: string;
   postalCode: string;
   country: string;
+  isPrimary?: boolean;
 }
 
 export interface SupplierArticleRelation {
   id: string;
   articleSku: string;
-  articleName: string;
-  brand: string;
+  articleName?: string;
+  supplierArticleName?: string;
+  brand?: string;
   size?: string;
+  purchaseUnit?: string;
   supplierSku: string;
-  supplierArticleName: string;
-  purchaseUnit: string;
+  leadTimeDays?: number;
+  estimatedLeadDays?: number;
   referencePrice: number;
-  estimatedLeadDays: number;
+  currency: 'MXN' | 'USD';
+  minOrderQuantity: number;
   isPreferred: boolean;
+  lastPurchaseDate?: string;
+  lastPurchasePrice?: number;
   status: 'Activo' | 'Inactivo';
 }
 
 export interface SupplierDocument {
   id: string;
   name: string;
-  type: 'Constancia Fiscal' | 'Datos Bancarios' | 'Convenio Comercial' | 'Certificación' | 'Identificación' | 'Otro';
-  uploadedAt: string;
+  type:
+    | 'Constancia Fiscal'
+    | 'Comprobante Domicilio'
+    | 'Estado Cuenta'
+    | 'Opinión Cumplimiento'
+    | 'Ficha Técnica'
+    | 'Certificado Calidad'
+    | 'Datos Bancarios'
+    | 'Convenio Comercial'
+    | 'Certificación'
+    | 'Identificación'
+    | 'Otro'
+    | string;
+  fileName?: string;
+  fileSizeKb?: number;
+  uploadDate?: string;
+  uploadedAt?: string;
+  expirationDate?: string;
   expiresAt?: string;
   status: DocumentStatus;
-  notes?: string;
+  url?: string;
 }
 
 export interface SupplierTimelineEntry {
@@ -99,769 +123,437 @@ export interface SupplierTimelineEntry {
   role: string;
   action: string;
   comment?: string;
-  type: 'created' | 'contact_updated' | 'article_linked' | 'terms_updated' | 'doc_uploaded' | 'status_changed' | 'order_emitted' | 'price_list_updated';
+  type:
+    | 'creation'
+    | 'created'
+    | 'update'
+    | 'status_change'
+    | 'status_changed'
+    | 'doc_upload'
+    | 'doc_uploaded'
+    | 'order_placed'
+    | 'price_update'
+    | 'price_list_updated'
+    | 'contact_updated'
+    | 'article_linked'
+    | 'terms_updated'
+    | string;
 }
 
 export interface SupplierMaster {
   id: string;
-  tradeName: string;
+  code?: string;
   legalName: string;
-  rfc: string; // Ficticios mock: 'DEMO-NAYT-001', 'DEMO-SPA-002', etc.
+  tradeName: string;
+  rfc: string;
   type: SupplierType;
   status: SupplierStatus;
-  preferredCurrency: 'MXN' | 'USD';
-  
-  // Condiciones comerciales
   paymentCondition: PaymentCondition;
   creditDays: number;
-  estimatedLeadDays: number;
-  minimumOrderAmount: number;
+  creditLimit?: number;
+  leadTimeDays?: number;
+  estimatedLeadDays?: number;
+  minimumOrderAmount?: number;
   commercialNotes?: string;
   lastUpdatedTerms?: string;
-
-  // Colecciones
+  associatedBrands?: string[];
+  preferredCurrency: 'MXN' | 'USD';
   contacts: SupplierContact[];
   addresses: SupplierAddress[];
   articles: SupplierArticleRelation[];
-  priceLists: SupplierPriceList[];
   documents: SupplierDocument[];
   timeline: SupplierTimelineEntry[];
+  priceLists?: SupplierPriceList[];
+  notes?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-// Initial Mock Suppliers Master Dataset
 export const INITIAL_MOCK_SUPPLIERS: SupplierMaster[] = [
+  // 1. Sun Chemical México
   {
-    id: 'sup-nayt',
-    tradeName: 'Nayt México',
-    legalName: 'Distribuidora Nayt de México S.A. de C.V. (Demo)',
-    rfc: 'DEMO-NAYT-001',
+    id: 'sup-sunchem',
+    code: 'PROV-RTM-001',
+    legalName: 'Sun Chemical México S.A. de C.V.',
+    tradeName: 'Sun Chemical México',
+    rfc: 'SCM920415TY9',
     type: 'Nacional',
     status: 'Activo',
-    preferredCurrency: 'MXN',
     paymentCondition: 'Crédito',
     creditDays: 30,
-    estimatedLeadDays: 4,
-    minimumOrderAmount: 25000,
-    commercialNotes: 'Proveedor estratégico de línea Flow, Hybrid y Ortopédicos Nayt. Entregas directas en CEDIS Monterrey Norte.',
-    lastUpdatedTerms: '15 Ago 2026',
+    creditLimit: 1500000,
+    leadTimeDays: 5,
+    estimatedLeadDays: 5,
+    minimumOrderAmount: 10000,
+    commercialNotes: 'Proveedor sugerido para demo comercial (relación no confirmada por RTM). Tintas cuatricromía offset, tintas UV y barnices especiales.',
+    associatedBrands: ['Sun Chemical', 'Dic Color', 'Flint Group'],
+    preferredCurrency: 'MXN',
+    notes: 'Proveedor en catálogo comercial demo (relación no confirmada por RTM).',
+    createdAt: '10 Ene 2024',
+    updatedAt: '20 Ago 2026',
     contacts: [
       {
-        id: 'c-nayt-1',
-        name: 'Laura Martínez',
-        position: 'Ejecutiva de Cuentas Clave',
-        email: 'laura.martinez@demo-nayt.mx',
-        phone: '+52 81 8320 4401',
+        id: 'con-sun-01',
+        name: 'Ing. Fernando Valdés',
+        position: 'Asesor Técnico Industrial',
+        email: 'fvaldes@sunchem-demo.com.mx',
+        phone: '(81) 8312-4000',
         isPrimary: true,
-        status: 'Activo',
-      },
-      {
-        id: 'c-nayt-2',
-        name: 'Ing. Roberto Garza',
-        position: 'Gerente de Logística y Embarques',
-        email: 'logistica@demo-nayt.mx',
-        phone: '+52 81 8320 4402',
-        isPrimary: false,
         status: 'Activo',
       },
     ],
     addresses: [
       {
-        id: 'a-nayt-1',
+        id: 'addr-sun-01',
         type: 'Fiscal',
-        street: 'Av. Industrial Monterrey',
-        extNumber: '4500',
-        neighborhood: 'Parque Industrial Mitras',
-        city: 'García',
+        street: 'Av. San Jerónimo',
+        exteriorNumber: '310',
+        extNumber: '310',
+        neighborhood: 'San Jerónimo',
+        city: 'Monterrey',
         state: 'Nuevo León',
-        postalCode: '66000',
+        postalCode: '64640',
         country: 'México',
-      },
-      {
-        id: 'a-nayt-2',
-        type: 'Planta',
-        street: 'Carretera a Saltillo Km 14',
-        extNumber: '120',
-        neighborhood: 'Zona Industrial',
-        city: 'Santa Catarina',
-        state: 'Nuevo León',
-        postalCode: '66350',
-        country: 'México',
+        isPrimary: true,
       },
     ],
     articles: [
       {
-        id: 'ar-nayt-1',
-        articleSku: 'SC-NAYT-FLOW-IND',
-        articleName: 'Nayt Colchón Flow Basic White Individual',
-        brand: 'Nayt',
-        size: 'Individual',
-        supplierSku: 'NYT-FLW-IND-01',
-        supplierArticleName: 'Flow Basic Individual 1.00x1.90m',
-        purchaseUnit: 'pza',
-        referencePrice: 4850,
+        id: 'rel-sun-01',
+        articleSku: 'MP-VAR-UV',
+        articleName: 'Barniz UV Ultra Brillo Curado Rápido',
+        brand: 'Sun Chemical',
+        size: 'Cubeta 20 kg',
+        purchaseUnit: 'cubeta',
+        supplierSku: 'SUN-VAR-UV-01',
+        leadTimeDays: 4,
         estimatedLeadDays: 4,
+        referencePrice: 1850.00,
+        currency: 'MXN',
+        minOrderQuantity: 4,
         isPreferred: true,
         status: 'Activo',
       },
       {
-        id: 'ar-nayt-2',
-        articleSku: 'SC-NAYT-FLOW-MAT',
-        articleName: 'Nayt Colchón Flow Basic White Matrimonial',
-        brand: 'Nayt',
-        size: 'Matrimonial',
-        supplierSku: 'NYT-FLW-MAT-01',
-        supplierArticleName: 'Flow Basic Matrimonial 1.35x1.90m',
-        purchaseUnit: 'pza',
-        referencePrice: 4900,
-        estimatedLeadDays: 4,
+        id: 'rel-sun-02',
+        articleSku: 'MP-INK-BLK',
+        articleName: 'Tinta Process Black Offset Intensa',
+        brand: 'Sun Chemical',
+        size: 'Lata 5 kg',
+        purchaseUnit: 'lata',
+        supplierSku: 'SUN-INK-BLK-02',
+        leadTimeDays: 3,
+        estimatedLeadDays: 3,
+        referencePrice: 420.00,
+        currency: 'MXN',
+        minOrderQuantity: 10,
         isPreferred: true,
         status: 'Activo',
-      },
-      {
-        id: 'ar-nayt-3',
-        articleSku: 'SC-NAYT-FLOW-QS',
-        articleName: 'Nayt Colchón Flow Basic White Queen Size',
-        brand: 'Nayt',
-        size: 'Queen Size',
-        supplierSku: 'NYT-FLW-QS-01',
-        supplierArticleName: 'Flow Basic Queen Size 1.50x1.90m',
-        purchaseUnit: 'pza',
-        referencePrice: 5300,
-        estimatedLeadDays: 4,
-        isPreferred: true,
-        status: 'Activo',
-      },
-      {
-        id: 'ar-nayt-4',
-        articleSku: 'SC-NAYT-FLOW-KS',
-        articleName: 'Nayt Colchón Flow Basic White King Size',
-        brand: 'Nayt',
-        size: 'King Size',
-        supplierSku: 'NYT-FLW-KS-01',
-        supplierArticleName: 'Flow Basic King Size 2.00x1.90m',
-        purchaseUnit: 'pza',
-        referencePrice: 6200,
-        estimatedLeadDays: 4,
-        isPreferred: true,
-        status: 'Activo',
-      },
-    ],
-    priceLists: [
-      {
-        id: 'pl-nayt-2026',
-        supplierId: 'sup-nayt',
-        name: 'Lista General 2026',
-        currency: 'MXN',
-        startDate: '01 Ago 2026',
-        endDate: '31 Dic 2026',
-        status: 'Vigente',
-        description: 'Lista general de precios pactada para la red Impresos RTM con escalas por volumen.',
-        createdAt: '15 Jul 2026',
-        updatedAt: '20 Ago 2026',
-        items: [
-          {
-            id: 'pli-nayt-1',
-            articleSku: 'SC-NAYT-FLOW-IND',
-            articleName: 'Nayt Colchón Flow Basic White Individual',
-            supplierSku: 'NYT-FLW-IND-01',
-            unit: 'pza',
-            currentPrice: 4850,
-            previousPrice: 4790,
-            variationPercent: 1.25,
-            minQuantity: 1,
-            status: 'Activo',
-            tiers: [
-              { minQuantity: 1, maxQuantity: 9, unitPrice: 4850 },
-              { minQuantity: 10, maxQuantity: 19, unitPrice: 4750 },
-              { minQuantity: 20, unitPrice: 4650 },
-            ],
-            notes: 'Precio preferencial con escala para compras consolidadas.',
-            lastUpdatedAt: '20 Ago 2026',
-          },
-          {
-            id: 'pli-nayt-2',
-            articleSku: 'SC-NAYT-FLOW-MAT',
-            articleName: 'Nayt Colchón Flow Basic White Matrimonial',
-            supplierSku: 'NYT-FLW-MAT-01',
-            unit: 'pza',
-            currentPrice: 4900,
-            previousPrice: 4900,
-            variationPercent: 0.0,
-            minQuantity: 1,
-            status: 'Activo',
-            tiers: [
-              { minQuantity: 1, maxQuantity: 9, unitPrice: 4900 },
-              { minQuantity: 10, maxQuantity: 19, unitPrice: 4800 },
-              { minQuantity: 20, unitPrice: 4700 },
-            ],
-            lastUpdatedAt: '15 Ago 2026',
-          },
-          {
-            id: 'pli-nayt-3',
-            articleSku: 'SC-NAYT-FLOW-QS',
-            articleName: 'Nayt Colchón Flow Basic White Queen Size',
-            supplierSku: 'NYT-FLW-QS-01',
-            unit: 'pza',
-            currentPrice: 5300,
-            previousPrice: 5200,
-            variationPercent: 1.92,
-            minQuantity: 1,
-            status: 'Activo',
-            lastUpdatedAt: '15 Ago 2026',
-          },
-          {
-            id: 'pli-nayt-4',
-            articleSku: 'SC-NAYT-FLOW-KS',
-            articleName: 'Nayt Colchón Flow Basic White King Size',
-            supplierSku: 'NYT-FLW-KS-01',
-            unit: 'pza',
-            currentPrice: 6200,
-            previousPrice: 6100,
-            variationPercent: 1.64,
-            minQuantity: 1,
-            status: 'Activo',
-            lastUpdatedAt: '15 Ago 2026',
-          },
-        ],
-      },
-      {
-        id: 'pl-nayt-promo',
-        supplierId: 'sup-nayt',
-        name: 'Lista Promoción Agosto 2026',
-        currency: 'MXN',
-        startDate: '15 Ago 2026',
-        endDate: '31 Ago 2026',
-        status: 'Vigente',
-        description: 'Descuentos temporales por campaña de volumen individual y matrimonial.',
-        createdAt: '10 Ago 2026',
-        updatedAt: '15 Ago 2026',
-        items: [
-          {
-            id: 'pli-promo-1',
-            articleSku: 'SC-NAYT-FLOW-IND',
-            articleName: 'Nayt Colchón Flow Basic White Individual',
-            supplierSku: 'NYT-FLW-IND-01',
-            unit: 'pza',
-            currentPrice: 4650,
-            previousPrice: 4850,
-            variationPercent: -4.12,
-            minQuantity: 5,
-            status: 'Activo',
-            notes: 'Precio promocional agosto aplicable a pedidos de min 5 pzas.',
-            lastUpdatedAt: '15 Ago 2026',
-          },
-          {
-            id: 'pli-promo-2',
-            articleSku: 'SC-NAYT-FLOW-MAT',
-            articleName: 'Nayt Colchón Flow Basic White Matrimonial',
-            supplierSku: 'NYT-FLW-MAT-01',
-            unit: 'pza',
-            currentPrice: 4700,
-            previousPrice: 4900,
-            variationPercent: -4.08,
-            minQuantity: 5,
-            status: 'Activo',
-            lastUpdatedAt: '15 Ago 2026',
-          },
-        ],
-      },
-      {
-        id: 'pl-nayt-2025',
-        supplierId: 'sup-nayt',
-        name: 'Lista 2025',
-        currency: 'MXN',
-        startDate: '01 Ene 2025',
-        endDate: '31 Dic 2025',
-        status: 'Vencida',
-        description: 'Lista del ejercicio 2025 archivada.',
-        createdAt: '15 Dic 2024',
-        updatedAt: '31 Dic 2025',
-        items: [
-          {
-            id: 'pli-old-1',
-            articleSku: 'SC-NAYT-FLOW-IND',
-            articleName: 'Nayt Colchón Flow Basic White Individual',
-            supplierSku: 'NYT-FLW-IND-01',
-            unit: 'pza',
-            currentPrice: 4500,
-            previousPrice: 4350,
-            variationPercent: 3.45,
-            minQuantity: 1,
-            status: 'Activo',
-          },
-          {
-            id: 'pli-old-2',
-            articleSku: 'SC-NAYT-FLOW-MAT',
-            articleName: 'Nayt Colchón Flow Basic White Matrimonial',
-            supplierSku: 'NYT-FLW-MAT-01',
-            unit: 'pza',
-            currentPrice: 4600,
-            previousPrice: 4450,
-            variationPercent: 3.37,
-            minQuantity: 1,
-            status: 'Activo',
-          },
-        ],
-      },
-      {
-        id: 'pl-nayt-q4-2026',
-        supplierId: 'sup-nayt',
-        name: 'Lista General Q4 2026',
-        currency: 'MXN',
-        startDate: '01 Oct 2026',
-        endDate: '31 Dic 2026',
-        status: 'Programada',
-        description: 'Actualización proyectada de fin de año sujeta a volumen comercial.',
-        createdAt: '22 Ago 2026',
-        updatedAt: '22 Ago 2026',
-        items: [
-          {
-            id: 'pli-q4-1',
-            articleSku: 'SC-NAYT-FLOW-IND',
-            articleName: 'Nayt Colchón Flow Basic White Individual',
-            supplierSku: 'NYT-FLW-IND-01',
-            unit: 'pza',
-            currentPrice: 5000,
-            previousPrice: 4850,
-            variationPercent: 3.09,
-            minQuantity: 1,
-            status: 'Activo',
-          },
-          {
-            id: 'pli-q4-2',
-            articleSku: 'SC-NAYT-FLOW-MAT',
-            articleName: 'Nayt Colchón Flow Basic White Matrimonial',
-            supplierSku: 'NYT-FLW-MAT-01',
-            unit: 'pza',
-            currentPrice: 5100,
-            previousPrice: 4900,
-            variationPercent: 4.08,
-            minQuantity: 1,
-            status: 'Activo',
-          },
-        ],
       },
     ],
     documents: [
       {
-        id: 'doc-nayt-1',
+        id: 'doc-sun-01',
         name: 'Constancia de Situación Fiscal 2026',
         type: 'Constancia Fiscal',
-        uploadedAt: '10 Ene 2026',
-        expiresAt: '08 Sep 2026',
-        status: 'Por vencer',
-        notes: 'Requiere actualización anual en portal SAT.',
-      },
-      {
-        id: 'doc-nayt-2',
-        name: 'Carátula Bancaria Banorte (MXN)',
-        type: 'Datos Bancarios',
-        uploadedAt: '10 Ene 2026',
-        status: 'Vigente',
-      },
-      {
-        id: 'doc-nayt-3',
-        name: 'Convenio Comercial de Suministro Impresos RTM',
-        type: 'Convenio Comercial',
+        fileName: 'CSF_SunChemical_2026.pdf',
+        fileSizeKb: 185,
+        uploadDate: '15 Ene 2026',
         uploadedAt: '15 Ene 2026',
+        expirationDate: '31 Dic 2026',
         expiresAt: '31 Dic 2026',
         status: 'Vigente',
       },
     ],
-    timeline: [
+    timeline: [],
+    priceLists: [
       {
-        id: 't-nayt-1',
-        occurredAt: '15 Ene 2026 10:00',
-        actor: 'Admin Demo',
-        role: 'Gerencia de Compras',
-        action: 'Alta formal de proveedor Nayt México en catálogo maestro',
-        type: 'created',
-      },
-      {
-        id: 't-nayt-2',
-        occurredAt: '15 Ago 2026 14:30',
-        actor: 'Carlos Medina',
-        role: 'Comprador',
-        action: 'Actualizó condiciones de crédito a 30 días con 4 días de tiempo de entrega',
-        type: 'terms_updated',
-      },
-      {
-        id: 't-nayt-3',
-        occurredAt: '24 Ago 2026 10:15',
-        actor: 'Admin Demo',
-        role: 'Comprador',
-        action: 'OC-2026-0081 emitida por $100,340 MXN',
-        type: 'order_emitted',
+        id: 'pl-sun-2026',
+        supplierId: 'sup-sunchem',
+        name: 'Tarifa Tintas & Químicos 2026',
+        currency: 'MXN',
+        startDate: '01 Ene 2026',
+        endDate: '31 Dic 2026',
+        status: 'Vigente',
+        createdAt: '01 Ene 2026',
+        updatedAt: '01 Ago 2026',
+        items: [
+          {
+            id: 'it-sun-01',
+            articleSku: 'MP-VAR-UV',
+            articleName: 'Barniz UV Ultra Brillo Curado Rápido',
+            supplierSku: 'SUN-VAR-UV-01',
+            unit: 'cubeta',
+            currentPrice: 1850.00,
+            previousPrice: 1780.00,
+            variationPercent: 3.9,
+            minQuantity: 4,
+            status: 'Activo',
+          },
+          {
+            id: 'it-sun-02',
+            articleSku: 'MP-INK-BLK',
+            articleName: 'Tinta Process Black Offset Intensa',
+            supplierSku: 'SUN-INK-BLK-02',
+            unit: 'lata',
+            currentPrice: 420.00,
+            previousPrice: 400.00,
+            variationPercent: 5.0,
+            minQuantity: 10,
+            status: 'Activo',
+          },
+        ],
       },
     ],
   },
+
+  // 2. Bio-Pappel
   {
-    id: 'sup-spring-air',
-    tradeName: 'Spring Air México',
-    legalName: 'Consorcio Spring Air de México S.A. de C.V. (Demo)',
-    rfc: 'DEMO-SPA-002',
+    id: 'sup-biopappel',
+    code: 'PROV-RTM-002',
+    legalName: 'Bio-Pappel S.A.B. de C.V.',
+    tradeName: 'Bio-Pappel',
+    rfc: 'BPA820618MN4',
     type: 'Nacional',
     status: 'Activo',
-    preferredCurrency: 'MXN',
     paymentCondition: 'Crédito',
     creditDays: 45,
-    estimatedLeadDays: 6,
-    minimumOrderAmount: 40000,
-    commercialNotes: 'Fabricante de sistemas Posture Comfort y Record. Aplica flete incluido en compras mayores a $50k.',
-    lastUpdatedTerms: '01 Jul 2026',
+    creditLimit: 3500000,
+    leadTimeDays: 7,
+    estimatedLeadDays: 7,
+    minimumOrderAmount: 25000,
+    commercialNotes: 'Proveedor sugerido para demo comercial (relación no confirmada por RTM). Papel Couché 90 g y 150 g en tarimas.',
+    associatedBrands: ['Bio-Pappel', 'Titan', 'Scribe'],
+    preferredCurrency: 'MXN',
+    notes: 'Proveedor en catálogo comercial demo (relación no confirmada por RTM).',
+    createdAt: '15 Feb 2024',
+    updatedAt: '25 Ago 2026',
     contacts: [
       {
-        id: 'c-spa-1',
-        name: 'Lic. Fernando Morales',
-        position: 'Director Comercial Cuentas Especiales',
-        email: 'f.morales@demo-springair.mx',
-        phone: '+52 55 5729 8800',
+        id: 'con-bio-01',
+        name: 'Lic. Marcela Treviño',
+        position: 'Ejecutiva Cuentas Editoriales',
+        email: 'mtrevino@biopappel-demo.com',
+        phone: '(81) 8155-2200',
         isPrimary: true,
         status: 'Activo',
       },
     ],
     addresses: [
       {
-        id: 'a-spa-1',
+        id: 'addr-bio-01',
         type: 'Fiscal',
-        street: 'Av. Circunvalación Poniente',
-        extNumber: '890',
-        neighborhood: 'Zona Industrial Tlalnepantla',
-        city: 'Tlalnepantla',
-        state: 'Estado de México',
-        postalCode: '54000',
+        street: 'Carretera a Colombia',
+        exteriorNumber: 'Km 6.5',
+        extNumber: 'Km 6.5',
+        neighborhood: 'Zona Industrial Escobedo',
+        city: 'General Escobedo',
+        state: 'Nuevo León',
+        postalCode: '66050',
         country: 'México',
+        isPrimary: true,
       },
     ],
     articles: [
       {
-        id: 'ar-spa-1',
-        articleSku: 'SC-SPA-POST-KS',
-        articleName: 'Spring Air Colchón Posture Comfort King Size',
-        brand: 'Spring Air',
-        size: 'King Size',
-        supplierSku: 'SPA-PST-KS-01',
-        supplierArticleName: 'Posture Comfort KS Ortopédico',
-        purchaseUnit: 'pza',
-        referencePrice: 6500,
-        estimatedLeadDays: 6,
+        id: 'rel-bio-01',
+        articleSku: 'MP-COU-090',
+        articleName: 'Papel Couché 90 g (Pliegos 70x100 cm)',
+        brand: 'Bio-Pappel',
+        size: 'Tarima 18,000 pliegos',
+        purchaseUnit: 'tarima',
+        supplierSku: 'BIO-COU-090-70100',
+        leadTimeDays: 7,
+        estimatedLeadDays: 7,
+        referencePrice: 18000.00,
+        currency: 'MXN',
+        minOrderQuantity: 2,
         isPreferred: true,
         status: 'Activo',
       },
       {
-        id: 'ar-spa-2',
-        articleSku: 'SC-SPA-REC-IND',
-        articleName: 'Spring Air Colchón Record Individual',
-        brand: 'Spring Air',
-        size: 'Individual',
-        supplierSku: 'SPA-REC-IND-01',
-        supplierArticleName: 'Record Individual Semi-firme',
-        purchaseUnit: 'pza',
-        referencePrice: 5950,
-        estimatedLeadDays: 6,
-        isPreferred: true,
-        status: 'Activo',
-      },
-      {
-        id: 'ar-spa-3',
-        articleSku: 'SC-SPA-POST-MAT',
-        articleName: 'Spring Air Colchón Posture Comfort Matrimonial',
-        brand: 'Spring Air',
-        size: 'Matrimonial',
-        supplierSku: 'SPA-PST-MAT-01',
-        supplierArticleName: 'Posture Comfort Matrimonial',
-        purchaseUnit: 'pza',
-        referencePrice: 5800,
-        estimatedLeadDays: 6,
-        isPreferred: true,
-        status: 'Activo',
-      },
-      {
-        id: 'ar-spa-4',
-        articleSku: 'SC-SPA-REC-QS',
-        articleName: 'Spring Air Colchón Record Queen Size',
-        brand: 'Spring Air',
-        size: 'Queen Size',
-        supplierSku: 'SPA-REC-QS-01',
-        supplierArticleName: 'Record Queen Size',
-        purchaseUnit: 'pza',
-        referencePrice: 7400,
-        estimatedLeadDays: 6,
+        id: 'rel-bio-02',
+        articleSku: 'MP-COU-150',
+        articleName: 'Papel Couché 150 g (Pliegos 70x100 cm)',
+        brand: 'Bio-Pappel',
+        size: 'Tarima 12,000 pliegos',
+        purchaseUnit: 'tarima',
+        supplierSku: 'BIO-COU-150-70100',
+        leadTimeDays: 7,
+        estimatedLeadDays: 7,
+        referencePrice: 21500.00,
+        currency: 'MXN',
+        minOrderQuantity: 2,
         isPreferred: true,
         status: 'Activo',
       },
     ],
+    documents: [],
+    timeline: [],
     priceLists: [
       {
-        id: 'pl-spa-2026',
-        supplierId: 'sup-spring-air',
-        name: 'Lista Nacional 2026',
+        id: 'pl-bio-2026',
+        supplierId: 'sup-biopappel',
+        name: 'Tarifa Papeles Gráficos 2026',
         currency: 'MXN',
         startDate: '01 Ene 2026',
         endDate: '31 Dic 2026',
         status: 'Vigente',
-        description: 'Lista de precios nacional de distribución mayorista Spring Air 2026.',
-        createdAt: '05 Ene 2026',
+        createdAt: '01 Ene 2026',
+        updatedAt: '15 Jul 2026',
+        items: [
+          {
+            id: 'it-bio-01',
+            articleSku: 'MP-COU-090',
+            articleName: 'Papel Couché 90 g (Pliegos 70x100 cm)',
+            supplierSku: 'BIO-COU-090-70100',
+            unit: 'tarima',
+            currentPrice: 18000.00,
+            previousPrice: 17500.00,
+            variationPercent: 2.9,
+            minQuantity: 2,
+            status: 'Activo',
+          },
+          {
+            id: 'it-bio-02',
+            articleSku: 'MP-COU-150',
+            articleName: 'Papel Couché 150 g (Pliegos 70x100 cm)',
+            supplierSku: 'BIO-COU-150-70100',
+            unit: 'tarima',
+            currentPrice: 21500.00,
+            previousPrice: 20800.00,
+            variationPercent: 3.4,
+            minQuantity: 2,
+            status: 'Activo',
+          },
+        ],
+      },
+    ],
+  },
+
+  // 3. Copamex Industrias
+  {
+    id: 'sup-copamex',
+    code: 'PROV-RTM-003',
+    legalName: 'Copamex Industrias S.A. de C.V.',
+    tradeName: 'Copamex',
+    rfc: 'CIN780911KL2',
+    type: 'Nacional',
+    status: 'Activo',
+    paymentCondition: 'Crédito',
+    creditDays: 30,
+    creditLimit: 2000000,
+    leadTimeDays: 6,
+    estimatedLeadDays: 6,
+    minimumOrderAmount: 20000,
+    commercialNotes: 'Suministro de papel Bond 75 g para manuales instructivos e interiores editoriales.',
+    associatedBrands: ['Copamex', 'Facilis', 'PrintSpeed'],
+    preferredCurrency: 'MXN',
+    notes: 'Suministro de papel Bond 75 g para manuales instructivos e interiores editoriales.',
+    createdAt: '20 Feb 2024',
+    updatedAt: '10 Ago 2026',
+    contacts: [
+      {
+        id: 'con-cop-01',
+        name: 'Ing. Rodrigo Salinas',
+        position: 'Gerente Ventas Industriales',
+        email: 'rsalinas@copamex-demo.com',
+        phone: '(81) 8399-5000',
+        isPrimary: true,
+        status: 'Activo',
+      },
+    ],
+    addresses: [
+      {
+        id: 'addr-cop-01',
+        type: 'Fiscal',
+        street: 'Av. Montes Rocallosos',
+        exteriorNumber: '505',
+        extNumber: '505',
+        neighborhood: 'Residencial San Agustín',
+        city: 'Monterrey, N.L.',
+        state: 'Nuevo León',
+        postalCode: '66260',
+        country: 'México',
+        isPrimary: true,
+      },
+    ],
+    articles: [
+      {
+        id: 'rel-cop-01',
+        articleSku: 'MP-BND-075',
+        articleName: 'Papel Bond 75 g (Pliegos 61x90 cm)',
+        brand: 'Copamex',
+        size: 'Tarima 20,000 pliegos',
+        purchaseUnit: 'tarima',
+        supplierSku: 'COP-BND-075-6190',
+        leadTimeDays: 6,
+        estimatedLeadDays: 6,
+        referencePrice: 16500.00,
+        currency: 'MXN',
+        minOrderQuantity: 2,
+        isPreferred: true,
+        status: 'Activo',
+      },
+    ],
+    documents: [],
+    timeline: [],
+    priceLists: [
+      {
+        id: 'pl-cop-2026',
+        supplierId: 'sup-copamex',
+        name: 'Tarifa Papel Bond Offset 2026',
+        currency: 'MXN',
+        startDate: '01 Ene 2026',
+        endDate: '31 Dic 2026',
+        status: 'Vigente',
+        createdAt: '01 Ene 2026',
         updatedAt: '01 Jul 2026',
         items: [
           {
-            id: 'pli-spa-1',
-            articleSku: 'SC-SPA-POST-KS',
-            articleName: 'Spring Air Colchón Posture Comfort King Size',
-            supplierSku: 'SPA-PST-KS-01',
-            unit: 'pza',
-            currentPrice: 6500,
-            previousPrice: 6400,
-            variationPercent: 1.56,
-            minQuantity: 1,
-            status: 'Activo',
-          },
-          {
-            id: 'pli-spa-2',
-            articleSku: 'SC-SPA-REC-IND',
-            articleName: 'Spring Air Colchón Record Individual',
-            supplierSku: 'SPA-REC-IND-01',
-            unit: 'pza',
-            currentPrice: 5950,
-            previousPrice: 6200,
-            variationPercent: -4.03,
-            minQuantity: 1,
-            status: 'Activo',
-            notes: 'Ajuste de precio a la baja negociado en convenio semestral.',
-          },
-          {
-            id: 'pli-spa-3',
-            articleSku: 'SC-SPA-POST-MAT',
-            articleName: 'Spring Air Colchón Posture Comfort Matrimonial',
-            supplierSku: 'SPA-PST-MAT-01',
-            unit: 'pza',
-            currentPrice: 5800,
-            previousPrice: 5800,
-            variationPercent: 0.0,
-            minQuantity: 1,
-            status: 'Activo',
-          },
-          {
-            id: 'pli-spa-4',
-            articleSku: 'SC-SPA-REC-QS',
-            articleName: 'Spring Air Colchón Record Queen Size',
-            supplierSku: 'SPA-REC-QS-01',
-            unit: 'pza',
-            currentPrice: 7400,
-            previousPrice: 7200,
-            variationPercent: 2.78,
-            minQuantity: 1,
+            id: 'it-cop-01',
+            articleSku: 'MP-BND-075',
+            articleName: 'Papel Bond 75 g (Pliegos 61x90 cm)',
+            supplierSku: 'COP-BND-075-6190',
+            unit: 'tarima',
+            currentPrice: 16500.00,
+            previousPrice: 15900.00,
+            variationPercent: 3.8,
+            minQuantity: 2,
             status: 'Activo',
           },
         ],
       },
     ],
-    documents: [
-      {
-        id: 'doc-spa-1',
-        name: 'Opinión de Cumplimiento SAT 32-D Positiva',
-        type: 'Constancia Fiscal',
-        uploadedAt: '01 Jul 2026',
-        expiresAt: '01 Oct 2026',
-        status: 'Vigente',
-      },
-      {
-        id: 'doc-spa-2',
-        name: 'Certificación ISO 9001:2015 Planta Toluca',
-        type: 'Certificación',
-        uploadedAt: '10 Ene 2026',
-        expiresAt: '15 Dic 2027',
-        status: 'Vigente',
-      },
-    ],
-    timeline: [
-      {
-        id: 't-spa-1',
-        occurredAt: '10 Ene 2026 09:30',
-        actor: 'Admin Demo',
-        role: 'Gerencia',
-        action: 'Actualización de expediente y convenio mayorista',
-        type: 'created',
-      },
-    ],
   },
+
+  // 4. Avery Dennison / Fasson
   {
-    id: 'sup-restonic',
-    tradeName: 'Restonic México',
-    legalName: 'Fábrica de Colchones Restonic de México S.A. de C.V. (Demo)',
-    rfc: 'DEMO-RES-003',
+    id: 'sup-fasson',
+    code: 'PROV-RTM-004',
+    legalName: 'Avery Dennison México S. de R.L. de C.V.',
+    tradeName: 'Fasson Avery Dennison',
+    rfc: 'FAS910320AB1',
     type: 'Nacional',
     status: 'Activo',
-    preferredCurrency: 'MXN',
     paymentCondition: 'Crédito',
     creditDays: 30,
-    estimatedLeadDays: 5,
-    minimumOrderAmount: 20000,
-    commercialNotes: 'Línea Ortopedic y Moon. Descuento pronto pago del 3% si se liquida en 10 días.',
-    lastUpdatedTerms: '20 Jul 2026',
-    contacts: [
-      {
-        id: 'c-res-1',
-        name: 'Lic. Claudia Salinas',
-        position: 'Atención a Cadenas',
-        email: 'claudia.salinas@demo-restonic.mx',
-        phone: '+52 81 8355 1200',
-        isPrimary: true,
-        status: 'Activo',
-      },
-    ],
-    addresses: [
-      {
-        id: 'a-res-1',
-        type: 'Fiscal',
-        street: 'Calzada San Pedro',
-        extNumber: '250',
-        neighborhood: 'Del Valle',
-        city: 'San Pedro Garza García',
-        state: 'Nuevo León',
-        postalCode: '66220',
-        country: 'México',
-      },
-    ],
-    articles: [
-      {
-        id: 'ar-res-1',
-        articleSku: 'SC-RES-ORT-MAT',
-        articleName: 'Restonic Colchón Ortopedic Matrimonial',
-        brand: 'Restonic',
-        size: 'Matrimonial',
-        supplierSku: 'RES-ORT-MAT-01',
-        supplierArticleName: 'Ortopedic Matrimonial Continuo',
-        purchaseUnit: 'pza',
-        referencePrice: 5300,
-        estimatedLeadDays: 5,
-        isPreferred: true,
-        status: 'Activo',
-      },
-      {
-        id: 'ar-res-2',
-        articleSku: 'SC-RES-ORT-IND',
-        articleName: 'Restonic Colchón Ortopedic Individual',
-        brand: 'Restonic',
-        size: 'Individual',
-        supplierSku: 'RES-ORT-IND-01',
-        supplierArticleName: 'Ortopedic Individual',
-        purchaseUnit: 'pza',
-        referencePrice: 4400,
-        estimatedLeadDays: 5,
-        isPreferred: true,
-        status: 'Activo',
-      },
-      {
-        id: 'ar-res-3',
-        articleSku: 'SC-RES-MOON-KS',
-        articleName: 'Restonic Colchón Moon Care King Size',
-        brand: 'Restonic',
-        size: 'King Size',
-        supplierSku: 'RES-MOON-KS-01',
-        supplierArticleName: 'Moon Care King Size Premium',
-        purchaseUnit: 'pza',
-        referencePrice: 8900,
-        estimatedLeadDays: 5,
-        isPreferred: true,
-        status: 'Activo',
-      },
-    ],
-    priceLists: [
-      {
-        id: 'pl-res-2026',
-        supplierId: 'sup-restonic',
-        name: 'Lista Distribuidores 2026',
-        currency: 'MXN',
-        startDate: '01 Ene 2026',
-        endDate: '31 Dic 2026',
-        status: 'Vigente',
-        description: 'Lista exclusiva de distribuidores autorizados Restonic.',
-        createdAt: '02 Ene 2026',
-        updatedAt: '20 Jul 2026',
-        items: [
-          {
-            id: 'pli-res-1',
-            articleSku: 'SC-RES-ORT-MAT',
-            articleName: 'Restonic Colchón Ortopedic Matrimonial',
-            supplierSku: 'RES-ORT-MAT-01',
-            unit: 'pza',
-            currentPrice: 5300,
-            previousPrice: 5300,
-            variationPercent: 0.0,
-            minQuantity: 1,
-            status: 'Activo',
-          },
-          {
-            id: 'pli-res-2',
-            articleSku: 'SC-RES-ORT-IND',
-            articleName: 'Restonic Colchón Ortopedic Individual',
-            supplierSku: 'RES-ORT-IND-01',
-            unit: 'pza',
-            currentPrice: 4400,
-            previousPrice: 4300,
-            variationPercent: 2.33,
-            minQuantity: 1,
-            status: 'Activo',
-          },
-          {
-            id: 'pli-res-3',
-            articleSku: 'SC-RES-MOON-KS',
-            articleName: 'Restonic Colchón Moon Care King Size',
-            supplierSku: 'RES-MOON-KS-01',
-            unit: 'pza',
-            currentPrice: 8900,
-            previousPrice: 9200,
-            variationPercent: -3.26,
-            minQuantity: 1,
-            status: 'Activo',
-          },
-        ],
-      },
-    ],
-    documents: [
-      {
-        id: 'doc-res-1',
-        name: 'Opinión de Cumplimiento SAT 32-D',
-        type: 'Constancia Fiscal',
-        uploadedAt: '01 Ene 2026',
-        expiresAt: '31 Ago 2026',
-        status: 'Por vencer',
-        notes: 'Vence en 4 días, se solicitó renovación a ejecutiva comercial.',
-      },
-    ],
-    timeline: [
-      {
-        id: 't-res-1',
-        occurredAt: '20 Jul 2026 11:00',
-        actor: 'Admin Demo',
-        role: 'Gerencia',
-        action: 'Renovación de condiciones de crédito',
-        type: 'terms_updated',
-      },
-    ],
-  },
-  {
-    id: 'sup-sealy',
-    tradeName: 'Sealy México',
-    legalName: 'Sealy Mattress Company de México S. de R.L. de C.V. (Demo)',
-    rfc: 'DEMO-SEA-005',
-    type: 'Nacional',
-    status: 'Activo',
+    creditLimit: 2500000,
+    leadTimeDays: 8,
+    estimatedLeadDays: 8,
+    minimumOrderAmount: 18000,
+    associatedBrands: ['Fasson', 'Avery Dennison'],
     preferredCurrency: 'MXN',
-    paymentCondition: 'Crédito',
-    creditDays: 30,
-    estimatedLeadDays: 6,
-    minimumOrderAmount: 35000,
-    commercialNotes: 'Fabricante de gama premium Hybrid y Posture Premier.',
-    lastUpdatedTerms: '01 Feb 2026',
+    notes: 'Bobinas de BOPP blanco brillante y películas transparentes autoadheribles para flexografía.',
+    createdAt: '01 Mar 2024',
+    updatedAt: '22 Ago 2026',
     contacts: [
       {
-        id: 'c-sea-1',
-        name: 'Patricia Domínguez',
-        position: 'Gerente Comercial Retail',
-        email: 'patricia@demo-sealy.mx',
-        phone: '+52 55 5280 4000',
+        id: 'con-fas-01',
+        name: 'Lic. Laura Elizondo',
+        position: 'Especialista Materiales Autoadheribles',
+        email: 'lelizondo@avery-demo.com',
+        phone: '(81) 8122-8800',
         isPrimary: true,
         status: 'Activo',
       },
@@ -869,202 +561,196 @@ export const INITIAL_MOCK_SUPPLIERS: SupplierMaster[] = [
     addresses: [],
     articles: [
       {
-        id: 'ar-sea-1',
-        articleSku: 'SC-SEA-HYB-KS',
-        articleName: 'Sealy Colchón Hybrid Posture Premier King Size',
-        brand: 'Sealy',
-        size: 'King Size',
-        supplierSku: 'SEA-HYB-KS-01',
-        supplierArticleName: 'Hybrid Posture Premier KS',
-        purchaseUnit: 'pza',
-        referencePrice: 12900,
-        estimatedLeadDays: 6,
+        id: 'rel-fas-01',
+        articleSku: 'MP-BOP-WHT',
+        articleName: 'Sustrato BOPP Blanco Brillante 60 mic',
+        brand: 'Fasson Avery',
+        size: 'Bobina 2,500 m',
+        purchaseUnit: 'bobina',
+        supplierSku: 'FAS-BOP-WHT-2500',
+        leadTimeDays: 8,
+        estimatedLeadDays: 8,
+        referencePrice: 6200.00,
+        currency: 'MXN',
+        minOrderQuantity: 4,
         isPreferred: true,
         status: 'Activo',
       },
       {
-        id: 'ar-sea-2',
-        articleSku: 'SC-SEA-POST-MAT',
-        articleName: 'Sealy Colchón Posture Premier Matrimonial',
-        brand: 'Sealy',
-        size: 'Matrimonial',
-        supplierSku: 'SEA-PST-MAT-01',
-        supplierArticleName: 'Posture Premier Matrimonial',
-        purchaseUnit: 'pza',
-        referencePrice: 9800,
-        estimatedLeadDays: 6,
+        id: 'rel-fas-02',
+        articleSku: 'MP-BOP-TRP',
+        articleName: 'Sustrato BOPP Transparente Ultra-Clear',
+        brand: 'Fasson Avery',
+        size: 'Bobina 2,000 m',
+        purchaseUnit: 'bobina',
+        supplierSku: 'FAS-BOP-TRP-2000',
+        leadTimeDays: 8,
+        estimatedLeadDays: 8,
+        referencePrice: 5800.00,
+        currency: 'MXN',
+        minOrderQuantity: 4,
         isPreferred: true,
         status: 'Activo',
       },
     ],
-    priceLists: [
-      {
-        id: 'pl-sea-2026',
-        supplierId: 'sup-sealy',
-        name: 'Lista General 2026',
-        currency: 'MXN',
-        startDate: '01 Feb 2026',
-        endDate: '31 Dic 2026',
-        status: 'Vigente',
-        description: 'Tarifario de distribución oficial Sealy México.',
-        createdAt: '01 Feb 2026',
-        updatedAt: '01 Feb 2026',
-        items: [
-          {
-            id: 'pli-sea-1',
-            articleSku: 'SC-SEA-HYB-KS',
-            articleName: 'Sealy Colchón Hybrid Posture Premier King Size',
-            supplierSku: 'SEA-HYB-KS-01',
-            unit: 'pza',
-            currentPrice: 12900,
-            previousPrice: 12400,
-            variationPercent: 4.03,
-            minQuantity: 1,
-            status: 'Activo',
-          },
-          {
-            id: 'pli-sea-2',
-            articleSku: 'SC-SEA-POST-MAT',
-            articleName: 'Sealy Colchón Posture Premier Matrimonial',
-            supplierSku: 'SEA-PST-MAT-01',
-            unit: 'pza',
-            currentPrice: 9800,
-            previousPrice: 9500,
-            variationPercent: 3.16,
-            minQuantity: 1,
-            status: 'Activo',
-          },
-        ],
-      },
-    ],
     documents: [],
     timeline: [],
-  },
-  {
-    id: 'sup-america',
-    tradeName: 'Colchones América',
-    legalName: 'Fábricas Agripino de México S.A. de C.V. (Demo)',
-    rfc: 'DEMO-AME-004',
-    type: 'Nacional',
-    status: 'Activo',
-    preferredCurrency: 'MXN',
-    paymentCondition: 'Contado',
-    creditDays: 0,
-    estimatedLeadDays: 5,
-    minimumOrderAmount: 15000,
-    commercialNotes: 'Línea de alta rotación institucional.',
-    contacts: [],
-    addresses: [],
-    articles: [],
-    priceLists: [
-      {
-        id: 'pl-ame-2026',
-        supplierId: 'sup-america',
-        name: 'Lista Comercial América 2026',
-        currency: 'MXN',
-        startDate: '01 Ene 2026',
-        endDate: '31 Dic 2026',
-        status: 'Vigente',
-        description: 'Lista general para compras de contado.',
-        createdAt: '05 Ene 2026',
-        updatedAt: '05 Ene 2026',
-        items: [],
-      },
-    ],
-    documents: [],
-    timeline: [],
-  },
-  {
-    id: 'sup-dist-norte',
-    tradeName: 'Distribuidora del Norte',
-    legalName: 'Distribuciones Comerciales del Norte S.A. de C.V. (Demo)',
-    rfc: 'DEMO-DIS-006',
-    type: 'Nacional',
-    status: 'Activo',
-    preferredCurrency: 'MXN',
-    paymentCondition: 'Crédito',
-    creditDays: 15,
-    estimatedLeadDays: 3,
-    minimumOrderAmount: 10000,
-    contacts: [],
-    addresses: [],
-    articles: [],
     priceLists: [],
-    documents: [],
-    timeline: [],
   },
+
+  // 5. WestRock Empaques México
   {
-    id: 'sup-therapedic',
-    tradeName: 'Therapedic México',
-    legalName: 'Sistemas Therapedic de México S.A. de C.V. (Demo)',
-    rfc: 'DEMO-THE-007',
+    id: 'sup-westrock',
+    code: 'PROV-RTM-005',
+    legalName: 'WestRock Empaques México S.A. de C.V.',
+    tradeName: 'WestRock México',
+    rfc: 'WRM850722PQ8',
     type: 'Nacional',
     status: 'Activo',
-    preferredCurrency: 'MXN',
     paymentCondition: 'Crédito',
-    creditDays: 30,
-    estimatedLeadDays: 7,
-    minimumOrderAmount: 30000,
-    contacts: [],
-    addresses: [],
-    articles: [],
-    priceLists: [],
-    documents: [],
-    timeline: [],
-  },
-  {
-    id: 'sup-import-usa',
-    tradeName: 'Sleep Tech Logistics USA',
-    legalName: 'Sleep Tech International Logistics LLC (Demo)',
-    rfc: 'DEMO-USA-008',
-    type: 'Extranjero',
-    status: 'Activo',
-    preferredCurrency: 'USD',
-    paymentCondition: 'Anticipo',
-    creditDays: 0,
-    estimatedLeadDays: 15,
-    minimumOrderAmount: 5000,
-    contacts: [],
-    addresses: [],
-    articles: [],
-    priceLists: [
-      {
-        id: 'pl-usa-usd-2026',
-        supplierId: 'sup-import-usa',
-        name: 'Lista Importación USD 2026',
-        currency: 'USD',
-        startDate: '01 Ene 2026',
-        endDate: '31 Dic 2026',
-        status: 'Vigente',
-        description: 'Precios FOB Laredo Texas en Dólares Americanos (USD).',
-        createdAt: '15 Ene 2026',
-        updatedAt: '15 Ene 2026',
-        items: [],
-      },
-    ],
-    documents: [],
-    timeline: [],
-  },
-  {
-    id: 'sup-inactivo-ejemplo',
-    tradeName: 'Antiguo Proveedor de Insumos',
-    legalName: 'Insumos y Cintas del Norte S.A. (Demo Inactivo)',
-    rfc: 'DEMO-INACT-009',
-    type: 'Nacional',
-    status: 'Inactivo',
-    preferredCurrency: 'MXN',
-    paymentCondition: 'Contado',
-    creditDays: 0,
+    creditDays: 45,
+    creditLimit: 2200000,
+    leadTimeDays: 10,
     estimatedLeadDays: 10,
-    minimumOrderAmount: 5000,
-    commercialNotes: 'Proveedor dado de baja por reiterados retrasos de entrega.',
-    lastUpdatedTerms: '10 Ene 2025',
-    contacts: [],
+    minimumOrderAmount: 20000,
+    associatedBrands: ['WestRock', 'Tango SBS'],
+    preferredCurrency: 'MXN',
+    notes: 'Cartulina Sulfatada SBS 240 g / 14 pts para empaque plegadizo y tarjetas blister card.',
+    createdAt: '15 Mar 2024',
+    updatedAt: '12 Ago 2026',
+    contacts: [
+      {
+        id: 'con-wst-01',
+        name: 'Ing. Javier Cantú',
+        position: 'Asesor Técnico Cartulinas',
+        email: 'jcantu@westrock-demo.com',
+        phone: '(81) 8888-3300',
+        isPrimary: true,
+        status: 'Activo',
+      },
+    ],
     addresses: [],
-    articles: [],
-    priceLists: [],
+    articles: [
+      {
+        id: 'rel-wst-01',
+        articleSku: 'MP-SBS-240',
+        articleName: 'Cartulina Sulfatada SBS 240 g / 14 pts',
+        brand: 'WestRock',
+        size: 'Tarima 8,000 pliegos',
+        purchaseUnit: 'tarima',
+        supplierSku: 'WR-SBS-240-8000',
+        leadTimeDays: 10,
+        estimatedLeadDays: 10,
+        referencePrice: 22000.00,
+        currency: 'MXN',
+        minOrderQuantity: 2,
+        isPreferred: true,
+        status: 'Activo',
+      },
+    ],
     documents: [],
     timeline: [],
+    priceLists: [],
+  },
+
+  // 6. Siegwerk México
+  {
+    id: 'sup-siegwerk',
+    code: 'PROV-RTM-006',
+    legalName: 'Siegwerk México S.A. de C.V.',
+    tradeName: 'Siegwerk',
+    rfc: 'SME990115LK9',
+    type: 'Nacional',
+    status: 'Activo',
+    paymentCondition: 'Crédito',
+    creditDays: 30,
+    creditLimit: 1200000,
+    leadTimeDays: 7,
+    estimatedLeadDays: 7,
+    minimumOrderAmount: 8000,
+    associatedBrands: ['Siegwerk', 'Pantone Special'],
+    preferredCurrency: 'MXN',
+    notes: 'Tintas especiales directas Pantone, formulaciones bajo pedido para clientes industriales.',
+    createdAt: '01 Abr 2024',
+    updatedAt: '18 Ago 2026',
+    contacts: [
+      {
+        id: 'con-sieg-01',
+        name: 'Lic. Adriana Benavides',
+        position: 'Atención Clientes Laboratorio Color',
+        email: 'abenavides@siegwerk-demo.com',
+        phone: '(81) 8234-9900',
+        isPrimary: true,
+        status: 'Activo',
+      },
+    ],
+    addresses: [],
+    articles: [
+      {
+        id: 'rel-sieg-01',
+        articleSku: 'MP-INK-186',
+        articleName: 'Tinta Especial Pantone PMS 186 C',
+        brand: 'Siegwerk',
+        size: 'Cubeta 10 kg',
+        purchaseUnit: 'cubeta',
+        supplierSku: 'SW-PMS-186C-10K',
+        leadTimeDays: 7,
+        estimatedLeadDays: 7,
+        referencePrice: 2400.00,
+        currency: 'MXN',
+        minOrderQuantity: 2,
+        isPreferred: true,
+        status: 'Activo',
+      },
+    ],
+    documents: [],
+    timeline: [],
+    priceLists: [],
+  },
+
+  // 7. Smurfit Kappa México
+  {
+    id: 'sup-smurfit',
+    code: 'PROV-RTM-007',
+    legalName: 'Smurfit Kappa México S.A. de C.V.',
+    tradeName: 'Smurfit Kappa',
+    rfc: 'SKM730412XZ1',
+    type: 'Nacional',
+    status: 'Activo',
+    paymentCondition: 'Crédito',
+    creditDays: 30,
+    creditLimit: 900000,
+    leadTimeDays: 4,
+    estimatedLeadDays: 4,
+    minimumOrderAmount: 5000,
+    associatedBrands: ['Smurfit Kappa'],
+    preferredCurrency: 'MXN',
+    notes: 'Cajas corrugadas reforzadas para empaque de rollos y tarimas de producto terminado.',
+    createdAt: '20 Abr 2024',
+    updatedAt: '05 Ago 2026',
+    contacts: [],
+    addresses: [],
+    articles: [
+      {
+        id: 'rel-smurf-01',
+        articleSku: 'EMP-CAJ-COR',
+        articleName: 'Cajas Corrugadas 30x20x25 cm para Etiquetas',
+        brand: 'Smurfit Kappa',
+        size: 'Paquete 50 pzas',
+        purchaseUnit: 'paquete',
+        supplierSku: 'SK-BOX-302025',
+        leadTimeDays: 4,
+        estimatedLeadDays: 4,
+        referencePrice: 380.00,
+        currency: 'MXN',
+        minOrderQuantity: 10,
+        isPreferred: true,
+        status: 'Activo',
+      },
+    ],
+    documents: [],
+    timeline: [],
+    priceLists: [],
   },
 ];
 
@@ -1119,7 +805,6 @@ export function getSupplierArticleActivePrice(supplier: SupplierMaster, sku: str
     }
   }
 
-  // Fallback to relation referencePrice if exists
   const rel = supplier.articles.find((a) => a.articleSku === sku && a.status === 'Activo');
   if (rel) {
     return {

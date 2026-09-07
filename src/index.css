@@ -4,11 +4,11 @@
 
 @layer base {
   :root {
-    --color-primary: #D0212C;
-    --color-primary-hover: #B31B24;
-    --color-primary-light: #FEE2E2;
+    --color-primary: #1E3A8A;
+    --color-primary-hover: #172554;
+    --color-primary-light: #E0F2FE;
     --color-primary-text: #FFFFFF;
-    --color-accent: #E11D24;
+    --color-accent: #0284C7;
     --color-bg-base: #F4F4F6;
     --color-bg-surface: #FFFFFF;
     --color-bg-elevated: #FFFFFF;
@@ -90,6 +90,18 @@
 }
 
 .border-theme-primary {
+  border-color: var(--color-primary) !important;
+}
+
+.ring-theme-primary {
+  --tw-ring-color: var(--color-primary) !important;
+}
+
+.focus\:ring-theme-primary:focus {
+  --tw-ring-color: var(--color-primary) !important;
+}
+
+.focus\:border-theme-primary:focus {
   border-color: var(--color-primary) !important;
 }
 
@@ -258,7 +270,7 @@
   position: absolute;
   top: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, #D0212C, transparent);
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
   animation: loginRedScanline 1000ms ease-in-out 520ms forwards;
   pointer-events: none;
 }

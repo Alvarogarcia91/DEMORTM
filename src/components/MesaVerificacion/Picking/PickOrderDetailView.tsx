@@ -115,7 +115,7 @@ export const PickOrderDetailView: React.FC<PickOrderDetailViewProps> = ({
 
  <div>
  <div className="flex items-center gap-2 flex-wrap">
- <span className="font-mono text-base font-black text-rose-600">
+ <span className="font-mono text-base font-black text-theme-primary">
  {order.folio}
  </span>
  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border shadow-2xs bg-white text-zinc-900 ${
@@ -145,7 +145,7 @@ export const PickOrderDetailView: React.FC<PickOrderDetailViewProps> = ({
  setActiveStopIndex(firstPending !== -1 ? firstPending : 0);
  setIsScanStationOpen(true);
  }}
- className="px-5 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer"
+ className="px-5 py-2.5 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer"
  >
  <Scan className="w-4 h-4" />
  <span>{completedCount === 0 ? 'Iniciar recolección' : 'Continuar recolección'}</span>
@@ -248,7 +248,7 @@ export const PickOrderDetailView: React.FC<PickOrderDetailViewProps> = ({
  <td className="py-3.5 px-3 text-center font-mono font-bold text-theme-muted">
  #{stop.sequence}
  </td>
- <td className="py-3.5 px-3 font-mono font-black text-rose-600 whitespace-nowrap">
+ <td className="py-3.5 px-3 font-mono font-black text-theme-primary whitespace-nowrap">
  {stop.locationCode}
  </td>
  <td className="py-3.5 px-3 font-mono font-bold text-theme-main whitespace-nowrap">
@@ -290,7 +290,7 @@ export const PickOrderDetailView: React.FC<PickOrderDetailViewProps> = ({
  setActiveStopIndex(idx);
  setIsScanStationOpen(true);
  }}
- className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-all shadow-md flex items-center gap-1.5 ml-auto cursor-pointer"
+ className="px-3 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs transition-all shadow-md flex items-center gap-1.5 ml-auto cursor-pointer"
  >
  <Scan className="w-3.5 h-3.5" />
  <span>Recolectar</span>

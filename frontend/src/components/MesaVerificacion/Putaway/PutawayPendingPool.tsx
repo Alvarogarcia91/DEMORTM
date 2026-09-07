@@ -81,8 +81,8 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  return units.filter((u) => selectedUids.includes(u.uid));
  }, [units, selectedUids]);
 
- const activeWarehouseName = selectedUnitsObjects[0]?.warehouseName || 'CEDIS Monterrey Norte';
- const activeWarehouseId = selectedUnitsObjects[0]?.warehouseId || 'wh-mty-norte';
+ const activeWarehouseName = selectedUnitsObjects[0]?.warehouseName || 'Almacén Materia Prima';
+ const activeWarehouseId = selectedUnitsObjects[0]?.warehouseId || 'alm-rtm-mp';
 
  return (
  <div className="space-y-4">
@@ -99,7 +99,7 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar UID, SKU, artículo o lote..."
- className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  {searchQuery && (
  <button
@@ -119,9 +119,9 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  className="bg-theme-muted border border-theme-subtle rounded-2xl px-3 py-2 text-xs font-semibold text-theme-main focus:outline-none cursor-pointer"
  >
  <option value="ALL">Todas las ubicaciones</option>
- <option value="wh-mty-norte">CEDIS Monterrey Norte</option>
- <option value="wh-mty-sur">CEDIS Monterrey Sur</option>
- <option value="wh-suc-valle-oriente">Sucursal Valle Oriente</option>
+ <option value="alm-rtm-mp">Almacén Materia Prima</option>
+ <option value="alm-rtm-pt">Almacén Producto Terminado</option>
+ <option value="wh-suc-valle-oriente">Almacén Auxiliar Reynosa</option>
  </select>
 
  <select
@@ -130,10 +130,10 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  className="bg-theme-muted border border-theme-subtle rounded-2xl px-3 py-2 text-xs font-semibold text-theme-main focus:outline-none cursor-pointer"
  >
  <option value="ALL">Todas las marcas</option>
- <option value="Nayt">Nayt</option>
- <option value="Spring Air">Spring Air</option>
- <option value="Restonic">Restonic</option>
- <option value="Sealy">Sealy</option>
+ <option value="Sun Chemical">Sun Chemical</option>
+ <option value="Bio-Pappel">Bio-Pappel</option>
+ <option value="Avery Dennison">Avery Dennison</option>
+ <option value="WestRock">WestRock</option>
  </select>
 
  <select
@@ -142,10 +142,10 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  className="bg-theme-muted border border-theme-subtle rounded-2xl px-3 py-2 text-xs font-semibold text-theme-main focus:outline-none cursor-pointer"
  >
  <option value="ALL">Todas las medidas</option>
- <option value="Individual">Individual</option>
- <option value="Matrimonial">Matrimonial</option>
- <option value="Queen Size">Queen Size</option>
- <option value="King Size">King Size</option>
+ <option value="Pliegos 70x100">Pliegos 70x100</option>
+ <option value="Bobina 2,500m">Bobina 2,500m</option>
+ <option value="Tarima PT">Tarima PT</option>
+ <option value="Cubeta 20kg">Cubeta 20kg</option>
  </select>
 
  <select
@@ -162,9 +162,9 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
 
  {/* Selected Floating Action Bar */}
  {selectedUids.length > 0 && (
- <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-2xl flex items-center justify-between gap-3 text-xs animate-in fade-in duration-150">
+ <div className="p-3 bg-theme-primary-light border border-theme-primary/30 rounded-2xl flex items-center justify-between gap-3 text-xs animate-in fade-in duration-150">
  <div className="flex items-center gap-2">
- <CheckCircle2 className="w-4 h-4 text-rose-600" />
+ <CheckCircle2 className="w-4 h-4 text-theme-primary" />
  <span className="font-bold text-theme-main">
  {selectedUids.length} {selectedUids.length === 1 ? 'unidad seleccionada' : 'unidades seleccionadas'}
  </span>
@@ -172,7 +172,7 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
 
  <button
  onClick={() => setIsCreateModalOpen(true)}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
  >
  <ArrowRightLeft className="w-3.5 h-3.5" />
  <span>Generar orden de acomodo</span>
@@ -193,7 +193,7 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  className="p-1 rounded text-theme-muted hover:text-theme-main cursor-pointer"
  >
  {selectedUids.length === filteredUnits.length && filteredUnits.length > 0 ? (
- <CheckSquare className="w-4 h-4 text-rose-600" />
+ <CheckSquare className="w-4 h-4 text-theme-primary" />
  ) : (
  <Square className="w-4 h-4" />
  )}
@@ -226,7 +226,7 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  <tr
  key={unit.uid}
  className={`hover:bg-theme-muted/30 transition-colors ${
- isSelected ? 'bg-rose-500/5' : ''
+ isSelected ? 'bg-theme-primary-light/50' : ''
  }`}
  >
  <td className="py-3.5 px-3 text-center">
@@ -235,13 +235,13 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  className="p-1 rounded text-theme-muted hover:text-theme-main cursor-pointer"
  >
  {isSelected ? (
- <CheckSquare className="w-4 h-4 text-rose-600" />
+ <CheckSquare className="w-4 h-4 text-theme-primary" />
  ) : (
  <Square className="w-4 h-4" />
  )}
  </button>
  </td>
- <td className="py-3.5 px-3 font-mono font-black text-rose-600 whitespace-nowrap">
+ <td className="py-3.5 px-3 font-mono font-black text-theme-primary whitespace-nowrap">
  {unit.uid}
  </td>
  <td className="py-3.5 px-3 whitespace-nowrap">
@@ -255,7 +255,7 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  {unit.lotNumber}
  </td>
  <td className="py-3.5 px-3 whitespace-nowrap">
- <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-theme-muted text-rose-600 border border-theme-subtle">
+ <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-theme-muted text-theme-primary border border-theme-subtle">
  {unit.sourceLocation}
  </span>
  <span className="text-[9px] text-theme-muted block truncate mt-0.5">{unit.warehouseName}</span>

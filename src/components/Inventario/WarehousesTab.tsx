@@ -33,11 +33,10 @@ import {
  MOCK_WAREHOUSES_LIST, 
  WarehouseLayout, 
  PositionRack, 
- PositionSerializedMattress,
+ PositionSerializedItem,
  MOCK_STOCK_ITEMS,
  StockItemRecord,
  SpecialAreaSlot,
- ShowroomBay
 } from '../../data/mockInventoryData';
 import { LocationQrModal, PhysicalLocationMeta } from './LocationQrModal';
 import { PrintLocationQrModal } from './PrintLocationQrModal';
@@ -46,7 +45,6 @@ import { UnitDetailModal } from './UnitDetailModal';
 import { ModalPortal } from '../common/ModalPortal';
 import { QrModal } from './QrModal';
 import { PrintQrModal } from './PrintQrModal';
-import { ShowroomBayModal } from './ShowroomBayModal';
 import { LocationBatchPrintModal } from './LocationBatchPrintModal';
 
 export const WarehousesTab: React.FC = () => {
@@ -55,10 +53,9 @@ export const WarehousesTab: React.FC = () => {
 
  // Sub-modal states for warehouse detail interactivity
  const [selectedPosition, setSelectedPosition] = useState<PositionRack | null>(null);
- const [selectedUnitDetail, setSelectedUnitDetail] = useState<PositionSerializedMattress | null>(null);
- const [selectedQrUnit, setSelectedQrUnit] = useState<PositionSerializedMattress | null>(null);
- const [selectedPrintUnit, setSelectedPrintUnit] = useState<PositionSerializedMattress | null>(null);
- const [selectedShowroomBay, setSelectedShowroomBay] = useState<ShowroomBay | null>(null);
+ const [selectedUnitDetail, setSelectedUnitDetail] = useState<PositionSerializedItem | null>(null);
+ const [selectedQrUnit, setSelectedQrUnit] = useState<PositionSerializedItem | null>(null);
+ const [selectedPrintUnit, setSelectedPrintUnit] = useState<PositionSerializedItem | null>(null);
  const [isBatchPrintOpen, setIsBatchPrintOpen] = useState<boolean>(false);
 
  // Location QR Modals
@@ -71,8 +68,8 @@ export const WarehousesTab: React.FC = () => {
  const [invSearch, setInvSearch] = useState('');
  const [invStatusFilter, setInvStatusFilter] = useState('all');
 
- const cedisList = MOCK_WAREHOUSES_LIST.filter(w => w.type.includes('Distribución') || w.type.includes('Primario') || w.type.includes('Regional') || w.code.startsWith('MTY-'));
- const retailList = MOCK_WAREHOUSES_LIST.filter(w => w.type.includes('Sucursal') || w.type.includes('Retail') || w.code.startsWith('SUC-'));
+ const physicalWarehouses = MOCK_WAREHOUSES_LIST.filter(w => w.code === 'ALM-RTM' || w.id === 'wh-alm-rtm');
+  const virtualWarehouses = MOCK_WAREHOUSES_LIST.filter(w => w.code === 'ALM-VIRTUAL' || w.id === 'wh-alm-virtual');
 
  // Handler to open warehouse detail
  const handleOpenWarehouseDetail = (wh: WarehouseLayout, initialTab: 'summary' | 'layout' | 'locations' | 'inventory' | 'zones' | 'qrs' = 'summary') => {
@@ -175,22 +172,6 @@ export const WarehousesTab: React.FC = () => {
  });
  });
 
- // 6. Showroom Bays (Exhibición Retail)
- if (selectedWarehouse.showroomBays) {
- selectedWarehouse.showroomBays.forEach((bay) => {
- list.push({
- code: bay.code,
- name: `${bay.name} · Showroom`,
- type: 'SHOWROOM',
- warehouseName: selectedWarehouse.name,
- warehouseCode: selectedWarehouse.code,
- capacity: 1,
- currentUnits: bay.status === 'Ocupada' && bay.mattress ? 1 : 0,
- status: bay.status === 'Ocupada' ? 'Ocupada · En exhibición' : 'Libre para montaje',
- description: `Bahía de exhibición retail en piso de venta (${selectedWarehouse.name}).`,
- });
- });
- }
 
  return list;
  }, [selectedWarehouse]);
@@ -228,7 +209,7 @@ export const WarehousesTab: React.FC = () => {
 
  // Stock inventory metrics for selected warehouse
  const nodeStockMetrics = useMemo(() => {
- if (!selectedWarehouse) return { total: 0, available: 0, committed: 0, inTransit: 0, rework: 0, showroom: 0 };
+ if (!selectedWarehouse) return { total: 0, available: 0, committed: 0, inTransit: 0, rework: 0 };
  const items = nodeInventoryItems;
  return {
  total: items.length || selectedWarehouse.kpis.physicalUnits,
@@ -236,7 +217,6 @@ export const WarehousesTab: React.FC = () => {
  committed: items.filter(i => i.status === 'Comprometido').length,
  inTransit: items.filter(i => i.status === 'En tránsito' || i.status === 'En acomodo' || i.status === 'En embarque').length,
  rework: items.filter(i => i.status === 'En retrabajo').length,
- showroom: items.filter(i => i.status === 'En exhibición').length,
  };
  }, [selectedWarehouse, nodeInventoryItems]);
 
@@ -254,201 +234,203 @@ export const WarehousesTab: React.FC = () => {
  return 'bg-white text-zinc-900 border border-purple-500 shadow-2xs';
  case 'SUCURSAL':
  return 'bg-white text-zinc-900 border border-amber-500 shadow-2xs';
- case 'SHOWROOM':
+ case 'MUESTRAS':
  return 'bg-white text-zinc-900 border border-purple-500 shadow-2xs';
  default:
  return 'bg-white text-zinc-900 border border-zinc-400 shadow-2xs';
  }
  };
 
- const renderWarehouseCard = (wh: WarehouseLayout, isRetail: boolean) => {
- const isNorth = wh.code === 'MTY-N';
- const isSur = wh.code === 'MTY-S';
- const isVO = wh.code === 'SUC-VO';
- const isCUM = wh.code === 'SUC-CUM';
+ const renderWarehouseCard = (wh: WarehouseLayout) => {
+    const isVirtual = wh.code === 'ALM-VIRTUAL';
+    const unitsCount = wh.kpis.physicalUnits;
+    const positionsCount = wh.kpis.totalLocations;
+    const aislesCount = wh.aisles.length;
+    const lanesCount = wh.shippingLanes.length;
 
- const unitsCount = isNorth ? 226 : isSur ? 184 : isVO ? 28 : isCUM ? 21 : wh.kpis.physicalUnits;
- const positionsCount = wh.kpis.totalLocations;
- const aislesCount = wh.aisles.length;
- const lanesCount = wh.shippingLanes.length;
+    return (
+      <div
+        key={wh.id}
+        className="bg-theme-surface border border-theme-subtle rounded-3xl p-6 shadow-xs hover:border-theme-primary/50 transition-all flex flex-col justify-between space-y-5 group"
+      >
+        <div className="space-y-4">
+          {/* Top Title & Code Badge */}
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3.5">
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all ${
+                isVirtual 
+                  ? 'bg-purple-500/10 text-purple-600 border-purple-500/20 group-hover:scale-105' 
+                  : 'bg-theme-primary/10 text-theme-primary border-theme-primary/20 group-hover:scale-105'
+              }`}>
+                {isVirtual ? <ShieldAlert className="w-6 h-6" /> : <Building2 className="w-6 h-6" />}
+              </div>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="text-base font-black text-theme-main">{wh.name}</h3>
+                  <span className="font-mono text-xs font-black text-theme-primary bg-theme-primary/10 px-2.5 py-0.5 rounded-lg border border-theme-primary/20">
+                    {wh.code}
+                  </span>
+                </div>
+                <span className="text-xs text-theme-muted font-medium block mt-0.5">
+                  {isVirtual ? 'Control Administrativo y Conciliación Lógica' : 'Almacén Central Industrial & Producción'}
+                </span>
+              </div>
+            </div>
 
- return (
- <div
- key={wh.id}
- className="bg-theme-surface border border-theme-subtle rounded-3xl p-6 shadow-xs hover:border-theme-primary/50 transition-all flex flex-col justify-between space-y-5 group"
- >
- <div className="space-y-4">
- {/* Top Title & Code Badge */}
- <div className="flex items-start justify-between gap-3">
- <div className="flex items-center gap-3.5">
- <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all ${
- isRetail 
- ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 group-hover:scale-105' 
- : 'bg-theme-primary/10 text-theme-primary border-theme-primary/20 group-hover:scale-105'
- }`}>
- {isRetail ? <Store className="w-6 h-6" /> : <Building2 className="w-6 h-6" />}
- </div>
- <div>
- <div className="flex items-center gap-2 flex-wrap">
- <h3 className="text-base font-black text-theme-main">{wh.name}</h3>
- <span className="font-mono text-xs font-black text-theme-primary bg-theme-primary/10 px-2.5 py-0.5 rounded-lg border border-theme-primary/20">
- {wh.code}
- </span>
- </div>
- <span className="text-xs text-theme-muted font-medium block mt-0.5">
- {isRetail ? 'Sucursal Retail con Mini-Almacén' : 'Centro de Distribución Primario'}
- </span>
- </div>
- </div>
+            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
+              isVirtual 
+                ? 'bg-purple-500/10 text-purple-700 border-purple-500/20' 
+                : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
+            }`}>
+              {isVirtual ? 'Control Lógico' : 'Activo · Operativo'}
+            </span>
+          </div>
 
- <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
- Activo
- </span>
- </div>
+          {/* Address */}
+          <div className="flex items-start gap-2 text-xs text-theme-muted bg-theme-muted/40 p-3 rounded-2xl border border-theme-subtle">
+            <MapPin className="w-4 h-4 text-theme-muted shrink-0 mt-0.5" />
+            <span className="line-clamp-2">{wh.address}</span>
+          </div>
 
- {/* Address */}
- <div className="flex items-start gap-2 text-xs text-theme-muted bg-theme-muted/40 p-3 rounded-2xl border border-theme-subtle">
- <MapPin className="w-4 h-4 text-theme-muted shrink-0 mt-0.5" />
- <span className="line-clamp-2">{wh.address}</span>
- </div>
+          {/* Core Metrics Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
+            <div className="p-3 rounded-2xl bg-theme-muted/50 border border-theme-subtle">
+              <span className="text-[9px] uppercase font-bold text-theme-muted block">
+                {isVirtual ? 'Registros Lógicos' : 'Inventario Físico'}
+              </span>
+              <strong className="text-sm sm:text-base font-extrabold text-theme-primary font-mono block mt-0.5">
+                {unitsCount} {isVirtual ? 'reg' : 'pzas'}
+              </strong>
+              <span className="text-[10px] text-theme-muted">{isVirtual ? 'en investigación' : 'tarimas / bobinas'}</span>
+            </div>
 
- {/* Core Metrics Grid */}
- <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
- <div className="p-3 rounded-2xl bg-theme-muted/50 border border-theme-subtle">
- <span className="text-[9px] uppercase font-bold text-theme-muted block">Inventario Actual</span>
- <strong className="text-sm sm:text-base font-extrabold text-theme-primary font-mono block mt-0.5">
- {unitsCount} pzas
- </strong>
- <span className="text-[10px] text-theme-muted">colchones</span>
- </div>
+            <div className="p-3 rounded-2xl bg-theme-muted/50 border border-theme-subtle">
+              <span className="text-[9px] uppercase font-bold text-theme-muted block">Posiciones</span>
+              <strong className="text-sm sm:text-base font-extrabold text-theme-main font-mono block mt-0.5">
+                {isVirtual ? 'Virtuales' : positionsCount}
+              </strong>
+              <span className="text-[10px] text-theme-muted">{isVirtual ? 'sin rack físico' : 'racks en planta'}</span>
+            </div>
 
- <div className="p-3 rounded-2xl bg-theme-muted/50 border border-theme-subtle">
- <span className="text-[9px] uppercase font-bold text-theme-muted block">Posiciones</span>
- <strong className="text-sm sm:text-base font-extrabold text-theme-main font-mono block mt-0.5">
- {positionsCount}
- </strong>
- <span className="text-[10px] text-theme-muted">ubicaciones</span>
- </div>
+            <div className="p-3 rounded-2xl bg-theme-muted/50 border border-theme-subtle">
+              <span className="text-[9px] uppercase font-bold text-theme-muted block">Zonas Operativas</span>
+              <strong className="text-sm sm:text-base font-extrabold text-theme-main font-mono block mt-0.5">
+                {isVirtual ? 'Control' : `${aislesCount} pasillos`}
+              </strong>
+              <span className="text-[10px] text-theme-muted">{isVirtual ? 'conciliación' : 'Offset / Flexo / Tintas'}</span>
+            </div>
 
- <div className="p-3 rounded-2xl bg-theme-muted/50 border border-theme-subtle">
- <span className="text-[9px] uppercase font-bold text-theme-muted block">Pasillos</span>
- <strong className="text-sm sm:text-base font-extrabold text-theme-main font-mono block mt-0.5">
- {aislesCount}
- </strong>
- <span className="text-[10px] text-theme-muted">{isRetail ? 'racks bajos' : 'racks estándar'}</span>
- </div>
+            <div className="p-3 rounded-2xl bg-theme-muted/50 border border-theme-subtle">
+              <span className="text-[9px] uppercase font-bold text-theme-muted block">
+                Embarques
+              </span>
+              <strong className="text-sm sm:text-base font-extrabold text-blue-600 font-mono block mt-0.5">
+                {isVirtual ? 'N/A' : 'Carril 01'}
+              </strong>
+              <span className="text-[10px] text-theme-muted">{isVirtual ? 'sin rampa física' : 'EMB-01'}</span>
+            </div>
+          </div>
 
- <div className="p-3 rounded-2xl bg-theme-muted/50 border border-theme-subtle">
- <span className="text-[9px] uppercase font-bold text-theme-muted block">
- {isRetail ? 'Entrega / Despacho' : 'Embarques'}
- </span>
- <strong className="text-sm sm:text-base font-extrabold text-blue-600 font-mono block mt-0.5">
- {lanesCount} {lanesCount === 1 ? 'carril' : 'carriles'}
- </strong>
- <span className="text-[10px] text-theme-muted">{isRetail ? 'bahía local' : 'secuenciación'}</span>
- </div>
- </div>
+          {/* Occupancy Progress Bar */}
+          <div className="space-y-1.5 pt-1">
+            <div className="flex justify-between text-xs">
+              <span className="text-theme-muted font-medium">Nivel de Ocupación</span>
+              <strong className="font-mono font-bold text-theme-main">{wh.kpis.occupancyPercentage}%</strong>
+            </div>
+            <div className="w-full bg-theme-muted h-2 rounded-full overflow-hidden">
+              <div 
+                className={`h-full rounded-full transition-all ${
+                  wh.kpis.occupancyPercentage > 80 ? 'bg-amber-500' : 'bg-theme-primary'
+                }`}
+                style={{ width: `${Math.min(100, wh.kpis.occupancyPercentage)}%` }}
+              />
+            </div>
+          </div>
+        </div>
 
- {/* Occupancy Progress Bar */}
- <div className="space-y-1.5 pt-1">
- <div className="flex justify-between text-xs">
- <span className="text-theme-muted font-medium">Nivel de Ocupación del Almacén</span>
- <strong className="font-mono font-bold text-theme-main">{wh.kpis.occupancyPercentage}%</strong>
- </div>
- <div className="w-full bg-theme-muted h-2 rounded-full overflow-hidden">
- <div 
- className={`h-full rounded-full transition-all ${
- wh.kpis.occupancyPercentage > 80 ? 'bg-amber-500' : 'bg-theme-primary'
- }`}
- style={{ width: `${Math.min(100, wh.kpis.occupancyPercentage)}%` }}
- />
- </div>
- </div>
- </div>
-
- {/* CTA Button */}
- <button
- onClick={() => handleOpenWarehouseDetail(wh, 'summary')}
- className="w-full py-3 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-black transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer group-hover:shadow-lg"
- >
- <span>Ver detalle de la instalación</span>
- <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
- </button>
- </div>
- );
- };
+        {/* CTA Button */}
+        <button
+          onClick={() => handleOpenWarehouseDetail(wh, 'summary')}
+          className="w-full py-3 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-black transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer group-hover:shadow-lg"
+        >
+          <span>{isVirtual ? 'Ver control lógico y auditoría' : 'Ver detalle de la planta y zonas'}</span>
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </button>
+      </div>
+    );
+  };
 
  return (
  <div className="space-y-8 animate-in fade-in duration-200">
  
  {/* Top Banner with Logistics Network Overview */}
- <div className="bg-theme-surface p-6 border border-theme-subtle rounded-3xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
- <div className="space-y-1">
- <div className="flex items-center gap-2.5">
- <div className="w-8 h-8 rounded-xl bg-theme-primary/10 text-theme-primary flex items-center justify-center">
- <Building2 className="w-4 h-4" />
- </div>
- <h2 className="text-base font-black text-theme-main">Almacenes & Sucursales</h2>
- </div>
- <p className="text-xs text-theme-muted">
- Red logística integral de Impresos RTM: Centros de Distribución Regionales y Sucursales Retail con mini-almacén físico de resurtido.
- </p>
- </div>
+      <div className="bg-theme-surface p-6 border border-theme-subtle rounded-3xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-theme-primary/10 text-theme-primary flex items-center justify-center">
+              <Building2 className="w-4 h-4" />
+            </div>
+            <h2 className="text-base font-black text-theme-main">Almacenes & Áreas de Planta</h2>
+          </div>
+          <p className="text-xs text-theme-muted">
+            Estructura operativa de Impresos RTM: Almacén Principal físico con sus zonas de producción y Almacén Virtual para control y conciliación.
+          </p>
+        </div>
 
- <div className="flex items-center gap-2 flex-wrap">
- <span className="px-3 py-1.5 rounded-xl text-xs font-bold bg-theme-muted text-theme-main border border-theme-subtle">
- 🏢 2 Centros de Distribución
- </span>
- <span className="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
- 🏪 2 Sucursales Retail
- </span>
- <button
- onClick={() => setIsBatchPrintOpen(true)}
- className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-black transition-all shadow-md flex items-center gap-2 cursor-pointer"
- >
- <Printer className="w-4 h-4" />
- <span>Imprimir por columna</span>
- </button>
- </div>
- </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="px-3 py-1.5 rounded-xl text-xs font-bold bg-theme-muted text-theme-main border border-theme-subtle">
+            🏭 1 Almacén Físico Principal (ALM-RTM)
+          </span>
+          <span className="px-3 py-1.5 rounded-xl text-xs font-bold bg-purple-500/10 text-purple-700 border border-purple-500/20">
+            🧠 1 Almacén Virtual / Control (ALM-VIRTUAL)
+          </span>
+          <button
+            onClick={() => setIsBatchPrintOpen(true)}
+            className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-black transition-all shadow-md flex items-center gap-2 cursor-pointer"
+          >
+            <Printer className="w-4 h-4" />
+            <span>Imprimir etiquetas por columna</span>
+          </button>
+        </div>
+      </div>
 
- {/* ========================================================================= */}
- {/* GRUPO 1: CENTROS DE DISTRIBUCIÓN (CEDIS) */}
- {/* ========================================================================= */}
- <div className="space-y-4">
- <div className="flex items-center justify-between pb-1 border-b border-theme-subtle">
- <div className="flex items-center gap-2.5">
- <Building2 className="w-5 h-5 text-theme-primary" />
- <h3 className="text-sm font-black uppercase tracking-wider text-theme-main">
- Centros de Distribución Principales (CEDIS)
- </h3>
- </div>
- <span className="text-xs text-theme-muted font-mono">2 CEDIS de alta capacidad · 5 carriles c/u</span>
- </div>
+      {/* ========================================================================= */}
+      {/* GRUPO 1: ALMACÉN PRINCIPAL RTM (ÚNICO ALMACÉN FÍSICO) */}
+      {/* ========================================================================= */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between pb-1 border-b border-theme-subtle">
+          <div className="flex items-center gap-2.5">
+            <Building2 className="w-5 h-5 text-theme-primary" />
+            <h3 className="text-sm font-black uppercase tracking-wider text-theme-main">
+              Almacén Físico Principal (Planta Reynosa)
+            </h3>
+          </div>
+          <span className="text-xs text-theme-muted font-mono">5 Zonas Operativas · 1 Carril de Embarque (EMB-01)</span>
+        </div>
 
- <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
- {cedisList.map(wh => renderWarehouseCard(wh, false))}
- </div>
- </div>
+        <div className="grid grid-cols-1 gap-6">
+          {physicalWarehouses.map(wh => renderWarehouseCard(wh))}
+        </div>
+      </div>
 
- {/* ========================================================================= */}
- {/* GRUPO 2: SUCURSALES RETAIL (MINI ALMACENES) */}
- {/* ========================================================================= */}
- <div className="space-y-4 pt-2">
- <div className="flex items-center justify-between pb-1 border-b border-theme-subtle">
- <div className="flex items-center gap-2.5">
- <Store className="w-5 h-5 text-emerald-600" />
- <h3 className="text-sm font-black uppercase tracking-wider text-theme-main">
- Sucursales Retail con Mini-Almacén
- </h3>
- </div>
- <span className="text-xs text-theme-muted font-mono">2 Tiendas retail · Surtido y entrega local</span>
- </div>
+      {/* ========================================================================= */}
+      {/* GRUPO 2: ALMACÉN VIRTUAL / CONTROL (NODO LÓGICO) */}
+      {/* ========================================================================= */}
+      <div className="space-y-4 pt-2">
+        <div className="flex items-center justify-between pb-1 border-b border-theme-subtle">
+          <div className="flex items-center gap-2.5">
+            <ShieldAlert className="w-5 h-5 text-purple-600" />
+            <h3 className="text-sm font-black uppercase tracking-wider text-theme-main">
+              Almacén Virtual / Control Lógico
+            </h3>
+          </div>
+          <span className="text-xs text-theme-muted font-mono">Control Administrativo · Auditoría & Conciliación Demo</span>
+        </div>
 
- <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
- {retailList.map(wh => renderWarehouseCard(wh, true))}
- </div>
- </div>
+        <div className="grid grid-cols-1 gap-6">
+          {virtualWarehouses.map(wh => renderWarehouseCard(wh))}
+        </div>
+      </div>
 
  {/* ========================================================================= */}
  {/* MODAL COMPLETO DE DETALLE DEL NODO LOGÍSTICO (6 SUBTABS) */}
@@ -583,7 +565,7 @@ export const WarehousesTab: React.FC = () => {
  <strong className="text-xl font-black text-theme-primary font-mono block">
  {nodeStockMetrics.total} pzas
  </strong>
- <span className="text-[10px] text-theme-muted">Colchones físicos</span>
+ <span className="text-[10px] text-theme-muted">Sustratos / Bobinas físicos</span>
  </div>
 
  <div className="p-4 rounded-2xl bg-theme-muted/40 border border-theme-subtle space-y-1">
@@ -618,43 +600,6 @@ export const WarehousesTab: React.FC = () => {
  <span className="text-[10px] text-theme-muted">{selectedWarehouse.kpis.usedLocations} de {selectedWarehouse.kpis.totalLocations} racks</span>
  </div>
 
- {/* Showroom Metric for Retail Branches */}
- {selectedWarehouse.showroomBays && selectedWarehouse.showroomBays.length > 0 && (
- <div className="p-4 rounded-2xl bg-purple-500/10 border border-purple-500/25 space-y-1 col-span-2 sm:col-span-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
- <div className="flex items-center gap-3">
- <div className="w-9 h-9 rounded-xl bg-white text-purple-600 border border-purple-500 shadow-2xs flex items-center justify-center shadow-xs shrink-0">
- <Sparkles className="w-5 h-5" />
- </div>
- <div>
- <span className="text-[10px] uppercase font-black text-purple-700 dark:text-purple-300 tracking-wider block">
- Showroom & Exhibición en Piso de Venta
- </span>
- <span className="text-xs text-theme-muted">
- Espacio para demostración directa a clientes en tienda
- </span>
- </div>
- </div>
-
- <div className="flex items-center gap-4 text-left sm:text-right">
- <div>
- <span className="text-[9px] uppercase font-bold text-theme-muted block">Bahías Totales</span>
- <strong className="text-sm font-black text-theme-main font-mono">{selectedWarehouse.showroomBays.length} bahías</strong>
- </div>
- <div className="border-l border-purple-500/20 pl-4">
- <span className="text-[9px] uppercase font-bold text-purple-700 block">En Exhibición</span>
- <strong className="text-sm font-black text-purple-700 font-mono">
- {selectedWarehouse.showroomBays.filter(b => b.status === 'Ocupada').length} colchones
- </strong>
- </div>
- <div className="border-l border-purple-500/20 pl-4">
- <span className="text-[9px] uppercase font-bold text-emerald-600 block">Bahías Libres</span>
- <strong className="text-sm font-black text-emerald-600 font-mono">
- {selectedWarehouse.showroomBays.filter(b => b.status === 'Libre').length} espacios
- </strong>
- </div>
- </div>
- </div>
- )}
  </div>
 
  {/* Structural Overview */}
@@ -740,7 +685,7 @@ export const WarehousesTab: React.FC = () => {
  {aisle.aisleCode} &middot; {aisle.positions.length} Posiciones
  </span>
  <span className="text-[11px] font-mono text-theme-muted">
- {aisle.positions.reduce((acc, p) => acc + p.currentUnitsCount, 0)} colchones almacenados
+ {aisle.positions.reduce((acc, p) => acc + p.currentUnitsCount, 0)} unidades / bobinas almacenados
  </span>
  </div>
 
@@ -782,88 +727,6 @@ export const WarehousesTab: React.FC = () => {
  ))}
  </div>
 
- {/* Showroom Section in Layout if Retail Branch */}
- {selectedWarehouse.showroomBays && selectedWarehouse.showroomBays.length > 0 && (
- <div className="pt-6 border-t border-theme-subtle space-y-4">
- <div className="flex items-center justify-between">
- <div className="flex items-center gap-2">
- <Sparkles className="w-4 h-4 text-purple-600" />
- <h4 className="font-extrabold text-theme-main text-xs uppercase tracking-wider">
- Zona Showroom & Exhibición Retail (6 Bahías)
- </h4>
- </div>
- <span className="text-[10px] font-mono text-purple-700 dark:text-purple-300 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
- Piso de Venta en Tienda
- </span>
- </div>
-
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
- {selectedWarehouse.showroomBays.map((bay) => {
- const isOcc = bay.status === 'Ocupada' && !!bay.mattress;
- const m = bay.mattress;
-
- return (
- <div
- key={bay.code}
- onClick={() => setSelectedShowroomBay(bay)}
- className={`p-4 rounded-2xl border transition-all cursor-pointer group flex flex-col justify-between space-y-2.5 shadow-2xs hover:shadow-md hover:scale-[1.01] ${
- isOcc
- ? 'bg-gradient-to-br from-purple-500/10 via-purple-500/5 to-theme-surface border-purple-500/30 hover:border-purple-500/60'
- : 'bg-theme-muted/30 border-dashed border-theme-subtle hover:border-emerald-500/50'
- }`}
- >
- <div className="space-y-2">
- <div className="flex items-center justify-between">
- <span className="font-mono text-xs font-black text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded bg-purple-500/15 border border-purple-500/25">
- {bay.code}
- </span>
- <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold border ${
- isOcc
- ? 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/30'
- : 'bg-emerald-500/10 text-emerald-700 border-emerald-500/30'
- }`}>
- {isOcc ? 'En exhibición' : 'Libre'}
- </span>
- </div>
-
- {isOcc && m ? (
- <div className="space-y-1 pt-0.5">
- <div className="flex items-center gap-1.5">
- <span className="text-[10px] font-black px-2 py-0.5 rounded bg-purple-600 text-white shadow-2xs">
- {m.brand}
- </span>
- <span className="text-[10px] font-mono text-theme-muted">
- {m.size}
- </span>
- </div>
- <h5 className="text-xs font-black text-theme-main group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors leading-tight">
- {m.productName}
- </h5>
- <p className="text-[10px] font-mono text-theme-muted">{m.sku} &bull; {m.uid}</p>
- </div>
- ) : (
- <div className="py-2.5 text-center text-theme-muted space-y-0.5">
- <span className="text-xs font-bold block text-theme-muted">Bahía Libre</span>
- <span className="text-[10px]">Lista para montaje</span>
- </div>
- )}
- </div>
-
- <div className="flex items-center justify-between pt-2 border-t border-purple-500/15 text-[10px]">
- <span className="font-semibold text-purple-700 dark:text-purple-300 group-hover:underline flex items-center gap-1">
- <span>Ver detalle & QRs</span>
- <ArrowRight className="w-3 h-3" />
- </span>
- <span className="text-theme-muted font-mono">
- QR Bahía
- </span>
- </div>
- </div>
- );
- })}
- </div>
- </div>
- )}
  </div>
  )}
 
@@ -894,7 +757,7 @@ export const WarehousesTab: React.FC = () => {
  <option value="all">Todos los tipos ({currentWarehouseLocations.length})</option>
  <option value="RACK">Racks</option>
  <option value="SUCURSAL">Racks Sucursal</option>
- <option value="SHOWROOM">Showroom / Exhibición</option>
+ <option value="MUESTRAS">Muestras / Exhibición Técnica</option>
  <option value="RECEPCION">Recepción</option>
  <option value="ACOMODO">Acomodo / Entrega</option>
  <option value="RETRABAJO">Retrabajo / Incidencias</option>
@@ -919,7 +782,7 @@ export const WarehousesTab: React.FC = () => {
  <th className="py-2.5 px-4">Código</th>
  <th className="py-2.5 px-4">Tipo</th>
  <th className="py-2.5 px-4">Espacio Físico / Descripción</th>
- <th className="py-2.5 px-3 text-center">Colchones Actuales</th>
+ <th className="py-2.5 px-3 text-center">Sustratos / Bobinas Actuales</th>
  <th className="py-2.5 px-3">Estado</th>
  <th className="py-2.5 px-4 text-right">Acciones</th>
  </tr>
@@ -1112,33 +975,6 @@ export const WarehousesTab: React.FC = () => {
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
- {/* Showroom Retail Zone Card */}
- {selectedWarehouse.showroomBays && selectedWarehouse.showroomBays.length > 0 && (
- <div className="p-4.5 rounded-3xl bg-purple-500/10 border border-purple-500/30 space-y-3">
- <div className="flex items-center justify-between">
- <span className="text-[10px] uppercase font-bold text-purple-700 dark:text-purple-300 flex items-center gap-1">
- <Sparkles className="w-3.5 h-3.5" />
- Piso de Venta & Showroom
- </span>
- <span className="font-mono text-xs font-bold text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded bg-purple-500/20 border border-purple-500/30">
- 6 Bahías
- </span>
- </div>
- <h5 className="text-xs font-bold text-theme-main">Showroom de Exhibición Retail</h5>
- <p className="text-[11px] text-theme-muted">
- {selectedWarehouse.showroomBays.filter(b => b.status === 'Ocupada').length} colchones en exhibición activa &bull; {selectedWarehouse.showroomBays.filter(b => b.status === 'Libre').length} bahías disponibles para prueba de confort.
- </p>
- <div className="flex items-center justify-end gap-1.5 pt-2 border-t border-purple-500/20">
- <button
- onClick={() => setNodeDetailTab('layout')}
- className="px-2.5 py-1 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold flex items-center gap-1 cursor-pointer shadow-2xs"
- >
- <Store className="w-3.5 h-3.5" />
- <span>Ver en Plano</span>
- </button>
- </div>
- </div>
- )}
 
  {/* Recepción */}
  {selectedWarehouse.receptionAreas.map((rec) => (
@@ -1151,7 +987,7 @@ export const WarehousesTab: React.FC = () => {
  </div>
  <h5 className="text-xs font-bold text-theme-main">{rec.name}</h5>
  <p className="text-[11px] text-theme-muted">
- Capacidad de rampa: <strong className="font-mono text-theme-main">{rec.capacity} colchones</strong> &bull; Estado: <span className="text-emerald-600 font-semibold">{rec.status}</span>
+ Capacidad de rampa: <strong className="font-mono text-theme-main">{rec.capacity} unidades / bobinas</strong> &bull; Estado: <span className="text-emerald-600 font-semibold">{rec.status}</span>
  </p>
  <div className="flex items-center justify-end gap-1.5 pt-2 border-t border-theme-subtle">
  <button
@@ -1201,7 +1037,7 @@ export const WarehousesTab: React.FC = () => {
  </div>
  <h5 className="text-xs font-bold text-theme-main">{stg.name}</h5>
  <p className="text-[11px] text-theme-muted">
- Capacidad: <strong className="font-mono text-theme-main">{stg.capacity} colchones</strong> &bull; Estado: <span className="text-blue-600 font-semibold">{stg.status}</span>
+ Capacidad: <strong className="font-mono text-theme-main">{stg.capacity} unidades / bobinas</strong> &bull; Estado: <span className="text-blue-600 font-semibold">{stg.status}</span>
  </p>
  <div className="flex items-center justify-end gap-1.5 pt-2 border-t border-theme-subtle">
  <button
@@ -1363,7 +1199,7 @@ export const WarehousesTab: React.FC = () => {
  Catálogo de QRs Físicos ({selectedWarehouse.name})
  </strong>
  <p className="text-[11px] text-theme-muted">
- Señalización física para escaneo óptico / RF: Racks, niveles, showroom y zonas operativas.
+ Señalización física para escaneo óptico / RF: Racks, niveles, zonas operativas.
  </p>
  </div>
  </div>
@@ -1478,19 +1314,12 @@ export const WarehousesTab: React.FC = () => {
  onClose={() => setSelectedPrintLocationQr(null)}
  />
 
- {/* Showroom Bay Modal */}
- <ShowroomBayModal
- bay={selectedShowroomBay}
- warehouseName={selectedWarehouse?.name || 'Impresos RTM'}
- warehouseCode={selectedWarehouse?.code || 'SUC'}
- onClose={() => setSelectedShowroomBay(null)}
- />
 
  {/* Location Batch & Column Print Modal */}
  <LocationBatchPrintModal
  isOpen={isBatchPrintOpen}
  onClose={() => setIsBatchPrintOpen(false)}
- initialWarehouseId={selectedWarehouse?.id || 'wh-mty-norte'}
+ initialWarehouseId={selectedWarehouse?.id || 'alm-rtm-mp'}
  />
  </div>
  );

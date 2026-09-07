@@ -107,7 +107,7 @@ export const RequisitionsList: React.FC<RequisitionsListProps> = ({
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar folio, solicitante, artículo, SKU o proveedor..."
- className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  {searchQuery && (
  <button
@@ -171,7 +171,7 @@ export const RequisitionsList: React.FC<RequisitionsListProps> = ({
  <button
  type="button"
  onClick={onOpenCreate}
- className="px-4 py-2 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer shrink-0 ml-auto lg:ml-0"
+ className="px-4 py-2 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer shrink-0 ml-auto lg:ml-0"
  >
  <Plus className="w-4 h-4" />
  <span>Nueva requisición</span>

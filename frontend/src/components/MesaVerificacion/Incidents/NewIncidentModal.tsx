@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { 
  X, 
  AlertTriangle, 
@@ -25,14 +25,14 @@ interface NewIncidentModalProps {
 }
 
 const KNOWN_UNITS_DATABASE = [
- { uid: 'SC-UID-2026-000184', sku: 'SC-NAYT-FLOW-MAT', productName: 'Nayt Colchón Flow Basic White Matrimonial', brand: 'Nayt', size: 'Matrimonial', lotNumber: 'LOTE-2026-W34', location: 'A-B-03', wh: 'wh-mty-norte', whName: 'CEDIS Monterrey Norte' },
- { uid: 'SC-UID-2026-000185', sku: 'SC-NAYT-FLOW-MAT', productName: 'Nayt Colchón Flow Basic White Matrimonial', brand: 'Nayt', size: 'Matrimonial', lotNumber: 'LOTE-2026-W34', location: 'A-B-04', wh: 'wh-mty-norte', whName: 'CEDIS Monterrey Norte' },
- { uid: 'SC-UID-2026-000101', sku: 'SC-NAYT-FLOW-IND', productName: 'Nayt Colchón Flow Basic White Individual', brand: 'Nayt', size: 'Individual', lotNumber: 'LOTE-2026-W31', location: 'A-A-01', wh: 'wh-mty-norte', whName: 'CEDIS Monterrey Norte' },
- { uid: 'SC-UID-2026-000102', sku: 'SC-NAYT-FLOW-IND', productName: 'Nayt Colchón Flow Basic White Individual', brand: 'Nayt', size: 'Individual', lotNumber: 'LOTE-2026-W31', location: 'A-A-02', wh: 'wh-mty-norte', whName: 'CEDIS Monterrey Norte' },
- { uid: 'SC-UID-2026-000121', sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', brand: 'Spring Air', size: 'Individual', lotNumber: 'LOTE-2026-W32', location: 'B-A-01', wh: 'wh-mty-norte', whName: 'CEDIS Monterrey Norte' },
- { uid: 'SC-UID-2026-000122', sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', brand: 'Spring Air', size: 'Individual', lotNumber: 'LOTE-2026-W32', location: 'B-A-02', wh: 'wh-mty-norte', whName: 'CEDIS Monterrey Norte' },
- { uid: 'SC-UID-2026-000201', sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', brand: 'Spring Air', size: 'Individual', lotNumber: 'LOTE-2026-W32', location: 'REC-01', wh: 'wh-mty-norte', whName: 'CEDIS Monterrey Norte' },
- { uid: 'SC-UID-2026-000131', sku: 'SC-RES-ORT-MAT', productName: 'Restonic Colchón Ortopedic Matrimonial', brand: 'Restonic', size: 'Matrimonial', lotNumber: 'LOTE-2026-W33', location: 'B-A-01', wh: 'wh-mty-sur', whName: 'CEDIS Monterrey Sur' },
+ { uid: 'TAR-RTM-2026-000184', sku: 'PT-MAN-002', productName: 'Manual Instructivo 48 Páginas Medifarma', brand: 'Black & Decker', size: 'Tarima 18,000 pzas', lotNumber: 'LOTE-2026-W34', location: 'A-B-03', wh: 'alm-rtm-mp', whName: 'Almacén Materia Prima' },
+ { uid: 'TAR-RTM-2026-000185', sku: 'PT-MAN-002', productName: 'Manual Instructivo 48 Páginas Medifarma', brand: 'Black & Decker', size: 'Tarima 18,000 pzas', lotNumber: 'LOTE-2026-W34', location: 'A-B-04', wh: 'alm-rtm-mp', whName: 'Almacén Materia Prima' },
+ { uid: 'TAR-RTM-2026-000101', sku: 'PT-MAN-001', productName: 'Manual Instructivo 24 Páginas Black & Decker', brand: 'Black & Decker', size: 'Tarima 12,000 pzas', lotNumber: 'LOTE-2026-W31', location: 'A-A-01', wh: 'alm-rtm-mp', whName: 'Almacén Materia Prima' },
+ { uid: 'TAR-RTM-2026-000102', sku: 'PT-MAN-001', productName: 'Manual Instructivo 24 Páginas Black & Decker', brand: 'Black & Decker', size: 'Tarima 12,000 pzas', lotNumber: 'LOTE-2026-W31', location: 'A-A-02', wh: 'alm-rtm-mp', whName: 'Almacén Materia Prima' },
+ { uid: 'BOB-RTM-2026-000121', sku: 'PT-ETQ-001', productName: 'Etiqueta Farmacéutica 4x6" Medifarma', brand: 'Medifarma', size: 'Bobina 2,500 m', lotNumber: 'LOTE-2026-W32', location: 'B-A-01', wh: 'alm-rtm-mp', whName: 'Almacén Materia Prima' },
+ { uid: 'BOB-RTM-2026-000122', sku: 'PT-ETQ-001', productName: 'Etiqueta Farmacéutica 4x6" Medifarma', brand: 'Medifarma', size: 'Bobina 2,500 m', lotNumber: 'LOTE-2026-W32', location: 'B-A-02', wh: 'alm-rtm-mp', whName: 'Almacén Materia Prima' },
+ { uid: 'TAR-RTM-2026-000201', sku: 'PT-ETQ-001', productName: 'Etiqueta Farmacéutica 4x6" Medifarma', brand: 'Medifarma', size: 'Tarima 8,000 pzas', lotNumber: 'LOTE-2026-W32', location: 'REC-01', wh: 'alm-rtm-mp', whName: 'Almacén Materia Prima' },
+ { uid: 'TAR-RTM-2026-000131', sku: 'PT-BLI-001', productName: 'Blister Card Termosellable Stanley Tools', brand: 'Stanley Tools', size: 'Tarima 10,000 pzas', lotNumber: 'LOTE-2026-W33', location: 'B-A-01', wh: 'alm-rtm-pt', whName: 'Almacén Producto Terminado' },
 ];
 
 const KNOWN_LOCATIONS = [
@@ -51,7 +51,7 @@ export const NewIncidentModal: React.FC<NewIncidentModalProps> = ({
  const [description, setDescription] = useState(initialData?.description || '');
  
  // Context fields
- const [warehouseId, setWarehouseId] = useState(initialData?.warehouseId || 'wh-mty-norte');
+ const [warehouseId, setWarehouseId] = useState(initialData?.warehouseId || 'alm-rtm-mp');
  const [uidQuery, setUidQuery] = useState(initialData?.uid || '');
  const [sku, setSku] = useState(initialData?.sku || '');
  const [productName, setProductName] = useState(initialData?.productName || '');
@@ -106,7 +106,7 @@ export const NewIncidentModal: React.FC<NewIncidentModalProps> = ({
  lastActivityAt: dateStr,
  reportedBy: 'Operador Mesa Central',
  warehouseId,
- warehouseName: warehouseId === 'wh-mty-sur' ? 'CEDIS Monterrey Sur' : 'CEDIS Monterrey Norte',
+ warehouseName: warehouseId === 'alm-rtm-pt' ? 'Almacén Producto Terminado' : 'Almacén Materia Prima',
  locationCode: locationCode.trim() || undefined,
  uid: uidQuery.trim() || undefined,
  sku: sku.trim() || undefined,
@@ -280,7 +280,7 @@ export const NewIncidentModal: React.FC<NewIncidentModalProps> = ({
  setUidQuery(e.target.value);
  setShowUidSuggestions(true);
  }}
- placeholder="Buscar SC-UID-..."
+ placeholder="Buscar TAR-RTM-... / BOB-RTM-..."
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl p-2 text-xs font-mono font-bold text-rose-600 focus:outline-none"
  />
  <QrCode className="w-3.5 h-3.5 absolute right-2.5 top-2.5 text-theme-muted pointer-events-none" />
@@ -334,7 +334,7 @@ export const NewIncidentModal: React.FC<NewIncidentModalProps> = ({
  type="text"
  value={productName ? `${productName} (${sku})` : sku}
  onChange={(e) => setSku(e.target.value)}
- placeholder="SKU del colchón..."
+ placeholder="SKU del material / producto..."
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl p-2 text-xs font-medium text-theme-main focus:outline-none"
  />
  </div>

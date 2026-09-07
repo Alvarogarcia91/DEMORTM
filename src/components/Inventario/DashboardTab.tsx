@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { 
  Building2, 
  Store, 
@@ -45,14 +45,14 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
  onNavigateTab,
  onShowToast,
 }) => {
-  const defaultWarehouseId = MOCK_WAREHOUSES_LIST[0]?.id || 'wh-mty-norte';
+  const defaultWarehouseId = MOCK_WAREHOUSES_LIST[0]?.id || 'wh-alm-rtm';
   const [selectedWarehouseId, setSelectedWarehouseId] = useState<string>(defaultWarehouseId);
   const [isCostBreakdownOpen, setIsCostBreakdownOpen] = useState<boolean>(false);
   const [movementFilter, setMovementFilter] = useState<'ALL' | 'IN' | 'OUT' | 'INTERNAL'>('ALL');
 
   const activeNodeData: NodeDashboardData = 
     NODE_DASHBOARD_DATA[selectedWarehouseId] || 
-    NODE_DASHBOARD_DATA['wh-mty-norte'] || 
+    NODE_DASHBOARD_DATA['wh-alm-rtm'] || 
     Object.values(NODE_DASHBOARD_DATA)[0];
   const warehouseMeta = MOCK_WAREHOUSES_LIST.find(w => w.id === selectedWarehouseId) || MOCK_WAREHOUSES_LIST[0];
 
@@ -99,7 +99,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
  <div className="space-y-6 animate-in fade-in duration-200 w-full pb-8">
  
  {/* ========================================================================= */}
- {/* 1. SELECTOR SUPERIOR DE NODO LOGÍSTICO (CEDIS & SUCURSALES) */}
+ {/* 1. SELECTOR SUPERIOR DE NODO LOGÍSTICO (ALMACÉN & CONTROL) */}
  {/* ========================================================================= */}
  <div className="bg-theme-surface p-4 border border-theme-subtle rounded-3xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div className="space-y-1">
@@ -362,7 +362,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
  <strong className="text-lg font-mono font-black text-blue-600 block">
  {activeNodeData.todayOperations.transfersInTransit}
  </strong>
- <span className="text-[10px] text-theme-muted block">Hacia sucursales</span>
+ <span className="text-[10px] text-theme-muted block">Hacia clientes / plantas</span>
  </div>
  </div>
  </div>
@@ -532,36 +532,36 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
  </div>
 
  {/* ========================================================================= */}
- {/* 6. ZONAS OPERATIVAS (CEDIS vs SUCURSAL) */}
+ {/* 6. ZONAS OPERATIVAS (ALMACÉN RTM) */}
  {/* ========================================================================= */}
  <div className="space-y-3">
  <div className="flex items-center justify-between">
  <div className="flex items-center gap-2">
  <Layers className="w-4 h-4 text-theme-primary" />
  <h3 className="text-xs sm:text-sm font-black text-theme-main uppercase tracking-wider">
- {activeNodeData.type === 'CEDIS' ? 'Zonas Operativas del CEDIS' : 'Espacios y Showroom de la Sucursal'}
+ {activeNodeData.type === 'CEDIS' ? 'Zonas Operativas del Almacén' : 'Áreas Auxiliares'}
  </h3>
  </div>
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
  
- {/* Showroom (For Branch) */}
- {activeNodeData.specialZones.showroom && (
+ {/* Muestras / QA (Planta) */}
+ {activeNodeData.specialZones.samples && (
  <div className="p-4 rounded-3xl bg-white border border-purple-500 space-y-1.5 shadow-2xs">
  <div className="flex items-center justify-between">
- <span className="text-[10px] font-bold uppercase text-zinc-900">Showroom Retail</span>
+ <span className="text-[10px] font-bold uppercase text-zinc-900">Área de Muestras / QA</span>
  <span className="font-mono text-xs font-black text-zinc-900">
- {activeNodeData.specialZones.showroom.occupied}/{activeNodeData.specialZones.showroom.capacity}
+ {activeNodeData.specialZones.samples.occupied}/{activeNodeData.specialZones.samples.capacity}
  </span>
  </div>
  <strong className="text-xs font-bold text-theme-main block">
- {activeNodeData.specialZones.showroom.label}
+ {activeNodeData.specialZones.samples.label}
  </strong>
  <div className="w-full bg-theme-subtle h-1.5 rounded-full overflow-hidden">
  <div
  className="bg-purple-600 h-full rounded-full"
- style={{ width: `${(activeNodeData.specialZones.showroom.occupied / activeNodeData.specialZones.showroom.capacity) * 100}%` }}
+ style={{ width: `${(activeNodeData.specialZones.samples.occupied / activeNodeData.specialZones.samples.capacity) * 100}%` }}
  />
  </div>
  </div>

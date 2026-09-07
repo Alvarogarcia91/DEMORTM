@@ -108,7 +108,7 @@ export const RearrangementAnalysisModal: React.FC<RearrangementAnalysisModalProp
  )}
  </div>
  <div className="text-right">
- <span className="text-[9px] font-semibold text-theme-muted uppercase block">Almacén / CEDIS</span>
+ <span className="text-[9px] font-semibold text-theme-muted uppercase block">Almacén</span>
  <span className="text-xs font-bold text-theme-main">{suggestion.warehouseName}</span>
  </div>
  </div>

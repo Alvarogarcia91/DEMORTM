@@ -57,7 +57,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  // General Info States
  const [requester] = useState('Admin Demo');
  const [targetWarehouseId, setTargetWarehouseId] = useState(
- initialRequisition?.targetWarehouseId || prefilledItem?.targetWarehouseId || 'wh-mty-norte'
+ initialRequisition?.targetWarehouseId || prefilledItem?.targetWarehouseId || 'alm-rtm-mp'
  );
  const [requiredDate, setRequiredDate] = useState(
  initialRequisition?.requiredDate || '30 Ago 2026'
@@ -92,7 +92,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  const [unregSize, setUnregSize] = useState('');
  const [unregSpecs, setUnregSpecs] = useState('');
  const [unregQty, setUnregQty] = useState<number>(1);
- const [unregUnit, setUnregUnit] = useState('Colchón');
+ const [unregUnit, setUnregUnit] = useState('Millar');
  const [unregComments, setUnregComments] = useState('');
 
  // Duplicate Warning Modal/State
@@ -117,9 +117,9 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  name: prefilledItem.productName,
  brand: prefilledItem.brand,
  size: prefilledItem.size || 'Individual',
- category: prefilledItem.category || 'Colchones',
+ category: prefilledItem.category || 'Producto Terminado',
  quantity: prefilledItem.quantity,
- unit: 'Colchón',
+ unit: 'Millar',
  comments: prefilledItem.note || 'Sugerencia automática de reorden',
  ...metrics,
  };
@@ -173,7 +173,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  size: selectedArticle.size,
  category: selectedArticle.category,
  quantity: catalogQty,
- unit: selectedArticle.baseUnit || 'Colchón',
+ unit: selectedArticle.baseUnit || 'Millar',
  comments: catalogComments.trim(),
  ...metrics,
  };
@@ -303,7 +303,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  createdAt: initialRequisition?.createdAt || '27 Ago 2026',
  requester,
  targetWarehouseId,
- targetWarehouseName: warehouseObj?.name || 'CEDIS Monterrey Norte',
+ targetWarehouseName: warehouseObj?.name || 'Almacén Principal RTM',
  requiredDate,
  priority,
  suggestedSupplier: suggestedSupplier.trim() || undefined,
@@ -337,7 +337,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <PackagePlus className="w-5 h-5" />
  </div>
  <div>
@@ -345,7 +345,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  <h2 className="text-base font-black text-theme-main">
  {initialRequisition ? `Editar Requisición ${initialRequisition.folio}` : 'Nueva Requisición de Compra'}
  </h2>
- <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-500/25">
+ <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-theme-primary/25">
  Reabasto Interno
  </span>
  </div>
@@ -367,7 +367,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  <div className="p-6 overflow-y-auto space-y-6 flex-1">
  
  {errorMessage && (
- <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center gap-2 text-rose-700 dark:text-rose-300 text-xs font-bold animate-in fade-in duration-150">
+ <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-theme-primary/30 flex items-center gap-2 text-rose-700 dark:text-rose-300 text-xs font-bold animate-in fade-in duration-150">
  <AlertCircle className="w-4 h-4 shrink-0" />
  <span>{errorMessage}</span>
  </div>
@@ -405,7 +405,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  <select
  value={targetWarehouseId}
  onChange={(e) => setTargetWarehouseId(e.target.value)}
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30 cursor-pointer"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30 cursor-pointer"
  >
  {DESTINATION_WAREHOUSES.map((wh) => (
  <option key={wh.id} value={wh.id}>
@@ -426,7 +426,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  value={requiredDate}
  onChange={(e) => setRequiredDate(e.target.value)}
  placeholder="Ej. 30 Ago 2026"
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-mono font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-mono font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
 
@@ -439,7 +439,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  <select
  value={priority}
  onChange={(e) => setPriority(e.target.value as RequisitionPriority)}
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30 cursor-pointer"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30 cursor-pointer"
  >
  <option value="Normal">Normal</option>
  <option value="Alta">Alta</option>
@@ -461,7 +461,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  value={suggestedSupplier}
  onChange={(e) => setSuggestedSupplier(e.target.value)}
  placeholder="Selecciona o escribe el proveedor sugerido..."
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  <datalist id="suppliers-datalist">
  {SUPPLIERS_LIST.map((sup, idx) => (
@@ -479,7 +479,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  value={notes}
  onChange={(e) => setNotes(e.target.value)}
  placeholder="Ej. Reabasto para cubrir demanda proyectada..."
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
  </div>
@@ -547,8 +547,8 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  type="text"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- placeholder="Escribe 'Flow', 'Record', 'SC-NAYT' o nombre del artículo..."
- className="w-full bg-theme-muted/40 border border-theme-subtle rounded-2xl pl-10 pr-4 py-2.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ placeholder="Escribe 'Couché', 'BOPP', 'Tinta Cyan', 'MP-COU-090' o nombre del insumo..."
+ className="w-full bg-theme-muted/40 border border-theme-subtle rounded-2xl pl-10 pr-4 py-2.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
 
@@ -589,11 +589,11 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
 
  {/* Selected Article Preview & Assisted Capture */}
  {selectedArticle && currentArticleMetrics && (
- <div className="p-4 rounded-2xl bg-rose-500/5 border border-rose-500/20 space-y-3 animate-in fade-in duration-150">
+ <div className="p-4 rounded-2xl bg-rose-500/5 border border-theme-primary/20 space-y-3 animate-in fade-in duration-150">
  <div className="flex items-center justify-between flex-wrap gap-2">
  <div>
  <div className="flex items-center gap-2">
- <span className="font-mono font-black text-xs text-rose-600">{selectedArticle.sku}</span>
+ <span className="font-mono font-black text-xs text-theme-primary">{selectedArticle.sku}</span>
  <span className="font-bold text-theme-main text-xs">{selectedArticle.name}</span>
  </div>
  <span className="text-[11px] text-theme-muted">
@@ -646,7 +646,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  min="1"
  value={catalogQty}
  onChange={(e) => setCatalogQty(Math.max(1, parseInt(e.target.value) || 1))}
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-mono font-black text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-mono font-black text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
 
@@ -659,14 +659,14 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  value={catalogComments}
  onChange={(e) => setCatalogComments(e.target.value)}
  placeholder="Ej. Resurtido de fin de mes..."
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
 
  <button
  type="button"
  onClick={handleAddCatalogItem}
- className="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
+ className="w-full py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
  >
  <Plus className="w-4 h-4" />
  <span>Agregar partida</span>
@@ -697,7 +697,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  type="text"
  value={unregDesc}
  onChange={(e) => setUnregDesc(e.target.value)}
- placeholder="Ej. Colchón Spring Air Especial Hotelero Queen..."
+ placeholder="Ej. Folleto Plegable Médico 48 Páginas..."
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/30"
  />
  </div>
@@ -708,7 +708,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  type="text"
  value={unregBrand}
  onChange={(e) => setUnregBrand(e.target.value)}
- placeholder="Ej. Spring Air, Nayt..."
+ placeholder="Ej. Bio-Pappel, Sun Chemical..."
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-amber-500/30"
  />
  </div>
@@ -719,7 +719,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  type="text"
  value={unregSize}
  onChange={(e) => setUnregSize(e.target.value)}
- placeholder="Ej. Individual, Queen Size..."
+ placeholder="Ej. Rollo 500m, Tarima 10,000 pzas..."
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-amber-500/30"
  />
  </div>
@@ -741,7 +741,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  type="text"
  value={unregUnit}
  onChange={(e) => setUnregUnit(e.target.value)}
- placeholder="Ej. Colchón, Pza, Lote..."
+ placeholder="Ej. Millar, Bobina, Tarima..."
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-amber-500/30"
  />
  </div>
@@ -752,7 +752,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  type="text"
  value={unregSpecs}
  onChange={(e) => setUnregSpecs(e.target.value)}
- placeholder="Ej. Doble colchoneta memory foam con refuerzo perimetral ignífugo..."
+ placeholder="Ej. Papel couché 150g, 4 tintas offset más barniz UV brillante..."
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-amber-500/30"
  />
  </div>
@@ -806,17 +806,17 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  >
  <span className="font-mono font-bold text-[10px] text-theme-primary block">INS-CINTA-48MM</span>
  <strong className="text-xs font-bold text-theme-main block">Cinta Canela de Empaque (24 pzas)</strong>
- <span className="text-[10px] text-theme-muted block">Flejado y embalaje de colchones</span>
+ <span className="text-[10px] text-theme-muted block">Flejado y protección de tarimas</span>
  </button>
 
  <button
  type="button"
- onClick={() => handleAddConsumablePreset('Bolsa Protectora de Polietileno Calibre 400 King Size', 'INS-BOLSA-POLI-KS', 'Pieza', 50)}
+ onClick={() => handleAddConsumablePreset('Bolsa Protectora de Polietileno Calibre 400 Extra Grande (1.80m x 2.20m)', 'INS-BOLSA-POLI-KS', 'Pieza', 50)}
  className="p-3 rounded-2xl bg-theme-muted/40 hover:bg-theme-muted border border-theme-subtle text-left space-y-1 transition-all cursor-pointer"
  >
  <span className="font-mono font-bold text-[10px] text-theme-primary block">INS-BOLSA-KS</span>
- <strong className="text-xs font-bold text-theme-main block">Bolsa Protectora King Size (50 pzas)</strong>
- <span className="text-[10px] text-theme-muted block">Protección de colchones contra polvo</span>
+ <strong className="text-xs font-bold text-theme-main block">Bolsa Protectora Extra Grande (50 pzas)</strong>
+ <span className="text-[10px] text-theme-muted block">Protección contra humedad y polvo</span>
  </button>
  </div>
  </div>
@@ -903,7 +903,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  <button
  type="button"
  onClick={() => handleRemoveItem(item.id)}
- className="p-1.5 rounded-lg text-theme-muted hover:text-rose-600 hover:bg-rose-500/10 transition-colors cursor-pointer"
+ className="p-1.5 rounded-lg text-theme-muted hover:text-theme-primary hover:bg-rose-500/10 transition-colors cursor-pointer"
  title="Eliminar partida"
  >
  <Trash2 className="w-3.5 h-3.5" />
@@ -941,7 +941,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  <button
  type="button"
  onClick={() => setConfirmSendOpen(true)}
- className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+ className="px-5 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
  >
  <CheckCircle2 className="w-4 h-4" />
  <span>Enviar a autorización</span>
@@ -975,7 +975,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  </button>
  <button
  onClick={handleMergeDuplicate}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer"
  >
  Sumar a partida (+{duplicateWarning.incomingQty})
  </button>
@@ -988,7 +988,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  {confirmSendOpen && (
  <ModalPortal onClose={() => setConfirmSendOpen(false)}>
  <div className="w-full max-w-md bg-theme-surface rounded-3xl p-6 shadow-2xl border border-theme-subtle space-y-4">
- <div className="flex items-center gap-2 text-rose-600">
+ <div className="flex items-center gap-2 text-theme-primary">
  <CheckCircle2 className="w-5 h-5" />
  <h3 className="text-sm font-black text-theme-main">Confirmar Envío</h3>
  </div>
@@ -1007,7 +1007,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  setConfirmSendOpen(false);
  handleSave('Pendiente de autorización');
  }}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer"
  >
  Confirmar y enviar
  </button>

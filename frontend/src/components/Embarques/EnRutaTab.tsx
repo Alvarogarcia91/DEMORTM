@@ -52,7 +52,7 @@ export const EnRutaTab: React.FC = () => {
       <div className="p-4 rounded-3xl bg-white border border-zinc-200 shadow-2xs space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-white border border-rose-500/30 text-rose-600 flex items-center justify-center shadow-2xs">
+            <div className="w-8 h-8 rounded-xl bg-white border border-theme-primary/30 text-theme-primary flex items-center justify-center shadow-2xs">
               <Navigation className="w-4 h-4" />
             </div>
             <div>
@@ -82,7 +82,7 @@ export const EnRutaTab: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar ruta, orden, pedido, chofer, destino..."
-              className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl pl-9 pr-3 py-2 text-xs text-zinc-900 focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+              className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl pl-9 pr-3 py-2 text-xs text-zinc-900 focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
             />
           </div>
 
@@ -91,7 +91,7 @@ export const EnRutaTab: React.FC = () => {
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value as any)}
-              className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-3 py-2 text-xs text-zinc-900 font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+              className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-3 py-2 text-xs text-zinc-900 font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
             >
               <option value="ALL">Todos los tipos (Venta y Traspaso)</option>
               <option value="Venta">Solo Ventas a Clientes</option>
@@ -104,11 +104,11 @@ export const EnRutaTab: React.FC = () => {
             <select
               value={originFilter}
               onChange={(e) => setOriginFilter(e.target.value)}
-              className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-3 py-2 text-xs text-zinc-900 font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+              className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-3 py-2 text-xs text-zinc-900 font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
             >
               <option value="ALL">Todos los CEDIS de origen</option>
-              <option value="CEDIS Monterrey Norte">CEDIS Monterrey Norte</option>
-              <option value="CEDIS Monterrey Sur">CEDIS Monterrey Sur</option>
+              <option value="Almacén Principal RTM">Almacén Principal RTM</option>
+              <option value="Almacén Producto Terminado">Almacén Producto Terminado</option>
             </select>
           </div>
         </div>
@@ -151,7 +151,7 @@ export const EnRutaTab: React.FC = () => {
                       {/* Ruta / Tipo */}
                       <td className="py-3.5 px-4 whitespace-nowrap">
                         <div className="space-y-1">
-                          <strong className="font-mono text-xs text-rose-600 block font-bold">
+                          <strong className="font-mono text-xs text-theme-primary block font-bold">
                             {rt.folio}
                           </strong>
                           <span className={`px-2 py-0.2 rounded-full text-[9px] font-bold uppercase border shadow-2xs bg-white ${
@@ -234,7 +234,7 @@ export const EnRutaTab: React.FC = () => {
                           onClick={() => setSelectedRouteForDetail(rt)}
                           className="px-3 py-1.5 rounded-xl bg-white hover:bg-zinc-50 text-zinc-900 font-bold text-xs border border-zinc-300 transition-all shadow-2xs flex items-center gap-1.5 cursor-pointer ml-auto"
                         >
-                          <Navigation className="w-3.5 h-3.5 text-rose-600" />
+                          <Navigation className="w-3.5 h-3.5 text-theme-primary" />
                           <span>Abrir ruta</span>
                         </button>
                       </td>

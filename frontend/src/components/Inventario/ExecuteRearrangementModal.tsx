@@ -94,7 +94,7 @@ export const ExecuteRearrangementModal: React.FC<ExecuteRearrangementModalProps>
  name: `Ubicación Destino ${order.destinationLocation}`,
  type: 'RACK',
  warehouseName: order.warehouseName,
- warehouseCode: order.warehouseName.includes('Sur') ? 'MTY-S' : order.warehouseName.includes('Valle') ? 'SUC-VO' : order.warehouseName.includes('Cumbres') ? 'SUC-CUM' : 'MTY-N',
+ warehouseCode: order.warehouseName.includes('Sur') ? 'MTY-S' : order.warehouseName.includes('Reynosa') ? 'ALM-REY' : order.warehouseName.includes('Matamoros') ? 'ALM-MAT' : 'MTY-N',
  aisle,
  level,
  positionNumber: posNum,
@@ -210,7 +210,7 @@ export const ExecuteRearrangementModal: React.FC<ExecuteRearrangementModalProps>
  <div className="p-4 rounded-2xl bg-theme-muted/40 border border-theme-subtle space-y-2">
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Instrucción Operativa</span>
  <p className="text-sm font-bold text-theme-main">
- Escanea el código QR / Serie del colchón indicado en la orden.
+ Escanea el código QR / Serie del material indicado en la orden.
  </p>
  <div className="flex items-center justify-between pt-2 border-t border-theme-subtle text-xs">
  <span className="text-theme-muted">Serie esperada:</span>
@@ -228,7 +228,7 @@ export const ExecuteRearrangementModal: React.FC<ExecuteRearrangementModalProps>
  </div>
  <h3 className="text-xs font-bold text-theme-main">{order.productName}</h3>
  <div className="flex items-center gap-2 text-theme-muted pt-1">
- <MapPin className="w-3.5 h-3.5 text-rose-600" />
+ <MapPin className="w-3.5 h-3.5 text-theme-primary" />
  <span>Ubicación actual: <strong className="font-mono text-theme-main">{order.originLocation}</strong></span>
  </div>
  </div>
@@ -306,7 +306,7 @@ export const ExecuteRearrangementModal: React.FC<ExecuteRearrangementModalProps>
 
  <button
  onClick={handleScanInvalidLocation}
- className="w-full py-2.5 rounded-xl bg-theme-muted hover:bg-rose-500/10 text-theme-muted hover:text-rose-600 font-semibold text-xs transition-colors border border-theme-subtle cursor-pointer flex items-center justify-center gap-1.5"
+ className="w-full py-2.5 rounded-xl bg-theme-muted hover:bg-theme-primary-light text-theme-muted hover:text-theme-primary font-semibold text-xs transition-colors border border-theme-subtle cursor-pointer flex items-center justify-center gap-1.5"
  >
  <AlertTriangle className="w-3.5 h-3.5" />
  <span>Simular escaneo de ubicación incorrecta (C-A-07)</span>
@@ -347,7 +347,7 @@ export const ExecuteRearrangementModal: React.FC<ExecuteRearrangementModalProps>
  <div className="flex items-center justify-between p-3 rounded-xl bg-white border border-blue-500 shadow-2xs text-xs">
  <div className="text-center">
  <span className="text-[10px] text-theme-muted block font-semibold">Origen Liberado</span>
- <span className="font-mono font-black text-rose-600 text-sm">{order.originLocation}</span>
+ <span className="font-mono font-black text-theme-primary text-sm">{order.originLocation}</span>
  </div>
 
  <ArrowRight className="w-5 h-5 text-theme-primary" />

@@ -106,7 +106,7 @@ export const ReorderSuggestionsList: React.FC<ReorderSuggestionsListProps> = ({
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar artículo, SKU, marca, proveedor o almacén destino..."
- className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  {searchQuery && (
  <button
@@ -254,7 +254,7 @@ export const ReorderSuggestionsList: React.FC<ReorderSuggestionsListProps> = ({
  <button
  type="button"
  onClick={() => onCreateRequisitionFromSuggestion(sug)}
- className="px-3 py-1 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer"
+ className="px-3 py-1 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer"
  >
  <PackagePlus className="w-3.5 h-3.5" />
  <span>Requisición</span>

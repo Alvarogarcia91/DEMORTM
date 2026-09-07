@@ -73,11 +73,11 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  .map((d) => ({ supplier: s, doc: d }))
  );
 
- // Performance datasets (Nayt México as #1 benchmark)
+ // Performance datasets (Sun Chemical México as #1 benchmark)
  const topPerformers: SupplierPerformanceDetail[] = [
  {
- supplierTradeName: 'Nayt México',
- supplierId: 'sup-nayt',
+ supplierTradeName: 'Sun Chemical México',
+ supplierId: 'sup-sunchem',
  score: 97,
  ratingLabel: 'Excelente',
  onTimePercent: 98,
@@ -86,11 +86,11 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  incidentsCount: 1,
  priceVariationPercent: 1.3,
  analyzedOrdersCount: 8,
- recentNotes: 'Proveedor estratégico prioritario. Máxima confiabilidad en entregas a CEDIS Monterrey Norte.',
+ recentNotes: 'Proveedor estratégico prioritario. Máxima confiabilidad en entregas a Almacén Principal RTM.',
  },
  {
- supplierTradeName: 'Restonic México',
- supplierId: 'sup-restonic',
+ supplierTradeName: 'Bio-Pappel',
+ supplierId: 'sup-biopappel',
  score: 94,
  ratingLabel: 'Muy bueno',
  onTimePercent: 95,
@@ -102,8 +102,8 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  recentNotes: 'Cumplimiento impecable sin reportes de mermas ni incidencias en los últimos 90 días.',
  },
  {
- supplierTradeName: 'Sealy México',
- supplierId: 'sup-sealy',
+ supplierTradeName: 'Fasson Avery Dennison',
+ supplierId: 'sup-fasson',
  score: 92,
  ratingLabel: 'Muy bueno',
  onTimePercent: 93,
@@ -118,8 +118,8 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
 
  const reviewPerformers: SupplierPerformanceDetail[] = [
  {
- supplierTradeName: 'Spring Air México',
- supplierId: 'sup-springair',
+ supplierTradeName: 'WestRock México',
+ supplierId: 'sup-westrock',
  score: 78,
  ratingLabel: 'Atención',
  onTimePercent: 78,
@@ -128,7 +128,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  incidentsCount: 3,
  priceVariationPercent: 4.6,
  analyzedOrdersCount: 6,
- recentNotes: 'Tiempos de entrega extendidos (9d) y 2 retrasos registrados en entregas de línea Ortopédica.',
+ recentNotes: 'Tiempos de entrega extendidos (9d) y 2 retrasos registrados en entregas de línea de empaques y sustratos.',
  },
  {
  supplierTradeName: 'Distribuidora del Norte',
@@ -144,8 +144,8 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  recentNotes: 'Falta de contacto comercial directo y lead time de 12 días genera reprogramaciones de compra.',
  },
  {
- supplierTradeName: 'Therapedic México',
- supplierId: 'sup-therapedic',
+ supplierTradeName: 'Siegwerk',
+ supplierId: 'sup-siegwerk',
  score: 86,
  ratingLabel: 'Seguimiento',
  onTimePercent: 85,
@@ -314,7 +314,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  <button
  type="button"
  onClick={() => onNavigateSubTab('proveedores')}
- className="text-xs font-bold text-rose-600 hover:underline flex items-center gap-1 cursor-pointer"
+ className="text-xs font-bold text-theme-primary hover:underline flex items-center gap-1 cursor-pointer"
  >
  <span>Ver todos los proveedores ({suppliers.length})</span>
  <ArrowRight className="w-3 h-3" />
@@ -323,14 +323,14 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
 
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
  
- {/* Alerta 1: Documento por Vencer (Nayt México) */}
+ {/* Alerta 1: Documento por Vencer (Sun Chemical México) */}
  <div
- onClick={() => handleOpenSupplierByName('Nayt México', 'documentos')}
+ onClick={() => handleOpenSupplierByName('Sun Chemical México', 'documentos')}
  className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle hover:border-amber-500/40 space-y-3 cursor-pointer transition-all flex flex-col justify-between group shadow-2xs"
  >
  <div className="space-y-1.5">
  <div className="flex items-center justify-between gap-1">
- <strong className="text-xs font-bold text-theme-main truncate">Nayt México</strong>
+ <strong className="text-xs font-bold text-theme-main truncate">Sun Chemical México</strong>
  <StatusBadge variant="warning" label="Doc. por vencer" size="sm" />
  </div>
  <p className="text-xs text-theme-muted font-semibold">Constancia de Situación Fiscal 2026</p>
@@ -339,20 +339,20 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  </span>
  </div>
 
- <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-main group-hover:text-rose-600 transition-colors">
+ <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-main group-hover:text-theme-primary transition-colors">
  <span>Ver expediente</span>
  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
  </div>
  </div>
 
- {/* Alerta 2: Tiempo Extendido (Spring Air México) */}
+ {/* Alerta 2: Tiempo Extendido (WestRock México) */}
  <div
- onClick={() => handleOpenSupplierByName('Spring Air México', 'condiciones')}
+ onClick={() => handleOpenSupplierByName('WestRock México', 'condiciones')}
  className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle hover:border-blue-500/40 space-y-3 cursor-pointer transition-all flex flex-col justify-between group shadow-2xs"
  >
  <div className="space-y-1.5">
  <div className="flex items-center justify-between gap-1">
- <strong className="text-xs font-bold text-theme-main truncate">Spring Air México</strong>
+ <strong className="text-xs font-bold text-theme-main truncate">WestRock México</strong>
  <StatusBadge variant="info" label="Tiempo extendido" size="sm" />
  </div>
  <p className="text-xs text-theme-muted">
@@ -363,7 +363,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  </span>
  </div>
 
- <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-main group-hover:text-rose-600 transition-colors">
+ <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-main group-hover:text-theme-primary transition-colors">
  <span>Ver condiciones</span>
  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
  </div>
@@ -387,20 +387,20 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  </span>
  </div>
 
- <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-main group-hover:text-rose-600 transition-colors">
+ <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-main group-hover:text-theme-primary transition-colors">
  <span>Completar contacto</span>
  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
  </div>
  </div>
 
- {/* Alerta 4: Incidencia de Entrega Reciente (Therapedic México) */}
+ {/* Alerta 4: Incidencia de Entrega Reciente (Siegwerk) */}
  <div
- onClick={() => handleOpenSupplierByName('Therapedic México', 'historial')}
+ onClick={() => handleOpenSupplierByName('Siegwerk', 'historial')}
  className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle hover:border-purple-500/40 space-y-3 cursor-pointer transition-all flex flex-col justify-between group shadow-2xs"
  >
  <div className="space-y-1.5">
  <div className="flex items-center justify-between gap-1">
- <strong className="text-xs font-bold text-theme-main truncate">Therapedic México</strong>
+ <strong className="text-xs font-bold text-theme-main truncate">Siegwerk</strong>
  <StatusBadge variant="smart" label="Incidencia reciente" size="sm" />
  </div>
  <p className="text-xs text-theme-muted">
@@ -411,7 +411,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  </span>
  </div>
 
- <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-main group-hover:text-rose-600 transition-colors">
+ <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-main group-hover:text-theme-primary transition-colors">
  <span>Ver historial</span>
  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
  </div>
@@ -467,7 +467,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  #{idx + 1}
  </span>
  <div className="min-w-0">
- <strong className="text-xs font-bold text-theme-main block truncate group-hover:text-rose-600 transition-colors">
+ <strong className="text-xs font-bold text-theme-main block truncate group-hover:text-theme-primary transition-colors">
  {p.supplierTradeName}
  </strong>
  <div className="text-[10px] text-theme-muted flex items-center gap-2 mt-0.5">
@@ -522,7 +522,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  !
  </span>
  <div className="min-w-0">
- <strong className="text-xs font-bold text-theme-main block truncate group-hover:text-rose-600 transition-colors">
+ <strong className="text-xs font-bold text-theme-main block truncate group-hover:text-theme-primary transition-colors">
  {p.supplierTradeName}
  </strong>
  <div className="text-[10px] text-theme-muted flex items-center gap-2 mt-0.5">
@@ -570,11 +570,11 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
 
  <div className="space-y-3 text-xs font-semibold">
  {[
- { name: 'Nayt México', pct: 98, color: 'bg-emerald-500' },
- { name: 'Restonic México', pct: 95, color: 'bg-emerald-500' },
- { name: 'Sealy México', pct: 93, color: 'bg-blue-500' },
- { name: 'Therapedic México', pct: 86, color: 'bg-blue-500' },
- { name: 'Spring Air México', pct: 78, color: 'bg-amber-500' },
+ { name: 'Sun Chemical México', pct: 98, color: 'bg-emerald-500' },
+ { name: 'Bio-Pappel', pct: 95, color: 'bg-emerald-500' },
+ { name: 'Fasson Avery Dennison', pct: 93, color: 'bg-blue-500' },
+ { name: 'Siegwerk', pct: 86, color: 'bg-blue-500' },
+ { name: 'WestRock México', pct: 78, color: 'bg-amber-500' },
  ].map((item) => (
  <div
  key={item.name}
@@ -582,7 +582,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  className="space-y-1 cursor-pointer group"
  >
  <div className="flex items-center justify-between text-xs">
- <span className="text-theme-main group-hover:text-rose-600 transition-colors">
+ <span className="text-theme-main group-hover:text-theme-primary transition-colors">
  {item.name}
  </span>
  <span className="font-mono font-black text-theme-main">{item.pct}%</span>
@@ -609,11 +609,11 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
 
  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
  {[
- { name: 'Nayt México', days: 4, badge: 'Óptimo', type: 'good' },
- { name: 'Restonic México', days: 5, badge: 'Bueno', type: 'good' },
- { name: 'Sealy México', days: 7, badge: 'Estándar', type: 'neutral' },
- { name: 'Therapedic México', days: 8, badge: 'Extendido', type: 'warn' },
- { name: 'Spring Air México', days: 9, badge: 'Atención', type: 'warn' },
+ { name: 'Sun Chemical México', days: 4, badge: 'Óptimo', type: 'good' },
+ { name: 'Bio-Pappel', days: 5, badge: 'Bueno', type: 'good' },
+ { name: 'Fasson Avery Dennison', days: 7, badge: 'Estándar', type: 'neutral' },
+ { name: 'Siegwerk', days: 8, badge: 'Extendido', type: 'warn' },
+ { name: 'WestRock México', days: 9, badge: 'Atención', type: 'warn' },
  { name: 'Distribuidora Norte', days: 12, badge: 'Atención', type: 'warn' },
  ].map((lead) => (
  <div
@@ -621,7 +621,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  onClick={() => handleOpenSupplierByName(lead.name, 'condiciones')}
  className="p-3 rounded-2xl bg-theme-muted/30 hover:bg-theme-muted/70 border border-theme-subtle cursor-pointer transition-all space-y-1 group"
  >
- <span className="text-[11px] font-bold text-theme-main block truncate group-hover:text-rose-600 transition-colors">
+ <span className="text-[11px] font-bold text-theme-main block truncate group-hover:text-theme-primary transition-colors">
  {lead.name}
  </span>
  <div className="flex items-baseline justify-between">
@@ -658,7 +658,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  Registro reciente de arribos a CEDIS con validación de puntualidad y completitud física.
  </p>
  </div>
- <span className="text-xs font-mono text-theme-muted">CEDIS Monterrey Norte / Sur</span>
+ <span className="text-xs font-mono text-theme-muted">Almacén Principal RTM</span>
  </div>
 
  <div className="overflow-x-auto">
@@ -675,19 +675,19 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  </thead>
  <tbody className="divide-y divide-theme-subtle font-sans">
  {[
- { sup: 'Nayt México', oc: 'OC-2026-0081', exp: '25 Ago 2026', rec: '25 Ago 2026', res: 'A tiempo', resType: 'good', units: '20 / 20 pzas' },
- { sup: 'Restonic México', oc: 'OC-2026-0079', exp: '24 Ago 2026', rec: '24 Ago 2026', res: 'A tiempo', resType: 'good', units: '12 / 12 pzas' },
- { sup: 'Spring Air México', oc: 'OC-2026-0078', exp: '23 Ago 2026', rec: '25 Ago 2026', res: '2 días tarde', resType: 'warn', units: '18 / 18 pzas' },
- { sup: 'Sealy México', oc: 'OC-2026-0076', exp: '21 Ago 2026', rec: '21 Ago 2026', res: 'A tiempo', resType: 'good', units: '8 / 8 pzas' },
+ { sup: 'Sun Chemical México', oc: 'OC-2026-0081', exp: '25 Ago 2026', rec: '25 Ago 2026', res: 'A tiempo', resType: 'good', units: '20 / 20 tarimas' },
+ { sup: 'Bio-Pappel', oc: 'OC-2026-0079', exp: '24 Ago 2026', rec: '24 Ago 2026', res: 'A tiempo', resType: 'good', units: '12 / 12 tarimas' },
+ { sup: 'WestRock México', oc: 'OC-2026-0078', exp: '23 Ago 2026', rec: '25 Ago 2026', res: '2 días tarde', resType: 'warn', units: '18 / 18 bobinas' },
+ { sup: 'Fasson Avery Dennison', oc: 'OC-2026-0076', exp: '21 Ago 2026', rec: '21 Ago 2026', res: 'A tiempo', resType: 'good', units: '8 / 8 bobinas' },
  { sup: 'Distribuidora del Norte', oc: 'OC-2026-0074', exp: '18 Ago 2026', rec: '22 Ago 2026', res: '4 días tarde', resType: 'warn', units: '15 / 15 pzas' },
- { sup: 'Colchones América', oc: 'OC-2026-0072', exp: '16 Ago 2026', rec: '16 Ago 2026', res: 'A tiempo', resType: 'good', units: '10 / 10 pzas' },
+ { sup: 'Smurfit Kappa', oc: 'OC-2026-0072', exp: '16 Ago 2026', rec: '16 Ago 2026', res: 'A tiempo', resType: 'good', units: '10 / 10 paquetes' },
  ].map((row, idx) => (
  <tr key={idx} className="hover:bg-theme-muted/30 transition-colors">
  <td className="py-3 px-4">
  <button
  type="button"
  onClick={() => handleOpenSupplierByName(row.sup, 'resumen')}
- className="font-bold text-theme-main hover:text-rose-600 transition-colors cursor-pointer text-left"
+ className="font-bold text-theme-main hover:text-theme-primary transition-colors cursor-pointer text-left"
  >
  {row.sup}
  </button>
@@ -747,10 +747,10 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  </thead>
  <tbody className="divide-y divide-theme-subtle font-sans">
  {[
- { name: 'Nayt México', cond: 'Crédito', credit: '30 días', lead: '4 días', var: '+1.3%', varType: 'up' },
- { name: 'Restonic México', cond: 'Crédito', credit: '30 días', lead: '5 días', var: '-0.8%', varType: 'down' },
- { name: 'Sealy México', cond: 'Crédito', credit: '30 días', lead: '7 días', var: '+4.0%', varType: 'up' },
- { name: 'Spring Air México', cond: 'Crédito', credit: '45 días', lead: '9 días', var: '+4.6%', varType: 'up' },
+ { name: 'Sun Chemical México', cond: 'Crédito', credit: '30 días', lead: '4 días', var: '+1.3%', varType: 'up' },
+ { name: 'Bio-Pappel', cond: 'Crédito', credit: '30 días', lead: '5 días', var: '-0.8%', varType: 'down' },
+ { name: 'Fasson Avery Dennison', cond: 'Crédito', credit: '30 días', lead: '7 días', var: '+4.0%', varType: 'up' },
+ { name: 'WestRock México', cond: 'Crédito', credit: '45 días', lead: '9 días', var: '+4.6%', varType: 'up' },
  { name: 'Distribuidora del Norte', cond: 'Contado', credit: 'Inmediato', lead: '12 días', var: '0.0%', varType: 'neutral' },
  { name: 'Sleep Tech USA', cond: 'Anticipo', credit: '0 días', lead: '15 días', var: '+2.1%', varType: 'up' },
  ].map((row, idx) => (
@@ -759,7 +759,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  <button
  type="button"
  onClick={() => handleOpenSupplierByName(row.name, 'condiciones')}
- className="hover:text-rose-600 transition-colors cursor-pointer text-left"
+ className="hover:text-theme-primary transition-colors cursor-pointer text-left"
  >
  {row.name}
  </button>
@@ -802,10 +802,10 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
 
  <div className="space-y-2 text-xs">
  {[
- { name: 'Nayt México', orders: 8, max: 8 },
- { name: 'Spring Air México', orders: 6, max: 8 },
- { name: 'Restonic México', orders: 5, max: 8 },
- { name: 'Sealy México', orders: 4, max: 8 },
+ { name: 'Sun Chemical México', orders: 8, max: 8 },
+ { name: 'WestRock México', orders: 6, max: 8 },
+ { name: 'Bio-Pappel', orders: 5, max: 8 },
+ { name: 'Fasson Avery Dennison', orders: 4, max: 8 },
  ].map((co) => (
  <div
  key={co.name}
@@ -813,7 +813,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  className="space-y-1 cursor-pointer group"
  >
  <div className="flex justify-between text-xs">
- <span className="font-semibold text-theme-main group-hover:text-rose-600 transition-colors">
+ <span className="font-semibold text-theme-main group-hover:text-theme-primary transition-colors">
  {co.name}
  </span>
  <span className="font-mono font-bold text-theme-main">{co.orders} órdenes</span>
@@ -837,10 +837,10 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
 
  <div className="grid grid-cols-2 gap-2 text-xs">
  {[
- { name: 'Nayt México', count: 1, label: 'Diferencia menor de embalaje', type: 'low' },
- { name: 'Restonic México', count: 0, label: 'Sin incidencias registradas', type: 'none' },
- { name: 'Sealy México', count: 1, label: 'Retraso de 1 día', type: 'low' },
- { name: 'Spring Air México', count: 3, label: '2 retrasos, 1 empaque dañado', type: 'high' },
+ { name: 'Sun Chemical México', count: 1, label: 'Diferencia menor de embalaje', type: 'low' },
+ { name: 'Bio-Pappel', count: 0, label: 'Sin incidencias registradas', type: 'none' },
+ { name: 'Fasson Avery Dennison', count: 1, label: 'Retraso de 1 día', type: 'low' },
+ { name: 'WestRock México', count: 3, label: '2 retrasos, 1 empaque dañado', type: 'high' },
  ].map((inc) => (
  <div
  key={inc.name}
@@ -848,7 +848,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  className="p-3 rounded-2xl bg-theme-muted/30 hover:bg-theme-muted/60 border border-theme-subtle cursor-pointer transition-all space-y-1 group"
  >
  <div className="flex items-center justify-between">
- <span className="text-[11px] font-bold text-theme-main truncate group-hover:text-rose-600 transition-colors">
+ <span className="text-[11px] font-bold text-theme-main truncate group-hover:text-theme-primary transition-colors">
  {inc.name}
  </span>
  <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white text-zinc-900 border shadow-2xs ${
@@ -976,7 +976,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  setSelectedPerformanceSupplier(null);
  handleOpenSupplierByName(sName, 'resumen');
  }}
- className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold cursor-pointer flex items-center gap-1.5 shadow-md"
+ className="px-5 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer flex items-center gap-1.5 shadow-md"
  >
  <span>Ver expediente de proveedor</span>
  <ArrowRight className="w-3.5 h-3.5" />

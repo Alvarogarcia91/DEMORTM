@@ -110,7 +110,7 @@ export const ReorderSuggestionDetailModal: React.FC<ReorderSuggestionDetailModal
  <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/25 shadow-xs space-y-1">
  <span className="text-[10px] text-rose-700 dark:text-rose-300 uppercase font-black block">Compra Sugerida</span>
  <strong className="text-2xl font-mono font-black text-rose-600 block">
- {suggestion.suggestedQuantity} <span className="text-xs font-normal text-theme-muted">colchones</span>
+ {suggestion.suggestedQuantity} <span className="text-xs font-normal text-theme-muted">unidades / millares</span>
  </strong>
  <span className="text-[10px] text-rose-700 font-bold block">Mínimo: {suggestion.minStock} pzas</span>
  </div>
@@ -159,7 +159,7 @@ export const ReorderSuggestionDetailModal: React.FC<ReorderSuggestionDetailModal
  onClose();
  onCreateRequisitionFromSuggestion(suggestion);
  }}
- className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black transition-all shadow-md flex items-center gap-2 cursor-pointer"
+ className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md flex items-center gap-2 cursor-pointer"
  >
  <PackagePlus className="w-4 h-4" />
  <span>Crear requisición ({suggestion.suggestedQuantity} unidades)</span>

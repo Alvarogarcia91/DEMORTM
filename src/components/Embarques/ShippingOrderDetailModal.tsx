@@ -45,12 +45,12 @@ export const ShippingOrderDetailModal: React.FC<ShippingOrderDetailModalProps> =
         {/* Header */}
         <div className="px-6 py-4 border-b border-theme-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-theme-surface">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white border border-rose-500/30 text-rose-600 flex items-center justify-center shadow-xs">
+            <div className="w-10 h-10 rounded-2xl bg-white border border-theme-primary/30 text-theme-primary flex items-center justify-center shadow-xs">
               <Truck className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-mono text-base font-black text-rose-600">
+                <span className="font-mono text-base font-black text-theme-primary">
                   {order.folio}
                 </span>
                 <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border shadow-2xs bg-white text-zinc-900 ${
@@ -79,7 +79,7 @@ export const ShippingOrderDetailModal: React.FC<ShippingOrderDetailModalProps> =
               onClick={onOpenRemision}
               className="px-3 py-1.5 rounded-xl bg-white hover:bg-theme-muted text-theme-main font-bold text-xs border border-theme-subtle transition-all cursor-pointer shadow-2xs flex items-center gap-1.5"
             >
-              <FileText className="w-3.5 h-3.5 text-rose-600" />
+              <FileText className="w-3.5 h-3.5 text-theme-primary" />
               <span>Ver remisión</span>
             </button>
 
@@ -161,7 +161,7 @@ export const ShippingOrderDetailModal: React.FC<ShippingOrderDetailModalProps> =
                 onClick={onOpenAssignTransport}
                 className="px-3.5 py-2 rounded-xl bg-white hover:bg-theme-muted text-theme-main font-bold text-xs border border-zinc-300 transition-all cursor-pointer shadow-2xs flex items-center gap-1.5"
               >
-                <Truck className="w-3.5 h-3.5 text-rose-600" />
+                <Truck className="w-3.5 h-3.5 text-theme-primary" />
                 <span>{order.assignedVehicleId ? 'Cambiar transporte' : 'Asignar transporte'}</span>
               </button>
 
@@ -170,7 +170,7 @@ export const ShippingOrderDetailModal: React.FC<ShippingOrderDetailModalProps> =
                 disabled={!isLoadReady}
                 className={`px-4 py-2 rounded-xl font-black text-xs transition-all shadow-xs flex items-center gap-1.5 cursor-pointer ${
                   isLoadReady
-                    ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-md'
+                    ? 'bg-theme-primary hover:bg-theme-primary-hover text-white shadow-md'
                     : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed border border-zinc-300 dark:border-zinc-700'
                 }`}
               >

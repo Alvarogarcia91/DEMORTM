@@ -267,7 +267,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  const newItem: PriceListItem = {
  id: `pli-${Date.now()}`,
  articleSku: articleRel.articleSku,
- articleName: articleRel.articleName,
+ articleName: articleRel.articleName || articleRel.articleSku,
  supplierSku: articleRel.supplierSku,
  unit: articleRel.purchaseUnit || 'pza',
  currentPrice: newItemPrice,
@@ -401,7 +401,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
  selectedList.status === 'Inactiva'
  ? 'bg-white text-zinc-900 border border-emerald-600 shadow-2xs hover:bg-theme-muted'
- : 'bg-white text-zinc-900 border border-rose-500 shadow-2xs hover:bg-theme-muted'
+ : 'bg-white text-zinc-900 border border-theme-primary shadow-2xs hover:bg-theme-muted'
  }`}
  >
  <Power className="w-3.5 h-3.5" />
@@ -417,7 +417,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  }
  setAddItemModalOpen(true);
  }}
- className="px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+ className="px-4 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
  >
  <Plus className="w-3.5 h-3.5" />
  <span>Agregar artículo</span>
@@ -429,7 +429,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
  <div className="p-3.5 rounded-2xl bg-theme-muted/40 border border-theme-subtle space-y-0.5">
  <span className="text-[10px] uppercase font-bold text-theme-muted flex items-center gap-1">
- <Building2 className="w-3 h-3 text-rose-600" />
+ <Building2 className="w-3 h-3 text-theme-primary" />
  Proveedor
  </span>
  <strong className="text-xs font-bold text-theme-main block truncate">
@@ -477,7 +477,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar SKU o artículo en esta lista..."
- className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  {searchQuery && (
  <button
@@ -546,7 +546,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  const varPct = item.variationPercent || 0;
  return (
  <tr key={item.id} className="hover:bg-theme-muted/30 transition-colors">
- <td className="py-3 px-4 font-mono font-bold text-rose-600 whitespace-nowrap">
+ <td className="py-3 px-4 font-mono font-bold text-theme-primary whitespace-nowrap">
  {item.articleSku}
  </td>
  <td className="py-3 px-3">
@@ -615,7 +615,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  </button>
  <button
  onClick={() => handleRemoveItem(item.id)}
- className="p-1.5 rounded-lg bg-theme-muted hover:bg-rose-500/10 text-theme-muted hover:text-rose-600 transition-colors cursor-pointer"
+ className="p-1.5 rounded-lg bg-theme-muted hover:bg-theme-primary-light text-theme-muted hover:text-theme-primary transition-colors cursor-pointer"
  title="Remover de esta lista"
  >
  <Trash2 className="w-3.5 h-3.5" />
@@ -649,7 +649,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  </div>
 
  <div className="space-y-1">
- <span className="font-mono font-bold text-xs text-rose-600">{editingItem.articleSku}</span>
+ <span className="font-mono font-bold text-xs text-theme-primary">{editingItem.articleSku}</span>
  <p className="text-xs font-bold text-theme-main">{editingItem.articleName}</p>
  </div>
 
@@ -706,7 +706,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  </button>
  <button
  onClick={handleSaveEditItem}
- className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold cursor-pointer"
+ className="px-5 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer"
  >
  Guardar cambios
  </button>
@@ -721,7 +721,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  <div className="w-full max-w-lg bg-theme-surface rounded-3xl p-6 shadow-2xl border border-theme-subtle space-y-4">
  <div className="flex items-center justify-between border-b border-theme-subtle pb-3">
  <div className="flex items-center gap-2">
- <Plus className="w-5 h-5 text-rose-600" />
+ <Plus className="w-5 h-5 text-theme-primary" />
  <h4 className="text-sm font-black text-theme-main">Agregar Artículo a Lista de Precios</h4>
  </div>
  <button
@@ -799,7 +799,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  id="enableTiersCheck"
  checked={enableTiers}
  onChange={(e) => setEnableTiers(e.target.checked)}
- className="rounded text-rose-600 focus:ring-rose-500 cursor-pointer"
+ className="rounded text-theme-primary focus:ring-theme-primary cursor-pointer"
  />
  <label htmlFor="enableTiersCheck" className="text-theme-main font-semibold cursor-pointer">
  Habilitar escalas de precio por volumen demo (1-9, 10-19, 20+ pzas)
@@ -815,7 +815,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  </button>
  <button
  onClick={handleAddItemToList}
- className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold cursor-pointer"
+ className="px-5 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer"
  >
  Agregar a lista
  </button>
@@ -840,7 +840,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  <div className="bg-theme-surface p-5 border border-theme-subtle rounded-3xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div className="space-y-1">
  <div className="flex items-center gap-2">
- <div className="w-8 h-8 rounded-xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-xs">
+ <div className="w-8 h-8 rounded-xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-xs">
  <DollarSign className="w-4 h-4" />
  </div>
  <h3 className="text-sm font-black text-theme-main">
@@ -868,7 +868,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  setNewListName(`Lista General ${supplier.tradeName} 2026`);
  setCreateListModalOpen(true);
  }}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
  >
  <Plus className="w-3.5 h-3.5" />
  <span>Nueva lista de precios</span>
@@ -995,7 +995,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  <div className="w-full max-w-lg bg-theme-surface rounded-3xl p-6 shadow-2xl border border-theme-subtle space-y-4">
  <div className="flex items-center justify-between border-b border-theme-subtle pb-3">
  <div className="flex items-center gap-2">
- <Plus className="w-5 h-5 text-rose-600" />
+ <Plus className="w-5 h-5 text-theme-primary" />
  <h4 className="text-sm font-black text-theme-main">Nueva Lista de Precios</h4>
  </div>
  <button
@@ -1086,7 +1086,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  </button>
  <button
  onClick={handleCreateList}
- className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold cursor-pointer shadow-md"
+ className="px-5 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer shadow-md"
  >
  Crear lista de precios
  </button>
@@ -1170,7 +1170,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  </button>
  <button
  onClick={handleConfirmDuplicate}
- className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold cursor-pointer shadow-md"
+ className="px-5 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer shadow-md"
  >
  Crear copia
  </button>
@@ -1210,7 +1210,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  <div className="flex items-center justify-end gap-2 pt-2 border-t border-theme-subtle text-xs">
  <button
  onClick={() => setImportModalOpen(false)}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer"
  >
  Entendido
  </button>

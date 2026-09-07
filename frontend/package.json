@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "start": "vite --host 0.0.0.0 --port 3000"
+    "start": "vite --host 0.0.0.0 --port 3000",
+    "sync:frontend": "node scripts/sync-frontend.js"
   },
   "dependencies": {
     "clsx": "^2.1.1",

@@ -52,7 +52,7 @@ export const HourlyActivityChart: React.FC<HourlyActivityChartProps> = ({ data }
  <div className="flex items-center justify-between flex-wrap gap-2 text-[11px] font-bold">
  <div className="flex items-center gap-3 flex-wrap">
  <span className="flex items-center gap-1 text-theme-main">
- <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+ <span className="w-2.5 h-2.5 rounded-full bg-theme-primary" />
  <span>Entradas</span>
  </span>
  <span className="flex items-center gap-1 text-theme-main">
@@ -79,8 +79,8 @@ export const HourlyActivityChart: React.FC<HourlyActivityChartProps> = ({ data }
  <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full h-44 overflow-visible">
  <defs>
  <linearGradient id="totalAreaGrad" x1="0" y1="0" x2="0" y2="1">
- <stop offset="0%" stopColor="#ef4444" stopOpacity="0.25" />
- <stop offset="100%" stopColor="#ef4444" stopOpacity="0.0" />
+ <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.25" />
+ <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0.0" />
  </linearGradient>
  </defs>
 
@@ -107,7 +107,7 @@ export const HourlyActivityChart: React.FC<HourlyActivityChartProps> = ({ data }
 
  {/* Series Lines */}
  <path d={getSeriesPath('total')} fill="none" stroke="#e11d48" strokeWidth="2.5" strokeDasharray="4 2" />
- <path d={getSeriesPath('inbound')} fill="none" stroke="#ef4444" strokeWidth="2" />
+ <path d={getSeriesPath('inbound')} fill="none" stroke="var(--color-primary)" strokeWidth="2" />
  <path d={getSeriesPath('putaway')} fill="none" stroke="#3b82f6" strokeWidth="2" />
  <path d={getSeriesPath('picking')} fill="none" stroke="#a855f7" strokeWidth="2" />
  <path d={getSeriesPath('outbound')} fill="none" stroke="#f59e0b" strokeWidth="2" />
@@ -126,7 +126,7 @@ export const HourlyActivityChart: React.FC<HourlyActivityChartProps> = ({ data }
  y={chartHeight - 4}
  textAnchor="middle"
  className={`text-[9px] font-mono font-bold ${
- isHovered ? 'fill-rose-600 font-black' : 'fill-theme-muted'
+ isHovered ? 'fill-theme-primary font-black' : 'fill-theme-muted'
  }`}
  >
  {d.hour}
@@ -137,7 +137,7 @@ export const HourlyActivityChart: React.FC<HourlyActivityChartProps> = ({ data }
  cx={x}
  cy={yTotal}
  r={isHovered ? 5 : 3.5}
- className="fill-rose-600 stroke-white stroke-2 transition-all cursor-pointer"
+ className="fill-theme-primary stroke-white stroke-2 transition-all cursor-pointer"
  />
 
  {/* Transparent wider hit zone */}
@@ -160,11 +160,11 @@ export const HourlyActivityChart: React.FC<HourlyActivityChartProps> = ({ data }
  {hoveredPoint && (
  <div className="absolute top-2 right-2 bg-theme-surface/95 backdrop-blur-xs border border-theme-subtle p-3 rounded-2xl shadow-xl text-xs space-y-1 font-mono animate-in fade-in duration-100 z-10">
  <div className="flex items-center justify-between gap-4 border-b border-theme-subtle pb-1">
- <strong className="text-rose-600 font-black">{hoveredPoint.hour} hrs</strong>
+ <strong className="text-theme-primary font-black">{hoveredPoint.hour} hrs</strong>
  <span className="text-[10px] text-theme-muted">Total: {hoveredPoint.total} movs</span>
  </div>
  <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-[10px]">
- <span className="text-rose-600 font-semibold">Entradas: <b>{hoveredPoint.inbound}</b></span>
+ <span className="text-theme-primary font-semibold">Entradas: <b>{hoveredPoint.inbound}</b></span>
  <span className="text-blue-600 font-semibold">Acomodos: <b>{hoveredPoint.putaway}</b></span>
  <span className="text-purple-600 font-semibold">Recolección: <b>{hoveredPoint.picking}</b></span>
  <span className="text-amber-600 font-semibold">Salidas: <b>{hoveredPoint.outbound}</b></span>
@@ -224,7 +224,7 @@ export const StageAvgDurationBars: React.FC<{
  const maxMins = 35;
 
  const stages = [
- { label: 'Entrada', mins: minutes.inbound, color: 'bg-rose-500' },
+ { label: 'Entrada', mins: minutes.inbound, color: 'bg-theme-primary' },
  { label: 'Acomodo', mins: minutes.putaway, color: 'bg-blue-500' },
  { label: 'Recolección', mins: minutes.picking, color: 'bg-purple-500' },
  { label: 'Verificación', mins: minutes.outbound, color: 'bg-amber-500' },

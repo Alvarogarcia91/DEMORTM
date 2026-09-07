@@ -45,7 +45,7 @@ interface CountsTabProps {
 export const CountsTab: React.FC<CountsTabProps> = ({ onShowToast }) => {
  // Subtabs: 'panel' | 'plans' | 'tasks' | 'differences' (Default: 'panel')
  const [subTab, setSubTab] = useState<'panel' | 'plans' | 'tasks' | 'differences'>('panel');
- const [selectedWarehouseId, setSelectedWarehouseId] = useState<string>('wh-mty-norte');
+ const [selectedWarehouseId, setSelectedWarehouseId] = useState<string>('wh-alm-rtm');
 
  // Active state data
  const [plans, setPlans] = useState<CountPlanRecord[]>(MOCK_COUNT_PLANS);
@@ -104,7 +104,7 @@ export const CountsTab: React.FC<CountsTabProps> = ({ onShowToast }) => {
  locationName: sug.locationName,
  zoneType: 'RACK',
  expectedUnitsCount: 3,
- expectedSerials: ['SC-UID-2026-000171', 'SC-UID-2026-000172', 'SC-UID-2026-000173'],
+ expectedSerials: ['TAR-RTM-260906-182', 'TAR-RTM-260906-183', 'BOB-RTM-260906-014'],
  countedUnitsCount: 0,
  countedSerials: [],
  isBlindCount: true,
@@ -204,8 +204,7 @@ export const CountsTab: React.FC<CountsTabProps> = ({ onShowToast }) => {
  key={tab.id}
  onClick={() => setSubTab(tab.id as any)}
  className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
- isActive
- ? 'bg-rose-600 text-white shadow-md'
+ isActive ? 'bg-theme-primary text-white shadow-md'
  : 'bg-theme-muted hover:bg-theme-subtle text-theme-main border border-theme-subtle'
  }`}
  >
@@ -224,7 +223,7 @@ export const CountsTab: React.FC<CountsTabProps> = ({ onShowToast }) => {
  {/* Global Action: New Count Plan */}
  <button
  onClick={() => setIsCreatePlanOpen(true)}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
  >
  <Plus className="w-4 h-4" />
  <span>Nuevo plan de conteo</span>
@@ -254,8 +253,7 @@ export const CountsTab: React.FC<CountsTabProps> = ({ onShowToast }) => {
  key={wh.id}
  onClick={() => setSelectedWarehouseId(wh.id)}
  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
- selectedWarehouseId === wh.id
- ? 'bg-rose-600 text-white shadow-xs'
+ selectedWarehouseId === wh.id ? 'bg-theme-primary text-white shadow-xs'
  : 'bg-theme-muted hover:bg-theme-subtle text-theme-main border border-theme-subtle'
  }`}
  >
@@ -449,7 +447,7 @@ export const CountsTab: React.FC<CountsTabProps> = ({ onShowToast }) => {
  <thead>
  <tr className="bg-theme-muted/40 border-b border-theme-subtle text-theme-muted font-bold uppercase tracking-wider text-[10px]">
  <th className="py-3 px-4">Folio</th>
- <th className="py-3 px-3">Almacén / CEDIS</th>
+ <th className="py-3 px-3">Almacén</th>
  <th className="py-3 px-3">Tipo</th>
  <th className="py-3 px-4">Alcance</th>
  <th className="py-3 px-3">Método</th>
@@ -546,7 +544,7 @@ export const CountsTab: React.FC<CountsTabProps> = ({ onShowToast }) => {
  <thead>
  <tr className="bg-theme-muted/40 border-b border-theme-subtle text-theme-muted font-bold uppercase tracking-wider text-[10px]">
  <th className="py-3 px-4">Folio</th>
- <th className="py-3 px-3">Almacén / CEDIS</th>
+ <th className="py-3 px-3">Almacén</th>
  <th className="py-3 px-3">Ubicación</th>
  <th className="py-3 px-3">Espacio Físico</th>
  <th className="py-3 px-3 text-center">Progreso Físico</th>
@@ -599,7 +597,7 @@ export const CountsTab: React.FC<CountsTabProps> = ({ onShowToast }) => {
  {t.status === 'Pendiente' ? (
  <button
  onClick={() => setActiveTaskToExecute(t)}
- className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 ml-auto cursor-pointer"
+ className="px-3.5 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 ml-auto cursor-pointer"
  >
  <Play className="w-3.5 h-3.5" />
  <span>Ejecutar</span>

@@ -154,12 +154,12 @@ export const PickPlanningWizardModal: React.FC<PickPlanningWizardModalProps> = (
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <Compass className="w-5 h-5" />
  </div>
  <div>
  <div className="flex items-center gap-2 flex-wrap">
- <span className="font-mono text-xs font-black text-rose-600">{demand.referenceFolio}</span>
+ <span className="font-mono text-xs font-black text-theme-primary">{demand.referenceFolio}</span>
  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-theme-muted text-theme-main border border-theme-subtle">
  {demand.type}
  </span>
@@ -232,7 +232,7 @@ export const PickPlanningWizardModal: React.FC<PickPlanningWizardModalProps> = (
  <div className="flex items-center justify-between">
  <span className="text-xs font-black block truncate">{strat.label}</span>
  {stType === 'RECOMMENDED' || stType === 'SUGGESTED' ? (
- <Sparkles className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+ <Sparkles className="w-3.5 h-3.5 text-theme-primary shrink-0" />
  ) : (
  <span className={`text-[8px] px-1 py-0.2 rounded font-bold uppercase ${
  isSelected ? 'bg-theme-primary/10 text-theme-primary border border-theme-primary/30' : 'bg-theme-muted text-theme-muted'
@@ -256,7 +256,7 @@ export const PickPlanningWizardModal: React.FC<PickPlanningWizardModalProps> = (
  )}
  </div>
 
- <div className="flex items-center text-rose-600 text-[10px]">
+ <div className="flex items-center text-theme-primary text-[10px]">
  {Array.from({ length: 5 }, (_, i) => (
  <span key={i} className={i < strat.ratingStars ? 'opacity-100' : 'opacity-25'}>
  ★
@@ -292,14 +292,14 @@ export const PickPlanningWizardModal: React.FC<PickPlanningWizardModalProps> = (
  <div className="p-3.5 rounded-2xl bg-theme-muted/40 border border-theme-subtle space-y-2">
  <div className="flex items-center justify-between text-[10px] uppercase font-bold text-theme-muted">
  <span>Recorrido Optimizado en Almacén:</span>
- <span className="font-mono text-rose-600 font-bold">Ruta &rarr; {plannedStops.length} posiciones</span>
+ <span className="font-mono text-theme-primary font-bold">Ruta &rarr; {plannedStops.length} posiciones</span>
  </div>
 
  <div className="flex items-center gap-2 overflow-x-auto py-1 text-xs font-mono">
  {plannedStops.map((stop, idx) => (
  <React.Fragment key={stop.id}>
  <div className="px-2.5 py-1 rounded-xl bg-theme-surface border border-theme-subtle flex items-center gap-1.5 shrink-0 shadow-2xs">
- <span className="w-4 h-4 rounded-full bg-rose-500/10 text-rose-600 font-bold text-[9px] flex items-center justify-center">
+ <span className="w-4 h-4 rounded-full bg-theme-primary-light text-theme-primary font-bold text-[9px] flex items-center justify-center">
  {stop.sequence}
  </span>
  <strong className="text-theme-main">{stop.locationCode}</strong>
@@ -329,13 +329,13 @@ export const PickPlanningWizardModal: React.FC<PickPlanningWizardModalProps> = (
  className="p-3 rounded-2xl bg-theme-surface border border-theme-subtle flex items-center justify-between gap-3 shadow-2xs text-xs"
  >
  <div className="flex items-center gap-3 min-w-0">
- <span className="w-6 h-6 rounded-full bg-rose-600 text-white font-mono font-bold text-[10px] flex items-center justify-center shrink-0">
+ <span className="w-6 h-6 rounded-full bg-theme-primary text-white font-mono font-bold text-[10px] flex items-center justify-center shrink-0">
  #{stop.sequence}
  </span>
 
  <div className="min-w-0 space-y-0.5">
  <div className="flex items-center gap-2 flex-wrap">
- <span className="font-mono text-xs font-black text-rose-600">{stop.locationCode}</span>
+ <span className="font-mono text-xs font-black text-theme-primary">{stop.locationCode}</span>
  <span className="text-[10px] text-theme-muted">{stop.aisle} &bull; {stop.rackPosition} &bull; {stop.level}</span>
  <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-white text-zinc-900 border border-purple-500 shadow-2xs inline-flex items-center gap-1">
  <span className="w-1 h-1 rounded-full bg-purple-600 shrink-0" />
@@ -399,7 +399,7 @@ export const PickPlanningWizardModal: React.FC<PickPlanningWizardModalProps> = (
 
  <button
  onClick={handleGenerateOrder}
- className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+ className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
  >
  <Check className="w-4 h-4" />
  <span>Generar orden de recolección ({plannedStops.length} unidades)</span>
@@ -425,9 +425,9 @@ export const PickPlanningWizardModal: React.FC<PickPlanningWizardModalProps> = (
 
  <div className="space-y-2">
  {[
- { uid: 'SC-UID-2026-000109', loc: 'A-A-04', age: 26, dist: 12 },
- { uid: 'SC-UID-2026-000115', loc: 'A-B-02', age: 24, dist: 18 },
- { uid: 'SC-UID-2026-000119', loc: 'B-A-04', age: 20, dist: 35 },
+ { uid: 'TAR-RTM-2026-000109', loc: 'A-A-04', age: 26, dist: 12 },
+ { uid: 'TAR-RTM-2026-000115', loc: 'A-B-02', age: 24, dist: 18 },
+ { uid: 'TAR-RTM-2026-000119', loc: 'B-A-04', age: 20, dist: 35 },
  ].map((alt) => (
  <div
  key={alt.uid}
@@ -441,10 +441,10 @@ export const PickPlanningWizardModal: React.FC<PickPlanningWizardModalProps> = (
  );
  setSwappingStop(null);
  }}
- className="p-2.5 rounded-xl bg-theme-muted/40 hover:bg-rose-500/10 border border-theme-subtle flex items-center justify-between cursor-pointer transition-colors"
+ className="p-2.5 rounded-xl bg-theme-muted/40 hover:bg-theme-primary-light border border-theme-subtle flex items-center justify-between cursor-pointer transition-colors"
  >
  <div>
- <strong className="font-mono text-rose-600 block">{alt.uid}</strong>
+ <strong className="font-mono text-theme-primary block">{alt.uid}</strong>
  <span className="text-[10px] text-theme-muted font-mono">Ubicación: {alt.loc} &bull; Antigüedad: {alt.age} días</span>
  </div>
  <span className="text-[10px] text-emerald-600 font-bold">+{alt.dist} m</span>

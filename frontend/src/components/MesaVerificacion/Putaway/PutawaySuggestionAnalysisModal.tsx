@@ -66,7 +66,7 @@ export const PutawaySuggestionAnalysisModal: React.FC<PutawaySuggestionAnalysisM
  <div className="flex items-center gap-3 pt-1 text-[10px] text-theme-muted font-mono">
  <span>Lote: <strong>{unit.lotNumber}</strong></span>
  <span>&bull;</span>
- <span>Ubicación actual: <strong className="text-rose-600">{unit.sourceLocation}</strong></span>
+ <span>Ubicación actual: <strong className="text-theme-primary">{unit.sourceLocation}</strong></span>
  <span>&bull;</span>
  <span>En recepción: <strong>{unit.timeInReceiving}</strong></span>
  </div>
@@ -105,7 +105,7 @@ export const PutawaySuggestionAnalysisModal: React.FC<PutawaySuggestionAnalysisM
  <div className="grid grid-cols-2 gap-2.5">
  <div className="p-3 rounded-xl bg-theme-surface border border-theme-subtle space-y-0.5">
  <div className="flex items-center gap-1.5 text-theme-muted text-[10px] font-bold">
- <Compass className="w-3.5 h-3.5 text-rose-600" />
+ <Compass className="w-3.5 h-3.5 text-theme-primary" />
  <span>Distancia a Embarque</span>
  </div>
  <strong className="text-sm font-mono font-black text-theme-main block">

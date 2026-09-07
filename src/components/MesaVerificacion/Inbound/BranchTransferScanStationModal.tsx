@@ -138,7 +138,7 @@ export const BranchTransferScanStationModal: React.FC<BranchTransferScanStationM
  };
 
  const handleSimulateInvalid = () => {
- processScan('SC-UID-2026-000333');
+ processScan('TAR-RTM-2026-000333');
  };
 
  // Final confirmation logic
@@ -195,7 +195,7 @@ export const BranchTransferScanStationModal: React.FC<BranchTransferScanStationM
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <Truck className="w-5 h-5" />
  </div>
  <div>
@@ -237,7 +237,7 @@ export const BranchTransferScanStationModal: React.FC<BranchTransferScanStationM
  Validación de UIDs Serializados Existentes
  </span>
  <p className="text-[11px] text-zinc-600 dark:text-zinc-400 leading-relaxed">
- Las unidades que arriban por traspaso ya fueron serializadas en el CEDIS de origen. <strong>No se generan nuevos UIDs ni se imprimen stickers adicionales</strong>. Escanea el código QR de cada colchón para confirmar su arribo físico a sucursal.
+ Las unidades que arriban por traspaso ya fueron serializadas en el almacén de origen. <strong>No se generan nuevos UIDs ni se imprimen stickers adicionales</strong>. Escanea el código QR de cada tarima o bulto para confirmar su arribo físico a sucursal.
  </p>
  </div>
  </div>
@@ -259,7 +259,7 @@ export const BranchTransferScanStationModal: React.FC<BranchTransferScanStationM
  </div>
  <div className="w-full bg-theme-muted h-2 rounded-full overflow-hidden mt-1.5">
  <div 
- className={`h-full transition-all duration-300 rounded-full ${isAllReceived ? 'bg-emerald-500' : 'bg-rose-600'}`}
+ className={`h-full transition-all duration-300 rounded-full ${isAllReceived ? 'bg-emerald-500' : 'bg-theme-primary'}`}
  style={{ width: `${progressPercent}%` }}
  />
  </div>
@@ -311,10 +311,10 @@ export const BranchTransferScanStationModal: React.FC<BranchTransferScanStationM
  </div>
 
  {/* Scanner & Manual Validation Box */}
- <div className="p-5 rounded-3xl bg-theme-surface border-2 border-dashed border-rose-500/30 space-y-4">
+ <div className="p-5 rounded-3xl bg-theme-surface border-2 border-dashed border-theme-primary/30 space-y-4">
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
  <div className="flex items-center gap-2">
- <Scan className="w-5 h-5 text-rose-600" />
+ <Scan className="w-5 h-5 text-theme-primary" />
  <h4 className="text-sm font-extrabold text-theme-main">
  Escanear QR / UID de Unidad
  </h4>
@@ -337,8 +337,8 @@ export const BranchTransferScanStationModal: React.FC<BranchTransferScanStationM
  processScan(manualInput);
  }
  }}
- placeholder="Escanea el código QR o ingresa SC-UID-2026-XXXXXX..."
- className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-10 pr-4 py-2.5 text-xs font-mono font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500"
+ placeholder="Escanea el código QR o ingresa TAR-RTM-2026-XXXXXX..."
+ className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-10 pr-4 py-2.5 text-xs font-mono font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary"
  />
  </div>
 
@@ -346,7 +346,7 @@ export const BranchTransferScanStationModal: React.FC<BranchTransferScanStationM
  type="button"
  disabled={!manualInput.trim()}
  onClick={() => processScan(manualInput)}
- className="px-4 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-xs disabled:opacity-50 cursor-pointer shrink-0"
+ className="px-4 py-2.5 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-bold transition-all shadow-xs disabled:opacity-50 cursor-pointer shrink-0"
  >
  Validar
  </button>
@@ -379,7 +379,7 @@ export const BranchTransferScanStationModal: React.FC<BranchTransferScanStationM
  <button
  type="button"
  onClick={handleSimulateInvalid}
- className="px-2.5 py-1.5 rounded-xl bg-white hover:bg-theme-muted text-zinc-900 font-mono text-[11px] font-bold border border-rose-500 shadow-2xs transition-all cursor-pointer"
+ className="px-2.5 py-1.5 rounded-xl bg-white hover:bg-theme-muted text-zinc-900 font-mono text-[11px] font-bold border border-theme-primary shadow-2xs transition-all cursor-pointer"
  title="Simula escanear un UID que no pertenece a esta orden"
  >
  ✕ Probar UID Inesperada
@@ -440,7 +440,7 @@ export const BranchTransferScanStationModal: React.FC<BranchTransferScanStationM
  >
  <div className="flex items-center justify-between">
  <div className="space-y-0.5">
- <span className="font-mono text-[10px] font-extrabold text-rose-600 block">
+ <span className="font-mono text-[10px] font-extrabold text-theme-primary block">
  {item.sku}
  </span>
  <strong className="text-xs text-theme-main block">
@@ -514,7 +514,7 @@ export const BranchTransferScanStationModal: React.FC<BranchTransferScanStationM
  className={`px-5 py-2 rounded-xl text-white text-xs font-bold transition-all shadow-md cursor-pointer flex items-center gap-2 ${
  isAllReceived
  ? 'bg-emerald-600 hover:bg-emerald-700'
- : 'bg-rose-600 hover:bg-rose-700'
+ : 'bg-theme-primary hover:bg-theme-primary-hover'
  }`}
  >
  <PackageCheck className="w-4 h-4" />

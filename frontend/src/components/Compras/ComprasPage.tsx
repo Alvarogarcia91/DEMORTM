@@ -48,7 +48,7 @@ export const ComprasPage: React.FC<ComprasPageProps> = ({ onNavigateTab }) => {
  {/* Main Header */}
  <div className="space-y-1">
  <div className="flex items-center gap-2.5">
- <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-500/25">
+ <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-theme-primary-light text-theme-primary border border-theme-primary/25">
  Cadena de Suministro & Abastecimiento
  </span>
  </div>

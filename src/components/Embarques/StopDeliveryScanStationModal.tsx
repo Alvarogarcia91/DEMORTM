@@ -63,10 +63,10 @@ export const StopDeliveryScanStationModal: React.FC<StopDeliveryScanStationModal
       return stop.items.flatMap((it) => it.uids);
     }
     return [
-      `SC-UID-2026-000101`,
-      `SC-UID-2026-000102`,
-      `SC-UID-2026-000107`,
-      `SC-UID-2026-000108`
+      `TAR-RTM-2026-000101`,
+      `TAR-RTM-2026-000102`,
+      `TAR-RTM-2026-000107`,
+      `TAR-RTM-2026-000108`
     ].slice(0, stop.totalUnits);
   });
 
@@ -484,7 +484,7 @@ export const StopDeliveryScanStationModal: React.FC<StopDeliveryScanStationModal
                     type="text"
                     value={uidInput}
                     onChange={(e) => setUidInput(e.target.value)}
-                    placeholder="Ingresa o escanea UID (ej. SC-UID-2026-000101)"
+                    placeholder="Ingresa o escanea UID (ej. TAR-RTM-2026-000101)"
                     className="flex-1 px-3.5 py-2.5 rounded-xl border border-zinc-300 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && uidInput) {
@@ -616,7 +616,7 @@ export const StopDeliveryScanStationModal: React.FC<StopDeliveryScanStationModal
 
                   <button
                     type="button"
-                    onClick={() => handleScanUid('SC-UID-2026-999999')}
+                    onClick={() => handleScanUid('TAR-RTM-2026-999999')}
                     className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-300 text-rose-900 font-bold text-[11px] transition-colors cursor-pointer"
                   >
                     ✗ UID ajena / no incluida

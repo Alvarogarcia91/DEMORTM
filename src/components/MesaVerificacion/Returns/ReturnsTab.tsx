@@ -195,7 +195,7 @@ export const ReturnsTab: React.FC<ReturnsTabProps> = ({
  onClick={() => setActiveSubtab('pending')}
  className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
  activeSubtab === 'pending'
- ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20'
+ ? 'bg-theme-primary text-white shadow-md'
  : 'bg-theme-muted/40 hover:bg-theme-muted text-theme-main border border-theme-subtle'
  }`}
  >
@@ -203,7 +203,7 @@ export const ReturnsTab: React.FC<ReturnsTabProps> = ({
  <span>1. Por recibir</span>
  {pendingOrdersCount > 0 && (
  <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${
- activeSubtab === 'pending' ? 'bg-white/20 text-white' : 'bg-rose-500/10 text-rose-600'
+ activeSubtab === 'pending' ? 'bg-white/20 text-white' : 'bg-theme-primary-light text-theme-primary'
  }`}>
  {pendingOrdersCount}
  </span>
@@ -215,7 +215,7 @@ export const ReturnsTab: React.FC<ReturnsTabProps> = ({
  onClick={() => setActiveSubtab('history')}
  className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
  activeSubtab === 'history'
- ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20'
+ ? 'bg-theme-primary text-white shadow-md'
  : 'bg-theme-muted/40 hover:bg-theme-muted text-theme-main border border-theme-subtle'
  }`}
  >
@@ -233,7 +233,7 @@ export const ReturnsTab: React.FC<ReturnsTabProps> = ({
  <button
  type="button"
  onClick={() => setIsCreateOpen(true)}
- className="px-4 py-2 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+ className="px-4 py-2 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
  >
  <Plus className="w-4 h-4" />
  <span>Nueva devolución</span>

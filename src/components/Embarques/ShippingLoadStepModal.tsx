@@ -19,14 +19,14 @@ export const ShippingLoadStepModal: React.FC<ShippingLoadStepModalProps> = ({
         {/* Header */}
         <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-white border border-rose-500/30 text-rose-600 flex items-center justify-center shadow-xs">
+            <div className="w-9 h-9 rounded-2xl bg-white border border-theme-primary/30 text-theme-primary flex items-center justify-center shadow-xs">
               <Send className="w-4 h-4" />
             </div>
             <div>
               <h3 className="text-sm font-black text-theme-main">
                 Secuenciación de Carga
               </h3>
-              <p className="text-[11px] font-mono text-rose-600 font-bold">
+              <p className="text-[11px] font-mono text-theme-primary font-bold">
                 {order.folio} &bull; {order.totalUnits} piezas
               </p>
             </div>
@@ -52,8 +52,8 @@ export const ShippingLoadStepModal: React.FC<ShippingLoadStepModalProps> = ({
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white border border-rose-500/30 shadow-2xs space-y-2 text-zinc-900">
-            <span className="font-black text-rose-600 uppercase text-[10px] tracking-wider block">
+          <div className="p-4 rounded-2xl bg-white border border-theme-primary/30 shadow-2xs space-y-2 text-zinc-900">
+            <span className="font-black text-theme-primary uppercase text-[10px] tracking-wider block">
               Próximo Paso Operativo
             </span>
             <p className="text-xs font-bold leading-relaxed">
@@ -67,7 +67,7 @@ export const ShippingLoadStepModal: React.FC<ShippingLoadStepModalProps> = ({
           <div className="pt-2 flex justify-end">
             <button
               onClick={onClose}
-              className="px-6 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md cursor-pointer"
+              className="px-6 py-2.5 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-md cursor-pointer"
             >
               Entendido
             </button>

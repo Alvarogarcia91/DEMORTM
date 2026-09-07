@@ -73,7 +73,7 @@ export const PendingOutboundList: React.FC<PendingOutboundListProps> = ({
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar folio, UID, artículo, SKU o destino..."
- className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  {searchQuery && (
  <button
@@ -93,8 +93,8 @@ export const PendingOutboundList: React.FC<PendingOutboundListProps> = ({
  className="bg-theme-muted border border-theme-subtle rounded-2xl px-3 py-2 text-xs font-semibold text-theme-main focus:outline-none cursor-pointer"
  >
  <option value="ALL">Todos los orígenes</option>
- <option value="wh-mty-norte">CEDIS Monterrey Norte</option>
- <option value="wh-mty-sur">CEDIS Monterrey Sur</option>
+ <option value="alm-rtm-mp">Almacén Materia Prima</option>
+ <option value="alm-rtm-pt">Almacén Producto Terminado</option>
  </select>
 
  <select
@@ -150,7 +150,7 @@ export const PendingOutboundList: React.FC<PendingOutboundListProps> = ({
  return (
  <tr key={order.id} className="hover:bg-theme-muted/30 transition-colors">
  <td className="py-3.5 px-4 whitespace-nowrap">
- <span className="font-mono font-black text-rose-600 block">{order.folio}</span>
+ <span className="font-mono font-black text-theme-primary block">{order.folio}</span>
  <span className="font-mono text-[10px] text-theme-muted">Ref: {order.referenceFolio}</span>
  </td>
  <td className="py-3.5 px-3 whitespace-nowrap">
@@ -186,7 +186,7 @@ export const PendingOutboundList: React.FC<PendingOutboundListProps> = ({
  <td className="py-3.5 px-4 text-right whitespace-nowrap">
  <button
  onClick={() => setPreparingOrder(order)}
- className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-all shadow-md flex items-center gap-1.5 ml-auto cursor-pointer"
+ className="px-3.5 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs transition-all shadow-md flex items-center gap-1.5 ml-auto cursor-pointer"
  >
  <Scan className="w-3.5 h-3.5" />
  <span>Preparar verificación</span>

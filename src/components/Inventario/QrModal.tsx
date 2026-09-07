@@ -1,27 +1,27 @@
 import React from 'react';
 import { X, QrCode, Printer, CheckCircle2, Copy, Download, Building2, MapPin, Tag } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
-import { PositionSerializedMattress } from '../../data/mockInventoryData';
+import { PositionSerializedItem } from '../../data/mockInventoryData';
 import { ModalPortal } from '../common/ModalPortal';
 
 interface QrModalProps {
- unit: PositionSerializedMattress | null;
- warehouseName: string;
- onClose: () => void;
- onPrint: (unit: PositionSerializedMattress) => void;
+  unit: PositionSerializedItem | null;
+  warehouseName?: string;
+  onClose: () => void;
+  onPrint?: (unit: PositionSerializedItem) => void;
 }
 
 export const QrModal: React.FC<QrModalProps> = ({
  unit,
- warehouseName,
+ warehouseName = 'Almacén Principal RTM',
  onClose,
- onPrint,
+ onPrint = () => {},
 }) => {
  const [copied, setCopied] = React.useState(false);
 
  if (!unit) return null;
 
- const qrDataString = `UID=${unit.uid}|SKU=${unit.sku}|LOC=${unit.locationCode}|LOT=${unit.lotNumber}|CEDIS=${warehouseName}`;
+ const qrDataString = `UID=${unit.uid}|SKU=${unit.sku}|LOC=${unit.locationCode}|LOT=${unit.lotNumber}|ALM=${warehouseName}`;
 
  const handleCopy = () => {
  navigator.clipboard.writeText(qrDataString);
@@ -91,7 +91,7 @@ export const QrModal: React.FC<QrModalProps> = ({
  <strong className="text-theme-primary font-mono">{unit.locationCode} (Nivel {unit.levelCode})</strong>
  </div>
  <div>
- <span className="text-[10px] uppercase font-bold text-theme-muted block">CEDIS:</span>
+ <span className="text-[10px] uppercase font-bold text-theme-muted block">Almacén:</span>
  <strong className="text-theme-main">{warehouseName}</strong>
  </div>
  </div>

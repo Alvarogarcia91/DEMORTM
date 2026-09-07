@@ -62,9 +62,9 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
   );
   const [clientSearch, setClientSearch] = useState('');
 
-  // Step 2: Sucursal y Lista de Precios
-  const [selectedBranchId, setSelectedBranchId] = useState<string>('wh-suc-valle-oriente');
-  const [selectedPriceListId, setSelectedPriceListId] = useState<string>('pl-general-2026');
+  // Step 2: Planta y Tarifa Comercial
+  const [selectedBranchId, setSelectedBranchId] = useState<string>('wh-alm-rtm');
+  const [selectedPriceListId, setSelectedPriceListId] = useState<string>('pl-ind-sbd-2026');
 
   // Step 3: Partidas
   const [items, setItems] = useState<SalesQuoteItem[]>([]);
@@ -95,7 +95,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
   const currentCustomer = customers.find((c) => c.id === selectedCustomerId) || customers[0];
   const currentPriceList = priceLists.find((p) => p.id === selectedPriceListId) || priceLists[0];
 
-  const branchName = selectedBranchId === 'wh-suc-valle-oriente' ? 'Sucursal Valle Oriente' : 'Sucursal Cumbres';
+  const branchName = selectedBranchId === 'wh-alm-rtm' ? 'Planta Principal RTM' : 'Almacén Auxiliar RTM';
 
   const handleSelectCustomer = (cust: SalesCustomer) => {
     setSelectedCustomerId(cust.id);
@@ -241,8 +241,8 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
       branchId: selectedBranchId,
       branchName,
       priceListId: selectedPriceListId,
-      priceListName: currentPriceList?.name || 'Lista General Retail 2026',
-      sellerName: 'Lic. Alejandro Morales (Ventas Retail VO)',
+      priceListName: currentPriceList?.name || 'Tarifa Industrial RTM 2026',
+      sellerName: 'Ing. Carlos Mendoza (Ventas Industriales RTM)',
       items,
       financials: {
         subtotalList,
@@ -292,14 +292,14 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
             <div>
               <h2 className="text-base font-black text-zinc-900 tracking-tight">
                 {step === 1 && 'Seleccionar Cliente'}
-                {step === 2 && 'Sucursal y Lista de Precios'}
+                {step === 2 && 'Planta / Línea & Tarifa Comercial'}
                 {step === 3 && 'Cotizador Comercial de Partidas'}
                 {step === 4 && 'Condiciones Comerciales y Logísticas'}
                 {step === 5 && 'Resumen Comercial y Validación'}
               </h2>
               <p className="text-xs text-zinc-500">
                 {step === 1 && 'Elige o busca el cliente destinatario de la propuesta.'}
-                {step === 2 && 'Define el punto de venta de despacho y la lista de precios a aplicar.'}
+                {step === 2 && 'Define la planta de producción asignada y la tarifa comercial aplicable.'}
                 {step === 3 && 'Agrega artículos, ajusta descuentos por partida y monitorea el margen estimado.'}
                 {step === 4 && 'Plazos de entrega, vigencia de propuesta y esquema de pago.'}
                 {step === 5 && 'Revisión final de política de precios y dictamen automático.'}
@@ -319,7 +319,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
         <div className="px-6 py-3 bg-zinc-50 border-b border-zinc-200 flex items-center justify-between gap-2 overflow-x-auto text-xs">
           {[
             { s: 1, label: '1. Cliente' },
-            { s: 2, label: '2. Sucursal / Lista' },
+            { s: 2, label: '2. Planta / Tarifa' },
             { s: 3, label: '3. Partidas / Márgenes' },
             { s: 4, label: '4. Condiciones' },
             { s: 5, label: '5. Resumen' },
@@ -328,7 +328,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
               key={item.s}
               className={`flex items-center gap-1.5 font-bold px-3 py-1.5 rounded-full transition-all whitespace-nowrap ${
                 step === item.s
-                  ? 'bg-rose-600 text-white shadow-xs'
+                  ? 'bg-theme-primary text-white shadow-xs'
                   : step > item.s
                   ? 'bg-white text-zinc-900 border border-emerald-600 shadow-2xs'
                   : 'bg-white text-zinc-500 border border-zinc-200'
@@ -354,7 +354,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                     value={clientSearch}
                     onChange={(e) => setClientSearch(e.target.value)}
                     placeholder="Buscar por nombre, código o RFC..."
-                    className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 focus:outline-none focus:border-rose-500 text-xs shadow-2xs"
+                    className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 focus:outline-none focus:border-theme-primary text-xs shadow-2xs"
                   />
                 </div>
 
@@ -364,7 +364,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                     onClick={onOpenQuickClientModal}
                     className="px-3.5 py-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 font-bold text-xs shadow-2xs hover:bg-zinc-50 transition-colors cursor-pointer flex items-center gap-1.5 shrink-0"
                   >
-                    <Plus className="w-4 h-4 text-rose-600" />
+                    <Plus className="w-4 h-4 text-theme-primary" />
                     <span>Alta Rápida de Cliente</span>
                   </button>
                 )}
@@ -379,12 +379,12 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                       onClick={() => handleSelectCustomer(cust)}
                       className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2 ${
                         isSelected
-                          ? 'bg-white border-2 border-rose-600 shadow-md'
+                          ? 'bg-white border-2 border-theme-primary shadow-md'
                           : 'bg-white border-zinc-200 hover:border-zinc-400 shadow-2xs'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-mono font-bold text-rose-600 text-xs">{cust.code}</span>
+                        <span className="font-mono font-bold text-theme-primary text-xs">{cust.code}</span>
                         <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-white border border-zinc-300 text-zinc-900">
                           {cust.type}
                         </span>
@@ -404,17 +404,17 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
             </div>
           )}
 
-          {/* STEP 2: SUCURSAL Y LISTA */}
+          {/* STEP 2: PLANTA Y TARIFA COMERCIAL */}
           {step === 2 && (
             <div className="space-y-6">
               <div className="space-y-3">
                 <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider block">
-                  1. Sucursal de Despacho / Piso de Venta
+                  1. Planta de Producción / Almacén de Despacho
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {[
-                    { id: 'wh-suc-valle-oriente', name: 'Sucursal Valle Oriente', desc: 'San Pedro Garza García, N.L. (Showroom + Almacén Local)' },
-                    { id: 'wh-suc-cumbres', name: 'Sucursal Cumbres', desc: 'Monterrey Poniente, N.L. (Showroom + Almacén Local)' },
+                    { id: 'wh-alm-rtm', name: 'Planta Principal RTM', desc: 'Guadalupe, N.L. — Naves Offset y Flexografía' },
+                    { id: 'wh-ext-bodega', name: 'Almacén Auxiliar RTM', desc: 'Guadalupe, N.L. — Resguardo de Materia Prima y PT' },
                   ].map((branch) => {
                     const isSelected = selectedBranchId === branch.id;
                     return (
@@ -423,13 +423,13 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                         onClick={() => setSelectedBranchId(branch.id)}
                         className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2 ${
                           isSelected
-                            ? 'bg-white border-2 border-rose-600 shadow-md'
+                            ? 'bg-white border-2 border-theme-primary shadow-md'
                             : 'bg-white border-zinc-200 hover:border-zinc-400 shadow-2xs'
                         }`}
                       >
                         <div className="flex items-center justify-between">
-                          <Building2 className="w-5 h-5 text-rose-600" />
-                          {isSelected && <Check className="w-4 h-4 text-rose-600" />}
+                          <Building2 className="w-5 h-5 text-theme-primary" />
+                          {isSelected && <Check className="w-4 h-4 text-theme-primary" />}
                         </div>
                         <h4 className="font-bold text-zinc-900 text-sm">{branch.name}</h4>
                         <p className="text-zinc-500 text-[11px]">{branch.desc}</p>
@@ -441,7 +441,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
 
               <div className="space-y-3">
                 <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider block">
-                  2. Lista de Precios de Venta Aplicable
+                  2. Tarifa / Convenio Comercial Aplicable
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {priceLists.map((plist) => {
@@ -452,12 +452,12 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                         onClick={() => setSelectedPriceListId(plist.id)}
                         className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2 ${
                           isSelected
-                            ? 'bg-white border-2 border-rose-600 shadow-md'
+                            ? 'bg-white border-2 border-theme-primary shadow-md'
                             : 'bg-white border-zinc-200 hover:border-zinc-400 shadow-2xs'
                         }`}
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-mono font-bold text-rose-600 text-xs">{plist.code}</span>
+                          <span className="font-mono font-bold text-theme-primary text-xs">{plist.code}</span>
                           <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-white border border-zinc-300 text-zinc-900">
                             {plist.targetType}
                           </span>
@@ -488,9 +488,9 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                     <select
                       value={selectedArticleSku}
                       onChange={(e) => setSelectedArticleSku(e.target.value)}
-                      className="w-full p-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs focus:outline-none focus:border-rose-500 shadow-2xs"
+                      className="w-full p-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs focus:outline-none focus:border-theme-primary shadow-2xs"
                     >
-                      <option value="">-- Selecciona un colchón / artículo --</option>
+                      <option value="">-- Selecciona un trabajo / artículo industrial --</option>
                       {MOCK_MASTER_ARTICLES.filter((a) => a.isActive).map((art) => (
                         <option key={art.sku} value={art.sku}>
                           {art.sku} - {art.name} ({art.size})
@@ -519,7 +519,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                       const art = MOCK_MASTER_ARTICLES.find((a) => a.sku === selectedArticleSku);
                       if (art) handleAddItem(art);
                     }}
-                    className="p-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-40 text-white font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                    className="p-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover disabled:opacity-40 text-white font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Agregar Partida</span>
@@ -554,7 +554,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                         <tr key={item.id} className="hover:bg-zinc-50/60">
                           <td className="py-3 px-3">
                             <strong className="text-zinc-900 block">{item.productName}</strong>
-                            <span className="font-mono text-[10px] text-rose-600">{item.sku}</span>
+                            <span className="font-mono text-[10px] text-theme-primary">{item.sku}</span>
                             {item.hasVolumeTierApplied && (
                               <span className="inline-block px-1.5 py-0.2 rounded text-[9px] font-bold bg-white border border-purple-500 text-zinc-900 ml-1">
                                 Escala volumen aplicada
@@ -582,7 +582,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                                 step={0.5}
                                 value={item.discountPct}
                                 onChange={(e) => handleUpdateItemDiscount(item.id, parseFloat(e.target.value) || 0)}
-                                className="w-12 p-1 rounded-lg border border-zinc-300 bg-white text-center font-mono font-bold text-rose-600 text-xs"
+                                className="w-12 p-1 rounded-lg border border-zinc-300 bg-white text-center font-mono font-bold text-theme-primary text-xs"
                               />
                               <span className="font-bold text-zinc-400">%</span>
                             </div>
@@ -606,7 +606,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                             <button
                               type="button"
                               onClick={() => handleRemoveItem(item.id)}
-                              className="p-1 text-zinc-400 hover:text-rose-600 transition-colors cursor-pointer"
+                              className="p-1 text-zinc-400 hover:text-theme-primary transition-colors cursor-pointer"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -731,7 +731,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                   <span className="text-[10px] text-zinc-500 font-mono">RFC: {currentCustomer?.rfc}</span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-zinc-500 uppercase font-bold block">Sucursal / Lista</span>
+                  <span className="text-[10px] text-zinc-500 uppercase font-bold block">Planta / Tarifa Comercial</span>
                   <strong className="text-zinc-900 block text-xs">{branchName}</strong>
                   <span className="text-[10px] text-zinc-500">{currentPriceList?.name}</span>
                 </div>
@@ -804,7 +804,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                 <button
                   type="button"
                   onClick={() => handleCreateQuote(false)}
-                  className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
+                  className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
                 >
                   <Check className="w-4 h-4" />
                   <span>Emitir Cotización</span>
@@ -815,7 +815,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                 type="button"
                 disabled={step === 3 && items.length === 0}
                 onClick={() => setStep((s) => (s < 5 ? ((s + 1) as any) : s))}
-                className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-40 text-white font-bold text-xs shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
+                className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover disabled:opacity-40 text-white font-bold text-xs shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
               >
                 <span>Siguiente</span>
                 <ChevronRight className="w-4 h-4" />

@@ -100,9 +100,9 @@ const getReadableStrategyReason = (strategyKey: string, u: StockItemRecord, isFr
  badge: 'Vaciar ubicación',
  text: isFreedLocation ? `Completa la salida de ${u.location}` : `Completa lote en ${u.location}`
  };
- case 'SHOWROOM_PRIORITY':
+ case 'QA_PRIORITY':
  return {
- badge: 'Showroom',
+ badge: 'Prioridad Alta',
  text: 'Prioridad de rotación en piso'
  };
  case 'MANUAL':
@@ -135,7 +135,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  const [createdSuccessData, setCreatedSuccessData] = useState<SuccessOrderData | null>(null);
 
  // Step 1: Origin & Destination
- const [sourceWarehouseId, setSourceWarehouseId] = useState(prefillData?.sourceId || 'wh-mty-norte');
+ const [sourceWarehouseId, setSourceWarehouseId] = useState(prefillData?.sourceId || 'alm-rtm-mp');
  const [destinationWarehouseId, setDestinationWarehouseId] = useState(prefillData?.destinationId || 'wh-suc-valle-oriente');
 
  // Step 1: Search, Selected Article / Unit & Origin Suggestion
@@ -157,8 +157,8 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  availableCount: number;
  } | null>(() => {
  return {
- warehouseId: 'wh-mty-norte',
- warehouseName: 'CEDIS Monterrey Norte',
+ warehouseId: 'alm-rtm-mp',
+ warehouseName: 'Almacén Principal RTM',
  reason: 'Es la ubicación con mayor disponibilidad para este artículo.',
  availableCount: 24,
  };
@@ -223,7 +223,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  } else {
  const defaultArt = MOCK_MASTER_ARTICLES[0];
  const avail = MOCK_STOCK_ITEMS.filter(
- u => u.warehouseId === (sourceWarehouseId || 'wh-mty-norte') && u.sku === defaultArt.sku && u.status === 'Disponible'
+ u => u.warehouseId === (sourceWarehouseId || 'alm-rtm-mp') && u.sku === defaultArt.sku && u.status === 'Disponible'
  ).length;
 
  const initialItem: TransferDraftItem = {
@@ -635,7 +635,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  Preparando
  </span>
  </div>
- <strong className="font-mono text-base font-black text-rose-600 block">
+ <strong className="font-mono text-base font-black text-theme-primary block">
  {createdSuccessData.transferFolio}
  </strong>
  <div className="text-[10px] text-theme-muted space-y-0.5 pt-1 border-t border-theme-subtle">
@@ -684,7 +684,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  <span className="font-medium text-theme-main truncate max-w-[260px]">
  {idx + 1}. {item.name}
  </span>
- <span className="font-mono font-bold text-rose-600">
+ <span className="font-mono font-bold text-theme-primary">
  {item.quantity} unidades ({item.serials.length} UIDs)
  </span>
  </div>
@@ -713,7 +713,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  }
  onClose();
  }}
- className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black transition-all shadow-md flex items-center gap-2 cursor-pointer"
+ className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md flex items-center gap-2 cursor-pointer"
  >
  <span>Ir a Recolección</span>
  <ArrowRight className="w-4 h-4" />
@@ -734,7 +734,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <ArrowLeftRight className="w-5 h-5" />
  </div>
  <div>
@@ -778,11 +778,11 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  <div
  key={label}
  className={`flex items-center gap-1.5 whitespace-nowrap ${
- isActive ? 'text-rose-600 font-black' : isPassed ? 'text-emerald-600' : 'text-theme-muted'
+ isActive ? 'text-theme-primary font-black' : isPassed ? 'text-emerald-600' : 'text-theme-muted'
  }`}
  >
  <div className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-mono ${
- isActive ? 'bg-rose-600 text-white' : isPassed ? 'bg-emerald-500 text-white' : 'bg-theme-muted text-theme-muted'
+ isActive ? 'bg-theme-primary text-white' : isPassed ? 'bg-emerald-500 text-white' : 'bg-theme-muted text-theme-muted'
  }`}>
  {stepNum}
  </div>
@@ -813,7 +813,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  <div className="space-y-1.5" ref={step1SearchContainerRef}>
  <label className="text-[11px] font-bold text-theme-muted uppercase flex items-center justify-between">
  <span className="flex items-center gap-1.5 text-theme-main font-extrabold">
- <Search className="w-3.5 h-3.5 text-rose-600" />
+ <Search className="w-3.5 h-3.5 text-theme-primary" />
  <span>¿Qué quieres transferir?</span>
  </span>
  <span className="text-[10px] font-normal text-theme-muted">
@@ -832,7 +832,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  setIsStep1SearchOpen(true);
  }}
  placeholder="Buscar artículo, SKU, UID/Serie o marca..."
- className="w-full bg-theme-surface border border-theme-subtle rounded-2xl pl-9 pr-8 py-2.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-2xl pl-9 pr-8 py-2.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  {step1SearchQuery && (
  <button
@@ -860,8 +860,8 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  [ARTÍCULO]
  </span>
  {step1MatchingArticles.map((art) => {
- const stockMtyN = MOCK_STOCK_ITEMS.filter(u => u.warehouseId === 'wh-mty-norte' && u.sku === art.sku && u.status === 'Disponible').length;
- const stockMtyS = MOCK_STOCK_ITEMS.filter(u => u.warehouseId === 'wh-mty-sur' && u.sku === art.sku && u.status === 'Disponible').length;
+ const stockMtyN = MOCK_STOCK_ITEMS.filter(u => u.warehouseId === 'alm-rtm-mp' && u.sku === art.sku && u.status === 'Disponible').length;
+ const stockMtyS = MOCK_STOCK_ITEMS.filter(u => u.warehouseId === 'alm-rtm-pt' && u.sku === art.sku && u.status === 'Disponible').length;
  const stockValle = MOCK_STOCK_ITEMS.filter(u => u.warehouseId === 'wh-suc-valle-oriente' && u.sku === art.sku && u.status === 'Disponible').length;
 
  return (
@@ -871,7 +871,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  className="p-2.5 rounded-xl hover:bg-theme-muted/50 cursor-pointer transition-colors space-y-1 text-xs"
  >
  <div className="flex items-center justify-between">
- <span className="font-mono text-xs font-black text-rose-600">{art.sku}</span>
+ <span className="font-mono text-xs font-black text-theme-primary">{art.sku}</span>
  <span className="text-[10px] text-theme-muted font-bold">{art.brand} &middot; {art.size}</span>
  </div>
  <h5 className="font-bold text-theme-main truncate">{art.name}</h5>
@@ -911,7 +911,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  </div>
  <h5 className="font-bold text-theme-main truncate">{unit.productName}</h5>
  <div className="text-[10px] text-theme-muted font-mono">
- {unit.warehouseName} &middot; Ubicación: <strong className="text-rose-600">{unit.location}</strong>
+ {unit.warehouseName} &middot; Ubicación: <strong className="text-theme-primary">{unit.location}</strong>
  </div>
  </div>
  ))}
@@ -933,7 +933,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  ARTÍCULO SELECCIONADO
  </span>
  <div className="flex items-center gap-2">
- <span className="font-mono text-xs font-black text-rose-600">{selectedInitialArticle.sku}</span>
+ <span className="font-mono text-xs font-black text-theme-primary">{selectedInitialArticle.sku}</span>
  <span className="text-[10px] text-theme-muted">{selectedInitialArticle.brand} &middot; {selectedInitialArticle.size}</span>
  </div>
  <h4 className="text-xs font-bold text-theme-main">{selectedInitialArticle.name}</h4>
@@ -945,7 +945,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  setStep1SearchQuery('');
  setIsStep1SearchOpen(true);
  }}
- className="text-[11px] font-bold text-rose-600 hover:underline cursor-pointer"
+ className="text-[11px] font-bold text-theme-primary hover:underline cursor-pointer"
  >
  Cambiar artículo
  </button>
@@ -983,7 +983,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  key={wh.id}
  className={`p-2 rounded-xl border text-xs space-y-0.5 ${
  isSource
- ? 'bg-rose-500/10 border-rose-500 ring-1 ring-rose-300 font-bold'
+ ? 'bg-theme-primary-light border-theme-primary ring-1 ring-theme-primary/30 font-bold'
  : 'bg-theme-muted/30 border-theme-subtle'
  }`}
  >
@@ -1016,7 +1016,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  {/* Origen */}
  <div className="space-y-1.5">
  <label className="text-[11px] font-bold text-theme-muted uppercase flex items-center gap-1">
- <Building2 className="w-3.5 h-3.5 text-rose-600" />
+ <Building2 className="w-3.5 h-3.5 text-theme-primary" />
  <span>Origen del traspaso:</span>
  </label>
  <select
@@ -1025,7 +1025,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  setSourceWarehouseId(e.target.value);
  setSuggestedOrigin(null);
  }}
- className="w-full bg-theme-muted border border-theme-subtle rounded-xl p-2.5 text-xs font-bold text-theme-main focus:outline-none focus:border-rose-500 cursor-pointer"
+ className="w-full bg-theme-muted border border-theme-subtle rounded-xl p-2.5 text-xs font-bold text-theme-main focus:outline-none focus:border-theme-primary cursor-pointer"
  >
  {MOCK_WAREHOUSES_LIST.map((w) => {
  const avail = selectedInitialArticle
@@ -1050,7 +1050,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  <select
  value={destinationWarehouseId}
  onChange={(e) => setDestinationWarehouseId(e.target.value)}
- className="w-full bg-theme-muted border border-theme-subtle rounded-xl p-2.5 text-xs font-bold text-theme-main focus:outline-none focus:border-rose-500 cursor-pointer"
+ className="w-full bg-theme-muted border border-theme-subtle rounded-xl p-2.5 text-xs font-bold text-theme-main focus:outline-none focus:border-theme-primary cursor-pointer"
  >
  {MOCK_WAREHOUSES_LIST.map((w) => (
  <option key={w.id} value={w.id} disabled={w.id === sourceWarehouseId}>
@@ -1064,7 +1064,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  {/* Visual Route Preview */}
  <div className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle flex items-center justify-between shadow-xs">
  <div className="space-y-0.5">
- <span className="text-[9px] uppercase font-bold text-rose-600">ORIGEN</span>
+ <span className="text-[9px] uppercase font-bold text-theme-primary">ORIGEN</span>
  <div className="text-xs font-bold text-theme-main">{sourceNode.name}</div>
  <span className="text-[10px] text-theme-muted">{sourceNode.address}</span>
  </div>
@@ -1108,7 +1108,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  setIsSearchOpen(true);
  }}
  placeholder="Buscar artículo, SKU, marca, categoría o descripción..."
- className="w-full bg-theme-surface border border-theme-subtle rounded-2xl pl-9 pr-8 py-2.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-2xl pl-9 pr-8 py-2.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  {searchQuery && (
  <button
@@ -1141,7 +1141,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  >
  <div className="min-w-0 space-y-0.5">
  <div className="flex items-center gap-2">
- <span className="font-mono text-xs font-black text-rose-600">{art.sku}</span>
+ <span className="font-mono text-xs font-black text-theme-primary">{art.sku}</span>
  <span className="px-2 py-0.2 rounded text-[9px] font-bold bg-theme-muted text-theme-main border border-theme-subtle">
  {art.category}
  </span>
@@ -1171,7 +1171,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  <div className="flex items-center justify-between flex-wrap gap-2">
  <div className="space-y-0.5">
  <div className="flex items-center gap-2">
- <span className="font-mono text-xs font-black text-rose-600">{activeArticleToConfigure.sku}</span>
+ <span className="font-mono text-xs font-black text-theme-primary">{activeArticleToConfigure.sku}</span>
  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-zinc-900 border border-purple-500 shadow-2xs">
  {activeArticleToConfigure.category}
  </span>
@@ -1199,7 +1199,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  min={1}
  value={activeItemQuantity}
  onChange={(e) => setActiveItemQuantity(Math.max(1, parseInt(e.target.value) || 1))}
- className="w-20 bg-theme-surface border border-theme-subtle rounded-xl py-1.5 px-3 text-center text-xs font-mono font-black text-theme-main focus:outline-none focus:border-rose-500"
+ className="w-20 bg-theme-surface border border-theme-subtle rounded-xl py-1.5 px-3 text-center text-xs font-mono font-black text-theme-main focus:outline-none focus:border-theme-primary"
  />
  <span className="text-xs text-theme-muted">unidades</span>
  </div>
@@ -1222,7 +1222,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  <span className="font-extrabold text-theme-main">
  Artículos seleccionados ({transferItems.length}):
  </span>
- <span className="font-mono font-bold text-rose-600">
+ <span className="font-mono font-bold text-theme-primary">
  Total: {totalUnits} unidades a transferir
  </span>
  </div>
@@ -1243,7 +1243,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  <span className="w-5 h-5 rounded-full bg-white text-zinc-900 border border-purple-500 shadow-2xs font-bold text-[10px] flex items-center justify-center shrink-0">
  {index + 1}
  </span>
- <span className="font-mono text-xs font-bold text-rose-600">{item.sku}</span>
+ <span className="font-mono text-xs font-bold text-theme-primary">{item.sku}</span>
  <span className="text-[10px] text-theme-muted">{item.category} &middot; {item.size}</span>
  </div>
  <h5 className="text-xs font-bold text-theme-main truncate">{item.name}</h5>
@@ -1264,7 +1264,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  <button
  type="button"
  onClick={() => handleRemoveDraftItem(item.id)}
- className="p-1.5 text-theme-muted hover:text-rose-600 hover:bg-rose-500/10 rounded-xl transition-colors cursor-pointer"
+ className="p-1.5 text-theme-muted hover:text-theme-primary hover:bg-theme-primary-light rounded-xl transition-colors cursor-pointer"
  title="Quitar artículo"
  >
  <Trash2 className="w-4 h-4" />
@@ -1313,7 +1313,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  <div className="flex items-center justify-between">
  <span className="text-xs font-black truncate">{strat.label}</span>
  {stKey === 'RECOMMENDED' || stKey === 'SUGGESTED' ? (
- <Sparkles className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+ <Sparkles className="w-3.5 h-3.5 text-theme-primary shrink-0" />
  ) : (
  <span className={`text-[9px] px-1.5 py-0.2 rounded font-bold uppercase ${
  isSelected ? 'bg-theme-primary/10 text-theme-primary border border-theme-primary/30' : 'bg-theme-muted text-theme-muted'
@@ -1337,7 +1337,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  )}
  </div>
 
- <div className="flex items-center text-rose-600 text-[10px]">
+ <div className="flex items-center text-theme-primary text-[10px]">
  {Array.from({ length: 5 }, (_, i) => (
  <span key={i} className={i < strat.ratingStars ? 'opacity-100' : 'opacity-25'}>
  ★
@@ -1384,7 +1384,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  Pre-asignación de Unidades en {sourceNode.name}
  </span>
  <h4 className="text-xs font-bold text-theme-main">
- Estrategia activa: <strong className="text-rose-600">{STRATEGY_COMPARISONS[selectedStrategy]?.label}</strong>
+ Estrategia activa: <strong className="text-theme-primary">{STRATEGY_COMPARISONS[selectedStrategy]?.label}</strong>
  </h4>
  </div>
 
@@ -1405,10 +1405,10 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  <div className="p-3.5 rounded-2xl bg-theme-muted/40 border border-theme-subtle space-y-2">
  <div className="flex items-center justify-between text-[10px] uppercase font-bold text-theme-muted">
  <span className="flex items-center gap-1.5 text-theme-main font-bold">
- <MapPin className="w-3.5 h-3.5 text-rose-600" />
+ <MapPin className="w-3.5 h-3.5 text-theme-primary" />
  <span>Recorrido Estimado en Origen:</span>
  </span>
- <span className="font-mono text-rose-600 font-bold">
+ <span className="font-mono text-theme-primary font-bold">
  {estimatedRouteLocations.length} posiciones asignadas
  </span>
  </div>
@@ -1453,7 +1453,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  <div className="flex items-center justify-between flex-wrap gap-2">
  <div>
  <div className="flex items-center gap-2">
- <span className="font-mono text-xs font-black text-rose-600">{item.sku}</span>
+ <span className="font-mono text-xs font-black text-theme-primary">{item.sku}</span>
  <span className="px-2 py-0.2 rounded text-[9px] font-bold bg-theme-muted text-theme-main border border-theme-subtle">
  {item.category}
  </span>
@@ -1577,7 +1577,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  type="text"
  value={driver}
  onChange={(e) => setDriver(e.target.value)}
- className="w-full bg-theme-muted border border-theme-subtle rounded-xl p-2.5 text-xs font-semibold text-theme-main focus:outline-none focus:border-rose-500"
+ className="w-full bg-theme-muted border border-theme-subtle rounded-xl p-2.5 text-xs font-semibold text-theme-main focus:outline-none focus:border-theme-primary"
  />
  </div>
  </div>
@@ -1591,7 +1591,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  type="text"
  value={truckPlates}
  onChange={(e) => setTruckPlates(e.target.value)}
- className="w-full bg-theme-muted border border-theme-subtle rounded-xl p-2.5 text-xs font-semibold text-theme-main focus:outline-none focus:border-rose-500 font-mono"
+ className="w-full bg-theme-muted border border-theme-subtle rounded-xl p-2.5 text-xs font-semibold text-theme-main focus:outline-none focus:border-theme-primary font-mono"
  />
  </div>
 
@@ -1603,7 +1603,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  type="text"
  value={notes}
  onChange={(e) => setNotes(e.target.value)}
- className="w-full bg-theme-muted border border-theme-subtle rounded-xl p-2.5 text-xs font-semibold text-theme-main focus:outline-none focus:border-rose-500"
+ className="w-full bg-theme-muted border border-theme-subtle rounded-xl p-2.5 text-xs font-semibold text-theme-main focus:outline-none focus:border-theme-primary"
  />
  </div>
  </div>
@@ -1634,7 +1634,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  <div className="text-purple-600 font-bold px-2">&rarr;</div>
  <div className="text-right">
  <span className="text-[10px] text-theme-muted block">Destino:</span>
- <strong className="text-rose-600">{destinationNode.name}</strong>
+ <strong className="text-theme-primary">{destinationNode.name}</strong>
  </div>
  </div>
 
@@ -1656,7 +1656,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  <span className="font-extrabold text-theme-main">
  Artículos a transferir ({transferItems.length}):
  </span>
- <strong className="font-mono text-rose-600 text-sm">
+ <strong className="font-mono text-theme-primary text-sm">
  {totalUnits} unidades totales
  </strong>
  </div>
@@ -1733,7 +1733,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  }
  setStep((s) => (s + 1) as any);
  }}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer disabled:opacity-40"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer disabled:opacity-40"
  >
  <span>Siguiente</span>
  <ChevronRight className="w-4 h-4" />
@@ -1741,7 +1741,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  ) : (
  <button
  onClick={handleConfirmAndSendToCollection}
- className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black transition-all shadow-md flex items-center gap-2 cursor-pointer"
+ className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md flex items-center gap-2 cursor-pointer"
  >
  <PackageCheck className="w-4 h-4" />
  <span>Generar orden de recolección</span>

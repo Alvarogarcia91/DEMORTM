@@ -54,7 +54,7 @@ export const OutboundVerificationOrderList: React.FC<OutboundVerificationOrderLi
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Buscar por folio VS, remisión (REM-...), recolección, carril o destino..."
-            className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+            className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
           />
           {searchQuery && (
             <button
@@ -100,16 +100,16 @@ export const OutboundVerificationOrderList: React.FC<OutboundVerificationOrderLi
                   return (
                     <tr key={order.id} className="hover:bg-theme-muted/30 transition-colors">
                       <td className="py-3.5 px-4 whitespace-nowrap">
-                        <span className="font-mono font-black text-rose-600 block">
+                        <span className="font-mono font-black text-theme-primary block">
                           {order.folio}
                         </span>
                         <button
                           type="button"
                           onClick={() => setPreviewRemisionOrder(order)}
-                          className="font-mono text-[10px] text-zinc-700 hover:text-rose-600 flex items-center gap-1 cursor-pointer font-bold mt-0.5"
+                          className="font-mono text-[10px] text-zinc-700 hover:text-theme-primary flex items-center gap-1 cursor-pointer font-bold mt-0.5"
                           title="Ver remisión"
                         >
-                          <FileText className="w-3 h-3 text-rose-500" />
+                          <FileText className="w-3 h-3 text-theme-primary" />
                           <span>{rem.folio}</span>
                         </button>
                       </td>
@@ -163,7 +163,7 @@ export const OutboundVerificationOrderList: React.FC<OutboundVerificationOrderLi
                               className="p-1.5 rounded-xl bg-white hover:bg-theme-muted text-theme-main border border-theme-subtle transition-all shadow-xs cursor-pointer"
                               title="Vista previa e imprimir remisión"
                             >
-                              <Printer className="w-3.5 h-3.5 text-rose-600" />
+                              <Printer className="w-3.5 h-3.5 text-theme-primary" />
                             </button>
                           )}
                           <button

@@ -99,7 +99,7 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  onClick={() => setPeriod(p.id)}
  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
  period === p.id
- ? 'bg-rose-600 text-white shadow-xs'
+ ? 'bg-theme-primary text-white shadow-xs'
  : 'text-theme-muted hover:text-theme-main'
  }`}
  >
@@ -108,7 +108,7 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  ))}
  </div> {/* Active Facility Display */}
  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-theme-muted/60 border border-theme-subtle text-xs font-bold text-theme-main">
- <Building2 className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+ <Building2 className="w-3.5 h-3.5 text-theme-primary shrink-0" />
  <span>{selectedFacility.name}</span>
  </div>
 
@@ -142,13 +142,13 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  <div
  key={kpi.id}
  onClick={() => onNavigate(kpi.tabTarget)}
- className="group p-4 rounded-3xl bg-theme-surface border border-theme-subtle hover:border-rose-500/50 hover:shadow-md transition-all cursor-pointer space-y-1.5 shadow-xs relative overflow-hidden"
+ className="group p-4 rounded-3xl bg-theme-surface border border-theme-subtle hover:border-theme-primary/50 hover:shadow-md transition-all cursor-pointer space-y-1.5 shadow-xs relative overflow-hidden"
  >
  <div className="flex items-center justify-between">
- <span className="text-[9px] uppercase font-extrabold tracking-wider text-theme-muted group-hover:text-rose-600 transition-colors truncate">
+ <span className="text-[9px] uppercase font-extrabold tracking-wider text-theme-muted group-hover:text-theme-primary transition-colors truncate">
  {kpi.label}
  </span>
- <ArrowRight className="w-3 h-3 text-theme-muted opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-rose-600" />
+ <ArrowRight className="w-3 h-3 text-theme-muted opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all text-theme-primary" />
  </div>
 
  <div className="flex items-baseline justify-between">
@@ -189,10 +189,10 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  {/* Step 1 */}
  <div 
  onClick={() => onNavigate('inbound')}
- className="p-3 rounded-2xl bg-theme-muted/30 border border-theme-subtle hover:border-rose-500/40 transition-colors cursor-pointer space-y-1"
+ className="p-3 rounded-2xl bg-theme-muted/30 border border-theme-subtle hover:border-theme-primary/40 transition-colors cursor-pointer space-y-1"
  >
  <div className="flex items-center justify-center gap-1 text-[10px] font-bold text-theme-muted uppercase">
- <ArrowDownLeft className="w-3 h-3 text-rose-600" />
+ <ArrowDownLeft className="w-3 h-3 text-theme-primary" />
  <span>{isSucursal ? 'Traspasos' : 'Entradas'}</span>
  </div>
  <strong className="text-xl font-mono font-black text-theme-main block">
@@ -204,7 +204,7 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  {/* Step 2 */}
  <div 
  onClick={() => onNavigate('putaway')}
- className="p-3 rounded-2xl bg-theme-muted/30 border border-theme-subtle hover:border-rose-500/40 transition-colors cursor-pointer space-y-1"
+ className="p-3 rounded-2xl bg-theme-muted/30 border border-theme-subtle hover:border-theme-primary/40 transition-colors cursor-pointer space-y-1"
  >
  <div className="flex items-center justify-center gap-1 text-[10px] font-bold text-theme-muted uppercase">
  <ArrowRightLeft className="w-3 h-3 text-blue-600" />
@@ -213,28 +213,28 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  <strong className="text-xl font-mono font-black text-theme-main block">
  {currentData.flow.putaway}
  </strong>
- <span className="text-[9px] text-theme-muted">{isSucursal ? 'Showroom / Mini Alm.' : 'En rack final'}</span>
+ <span className="text-[9px] text-theme-muted">{isSucursal ? 'Área de Muestras / QA' : 'En rack final'}</span>
  </div>
 
  {/* Step 3 */}
  <div 
  onClick={() => onNavigate(isSucursal ? 'putaway' : 'picking')}
- className="p-3 rounded-2xl bg-theme-muted/30 border border-theme-subtle hover:border-rose-500/40 transition-colors cursor-pointer space-y-1"
+ className="p-3 rounded-2xl bg-theme-muted/30 border border-theme-subtle hover:border-theme-primary/40 transition-colors cursor-pointer space-y-1"
  >
  <div className="flex items-center justify-center gap-1 text-[10px] font-bold text-theme-muted uppercase">
  <PackageSearch className="w-3 h-3 text-purple-600" />
- <span>{isSucursal ? 'En Showroom' : 'Recolección'}</span>
+ <span>{isSucursal ? 'En Inspección' : 'Recolección'}</span>
  </div>
  <strong className="text-xl font-mono font-black text-theme-main block">
  {isSucursal ? 6 : currentData.flow.picking}
  </strong>
- <span className="text-[9px] text-theme-muted">{isSucursal ? 'Modelos en exhibición' : 'En staging salida'}</span>
+ <span className="text-[9px] text-theme-muted">{isSucursal ? 'Muestras liberadas' : 'En staging salida'}</span>
  </div>
 
  {/* Step 4 */}
  <div 
  onClick={() => onNavigate(isSucursal ? 'putaway' : 'outbound')}
- className="p-3 rounded-2xl bg-theme-muted/30 border border-theme-subtle hover:border-rose-500/40 transition-colors cursor-pointer space-y-1"
+ className="p-3 rounded-2xl bg-theme-muted/30 border border-theme-subtle hover:border-theme-primary/40 transition-colors cursor-pointer space-y-1"
  >
  <div className="flex items-center justify-center gap-1 text-[10px] font-bold text-theme-muted uppercase">
  <ArrowUpRight className="w-3 h-3 text-emerald-600" />
@@ -249,7 +249,7 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  {/* Step 5 */}
  <div 
  onClick={() => onNavigate('reprint')}
- className="p-3 rounded-2xl bg-theme-muted/30 border border-theme-subtle hover:border-rose-500/40 transition-colors cursor-pointer space-y-1"
+ className="p-3 rounded-2xl bg-theme-muted/30 border border-theme-subtle hover:border-theme-primary/40 transition-colors cursor-pointer space-y-1"
  >
  <div className="flex items-center justify-center gap-1 text-[10px] font-bold text-theme-muted uppercase">
  <QrCode className="w-3 h-3 text-amber-600" />
@@ -284,11 +284,11 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  <span className={`w-2 h-2 rounded-full shrink-0 ${
  alert.severity === 'critical' ? 'bg-rose-500' : 'bg-amber-500'
  }`} />
- <span className="text-theme-main font-semibold text-[11px] group-hover:text-rose-600 transition-colors">
+ <span className="text-theme-main font-semibold text-[11px] group-hover:text-theme-primary transition-colors">
  {alert.message}
  </span>
  </div>
- <ArrowRight className="w-3.5 h-3.5 text-theme-muted group-hover:text-rose-600 shrink-0" />
+ <ArrowRight className="w-3.5 h-3.5 text-theme-muted group-hover:text-theme-primary shrink-0" />
  </div>
  ))}
  </div>
@@ -323,7 +323,7 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  >
  <div className="space-y-1 flex-1">
  <div className="flex items-center gap-2 flex-wrap">
- <span className="font-mono font-black text-rose-600">{item.folio}</span>
+ <span className="font-mono font-black text-theme-primary">{item.folio}</span>
  <span className="text-theme-main font-bold">{item.type}</span>
  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border shadow-2xs ${
  item.priority === 'Crítica'
@@ -342,7 +342,7 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  <button
  type="button"
  onClick={() => onNavigate(item.tabTarget)}
- className="px-3.5 py-1.5 rounded-xl bg-theme-surface hover:bg-rose-600 hover:text-white text-theme-main font-bold text-xs border border-theme-subtle transition-all shadow-xs flex items-center gap-1.5 cursor-pointer shrink-0 ml-auto sm:ml-0"
+ className="px-3.5 py-1.5 rounded-xl bg-theme-surface hover:bg-theme-primary hover:text-white text-theme-main font-bold text-xs border border-theme-subtle transition-all shadow-xs flex items-center gap-1.5 cursor-pointer shrink-0 ml-auto sm:ml-0"
  >
  <span>{item.actionLabel}</span>
  <ArrowRight className="w-3.5 h-3.5" />
@@ -381,7 +381,7 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  <tbody className="divide-y divide-theme-subtle font-mono text-[11px]">
  {currentData.agingUnits.map((u) => (
  <tr key={u.uid} className="hover:bg-theme-muted/20">
- <td className="py-2.5 font-bold text-rose-600">{u.uid}</td>
+ <td className="py-2.5 font-bold text-theme-primary">{u.uid}</td>
  <td className="py-2.5 font-sans font-medium text-theme-main truncate max-w-[150px]">{u.productName}</td>
  <td className="py-2.5">
  <span className="px-1.5 py-0.2 rounded text-[10px] bg-theme-muted text-theme-main border border-theme-subtle">
@@ -404,24 +404,24 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  
  {isSucursal ? (
  <>
- {/* Showroom Bays Status */}
+ {/* QA Bays Status */}
  <div className="bg-theme-surface p-5 border border-theme-subtle rounded-3xl shadow-xs space-y-3">
  <div className="flex items-center justify-between">
  <h3 className="text-sm font-extrabold text-theme-main flex items-center gap-2">
  <Boxes className="w-4 h-4 text-purple-600" />
- <span>Bahías de Showroom</span>
+ <span>Bahías de Inspección & Muestras</span>
  </h3>
  <span className="text-[10px] font-mono text-theme-muted">SHOW-01 a 06</span>
  </div>
 
  <div className="space-y-2">
  {[
- { code: 'SHOW-01', status: 'En exhibición', model: 'Restonic Ortopedic Matrimonial', uid: 'SC-UID-2026-000155' },
- { code: 'SHOW-02', status: 'Disponible', model: 'Espacio libre para Flow Basic', uid: null },
- { code: 'SHOW-03', status: 'En exhibición', model: 'Spring Air Record Individual', uid: 'SC-UID-2026-000110' },
- { code: 'SHOW-04', status: 'En exhibición', model: 'Sealy Celebration King Size', uid: 'SC-UID-2026-000151' },
- { code: 'SHOW-05', status: 'En exhibición', model: 'América Halston Queen Size', uid: 'SC-UID-2026-000196' },
- { code: 'SHOW-06', status: 'En exhibición', model: 'Nayt Flow Basic Matrimonial', uid: 'SC-UID-2026-000121' },
+ { code: 'SHOW-01', status: 'En exhibición', model: 'Manual Instructivo 24 Páginas Black & Decker', uid: 'TAR-RTM-2026-000155' },
+ { code: 'SHOW-02', status: 'Disponible', model: 'Espacio libre para Tarimas PT', uid: null },
+ { code: 'SHOW-03', status: 'En exhibición', model: 'Etiqueta Farmacéutica 4x6" Medifarma', uid: 'BOB-RTM-2026-000110' },
+ { code: 'SHOW-04', status: 'En exhibición', model: 'Blister Card Termosellable Stanley Tools', uid: 'TAR-RTM-2026-000151' },
+ { code: 'SHOW-05', status: 'En exhibición', model: 'Folleto Plegable Médico Medifarma', uid: 'TAR-RTM-2026-000196' },
+ { code: 'SHOW-06', status: 'En exhibición', model: 'Etiqueta Código de Barras Schneider', uid: 'BOB-RTM-2026-000121' },
  ].map((bay) => (
  <div
  key={bay.code}
@@ -443,7 +443,7 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  </div>
 
  {bay.uid ? (
- <span className="text-[10px] font-mono font-bold text-rose-600 shrink-0">
+ <span className="text-[10px] font-mono font-bold text-theme-primary shrink-0">
  {bay.uid}
  </span>
  ) : (
@@ -458,7 +458,7 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  <div className="bg-theme-surface p-5 border border-theme-subtle rounded-3xl shadow-xs space-y-3">
  <div className="flex items-center justify-between">
  <h3 className="text-sm font-extrabold text-theme-main flex items-center gap-2">
- <ArrowDownLeft className="w-4 h-4 text-rose-600" />
+ <ArrowDownLeft className="w-4 h-4 text-theme-primary" />
  <span>Zonas de Descarga & Reserva</span>
  </h3>
  <span className="text-[10px] font-mono text-theme-muted">{selectedFacility.code}</span>
@@ -467,14 +467,14 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  <div className="space-y-2">
  <div 
  onClick={() => onNavigate('putaway')}
- className="p-2.5 rounded-2xl bg-theme-muted/30 border border-theme-subtle hover:border-rose-500/40 transition-colors cursor-pointer flex items-center justify-between text-xs font-mono"
+ className="p-2.5 rounded-2xl bg-theme-muted/30 border border-theme-subtle hover:border-theme-primary/40 transition-colors cursor-pointer flex items-center justify-between text-xs font-mono"
  >
  <div>
  <strong className="text-theme-main block">{selectedFacility.tempReceivingLocation}</strong>
  <span className="text-[10px] text-theme-muted font-sans">Descarga de traspasos</span>
  </div>
  <div className="text-right">
- <span className="text-xs font-black text-rose-600 block">3 u.</span>
+ <span className="text-xs font-black text-theme-primary block">3 u.</span>
  <span className="text-[9px] text-amber-600 font-bold font-sans">Por acomodar</span>
  </div>
  </div>
@@ -515,7 +515,7 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  <div className="bg-theme-surface p-5 border border-theme-subtle rounded-3xl shadow-xs space-y-3">
  <div className="flex items-center justify-between">
  <h3 className="text-sm font-extrabold text-theme-main flex items-center gap-2">
- <Boxes className="w-4 h-4 text-rose-600" />
+ <Boxes className="w-4 h-4 text-theme-primary" />
  <span>Carriles de Embarque</span>
  </h3>
  <span className="text-[10px] font-mono text-theme-muted">EMB-01 a 05</span>
@@ -526,7 +526,7 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  <div
  key={lane.code}
  onClick={() => onNavigate('outbound')}
- className="p-2.5 rounded-2xl bg-theme-muted/30 border border-theme-subtle hover:border-rose-500/40 transition-colors cursor-pointer flex items-center justify-between text-xs font-mono"
+ className="p-2.5 rounded-2xl bg-theme-muted/30 border border-theme-subtle hover:border-theme-primary/40 transition-colors cursor-pointer flex items-center justify-between text-xs font-mono"
  >
  <div className="flex items-center gap-2">
  <strong className="text-theme-main">{lane.code}</strong>
@@ -597,7 +597,7 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  </h3>
  <button
  onClick={() => onNavigate('incidents')}
- className="text-[10px] font-bold text-rose-600 hover:underline cursor-pointer"
+ className="text-[10px] font-bold text-theme-primary hover:underline cursor-pointer"
  >
  Ver todas
  </button>
@@ -646,7 +646,7 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  value={activitySearch}
  onChange={(e) => setActivitySearch(e.target.value)}
  placeholder="Buscar actividad, folio, UID o usuario..."
- className="w-full bg-theme-muted/50 border border-theme-subtle rounded-xl pl-8 pr-3 py-1.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-1 focus:ring-rose-500"
+ className="w-full bg-theme-muted/50 border border-theme-subtle rounded-xl pl-8 pr-3 py-1.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-1 focus:ring-theme-primary"
  />
  </div>
  </div>
@@ -671,7 +671,7 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  <td className="py-2.5 px-3 whitespace-nowrap">
  <span className="font-bold text-theme-main">{evt.activity}</span>
  </td>
- <td className="py-2.5 px-3 font-mono font-bold text-rose-600 whitespace-nowrap">
+ <td className="py-2.5 px-3 font-mono font-bold text-theme-primary whitespace-nowrap">
  {evt.reference}
  </td>
  <td className="py-2.5 px-3 text-theme-muted font-medium">

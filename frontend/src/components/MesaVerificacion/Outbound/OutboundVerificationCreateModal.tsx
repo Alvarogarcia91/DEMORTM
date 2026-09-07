@@ -28,7 +28,7 @@ export const OutboundVerificationCreateModal: React.FC<OutboundVerificationCreat
  onClose,
  onCreateOrder,
 }) => {
- const lanes = CEDIS_STAGING_LANES[pendingPickOrder.warehouseId] || CEDIS_STAGING_LANES['wh-mty-norte'];
+ const lanes = CEDIS_STAGING_LANES[pendingPickOrder.warehouseId] || CEDIS_STAGING_LANES['alm-rtm-mp'];
  const defaultLane = lanes.find((l) => l.isSuggested && l.status === 'Disponible')?.code || 'EMB-03';
  const [selectedLaneCode, setSelectedLaneCode] = useState<string>(defaultLane);
  const [operator, setOperator] = useState('Verificador Mesa 01 (Roberto Garza)');
@@ -93,12 +93,12 @@ export const OutboundVerificationCreateModal: React.FC<OutboundVerificationCreat
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <MapPin className="w-5 h-5" />
  </div>
  <div>
  <div className="flex items-center gap-2 flex-wrap">
- <span className="font-mono text-xs font-black text-rose-600">
+ <span className="font-mono text-xs font-black text-theme-primary">
  {pendingPickOrder.folio}
  </span>
  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-theme-muted text-theme-main border border-theme-subtle">
@@ -139,7 +139,7 @@ export const OutboundVerificationCreateModal: React.FC<OutboundVerificationCreat
  </div>
  <div>
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Unidades a Validar:</span>
- <strong className="text-rose-600 font-mono font-black text-sm block">{pendingPickOrder.totalUnits} piezas</strong>
+ <strong className="text-theme-primary font-mono font-black text-sm block">{pendingPickOrder.totalUnits} piezas</strong>
  </div>
  </div>
  </div>
@@ -168,7 +168,7 @@ export const OutboundVerificationCreateModal: React.FC<OutboundVerificationCreat
  !isAvailable
  ? 'opacity-50 cursor-not-allowed bg-theme-muted/20 border-theme-subtle'
  : isSelected
- ? 'bg-rose-500/10 border-rose-500 text-rose-950 dark:text-rose-300 ring-2 ring-rose-500/30 cursor-pointer'
+ ? 'bg-theme-primary-light border-theme-primary text-theme-primary ring-2 ring-theme-primary/30 cursor-pointer'
  : 'bg-theme-muted/30 border-theme-subtle hover:bg-theme-muted cursor-pointer text-theme-main'
  }`}
  >
@@ -178,7 +178,7 @@ export const OutboundVerificationCreateModal: React.FC<OutboundVerificationCreat
  lane.status === 'Disponible'
  ? 'border-emerald-600 '
  : lane.status === 'Ocupado'
- ? 'border-rose-500'
+ ? 'border-theme-primary'
  : 'border-amber-500'
  }`}>
  {lane.status}
@@ -239,7 +239,7 @@ export const OutboundVerificationCreateModal: React.FC<OutboundVerificationCreat
 
  <button
  onClick={handleConfirmCreate}
- className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+ className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
  >
  <Check className="w-4 h-4" />
  <span>Crear orden de verificación ({selectedLaneCode})</span>

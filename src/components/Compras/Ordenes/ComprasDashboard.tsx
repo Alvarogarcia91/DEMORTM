@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
  LayoutDashboard,
  ShoppingCart,
@@ -131,94 +131,94 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
 
  // ---------------------------------------------------------------------------
  // RISK OF STOCKOUT DATA (RIESGO DE ABASTECIMIENTO)
- // ---------------------------------------------------------------------------
- const stockRisks = [
- {
- sku: 'SC-NAYT-FLOW-IND',
- name: 'Nayt Colchón Flow Basic White Individual',
- warehouse: 'Sucursal Valle Oriente',
- available: 2,
- inTransit: 0,
- monthlyConsumption: 8,
- coverageMonths: 0.25,
- status: 'Crítico' as const,
- suggestedQty: 10,
- },
- {
- sku: 'SC-SEA-HYB-KS',
- name: 'Sealy Colchón Hybrid Posture Premier King Size',
- warehouse: 'Sucursal Cumbres',
- available: 1,
- inTransit: 0,
- monthlyConsumption: 4,
- coverageMonths: 0.25,
- status: 'Crítico' as const,
- suggestedQty: 6,
- },
- {
- sku: 'SC-RES-ORT-MAT',
- name: 'Restonic Colchón Ortopedic Matrimonial',
- warehouse: 'CEDIS Monterrey Norte',
- available: 5,
- inTransit: 5,
- monthlyConsumption: 14,
- coverageMonths: 0.71,
- status: 'En riesgo' as const,
- suggestedQty: 15,
- },
- {
- sku: 'SC-SPA-REC-IND',
- name: 'Spring Air Colchón Record Individual',
- warehouse: 'CEDIS Monterrey Sur',
- available: 8,
- inTransit: 12,
- monthlyConsumption: 11,
- coverageMonths: 1.82,
- status: 'Cubierto' as const,
- suggestedQty: 0,
- },
- ];
+  // ---------------------------------------------------------------------------
+  const stockRisks = [
+    {
+      sku: 'MP-COU-090',
+      name: 'Papel Couché 90 g (Pliegos 70x100 cm)',
+      warehouse: 'Almacén Principal RTM',
+      available: 1,
+      inTransit: 4,
+      monthlyConsumption: 12,
+      coverageMonths: 0.1,
+      status: 'Crítico' as const,
+      suggestedQty: 4,
+    },
+    {
+      sku: 'MP-BOP-WHT',
+      name: 'Sustrato BOPP Blanco Brillante 60 mic',
+      warehouse: 'Almacén Principal RTM',
+      available: 2,
+      inTransit: 10,
+      monthlyConsumption: 16,
+      coverageMonths: 0.25,
+      status: 'Crítico' as const,
+      suggestedQty: 8,
+    },
+    {
+      sku: 'TIN-CYN-001',
+      name: 'Tinta Flexográfica Process Cyan',
+      warehouse: 'Almacén Principal RTM',
+      available: 4,
+      inTransit: 12,
+      monthlyConsumption: 14,
+      coverageMonths: 0.71,
+      status: 'En riesgo' as const,
+      suggestedQty: 16,
+    },
+    {
+      sku: 'MP-SBS-240',
+      name: 'Cartulina Sulfatada SBS 240 g / 14 pts',
+      warehouse: 'Almacén Principal RTM',
+      available: 5,
+      inTransit: 3,
+      monthlyConsumption: 8,
+      coverageMonths: 1.82,
+      status: 'Cubierto' as const,
+      suggestedQty: 0,
+    },
+  ];
 
  // ---------------------------------------------------------------------------
  // TOP PURCHASED ARTICLES
- // ---------------------------------------------------------------------------
- const topArticles = [
- {
- sku: 'SC-NAYT-FLOW-IND',
- name: 'Nayt Colchón Flow Basic White Individual',
- purchasedUnits: 48,
- totalAmount: 232800,
- supplier: 'Nayt México',
- },
- {
- sku: 'SC-SPA-POST-KS',
- name: 'Spring Air Colchón Posture Comfort King Size',
- purchasedUnits: 24,
- totalAmount: 156000,
- supplier: 'Spring Air México',
- },
- {
- sku: 'SC-NAYT-FLOW-MAT',
- name: 'Nayt Colchón Flow Basic White Matrimonial',
- purchasedUnits: 28,
- totalAmount: 137200,
- supplier: 'Nayt México',
- },
- {
- sku: 'SC-RES-ORT-MAT',
- name: 'Restonic Colchón Ortopedic Matrimonial',
- purchasedUnits: 25,
- totalAmount: 125000,
- supplier: 'Restonic México',
- },
- ];
+  // ---------------------------------------------------------------------------
+  const topArticles = [
+    {
+      sku: 'MP-COU-090',
+      name: 'Papel Couché 90 g (Pliegos 70x100 cm)',
+      purchasedUnits: 48,
+      totalAmount: 384000,
+      supplier: 'Bio-Pappel S.A.B. de C.V.',
+    },
+    {
+      sku: 'MP-BOP-WHT',
+      name: 'Sustrato BOPP Blanco Brillante 60 mic',
+      purchasedUnits: 32,
+      totalAmount: 288000,
+      supplier: 'Avery Dennison México',
+    },
+    {
+      sku: 'TIN-CYN-001',
+      name: 'Tinta Flexográfica Process Cyan',
+      purchasedUnits: 28,
+      totalAmount: 112000,
+      supplier: 'Sun Chemical México',
+    },
+    {
+      sku: 'MP-SBS-240',
+      name: 'Cartulina Sulfatada SBS 240 g / 14 pts',
+      purchasedUnits: 24,
+      totalAmount: 216000,
+      supplier: 'WestRock Empaques México',
+    },
+  ];
 
  // ---------------------------------------------------------------------------
  // SUPPLIER PERFORMANCE MOCK DATA
  // ---------------------------------------------------------------------------
  const supplierPerformance = [
  {
- name: 'Nayt México',
+ name: 'Sun Chemical México',
  ordersCount: 8,
  onTimeRate: 94,
  avgLeadDays: 4,
@@ -226,7 +226,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  status: 'Bueno' as const,
  },
  {
- name: 'Restonic México',
+ name: 'Bio-Pappel',
  ordersCount: 5,
  onTimeRate: 96,
  avgLeadDays: 5,
@@ -234,7 +234,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  status: 'Bueno' as const,
  },
  {
- name: 'Sealy México',
+ name: 'Fasson Avery Dennison',
  ordersCount: 4,
  onTimeRate: 91,
  avgLeadDays: 6,
@@ -242,7 +242,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  status: 'Bueno' as const,
  },
  {
- name: 'Spring Air México',
+ name: 'WestRock México',
  ordersCount: 6,
  onTimeRate: 82,
  avgLeadDays: 7,
@@ -253,66 +253,66 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
 
  // ---------------------------------------------------------------------------
  // PRICE VARIATION DATA
- // ---------------------------------------------------------------------------
- const priceVariations = [
- {
- sku: 'SC-NAYT-FLOW-IND',
- name: 'Nayt Colchón Flow Basic White Individual',
- refPrice: 4850,
- lastPrice: 5000,
- variationPercent: 3.1,
- supplier: 'Nayt México',
- },
- {
- sku: 'SC-SEA-HYB-KS',
- name: 'Sealy Colchón Hybrid Posture Premier King Size',
- refPrice: 12400,
- lastPrice: 12900,
- variationPercent: 4.0,
- supplier: 'Sealy México',
- },
- {
- sku: 'SC-RES-ORT-MAT',
- name: 'Restonic Colchón Ortopedic Matrimonial',
- refPrice: 5300,
- lastPrice: 5300,
- variationPercent: 0.0,
- supplier: 'Restonic México',
- },
- {
- sku: 'SC-SPA-REC-IND',
- name: 'Spring Air Colchón Record Individual',
- refPrice: 6200,
- lastPrice: 5950,
- variationPercent: -4.0,
- supplier: 'Spring Air México',
- },
- ];
+  // ---------------------------------------------------------------------------
+  const priceVariations = [
+    {
+      sku: 'MP-COU-090',
+      name: 'Papel Couché 90 g',
+      refPrice: 7800,
+      lastPrice: 8000,
+      variationPercent: 2.5,
+      supplier: 'Bio-Pappel',
+    },
+    {
+      sku: 'MP-BOP-WHT',
+      name: 'Sustrato BOPP Blanco',
+      refPrice: 8800,
+      lastPrice: 9000,
+      variationPercent: 2.2,
+      supplier: 'Avery Dennison',
+    },
+    {
+      sku: 'TIN-CYN-001',
+      name: 'Tinta Flexo Cyan',
+      refPrice: 3900,
+      lastPrice: 3900,
+      variationPercent: 0.0,
+      supplier: 'Sun Chemical',
+    },
+    {
+      sku: 'MP-SBS-240',
+      name: 'Cartulina SBS 240g',
+      refPrice: 9200,
+      lastPrice: 8900,
+      variationPercent: -3.2,
+      supplier: 'WestRock',
+    },
+  ];
 
  // ---------------------------------------------------------------------------
  // PURCHASES BY DESTINATION
  // ---------------------------------------------------------------------------
  const destinationsData = [
  {
- name: 'CEDIS Monterrey Norte',
+ name: 'Almacén Materia Prima',
  amount: 210000,
  inTransitUnits: 42,
  type: 'CEDIS',
  },
  {
- name: 'CEDIS Monterrey Sur',
+ name: 'Almacén Producto Terminado',
  amount: 132000,
  inTransitUnits: 18,
  type: 'CEDIS',
  },
  {
- name: 'Sucursal Valle Oriente',
+ name: 'Almacén Auxiliar Reynosa',
  amount: 64000,
  inTransitUnits: 12,
  type: 'Sucursal',
  },
  {
- name: 'Sucursal Cumbres',
+ name: 'Almacén Matamoros',
  amount: 22000,
  inTransitUnits: 6,
  type: 'Sucursal',
@@ -374,10 +374,10 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  className="bg-theme-muted border border-theme-subtle rounded-2xl px-3 py-1.5 text-xs font-bold text-theme-main cursor-pointer focus:outline-none"
  >
  <option value="ALL">Todos los destinos</option>
- <option value="wh-mty-norte">CEDIS Monterrey Norte</option>
- <option value="wh-mty-sur">CEDIS Monterrey Sur</option>
- <option value="wh-suc-valle-oriente">Sucursal Valle Oriente</option>
- <option value="wh-suc-cumbres">Sucursal Cumbres</option>
+ <option value="alm-rtm-mp">Almacén Materia Prima</option>
+ <option value="alm-rtm-pt">Almacén Producto Terminado</option>
+ <option value="wh-reynosa-aux">Almacén Auxiliar Reynosa</option>
+ <option value="wh-matamoros">Almacén Matamoros</option>
  </select>
 
  {/* Supplier Selector */}
@@ -645,7 +645,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  2 días atraso
  </span>
  </div>
- <strong className="text-xs font-bold text-theme-main block">Spring Air México</strong>
+ <strong className="text-xs font-bold text-theme-main block">WestRock México</strong>
  <p className="text-[11px] text-theme-muted font-mono">$82,400 MXN &bull; 18 unidades</p>
  </div>
 
@@ -670,7 +670,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  Lista para compra
  </span>
  </div>
- <strong className="text-xs font-bold text-theme-main block">Nayt Flow Basic</strong>
+ <strong className="text-xs font-bold text-theme-main block">Papel Couché 90 g</strong>
  <p className="text-[11px] text-theme-muted font-mono">12 unidades &bull; CEDIS Norte</p>
  </div>
 
@@ -696,7 +696,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  Entrega hoy
  </span>
  </div>
- <strong className="text-xs font-bold text-theme-main block">Nayt México</strong>
+ <strong className="text-xs font-bold text-theme-main block">Sun Chemical México</strong>
  <p className="text-[11px] text-theme-muted font-mono">19 unidades &bull; CEDIS Norte</p>
  </div>
 
@@ -721,7 +721,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  Doc. por vencer
  </span>
  </div>
- <strong className="text-xs font-bold text-theme-main block">Restonic México</strong>
+ <strong className="text-xs font-bold text-theme-main block">Bio-Pappel</strong>
  <p className="text-[11px] text-theme-muted">Opinión 32-D SAT vence en 4 días</p>
  </div>
 
@@ -1025,7 +1025,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  OC-2026-0078
  </td>
  <td className="py-3 px-3 font-bold text-theme-main whitespace-nowrap">
- Spring Air México
+ WestRock México
  </td>
  <td className="py-3 px-3 font-mono text-[11px] whitespace-nowrap">
  25 Ago 2026
@@ -1117,10 +1117,10 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
 
  <div className="space-y-3 pt-2">
  {[
- { name: 'Nayt México', amount: 180000, percent: 38 },
- { name: 'Spring Air México', amount: 132000, percent: 28 },
- { name: 'Restonic México', amount: 84000, percent: 18 },
- { name: 'Sealy México', amount: 72000, percent: 15 },
+ { name: 'Sun Chemical México', amount: 180000, percent: 38 },
+ { name: 'WestRock México', amount: 132000, percent: 28 },
+ { name: 'Bio-Pappel', amount: 84000, percent: 18 },
+ { name: 'Fasson Avery Dennison', amount: 72000, percent: 15 },
  ].map((p) => (
  <div key={p.name} className="space-y-1">
  <div className="flex items-center justify-between text-xs">
@@ -1340,7 +1340,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
 
  <div className="space-y-3">
  {[
- { time: '27 Ago 22:14', text: 'OC-2026-0084 emitida a Nayt México ($42,000 MXN)', type: 'emit' },
+ { time: '27 Ago 22:14', text: 'OC-2026-0084 emitida a Sun Chemical México ($42,000 MXN)', type: 'emit' },
  { time: '27 Ago 21:42', text: 'REQ-2026-0047 autorizada y lista para compra', type: 'auth' },
  { time: '27 Ago 20:18', text: 'OC-2026-0078 marcada como atrasada (2 días de demora)', type: 'delay' },
  { time: '27 Ago 18:31', text: 'OC-2026-0081 recibió 6 de 10 unidades en rampa REC-01', type: 'rec' },
@@ -1367,7 +1367,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  <ul className="space-y-2.5 text-xs text-theme-main">
  <li className="flex items-start gap-2">
  <span className="text-rose-600 font-bold">&bull;</span>
- <span><strong>Nayt México</strong> concentra el mayor monto de compras del periodo ($180,000 MXN).</span>
+ <span><strong>Bio-Pappel S.A.B. de C.V.</strong> concentra el mayor monto de compras del periodo ($384,000 MXN).</span>
  </li>
  <li className="flex items-start gap-2">
  <span className="text-rose-600 font-bold">&bull;</span>
@@ -1375,7 +1375,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  </li>
  <li className="flex items-start gap-2">
  <span className="text-rose-600 font-bold">&bull;</span>
- <span><strong>Sucursal Valle Oriente</strong> presenta la menor cobertura en inventario para el SKU SC-NAYT-FLOW-IND (0.25 meses).</span>
+ <span><strong>Almacén Principal RTM</strong> presenta la menor cobertura en inventario para el insumo crítico MP-COU-090 (0.1 meses).</span>
  </li>
  <li className="flex items-start gap-2">
  <span className="text-rose-600 font-bold">&bull;</span>

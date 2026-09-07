@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { 
  ArrowLeft, 
  Package, 
@@ -326,12 +326,12 @@ export const ArticuloDetailView: React.FC<ArticuloDetailViewProps> = ({
  <span className="font-mono font-bold text-theme-main">{article.logisticControl.maxDaysInWarehouse} días</span>
  </div>
  <div className="flex justify-between py-1.5 border-b border-theme-subtle">
- <span className="text-theme-muted">Manejo Individual</span>
- <span className="font-bold text-emerald-600">Sí (Pieza x Pieza)</span>
+ <span className="text-theme-muted">Manejo Logístico</span>
+ <span className="font-bold text-emerald-600">Por Tarima / Bobina / Paquete</span>
  </div>
  <div className="flex justify-between py-1.5 border-b border-theme-subtle">
- <span className="text-theme-muted">Tipo Identificación</span>
- <span className="font-semibold text-theme-main">UID / Código QR Único</span>
+ <span className="text-theme-muted">Almacén Asignado</span>
+ <span className="font-semibold text-theme-main">Almacén Principal RTM</span>
  </div>
  <div className="flex justify-between py-1.5 border-b border-theme-subtle">
  <span className="text-theme-muted">Ubicación Física Obligatoria</span>
@@ -365,67 +365,57 @@ export const ArticuloDetailView: React.FC<ArticuloDetailViewProps> = ({
  <div>
  <h3 className="text-xs font-bold uppercase tracking-wider text-theme-main flex items-center gap-2">
  <Sliders className="w-4 h-4 text-theme-primary" />
- Atributos Dinámicos de Producto
+ Especificaciones Técnicas de Manufactura
  </h3>
  <p className="text-xs text-theme-muted mt-1">
- Especificaciones de confort, soporte y manufactura del artículo.
+ Parámetros de prensa, sustratos, tintas y acabados gráficos en planta RTM.
  </p>
  </div>
 
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
  <div className="p-4 rounded-xl bg-theme-muted/40 border border-theme-subtle space-y-1">
- <span className="text-[10px] uppercase font-bold text-theme-muted">Marca & Línea</span>
- <p className="text-xs font-bold text-theme-main">{article.brand} &middot; {article.characteristics?.line}</p>
+ <span className="text-[10px] uppercase font-bold text-theme-muted">Línea & Tecnología</span>
+ <p className="text-xs font-bold text-theme-main">{article.characteristics?.line || 'Línea Industrial RTM'}</p>
  </div>
 
  <div className="p-4 rounded-xl bg-theme-muted/40 border border-theme-subtle space-y-1">
- <span className="text-[10px] uppercase font-bold text-theme-muted">Tipo de Colchón</span>
- <p className="text-xs font-bold text-theme-main">{article.characteristics?.mattressType}</p>
+ <span className="text-[10px] uppercase font-bold text-theme-muted">Sustrato Base</span>
+ <p className="text-xs font-bold text-theme-main">{article.characteristics?.substrate || 'Papel Couché / Caple / BOPP'}</p>
  </div>
 
  <div className="p-4 rounded-xl bg-theme-muted/40 border border-theme-subtle space-y-1">
- <span className="text-[10px] uppercase font-bold text-theme-muted">Nivel de Firmeza</span>
- <p className="text-xs font-bold text-theme-primary">{article.characteristics?.firmness}</p>
+ <span className="text-[10px] uppercase font-bold text-theme-muted">Gramaje / Calibre</span>
+ <p className="text-xs font-bold text-theme-primary">{article.characteristics?.caliperGsm || 'Estándar Gráfico'}</p>
  </div>
 
  <div className="p-4 rounded-xl bg-theme-muted/40 border border-theme-subtle space-y-1">
- <span className="text-[10px] uppercase font-bold text-theme-muted">Altura Total</span>
- <p className="text-xs font-mono font-bold text-theme-main">{article.characteristics?.heightCm} cm</p>
+ <span className="text-[10px] uppercase font-bold text-theme-muted">Tintas / Colores</span>
+ <p className="text-xs font-mono font-bold text-theme-main">{article.characteristics?.colors || 'CMYK / Tintas UV'}</p>
  </div>
 
  <div className="p-4 rounded-xl bg-theme-muted/40 border border-theme-subtle space-y-1">
- <span className="text-[10px] uppercase font-bold text-theme-muted">Tecnología de Soporte</span>
- <p className="text-xs font-semibold text-theme-main">{article.characteristics?.supportTechnology}</p>
+ <span className="text-[10px] uppercase font-bold text-theme-muted">Acabados Especiales</span>
+ <p className="text-xs font-semibold text-theme-main">{article.characteristics?.finishes || 'Barniz UV / Troquel / Pleca'}</p>
  </div>
 
  <div className="p-4 rounded-xl bg-theme-muted/40 border border-theme-subtle space-y-1">
- <span className="text-[10px] uppercase font-bold text-theme-muted">Tipo de Empaque</span>
- <p className="text-xs font-semibold text-theme-main">{article.characteristics?.packagingType}</p>
+ <span className="text-[10px] uppercase font-bold text-theme-muted">Dimensiones / Formato</span>
+ <p className="text-xs font-semibold text-theme-main">{article.characteristics?.formatDimensions || article.size}</p>
  </div>
 
  <div className="p-4 rounded-xl bg-theme-muted/40 border border-theme-subtle space-y-1">
- <span className="text-[10px] uppercase font-bold text-theme-muted">Colchón en Caja (Roll-Pack)</span>
- <p className="text-xs font-bold text-theme-main">{article.characteristics?.isBoxed ? 'Sí' : 'No'}</p>
+ <span className="text-[10px] uppercase font-bold text-theme-muted">Presentación de Salida</span>
+ <p className="text-xs font-bold text-theme-main">{article.characteristics?.packagingType || 'Tarima protegida flejada'}</p>
  </div>
 
  <div className="p-4 rounded-xl bg-theme-muted/40 border border-theme-subtle space-y-1">
- <span className="text-[10px] uppercase font-bold text-theme-muted">Reversible</span>
- <p className="text-xs font-bold text-theme-main">{article.characteristics?.isReversible ? 'Sí (Doble Cara)' : 'No (Never Turn)'}</p>
+ <span className="text-[10px] uppercase font-bold text-theme-muted">Inspección de Calidad</span>
+ <p className="text-xs font-bold text-emerald-600">Aprobado QA RTM</p>
  </div>
 
  <div className="p-4 rounded-xl bg-theme-muted/40 border border-theme-subtle space-y-1">
- <span className="text-[10px] uppercase font-bold text-theme-muted">Peso Máximo Soportado</span>
- <p className="text-xs font-mono font-bold text-theme-main">{article.characteristics?.maxWeightPerPersonKg} Kg / persona</p>
- </div>
-
- <div className="p-4 rounded-xl bg-theme-muted/40 border border-theme-subtle space-y-1 lg:col-span-2">
- <span className="text-[10px] uppercase font-bold text-theme-muted">Composición de Tela y Acolchado</span>
- <p className="text-xs font-medium text-theme-main">{article.characteristics?.fabricComposition}</p>
- </div>
-
- <div className="p-4 rounded-xl bg-theme-muted/40 border border-theme-subtle space-y-1">
- <span className="text-[10px] uppercase font-bold text-theme-muted">Garantía de Fábrica</span>
- <p className="text-xs font-bold text-emerald-600">{article.characteristics?.warrantyYears} Años de Garantía</p>
+ <span className="text-[10px] uppercase font-bold text-theme-muted">Almacén Destino</span>
+ <p className="text-xs font-mono font-bold text-theme-main">Almacén Principal RTM</p>
  </div>
  </div>
  </div>
@@ -442,7 +432,7 @@ export const ArticuloDetailView: React.FC<ArticuloDetailViewProps> = ({
  <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-1">
  <span className="text-[10px] uppercase font-bold text-zinc-500 block">Stock Físico Total</span>
  <span className="text-2xl font-black text-zinc-900 font-mono">{article.inventory.totalPhysical}</span>
- <span className="text-[10px] text-zinc-500 block">Unidades en red CEDIS</span>
+ <span className="text-[10px] text-zinc-500 block">Unidades en Almacén Principal RTM</span>
  </div>
  <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-1">
  <span className="text-[10px] uppercase font-bold text-zinc-500 block">Disponible para Surtido</span>
@@ -682,13 +672,13 @@ export const ArticuloDetailView: React.FC<ArticuloDetailViewProps> = ({
  <div className="p-3.5 rounded-xl bg-theme-muted/40 border border-theme-subtle space-y-1">
  <span className="text-[10px] uppercase font-bold text-theme-muted">Serialización</span>
  <p className="font-bold text-theme-main">{article.serialization}</p>
- <p className="text-[10px] text-theme-muted">Cada colchón posee identificador irrepetible</p>
+ <p className="text-[10px] text-theme-muted">Cada tarima o bobina posee identificador irrepetible</p>
  </div>
 
  <div className="p-3.5 rounded-xl bg-theme-muted/40 border border-theme-subtle space-y-1">
  <span className="text-[10px] uppercase font-bold text-theme-muted">Tipo de Identificador</span>
  <p className="font-mono font-bold text-theme-main">UID (Universal ID)</p>
- <p className="text-[10px] text-theme-muted">Formato estándar: SC-UID-AAAA-XXXXXX</p>
+ <p className="text-[10px] text-theme-muted">Formato estándar: TAR-RTM-AAAA-XXXXXX / BOB-RTM-AAAA-XXXXXX</p>
  </div>
 
  <div className="p-3.5 rounded-xl bg-theme-muted/40 border border-theme-subtle space-y-1">
@@ -712,7 +702,7 @@ export const ArticuloDetailView: React.FC<ArticuloDetailViewProps> = ({
  <div className="p-3.5 rounded-xl bg-theme-muted/40 border border-theme-subtle space-y-1">
  <span className="text-[10px] uppercase font-bold text-theme-muted">FEFO</span>
  <p className="font-semibold text-theme-main">Configurable por lote</p>
- <p className="text-[10px] text-theme-muted">Monitoreo de tiempo en empaque Roll-Pack</p>
+ <p className="text-[10px] text-theme-muted">Monitoreo de tiempo y caducidad de insumos (tintas/químicos)</p>
  </div>
  </div>
  </div>
@@ -734,7 +724,7 @@ export const ArticuloDetailView: React.FC<ArticuloDetailViewProps> = ({
  <tr className="bg-theme-muted/50 border-b border-theme-subtle text-theme-muted font-bold uppercase text-[10px]">
  <th className="py-3 px-4">Fecha / Hora</th>
  <th className="py-3 px-4">Evento</th>
- <th className="py-3 px-4">CEDIS</th>
+ <th className="py-3 px-4">Almacén</th>
  <th className="py-3 px-4">Ubicación</th>
  <th className="py-3 px-4">Usuario / Operador</th>
  <th className="py-3 px-4">Detalles</th>
@@ -1012,7 +1002,7 @@ export const ArticuloDetailView: React.FC<ArticuloDetailViewProps> = ({
  {article.documents?.map((doc) => (
  <tr key={doc.id} className="hover:bg-theme-muted/40 transition-colors">
  <td className="py-3 px-4 font-bold text-theme-main flex items-center gap-2">
- <FileText className="w-4 h-4 text-rose-600 shrink-0" />
+ <FileText className="w-4 h-4 text-theme-primary shrink-0" />
  <span>{doc.title}</span>
  </td>
  <td className="py-3 px-4 text-theme-main font-medium">

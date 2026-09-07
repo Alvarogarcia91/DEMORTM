@@ -65,7 +65,7 @@ export const ReworkTransferModal: React.FC<ReworkTransferModalProps> = ({
  <div className="p-3 rounded-2xl bg-theme-muted/40 border border-theme-subtle space-y-2 text-xs">
  <div>
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Unidad Serializada:</span>
- <strong className="font-mono text-rose-600 block">{incident.uid || 'SC-UID-2026-000201'}</strong>
+ <strong className="font-mono text-rose-600 block">{incident.uid || 'RTM-UID-2026-000201'}</strong>
  <span className="text-[10px] text-theme-muted">{incident.productName}</span>
  </div>
 

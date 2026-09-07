@@ -171,7 +171,7 @@ export const OutboundVerificationDetailView: React.FC<OutboundVerificationDetail
 
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-mono text-base font-black text-rose-600">
+                <span className="font-mono text-base font-black text-theme-primary">
                   {order.folio}
                 </span>
                 <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border shadow-2xs bg-white text-zinc-900 ${
@@ -182,7 +182,7 @@ export const OutboundVerificationDetailView: React.FC<OutboundVerificationDetail
                     : order.status === 'Con diferencia'
                     ? 'border-amber-500 text-amber-700'
                     : order.status === 'Cancelada'
-                    ? 'border-rose-500 text-rose-700'
+                    ? 'border-theme-primary text-theme-primary'
                     : 'border-zinc-400 text-zinc-700'
                 }`}>
                   {order.status}
@@ -191,7 +191,7 @@ export const OutboundVerificationDetailView: React.FC<OutboundVerificationDetail
                   Carril: {order.assignedLane}
                 </span>
                 {remision && (
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-white text-zinc-900 border border-rose-500 shadow-2xs">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-white text-zinc-900 border border-theme-primary shadow-2xs">
                     Remisión: {remision.folio}
                   </span>
                 )}
@@ -210,14 +210,14 @@ export const OutboundVerificationDetailView: React.FC<OutboundVerificationDetail
               onClick={() => setIsRemisionModalOpen(true)}
               className="px-3.5 py-2 rounded-2xl bg-white hover:bg-theme-muted text-theme-main font-bold text-xs border border-theme-subtle transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs"
             >
-              <FileText className="w-3.5 h-3.5 text-rose-600" />
+              <FileText className="w-3.5 h-3.5 text-theme-primary" />
               <span>Vista previa de remisión</span>
             </button>
 
             {isOrderFullyComplete && (
               <button
                 onClick={() => setIsRemisionModalOpen(true)}
-                className="px-4 py-2 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+                className="px-4 py-2 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
               >
                 <Printer className="w-3.5 h-3.5" />
                 <span>Imprimir remisión</span>
@@ -236,7 +236,7 @@ export const OutboundVerificationDetailView: React.FC<OutboundVerificationDetail
 
                 <button
                   onClick={() => setIsCancelModalOpen(true)}
-                  className="px-3 py-2 rounded-2xl bg-white hover:bg-theme-muted text-rose-600 font-bold text-xs border border-rose-400 transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                  className="px-3 py-2 rounded-2xl bg-white hover:bg-theme-muted text-theme-primary font-bold text-xs border border-theme-primary/40 transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs"
                 >
                   <AlertOctagon className="w-3.5 h-3.5" />
                   <span>Cancelar</span>
@@ -244,7 +244,7 @@ export const OutboundVerificationDetailView: React.FC<OutboundVerificationDetail
 
                 <button
                   onClick={() => setIsScanStationOpen(true)}
-                  className="px-5 py-2 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer"
+                  className="px-5 py-2 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer"
                 >
                   <Scan className="w-4 h-4" />
                   <span>{validatedCount === 0 ? 'Iniciar verificación' : 'Continuar verificación'}</span>
@@ -305,7 +305,7 @@ export const OutboundVerificationDetailView: React.FC<OutboundVerificationDetail
                 <span className="text-xs font-black text-theme-main uppercase">
                   Remisión de Salida ({remision.type})
                 </span>
-                <span className="font-mono text-xs font-bold text-rose-600 px-2 py-0.2 rounded-full bg-white border border-rose-400">
+                <span className="font-mono text-xs font-bold text-theme-primary px-2 py-0.2 rounded-full bg-white border border-theme-primary">
                   {remision.folio}
                 </span>
                 <span className={`px-2 py-0.2 rounded-full text-[10px] font-bold border shadow-2xs bg-white text-zinc-900 ${
@@ -338,7 +338,7 @@ export const OutboundVerificationDetailView: React.FC<OutboundVerificationDetail
             {isOrderFullyComplete && (
               <button
                 onClick={() => setIsRemisionModalOpen(true)}
-                className="px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+                className="px-4 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
               >
                 <Printer className="w-3.5 h-3.5" />
                 <span>Imprimir remisión</span>
@@ -495,7 +495,7 @@ export const OutboundVerificationDetailView: React.FC<OutboundVerificationDetail
                       }}
                       className="px-2.5 py-1 rounded-xl bg-white hover:bg-theme-muted text-theme-main font-bold text-[11px] border border-theme-subtle transition-all cursor-pointer shadow-2xs inline-flex items-center gap-1"
                     >
-                      <QrCode className="w-3 h-3 text-rose-600" />
+                      <QrCode className="w-3 h-3 text-theme-primary" />
                       <span>Etiqueta UID</span>
                     </button>
                   </td>

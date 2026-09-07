@@ -96,7 +96,7 @@ export const BranchTransfersInboundView: React.FC<BranchTransfersInboundViewProp
  Traspasos por Recibir
  </h2>
  <p className="text-xs text-theme-muted mt-0.5">
- Validación física de colchones serializados arribando de CEDIS. No se generan nuevos UIDs.
+ Validación física de materiales y tarimas serializados arribando de almacén. No se generan nuevos UIDs.
  </p>
  </div>
 
@@ -115,7 +115,7 @@ export const BranchTransfersInboundView: React.FC<BranchTransfersInboundViewProp
  <span className="text-[10px] font-bold uppercase text-theme-muted block">
  Unidades Pendientes
  </span>
- <span className="font-mono text-base font-black text-rose-600">
+ <span className="font-mono text-base font-black text-theme-primary">
  {totalPendingUnits} u.
  </span>
  </div>
@@ -149,7 +149,7 @@ export const BranchTransfersInboundView: React.FC<BranchTransfersInboundViewProp
  onClick={() => setActiveSubtab('pending')}
  className={`px-4 py-2 rounded-2xl font-bold text-xs transition-all flex items-center gap-2 cursor-pointer ${
  activeSubtab === 'pending'
- ? 'bg-rose-600 text-white shadow-sm'
+ ? 'bg-theme-primary text-white shadow-sm'
  : 'bg-theme-muted hover:bg-theme-subtle text-theme-muted hover:text-theme-main'
  }`}
  >
@@ -164,7 +164,7 @@ export const BranchTransfersInboundView: React.FC<BranchTransfersInboundViewProp
  onClick={() => setActiveSubtab('completed')}
  className={`px-4 py-2 rounded-2xl font-bold text-xs transition-all flex items-center gap-2 cursor-pointer ${
  activeSubtab === 'completed'
- ? 'bg-rose-600 text-white shadow-sm'
+ ? 'bg-theme-primary text-white shadow-sm'
  : 'bg-theme-muted hover:bg-theme-subtle text-theme-muted hover:text-theme-main'
  }`}
  >
@@ -184,7 +184,7 @@ export const BranchTransfersInboundView: React.FC<BranchTransfersInboundViewProp
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar por folio, CEDIS o SKU..."
- className="w-full bg-theme-surface border border-theme-subtle rounded-2xl pl-9 pr-3 py-1.5 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-2xl pl-9 pr-3 py-1.5 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary"
  />
  </div>
  </div>
@@ -291,7 +291,7 @@ export const BranchTransfersInboundView: React.FC<BranchTransfersInboundViewProp
  </div>
  <div className="w-full bg-theme-muted h-2 rounded-full overflow-hidden">
  <div 
- className={`h-full transition-all duration-300 rounded-full ${isComplete ? 'bg-emerald-500' : 'bg-rose-600'}`}
+ className={`h-full transition-all duration-300 rounded-full ${isComplete ? 'bg-emerald-500' : 'bg-theme-primary'}`}
  style={{ width: `${progressPercent}%` }}
  />
  </div>
@@ -309,7 +309,7 @@ export const BranchTransfersInboundView: React.FC<BranchTransfersInboundViewProp
  return (
  <div key={itIdx} className="p-2.5 rounded-xl bg-theme-muted/30 border border-theme-subtle flex items-center justify-between text-xs">
  <div className="min-w-0 pr-2">
- <span className="font-mono text-[10px] font-bold text-rose-600 block">{it.sku}</span>
+ <span className="font-mono text-[10px] font-bold text-theme-primary block">{it.sku}</span>
  <span className="truncate font-semibold text-theme-main block">{it.productName}</span>
  </div>
  <span className="font-mono text-[11px] font-bold text-theme-muted shrink-0">
@@ -334,7 +334,7 @@ export const BranchTransfersInboundView: React.FC<BranchTransfersInboundViewProp
  ? 'bg-theme-muted hover:bg-theme-subtle text-theme-main border border-theme-subtle'
  : isPartial
  ? 'bg-amber-500 hover:bg-amber-600 text-white'
- : 'bg-rose-600 hover:bg-rose-700 text-white'
+ : 'bg-theme-primary hover:bg-theme-primary-hover text-white'
  }`}
  >
  <Scan className="w-4 h-4" />

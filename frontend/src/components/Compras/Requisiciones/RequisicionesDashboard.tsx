@@ -97,183 +97,163 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  }, [suggestions]);
 
  // Demo Top Most Requested Articles
- const topRequestedArticles = [
- {
- sku: 'SC-NAYT-FLOW-IND',
- name: 'Nayt Colchón Flow Basic White Individual',
- units: 54,
- reqCount: 3,
- supplier: 'Nayt México S.A. de C.V.',
- tag: '★ Alta Rotación',
- tagColor: 'bg-white text-zinc-900 border-emerald-600 shadow-2xs',
- leadTime: '3 días',
- trend: '+24% vs mes anterior',
- },
- {
- sku: 'SC-NAYT-FLOW-MAT',
- name: 'Nayt Colchón Flow Basic White Matrimonial',
- units: 38,
- reqCount: 2,
- supplier: 'Nayt México S.A. de C.V.',
- tag: 'Top Ventas',
- tagColor: 'bg-white text-zinc-900 border-emerald-600 shadow-2xs',
- leadTime: '3 días',
- trend: '+18% vs mes anterior',
- },
- {
- sku: 'SC-SPA-REC-IND',
- name: 'Spring Air Colchón Record Individual',
- units: 30,
- reqCount: 1,
- supplier: 'Spring Air de México',
- tag: 'Campaña Institucional',
- tagColor: 'bg-white text-zinc-900 border border-blue-500 shadow-2xs',
- leadTime: '5 días',
- trend: '+45% volumen puntual',
- },
- {
- sku: 'SC-RES-ORT-MAT',
- name: 'Restonic Colchón Ortopedic Matrimonial',
- units: 22,
- reqCount: 2,
- supplier: 'Restonic México S.A.',
- tag: 'Resurtido Continuo',
- tagColor: 'bg-white text-zinc-900 border border-purple-500 shadow-2xs',
- leadTime: '4 días',
- trend: 'Demanda constante',
- },
- {
- sku: 'SC-THE-ERG-QS',
- name: 'Therapedic Colchón Ergo Comfort Queen',
- units: 14,
- reqCount: 1,
- supplier: 'Therapedic México',
- tag: 'Demanda Creciente',
- tagColor: 'bg-white text-zinc-900 border border-amber-500 shadow-2xs',
- leadTime: '6 días',
- trend: '+12% trimestral',
- },
- ];
+  const topRequestedArticles = [
+    {
+      sku: 'MP-COU-090',
+      name: 'Papel Couché 90 g (Pliegos 70x100 cm)',
+      units: 24,
+      reqCount: 3,
+      supplier: 'Bio-Pappel S.A.B. de C.V.',
+      tag: '★ Insumo Crítico',
+      tagColor: 'bg-white text-zinc-900 border-emerald-600 shadow-2xs',
+      leadTime: '4 días',
+      trend: '+28% tirajes Stanley B&D',
+    },
+    {
+      sku: 'MP-BOP-WHT',
+      name: 'Sustrato BOPP Blanco Brillante 60 mic',
+      units: 18,
+      reqCount: 2,
+      supplier: 'Avery Dennison México S. de R.L.',
+      tag: 'Top Flexo',
+      tagColor: 'bg-white text-zinc-900 border-emerald-600 shadow-2xs',
+      leadTime: '3 días',
+      trend: '+18% etiquetas farmacéuticas',
+    },
+    {
+      sku: 'TIN-CYN-001',
+      name: 'Tinta Flexográfica Process Cyan',
+      units: 32,
+      reqCount: 3,
+      supplier: 'Sun Chemical México S.A. de C.V.',
+      tag: 'Resurtido Continuo',
+      tagColor: 'bg-white text-zinc-900 border border-blue-500 shadow-2xs',
+      leadTime: '2 días',
+      trend: 'Demanda constante',
+    },
+    {
+      sku: 'MP-VAR-UV',
+      name: 'Barniz UV Ultra Brillo Curado Rápido',
+      units: 20,
+      reqCount: 2,
+      supplier: 'Sun Chemical México S.A. de C.V.',
+      tag: 'Línea Acabados',
+      tagColor: 'bg-white text-zinc-900 border border-purple-500 shadow-2xs',
+      leadTime: '2 días',
+      trend: 'Tirajes blister y tags',
+    },
+    {
+      sku: 'MP-SBS-240',
+      name: 'Cartulina Sulfatada SBS 240 g / 14 pts',
+      units: 12,
+      reqCount: 1,
+      supplier: 'WestRock Empaques México',
+      tag: 'Empaque Plegadizo',
+      tagColor: 'bg-white text-zinc-900 border border-amber-500 shadow-2xs',
+      leadTime: '5 días',
+      trend: '+15% empaque industrial',
+    },
+  ];
 
  // Demo Articles with Low Movement / Infrequent Request
- const lowDemandArticles = [
- {
- sku: 'SC-SEA-CRW-KS',
- name: 'Sealy Colchón Crown Jewel King Size Ultra',
- lastReqDate: '10 Jul 2026',
- daysWithoutDemand: 48,
- statusNote: 'Demanda estable baja · Compra bajo pedido especial cliente',
- statusType: 'neutral',
- },
- {
- sku: 'SC-MAG-PLEG-IND',
- name: 'Magnus Colchoneta Plegable Campestre',
- lastReqDate: '23 Jul 2026',
- daysWithoutDemand: 35,
- statusNote: 'Artículo estacional de temporada de verano',
- statusType: 'seasonal',
- },
- {
- sku: 'SC-AME-CLA-CUN',
- name: 'Colchones América Modelo Classic Cuna',
- lastReqDate: '16 Jul 2026',
- daysWithoutDemand: 42,
- statusNote: 'Surtido de nicho infantil bajo revisión de catálogo',
- statusType: 'review',
- },
- {
- sku: 'SC-SPA-COL-IND',
- name: 'Spring Air Colchoneta Extra Confort Individual',
- lastReqDate: '03 Jul 2026',
- daysWithoutDemand: 55,
- statusNote: 'Stock remanente suficiente en CEDIS Monterrey Norte',
- statusType: 'sufficient',
- },
- ];
+  const lowDemandArticles = [
+    {
+      sku: 'MP-LAM-MTE',
+      name: 'Película Poliéster Mate para Laminado Térmico',
+      lastReqDate: '10 Jul 2026',
+      daysWithoutDemand: 48,
+      statusNote: 'Insumo para acabados especiales bajo pedido de cliente',
+      statusType: 'neutral',
+    },
+    {
+      sku: 'TIN-MET-SLV',
+      name: 'Tinta Metálica Plata Offset Especial',
+      lastReqDate: '23 Jul 2026',
+      daysWithoutDemand: 35,
+      statusNote: 'Consumo para tirajes institucionales y etiquetas de lujo',
+      statusType: 'seasonal',
+    },
+    {
+      sku: 'ADH-HOT-MLT',
+      name: 'Adhesivo Hot Melt Gráfico para Encuadernación',
+      lastReqDate: '16 Jul 2026',
+      daysWithoutDemand: 42,
+      statusNote: 'Demanda programada para línea de pegado y encuadernado',
+      statusType: 'review',
+    },
+    {
+      sku: 'MP-COU-150',
+      name: 'Papel Couché 150 g Brillante (Pliegos 70x100 cm)',
+      lastReqDate: '03 Jul 2026',
+      daysWithoutDemand: 55,
+      statusNote: 'Stock remanente suficiente en Almacén Principal RTM',
+      statusType: 'sufficient',
+    },
+  ];
 
  // Demo Demand by Destination
- const demandByDestinations = [
- {
- id: 'wh-mty-norte',
- name: 'CEDIS Monterrey Norte',
- type: 'CEDIS Principal',
- reqCount: 4,
- totalUnits: 92,
- dominantSupplier: 'Spring Air / Nayt',
- urgencyLevel: 'Alta',
- urgencyBadge: 'bg-white text-zinc-900 border border-amber-500 shadow-2xs',
- },
- {
- id: 'wh-mty-sur',
- name: 'CEDIS Monterrey Sur',
- type: 'CEDIS Regional',
- reqCount: 3,
- totalUnits: 68,
- dominantSupplier: 'Restonic / Sealy',
- urgencyLevel: 'Media',
- urgencyBadge: 'bg-white text-zinc-900 border border-blue-500 shadow-2xs',
- },
- {
- id: 'wh-suc-valle-oriente',
- name: 'Sucursal Valle Oriente',
- type: 'Sucursal Flagship',
- reqCount: 3,
- totalUnits: 44,
- dominantSupplier: 'Nayt México S.A.',
- urgencyLevel: 'Urgente',
- urgencyBadge: 'bg-rose-500/10 text-rose-950 dark:text-rose-200 border-rose-500/30 shadow-2xs',
- },
- {
- id: 'wh-suc-cumbres',
- name: 'Sucursal Cumbres',
- type: 'Sucursal Comercial',
- reqCount: 2,
- totalUnits: 26,
- dominantSupplier: 'Nayt / Therapedic',
- urgencyLevel: 'Normal',
- urgencyBadge: 'bg-zinc-500/10 text-zinc-700 dark:text-zinc-300 border-zinc-500/25',
- },
- ];
+  const demandByDestinations = [
+    {
+      id: 'wh-alm-rtm',
+      name: 'Almacén Principal RTM',
+      type: 'Planta Principal RTM',
+      reqCount: 8,
+      totalUnits: 198,
+      dominantSupplier: 'Bio-Pappel / Sun Chemical',
+      urgencyLevel: 'Alta',
+      urgencyBadge: 'bg-white text-zinc-900 border border-amber-500 shadow-2xs',
+    },
+    {
+      id: 'wh-alm-virtual',
+      name: 'Almacén Virtual / Control',
+      type: 'Control y Tránsito',
+      reqCount: 2,
+      totalUnits: 45,
+      dominantSupplier: 'Avery Dennison México',
+      urgencyLevel: 'Normal',
+      urgencyBadge: 'bg-zinc-500/10 text-zinc-700 dark:text-zinc-300 border-zinc-500/25',
+    },
+  ];
 
- // Demo Top Suppliers Involved (Nayt México as hero)
- const topSuppliersInvolved = [
- {
- name: 'Nayt México S.A. de C.V.',
- reqCount: 4,
- units: 112,
- leadDays: 3,
- slaCompliance: '99.4%',
- badges: ['★ Mejor tiempo entrega (3d)', 'Mayor cobertura', 'Proveedor Preferente'],
- isHero: true,
- },
- {
- name: 'Spring Air de México S.A. de C.V.',
- reqCount: 3,
- units: 72,
- leadDays: 5,
- slaCompliance: '96.8%',
- badges: ['Alta capacidad de lote', 'Línea Hotelera'],
- isHero: false,
- },
- {
- name: 'Restonic Fábricas de Colchones S.A.',
- reqCount: 2,
- units: 38,
- leadDays: 4,
- slaCompliance: '97.2%',
- badges: ['Resurtido programado'],
- isHero: false,
- },
- {
- name: 'Therapedic International México',
- reqCount: 1,
- units: 14,
- leadDays: 6,
- slaCompliance: '95.0%',
- badges: ['Especialidades ortopédicas'],
- isHero: false,
- },
- ];
+ // Demo Top Suppliers Involved (Sun Chemical as hero)
+  const topSuppliersInvolved = [
+    {
+      name: 'Sun Chemical México S.A. de C.V.',
+      reqCount: 5,
+      units: 142,
+      leadDays: 2,
+      slaCompliance: '99.4%',
+      badges: ['★ Mejor tiempo entrega (2d)', 'Mayor cobertura de tintas', 'Proveedor Preferente'],
+      isHero: true,
+    },
+    {
+      name: 'Bio-Pappel S.A.B. de C.V.',
+      reqCount: 4,
+      units: 88,
+      leadDays: 4,
+      slaCompliance: '97.5%',
+      badges: ['Bobinas y Tarimas Papel', 'Línea Offset'],
+      isHero: false,
+    },
+    {
+      name: 'Avery Dennison México S. de R.L.',
+      reqCount: 3,
+      units: 54,
+      leadDays: 3,
+      slaCompliance: '98.2%',
+      badges: ['Sustratos Flexo y Películas'],
+      isHero: false,
+    },
+    {
+      name: 'WestRock Empaques México S.A.',
+      reqCount: 2,
+      units: 28,
+      leadDays: 5,
+      slaCompliance: '96.0%',
+      badges: ['Cartulina Sulfatada'],
+      isHero: false,
+    },
+  ];
 
  // Weekly Trend Data for Mini Bar Chart
  const weeklyTrends = [
@@ -297,7 +277,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  <div className="bg-theme-surface p-5 md:p-6 border border-theme-subtle rounded-3xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div className="space-y-1">
  <div className="flex items-center gap-2.5 flex-wrap">
- <div className="w-8 h-8 rounded-xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold">
+ <div className="w-8 h-8 rounded-xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold">
  <Activity className="w-4 h-4" />
  </div>
  <h2 className="text-base md:text-lg font-black text-theme-main">
@@ -506,13 +486,13 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  <div className="flex items-center justify-between">
  <div className="space-y-0.5">
  <div className="flex items-center gap-2">
- <BarChart3 className="w-4 h-4 text-rose-600" />
+ <BarChart3 className="w-4 h-4 text-theme-primary" />
  <h3 className="text-xs font-black uppercase tracking-wider text-theme-main">
  Tendencia de Solicitudes
  </h3>
  </div>
  <p className="text-[11px] text-theme-muted">
- Evolución reciente de requisiciones y colchones solicitados
+ Evolución reciente de requisiciones y materiales solicitados
  </p>
  </div>
  <span className="text-[11px] font-bold text-zinc-900 bg-white px-2 py-0.5 rounded-full border border-emerald-600 shadow-2xs flex items-center gap-1">
@@ -525,7 +505,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  <div className="grid grid-cols-4 gap-3 pt-3 items-end h-32 border-b border-theme-subtle pb-2">
  {weeklyTrends.map((t, idx) => (
  <div key={idx} className="flex flex-col items-center gap-1 h-full justify-end group">
- <span className="text-[10px] font-mono font-bold text-theme-main group-hover:text-rose-600 transition-colors">
+ <span className="text-[10px] font-mono font-bold text-theme-main group-hover:text-theme-primary transition-colors">
  {t.units} u
  </span>
  <div className="w-full max-w-[42px] bg-theme-muted rounded-t-xl overflow-hidden flex flex-col justify-end h-20">
@@ -533,12 +513,12 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  style={{ height: `${t.percentHeight}%` }}
  className={`w-full rounded-t-lg transition-all ${
  t.isCurrent
- ? 'bg-rose-600 group-hover:bg-rose-700 shadow-sm'
- : 'bg-rose-500/40 group-hover:bg-rose-500/60'
+ ? 'bg-theme-primary group-hover:bg-theme-primary-hover shadow-sm'
+ : 'bg-theme-primary/40 group-hover:bg-theme-primary/60'
  }`}
  />
  </div>
- <span className={`text-[10px] font-semibold ${t.isCurrent ? 'font-black text-rose-600' : 'text-theme-muted'}`}>
+ <span className={`text-[10px] font-semibold ${t.isCurrent ? 'font-black text-theme-primary' : 'text-theme-muted'}`}>
  {t.label}
  </span>
  </div>
@@ -626,7 +606,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  {/* Urgente */}
  <div className="space-y-1">
  <div className="flex items-center justify-between text-xs font-bold">
- <span className="text-rose-600 flex items-center gap-1.5">
+ <span className="text-theme-primary flex items-center gap-1.5">
  <span className="w-2 h-2 rounded-full bg-rose-600" />
  Urgente (Atención &lt; 24h)
  </span>
@@ -733,7 +713,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  <div className="flex items-center justify-between">
  <div className="space-y-0.5">
  <div className="flex items-center gap-2">
- <Flame className="w-4 h-4 text-rose-600" />
+ <Flame className="w-4 h-4 text-theme-primary" />
  <h3 className="text-xs font-black uppercase tracking-wider text-theme-main">
  Top Artículos Más Solicitados
  </h3>
@@ -752,7 +732,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  >
  <div className="space-y-1 min-w-0 flex-1">
  <div className="flex items-center gap-2 flex-wrap">
- <span className="font-mono font-black text-[11px] text-rose-600 bg-rose-500/10 px-1.5 py-0.2 rounded border border-rose-500/20">
+ <span className="font-mono font-black text-[11px] text-theme-primary bg-rose-500/10 px-1.5 py-0.2 rounded border border-rose-500/20">
  {art.sku}
  </span>
  <span className={`px-2 py-0.2 rounded-md text-[10px] font-bold border ${art.tagColor}`}>
@@ -825,7 +805,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  </div>
 
  <div className="p-3 rounded-2xl bg-theme-muted/20 border border-theme-subtle text-[11px] text-theme-muted leading-relaxed">
- 💡 <strong>Diagnóstico Automático:</strong> Permite evitar compras especulativas en SKUs de baja rotación y concentrar capital en líneas de alto flujo como <em>Nayt Flow</em>.
+ 💡 <strong>Diagnóstico Automático:</strong> Permite evitar compras especulativas en SKUs de baja rotación y concentrar capital en líneas de alto flujo como <em>Papel Couché y Tintas UV</em>.
  </div>
  </div>
 
@@ -840,7 +820,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  <div className="bg-theme-surface p-5 border border-theme-subtle rounded-3xl shadow-xs space-y-4">
  <div className="space-y-0.5">
  <div className="flex items-center gap-2">
- <Building2 className="w-4 h-4 text-rose-600" />
+ <Building2 className="w-4 h-4 text-theme-primary" />
  <h3 className="text-xs font-black uppercase tracking-wider text-theme-main">
  Destinos con Mayor Demanda
  </h3>
@@ -884,7 +864,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  </div>
  </div>
 
- {/* Proveedores Más Involucrados (Hero: Nayt México) */}
+ {/* Proveedores Más Involucrados (Hero: Sun Chemical) */}
  <div className="bg-theme-surface p-5 border border-theme-subtle rounded-3xl shadow-xs space-y-4">
  <div className="space-y-0.5">
  <div className="flex items-center gap-2">
@@ -909,7 +889,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  }`}
  >
  <div className="flex items-center justify-between gap-2 flex-wrap">
- <strong className={`font-bold ${sup.isHero ? 'text-rose-600 text-sm' : 'text-theme-main'}`}>
+ <strong className={`font-bold ${sup.isHero ? 'text-theme-primary text-sm' : 'text-theme-main'}`}>
  {sup.name}
  </strong>
  <div className="flex items-center gap-2">
@@ -962,7 +942,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  <button
  type="button"
  onClick={() => onNavigateSubTab('requisiciones')}
- className="text-xs font-bold text-rose-600 hover:underline flex items-center gap-1 cursor-pointer"
+ className="text-xs font-bold text-theme-primary hover:underline flex items-center gap-1 cursor-pointer"
  >
  <span>Ver todas las requisiciones ({requisitions.length})</span>
  <ArrowRight className="w-3 h-3" />
@@ -981,7 +961,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  >
  <div className="space-y-2.5">
  <div className="flex items-center justify-between gap-2 flex-wrap">
- <span className="font-mono font-black text-xs text-rose-600 bg-rose-500/10 px-2 py-0.5 rounded-lg border border-rose-500/20">
+ <span className="font-mono font-black text-xs text-theme-primary bg-rose-500/10 px-2 py-0.5 rounded-lg border border-rose-500/20">
  {req.folio}
  </span>
  <RequisitionStatusBadge status={req.status} size="sm" />
@@ -1009,7 +989,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  )}
  </div>
 
- <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-rose-600 group-hover:text-rose-700 transition-colors">
+ <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-primary group-hover:text-rose-700 transition-colors">
  <span>Ver detalle</span>
  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
  </div>
@@ -1033,7 +1013,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  <button
  type="button"
  onClick={() => onNavigateSubTab('sugerencias')}
- className="text-xs font-bold text-rose-600 hover:underline flex items-center gap-1 cursor-pointer"
+ className="text-xs font-bold text-theme-primary hover:underline flex items-center gap-1 cursor-pointer"
  >
  <span>Ver todas las sugerencias ({suggestions.length})</span>
  <ArrowRight className="w-3 h-3" />
@@ -1069,7 +1049,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  {/* ========================================================================= */}
  <div className="p-4 rounded-3xl bg-theme-surface border border-theme-subtle flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shadow-2xs">
  <div className="flex items-center gap-2 text-theme-muted">
- <Zap className="w-4 h-4 text-rose-600 shrink-0" />
+ <Zap className="w-4 h-4 text-theme-primary shrink-0" />
  <span className="font-semibold">Atajos Rápidos de Operación:</span>
  </div>
 

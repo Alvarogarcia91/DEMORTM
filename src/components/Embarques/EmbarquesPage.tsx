@@ -16,7 +16,7 @@ import { getShippingOrdersList, getActiveRoutesList, getShippingHistoryList } fr
 export type EmbarquesSubtab = 'dashboard' | 'orders' | 'in_route' | 'history';
 
 export const EmbarquesPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<EmbarquesSubtab>('dashboard');
+  const [activeTab, setActiveTab] = useState<EmbarquesSubtab>('orders');
   const activeOrdersCount = getShippingOrdersList().filter((o) => o.status !== 'En ruta' && o.status !== 'Completada').length;
   const inRouteCount = getActiveRoutesList().filter((r) => r.status === 'En ruta').length;
   const historyCount = getShippingHistoryList().length;
@@ -27,15 +27,15 @@ export const EmbarquesPage: React.FC = () => {
       {/* Header */}
       <div className="space-y-1">
         <div className="flex items-center gap-2">
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-rose-500 shadow-2xs">
-            Logística & Despacho de Flota
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-theme-primary shadow-2xs">
+            Despacho B2B & Logística Industrial
           </span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-theme-main">
-          Embarques & Entregas
+          Órdenes de Salida
         </h1>
         <p className="text-xs sm:text-sm text-theme-muted">
-          Operación de carga, rutas y entregas
+          Despacho de producto terminado liberado por QA, staging de tarimas y validación de carga para clientes industriales.
         </p>
       </div>
 
@@ -43,19 +43,7 @@ export const EmbarquesPage: React.FC = () => {
       <div className="border-b border-theme-subtle">
         <div className="flex flex-wrap gap-4">
           
-          {/* Subtab Dashboard */}
-          <button
-            type="button"
-            onClick={() => setActiveTab('dashboard')}
-            className={`flex items-center gap-1.5 border-b-2 px-1 pb-2.5 text-xs font-bold transition-colors cursor-pointer ${
-              activeTab === 'dashboard'
-                ? 'border-rose-600 text-rose-600'
-                : 'border-transparent text-theme-muted hover:text-theme-main'
-            }`}
-          >
-            <LayoutDashboard className="h-4 w-4" />
-            <span>Dashboard</span>
-          </button>
+          {/* Tabs visibles: Órdenes de salida, En ruta, Historial */}
 
           {/* Subtab Órdenes de salida */}
           <button
@@ -63,7 +51,7 @@ export const EmbarquesPage: React.FC = () => {
             onClick={() => setActiveTab('orders')}
             className={`flex items-center gap-1.5 border-b-2 px-1 pb-2.5 text-xs font-bold transition-colors cursor-pointer ${
               activeTab === 'orders'
-                ? 'border-rose-600 text-rose-600'
+                ? 'border-theme-primary text-theme-primary'
                 : 'border-transparent text-theme-muted hover:text-theme-main'
             }`}
           >
@@ -80,7 +68,7 @@ export const EmbarquesPage: React.FC = () => {
             onClick={() => setActiveTab('in_route')}
             className={`flex items-center gap-1.5 border-b-2 px-1 pb-2.5 text-xs font-bold transition-colors cursor-pointer ${
               activeTab === 'in_route'
-                ? 'border-rose-600 text-rose-600'
+                ? 'border-theme-primary text-theme-primary'
                 : 'border-transparent text-theme-muted hover:text-theme-main'
             }`}
           >
@@ -97,12 +85,12 @@ export const EmbarquesPage: React.FC = () => {
             onClick={() => setActiveTab('history')}
             className={`flex items-center gap-1.5 border-b-2 px-1 pb-2.5 text-xs font-bold transition-colors cursor-pointer ${
               activeTab === 'history'
-                ? 'border-rose-600 text-rose-600'
+                ? 'border-theme-primary text-theme-primary'
                 : 'border-transparent text-theme-muted hover:text-theme-main'
             }`}
           >
             <PackageCheck className="h-4 w-4" />
-            <span>Entregas</span>
+            <span>Entregas B2B</span>
             <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-white text-zinc-900 border border-zinc-300 shadow-2xs">
               {historyCount}
             </span>
@@ -124,4 +112,3 @@ export const EmbarquesPage: React.FC = () => {
     </div>
   );
 };
-

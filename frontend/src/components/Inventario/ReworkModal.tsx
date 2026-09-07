@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { X, ShieldAlert, AlertTriangle, QrCode, Calendar, Wrench, CheckCircle2 } from 'lucide-react';
 import { SpecialAreaSlot } from '../../data/mockInventoryData';
 import { ModalPortal } from '../common/ModalPortal';
@@ -57,7 +57,7 @@ export const ReworkModal: React.FC<ReworkModalProps> = ({
  <span className="text-zinc-900">Control de Incidencias e Inspección de Calidad</span>
  </span>
  <p className="text-[11px] text-zinc-700 dark:text-zinc-300 leading-relaxed">
- En esta bahía se resguardan colchones con empaque dañado, incidencias en rampa de recibo, pendientes de reempaque al vacío o devoluciones en validación antes de su reintegración a racks.
+ En esta bahía se resguardan unidades / bobinas con empaque dañado, incidencias en rampa de recibo, pendientes de reempaque al vacío o devoluciones en validación antes de su reintegración a racks.
  </p>
  </div>
 

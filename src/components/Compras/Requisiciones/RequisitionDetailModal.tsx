@@ -106,7 +106,7 @@ export const RequisitionDetailModal: React.FC<RequisitionDetailModalProps> = ({
 
  // Supplier context lookup
  const suggestedSupplierInfo = useMemo(() => {
- const supName = requisition.suggestedSupplier || 'Nayt México';
+ const supName = requisition.suggestedSupplier || 'Sun Chemical México';
  const found = INITIAL_MOCK_SUPPLIERS.find(
  (s) =>
  s.tradeName.toLowerCase().includes(supName.toLowerCase()) ||
@@ -296,7 +296,7 @@ export const RequisitionDetailModal: React.FC<RequisitionDetailModalProps> = ({
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface shrink-0">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <FileText className="w-5 h-5" />
  </div>
  <div>
@@ -376,7 +376,7 @@ export const RequisitionDetailModal: React.FC<RequisitionDetailModalProps> = ({
  Proveedor Sugerido
  </span>
  <strong className="text-xs font-bold text-theme-main block truncate">
- {requisition.suggestedSupplier || 'Nayt México'}
+ {requisition.suggestedSupplier || 'Sun Chemical México'}
  </strong>
  </div>
 
@@ -544,7 +544,7 @@ export const RequisitionDetailModal: React.FC<RequisitionDetailModalProps> = ({
  </td>
 
  {/* SKU */}
- <td className="py-3 px-3 font-mono font-bold text-rose-600 whitespace-nowrap">
+ <td className="py-3 px-3 font-mono font-bold text-theme-primary whitespace-nowrap">
  {item.sku}
  </td>
 
@@ -706,7 +706,7 @@ export const RequisitionDetailModal: React.FC<RequisitionDetailModalProps> = ({
  }}
  className={`px-5 py-2 rounded-xl font-black text-xs transition-all shadow-md flex items-center gap-2 cursor-pointer ${
  selectedItemIds.length > 0
- ? 'bg-rose-600 hover:bg-rose-700 text-white'
+ ? 'bg-theme-primary hover:bg-theme-primary-hover text-white'
  : 'bg-theme-muted text-theme-muted cursor-not-allowed opacity-50'
  }`}
  >

@@ -108,7 +108,7 @@ export const ReceiptOrderDetailView: React.FC<ReceiptOrderDetailViewProps> = ({
  <span className="text-xs font-bold uppercase tracking-wider text-theme-muted">
  Recepción de Compra:
  </span>
- <span className="font-mono text-base font-black text-rose-600">
+ <span className="font-mono text-base font-black text-theme-primary">
  {order.folio}
  </span>
  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border shadow-2xs bg-white text-zinc-900 ${
@@ -137,7 +137,7 @@ export const ReceiptOrderDetailView: React.FC<ReceiptOrderDetailViewProps> = ({
  className="px-3.5 py-2 rounded-xl bg-theme-muted hover:bg-theme-subtle text-theme-main font-bold text-xs border border-theme-subtle transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
  title="Abrir la Orden de Compra en el módulo Compras"
  >
- <ShoppingCart className="w-3.5 h-3.5 text-rose-600" />
+ <ShoppingCart className="w-3.5 h-3.5 text-theme-primary" />
  <span>Ver orden de compra</span>
  <ExternalLink className="w-3 h-3 text-theme-muted" />
  </button>
@@ -157,7 +157,7 @@ export const ReceiptOrderDetailView: React.FC<ReceiptOrderDetailViewProps> = ({
  <div>
  <span className="text-[10px] uppercase font-bold block">Destino de Entrega:</span>
  <strong className="text-theme-main font-semibold">{order.destinationWarehouseName}</strong>
- <span className="text-[10px] text-rose-600 font-mono font-bold block">Rampa {order.receivingAreaCode}</span>
+ <span className="text-[10px] text-theme-primary font-mono font-bold block">Rampa {order.receivingAreaCode}</span>
  </div>
  <div>
  <span className="text-[10px] uppercase font-bold block">Fecha Esperada:</span>
@@ -223,7 +223,7 @@ export const ReceiptOrderDetailView: React.FC<ReceiptOrderDetailViewProps> = ({
  Partidas de la Orden de Compra para Validación
  </h3>
  <p className="text-xs text-theme-muted">
- Escanea cada colchón al descargar para emitir su sticker individual con UID y Código QR.
+ Escanea cada tarima o bulto al descargar para emitir su sticker individual con UID y Código QR.
  </p>
  </div>
  {isOrderFullyReceived && !isPutawaySent && (
@@ -258,7 +258,7 @@ export const ReceiptOrderDetailView: React.FC<ReceiptOrderDetailViewProps> = ({
  return (
  <tr key={line.id} className="hover:bg-theme-muted/30 transition-colors">
  {/* SKU */}
- <td className="py-3.5 px-3 font-mono font-bold text-rose-600 whitespace-nowrap">
+ <td className="py-3.5 px-3 font-mono font-bold text-theme-primary whitespace-nowrap">
  {line.sku}
  </td>
 
@@ -297,7 +297,7 @@ export const ReceiptOrderDetailView: React.FC<ReceiptOrderDetailViewProps> = ({
 
  {/* Unidad */}
  <td className="py-3.5 px-3 text-theme-muted font-medium whitespace-nowrap">
- Colchón
+ Tarima / Millar
  </td>
 
  {/* Line Status */}
@@ -321,7 +321,7 @@ export const ReceiptOrderDetailView: React.FC<ReceiptOrderDetailViewProps> = ({
  className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 ml-auto cursor-pointer ${
  isLineComplete
  ? 'bg-theme-muted text-theme-main hover:bg-theme-subtle border border-theme-subtle'
- : 'bg-rose-600 hover:bg-rose-700 text-white'
+ : 'bg-theme-primary hover:bg-theme-primary-hover text-white'
  }`}
  >
  <Scan className="w-3.5 h-3.5" />

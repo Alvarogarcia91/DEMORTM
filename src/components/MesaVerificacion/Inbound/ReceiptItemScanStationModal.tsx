@@ -74,7 +74,7 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
  setIsScanning(false);
  
  const nextSerialNum = 180 + line.receivedUnits.length + Math.floor(Math.random() * 50);
- const newUid = `SC-UID-2026-000${nextSerialNum}`;
+ const newUid = `TAR-RTM-2026-000${nextSerialNum}`;
  const now = new Date();
  const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
  const fullDateStr = `27 Ago 2026, ${timeStr}`;
@@ -126,7 +126,7 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
  setIsScanning(false);
  setScanStatus('error');
  setFeedbackMessage(
- '✕ Artículo no esperado: El código de barras escaneado (SC-RES-ORT-MAT) no corresponde al artículo seleccionado en esta recepción.'
+ '✕ Artículo no esperado: El código de barras escaneado (PT-RES-001) no corresponde al artículo seleccionado en esta recepción.'
  );
  }, 450);
  };
@@ -183,13 +183,13 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
  {/* Header Terminal Style */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <Radio className="w-5 h-5 animate-pulse" />
  </div>
  <div>
  <div className="flex items-center gap-2 flex-wrap">
- <span className="font-mono text-xs font-black text-rose-600">{order.folio}</span>
- <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-700 border border-rose-500/20">
+ <span className="font-mono text-xs font-black text-theme-primary">{order.folio}</span>
+ <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-theme-primary-light text-theme-primary border border-theme-primary/20">
  Estación de Recepción &middot; {order.receivingAreaCode}
  </span>
  <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-white text-zinc-900 border border-zinc-400 shadow-2xs">
@@ -229,7 +229,7 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
 
  <div className="text-right">
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Área de Ingreso:</span>
- <span className="font-mono font-bold text-rose-600 text-xs">
+ <span className="font-mono font-bold text-theme-primary text-xs">
  {order.destinationWarehouseName} &middot; {order.receivingAreaCode}
  </span>
  </div>
@@ -254,7 +254,7 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
  <div className="p-2.5 rounded-xl bg-theme-surface border border-theme-subtle space-y-0.5">
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Pendientes</span>
  <strong className={`text-base font-mono font-black ${
- line.pendingQuantity === 0 ? 'text-emerald-600' : 'text-rose-600'
+ line.pendingQuantity === 0 ? 'text-emerald-600' : 'text-amber-600'
  }`}>
  {line.pendingQuantity}
  </strong>
@@ -275,7 +275,7 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
  <div 
  className="absolute inset-0 opacity-15 pointer-events-none"
  style={{
- backgroundImage: `radial-gradient(circle, #ef4444 1px, transparent 1px)`,
+ backgroundImage: `radial-gradient(circle, var(--color-primary) 1px, transparent 1px)`,
  backgroundSize: '16px 16px',
  }}
  />
@@ -284,10 +284,10 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
  <div 
  className={`absolute left-4 right-4 h-0.5 pointer-events-none transition-opacity ${
  scanStatus === 'error'
- ? 'bg-rose-500 shadow-[0_0_15px_#f43f5e]'
+ ? 'bg-theme-error shadow-[0_0_15px_var(--color-error)]'
  : scanStatus === 'success'
  ? 'bg-emerald-400 shadow-[0_0_15px_#34d399]'
- : 'bg-rose-500 shadow-[0_0_15px_#ef4444]'
+ : 'bg-theme-primary shadow-[0_0_15px_var(--color-primary)]'
  }`}
  style={{
  animation: isScanning ? 'scanSweep 0.8s ease-in-out infinite alternate' : 'scanSweep 2.2s ease-in-out infinite alternate',
@@ -295,20 +295,20 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
  />
 
  {/* Corner HUD Brackets */}
- <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-rose-500 rounded-tl-lg" />
- <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-rose-500 rounded-tr-lg" />
- <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-rose-500 rounded-bl-lg" />
- <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-rose-500 rounded-br-lg" />
+ <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-theme-primary rounded-tl-lg" />
+ <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-theme-primary rounded-tr-lg" />
+ <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-theme-primary rounded-bl-lg" />
+ <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-theme-primary rounded-br-lg" />
 
  {/* Center Crosshairs */}
- <div className="w-20 h-20 rounded-2xl border border-dashed border-rose-500/40 flex items-center justify-center relative">
+ <div className="w-20 h-20 rounded-2xl border border-dashed border-theme-primary/40 flex items-center justify-center relative">
  <Scan className={`w-8 h-8 transition-all ${
  scanStatus === 'success'
  ? 'text-emerald-400 scale-110'
  : scanStatus === 'error'
  ? 'text-rose-500 animate-bounce'
  : isScanning
- ? 'text-rose-400 scale-105'
+ ? 'text-theme-primary scale-105'
  : 'text-zinc-500'
  }`} />
  </div>
@@ -316,7 +316,7 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
  {/* Top Status */}
  <div className="absolute top-3 left-4 right-4 flex items-center justify-between text-[10px] text-zinc-400 font-mono">
  <div className="flex items-center gap-1.5">
- <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
+ <span className="w-2 h-2 rounded-full bg-theme-primary animate-ping" />
  <span className="font-bold text-zinc-300">ESTACIÓN DE SERIALIZACIÓN ÓPTICA</span>
  </div>
  <span className="px-1.5 py-0.2 rounded bg-zinc-900 border border-zinc-800 text-zinc-300 font-bold">
@@ -376,7 +376,7 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
  onClick={() => setPreviewStickerUnit(lastReceivedUnit)}
  className="px-3 py-1.5 rounded-xl bg-theme-surface hover:bg-theme-muted text-theme-main font-bold text-xs border border-theme-subtle transition-colors cursor-pointer flex items-center gap-1.5"
  >
- <Tag className="w-3.5 h-3.5 text-rose-600" />
+ <Tag className="w-3.5 h-3.5 text-theme-primary" />
  <span>Ver sticker</span>
  </button>
 
@@ -398,7 +398,7 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
  type="button"
  disabled={isScanning || line.pendingQuantity === 0}
  onClick={handleSimulatePieceScan}
- className="w-full py-3.5 px-4 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-sm transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+ className="w-full py-3.5 px-4 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-sm transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
  >
  <Scan className="w-5 h-5" />
  <span>
@@ -434,7 +434,7 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
  </div>
  ) : (
  /* ========================================================================= */
- /* NON-SERIALIZED BULK RECEIPT (ALMOHADAS / PROTECTORES) */
+ /* NON-SERIALIZED BULK RECEIPT (QUÍMICOS / CONSUMIBLES) */
  /* ========================================================================= */
  <div className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle space-y-4 shadow-xs">
  <div className="space-y-1">
@@ -463,7 +463,7 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
  <button
  type="button"
  onClick={handleReceiveBulkQuantity}
- className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+ className="px-5 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
  >
  <Check className="w-4 h-4" />
  <span>Confirmar recepción ({bulkQuantityInput} u.)</span>
@@ -498,11 +498,11 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
  className="p-2.5 rounded-xl bg-theme-surface border border-theme-subtle flex items-center justify-between gap-3 text-xs shadow-2xs"
  >
  <div className="flex items-center gap-2.5 min-w-0">
- <span className="w-5 h-5 rounded-full bg-rose-500/10 text-rose-700 font-bold text-[10px] flex items-center justify-center shrink-0">
+ <span className="w-5 h-5 rounded-full bg-theme-primary-light text-theme-primary font-bold text-[10px] flex items-center justify-center shrink-0">
  {idx + 1}
  </span>
  <div className="min-w-0">
- <span className="font-mono font-black text-rose-600 block truncate">{unit.uid}</span>
+ <span className="font-mono font-black text-theme-primary block truncate">{unit.uid}</span>
  <span className="text-[10px] text-theme-muted font-mono">{unit.lotNumber} &middot; {unit.receivedAt}</span>
  </div>
  </div>
@@ -537,7 +537,7 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
 
  <button
  onClick={onClose}
- className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black transition-all shadow-md cursor-pointer"
+ className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md cursor-pointer"
  >
  Aceptar y volver al detalle
  </button>

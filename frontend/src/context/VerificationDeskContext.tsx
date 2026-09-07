@@ -1,14 +1,14 @@
-﻿import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
-export type OperatingFacilityType = 'CEDIS' | 'SUCURSAL';
+export type OperatingFacilityType = 'ALMACEN' | 'CEDIS' | 'SUCURSAL';
 
 export interface OperatingFacilityOption {
-  id: string; // 'wh-mty-norte' | 'wh-mty-sur' | 'wh-suc-valle-oriente' | 'wh-suc-cumbres'
-  code: string; // 'MTY-N' | 'MTY-S' | 'SUC-VO' | 'SUC-CUM'
+  id: string; // 'alm-rtm-mp' (ALM-MP) | 'alm-rtm-pt' (ALM-PT)
+  code: string; // 'ALM-MP' | 'ALM-PT'
   name: string;
   type: OperatingFacilityType;
   address: string;
-  tempReceivingLocation: string; // 'REC-01', 'REC-02', 'REC-SUC-VO', 'REC-SUC-CUM'
+  tempReceivingLocation: string; // 'REC-01', 'REC-02'
 }
 
 // Backward compatibility alias
@@ -16,36 +16,20 @@ export type CedisOption = OperatingFacilityOption;
 
 export const OPERATING_FACILITIES_LIST: OperatingFacilityOption[] = [
   {
-    id: 'wh-mty-norte',
-    code: 'MTY-N',
-    name: 'CEDIS Monterrey Norte',
-    type: 'CEDIS',
-    address: 'Parque Industrial Monterrey Norte #100',
+    id: 'alm-rtm-mp',
+    code: 'ALM-MP',
+    name: 'Almacén Materia Prima',
+    type: 'ALMACEN',
+    address: 'Planta Principal Reynosa, Tamps. (Nave 1)',
     tempReceivingLocation: 'REC-01',
   },
   {
-    id: 'wh-mty-sur',
-    code: 'MTY-S',
-    name: 'CEDIS Monterrey Sur',
-    type: 'CEDIS',
-    address: 'Carretera Nacional Km 268',
+    id: 'alm-rtm-pt',
+    code: 'ALM-PT',
+    name: 'Almacén Producto Terminado',
+    type: 'ALMACEN',
+    address: 'Planta Principal Reynosa, Tamps. (Nave 2)',
     tempReceivingLocation: 'REC-02',
-  },
-  {
-    id: 'wh-suc-valle-oriente',
-    code: 'SUC-VO',
-    name: 'Sucursal Valle Oriente',
-    type: 'SUCURSAL',
-    address: 'Av. Lázaro Cárdenas #1000, Valle Oriente, San Pedro Garza García, N.L.',
-    tempReceivingLocation: 'REC-SUC-VO',
-  },
-  {
-    id: 'wh-suc-cumbres',
-    code: 'SUC-CUM',
-    name: 'Sucursal Cumbres',
-    type: 'SUCURSAL',
-    address: 'Av. Paseo de los Leones #2400, Cumbres 4to Sector, Monterrey, N.L.',
-    tempReceivingLocation: 'REC-SUC-CUM',
   },
 ];
 
@@ -80,7 +64,7 @@ export const VerificationDeskProvider: React.FC<{ children: React.ReactNode }> =
     } catch {
       // ignore
     }
-    return 'wh-mty-norte';
+    return 'alm-rtm-mp';
   });
 
   const setSelectedFacilityId = (id: string) => {

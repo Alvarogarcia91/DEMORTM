@@ -47,8 +47,8 @@ const TONE_STYLES: Record<IconTileTone, { container: string; iconColor: string }
  iconColor: 'text-purple-600',
  },
  primary: {
- container: 'bg-white border border-rose-500 text-rose-600 shadow-2xs',
- iconColor: 'text-rose-600',
+ container: 'bg-white border border-theme-primary text-theme-primary shadow-2xs',
+ iconColor: 'text-theme-primary',
  },
 };
 

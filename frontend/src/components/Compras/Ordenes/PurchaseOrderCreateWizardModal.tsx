@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
  X,
  ArrowRight,
@@ -55,7 +55,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  );
  if (match) return match;
  }
- return MOCK_SUPPLIERS[0]; // Default to Nayt
+ return MOCK_SUPPLIERS[0]; // Default to first supplier
  });
 
  // STEP 3: Items Table Configuration
@@ -92,7 +92,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
 
  // STEP 4: Delivery & Commercial Conditions
  const [targetWarehouseId, setTargetWarehouseId] = useState(
- requisition.targetWarehouseId || 'wh-mty-norte'
+ requisition.targetWarehouseId || 'alm-rtm-mp'
  );
  
  // Calculate default delivery date based on current supplier lead time
@@ -219,7 +219,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  supplierRfc: selectedSupplier.rfc,
  contactName: selectedSupplier.contactName,
  targetWarehouseId,
- targetWarehouseName: selectedWarehouse?.name || 'CEDIS Monterrey Norte',
+ targetWarehouseName: selectedWarehouse?.name || 'Almacén Principal RTM',
  targetWarehouseType: selectedWarehouse?.type || 'CEDIS',
  emissionDate: '27 Ago 2026',
  expectedDeliveryDate,
@@ -232,6 +232,8 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  tax,
  total,
  status: 'Borrador',
+ createdAt: '2026-08-27T10:00:00Z',
+ updatedAt: '2026-08-27T10:00:00Z',
  notes: notes.trim() || undefined,
  items: selectedItems.map((it) => ({
  id: it.id,
@@ -283,6 +285,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  purchaseOrderCoverage: {
  coveredItems: selectedItems.length,
  totalItems: requisition.items.length,
+ purchaseOrderFolios: [folio],
  },
  items: requisition.items.map((it) => {
  const matchingOrdered = selectedItems.find((so) => so.sku === it.sku);
@@ -316,7 +319,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <ShoppingBag className="w-5 h-5" />
  </div>
  <div>
@@ -324,7 +327,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  <h2 className="text-base font-black text-theme-main">
  Crear Orden de Compra
  </h2>
- <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-500/25">
+ <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-theme-primary-light text-theme-primary border border-theme-primary/25">
  Desde {requisition.folio}
  </span>
  </div>
@@ -357,15 +360,15 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  }}
  className={`flex items-center gap-2 text-xs font-bold transition-all ${
  isCurrent
- ? 'text-rose-600 dark:text-rose-400 font-black'
+ ? 'text-theme-primary font-black'
  : isCompleted
- ? 'text-theme-main hover:text-rose-600 cursor-pointer'
+ ? 'text-theme-main hover:text-theme-primary cursor-pointer'
  : 'text-theme-muted opacity-50 cursor-not-allowed'
  }`}
  >
  <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono font-bold ${
  isCurrent
- ? 'bg-rose-600 text-white shadow-xs'
+ ? 'bg-theme-primary text-white shadow-xs'
  : isCompleted
  ? 'bg-emerald-600 text-white'
  : 'bg-theme-muted text-theme-muted'
@@ -515,7 +518,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  value={supplierSearch}
  onChange={(e) => setSupplierSearch(e.target.value)}
  placeholder="Buscar por nombre comercial, razón social, RFC o marca asociada..."
- className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-10 pr-4 py-2.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-10 pr-4 py-2.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
 
@@ -533,7 +536,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  onClick={() => setSelectedSupplier(sup)}
  className={`p-4 rounded-3xl border transition-all cursor-pointer space-y-3 flex flex-col justify-between ${
  isSelected
- ? 'bg-white border-2 border-rose-600 shadow-xs'
+ ? 'bg-white border-2 border-theme-primary shadow-xs'
  : 'bg-white hover:bg-theme-muted/40 border border-theme-subtle'
  }`}
  >
@@ -634,7 +637,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  )
  );
  }}
- className="rounded text-rose-600 focus:ring-rose-500 cursor-pointer"
+ className="rounded text-theme-primary focus:ring-theme-primary cursor-pointer"
  />
  </td>
 
@@ -668,7 +671,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  disabled={!item.selectedForOrder}
  value={item.orderedQuantity}
  onChange={(e) => handleItemQuantityChange(item.id, parseInt(e.target.value) || 1)}
- className="w-16 bg-theme-muted/60 border border-theme-subtle rounded-xl px-2 py-1 text-center font-mono font-black text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-16 bg-theme-muted/60 border border-theme-subtle rounded-xl px-2 py-1 text-center font-mono font-black text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </td>
 
@@ -684,7 +687,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  disabled={!item.selectedForOrder}
  value={item.unitPrice}
  onChange={(e) => handleItemPriceChange(item.id, parseFloat(e.target.value) || 0)}
- className="w-24 bg-theme-muted/60 border border-theme-subtle rounded-xl px-2 py-1 font-mono font-bold text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-24 bg-theme-muted/60 border border-theme-subtle rounded-xl px-2 py-1 font-mono font-bold text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
  {(() => {
@@ -751,7 +754,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  </div>
  <div className="flex justify-between text-sm font-black text-theme-main pt-1.5 border-t border-theme-subtle">
  <span>Total:</span>
- <strong className="text-rose-600 font-extrabold text-base">${total.toLocaleString('es-MX')} MXN</strong>
+ <strong className="text-theme-primary font-extrabold text-base">${total.toLocaleString('es-MX')} MXN</strong>
  </div>
  </div>
  </div>
@@ -783,7 +786,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  <select
  value={targetWarehouseId}
  onChange={(e) => setTargetWarehouseId(e.target.value)}
- className="w-full bg-theme-surface border border-theme-subtle rounded-2xl px-3.5 py-2.5 text-xs font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30 cursor-pointer"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-2xl px-3.5 py-2.5 text-xs font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30 cursor-pointer"
  >
  {DESTINATION_WAREHOUSES.map((wh) => (
  <option key={wh.id} value={wh.id}>
@@ -827,7 +830,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  value={expectedDeliveryDate}
  onChange={(e) => setExpectedDeliveryDate(e.target.value)}
  placeholder="Ej. 31 Ago 2026"
- className="w-full bg-theme-surface border border-theme-subtle rounded-2xl px-3.5 py-2.5 text-xs font-mono font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-2xl px-3.5 py-2.5 text-xs font-mono font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  <span className="text-[10px] text-theme-muted block">
  Calculada automáticamente con base en el tiempo estimado del proveedor ({selectedSupplier?.leadTimeDays} días).
@@ -884,8 +887,8 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  type="text"
  value={notes}
  onChange={(e) => setNotes(e.target.value)}
- placeholder="Ej. Cargar en tarimas de 10 colchones con plástico protector..."
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ placeholder="Ej. Entregar en tarimas flejadas con plástico protector e identificación de lote..."
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
  </div>
@@ -926,9 +929,9 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  <span className="text-[10px] text-theme-muted block">Condición: {paymentCondition} ({creditDays}d)</span>
  </div>
 
- <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/25 space-y-1 text-xs">
- <span className="text-[10px] uppercase font-black text-rose-700 dark:text-rose-300">Total a Comprar</span>
- <strong className="text-rose-600 font-mono font-black text-base block">
+ <div className="p-4 rounded-2xl bg-theme-primary-light border border-theme-primary/25 space-y-1 text-xs">
+ <span className="text-[10px] uppercase font-black text-theme-primary">Total a Comprar</span>
+ <strong className="text-theme-primary font-mono font-black text-base block">
  ${total.toLocaleString('es-MX')} MXN
  </strong>
  <span className="text-[10px] text-theme-muted block">
@@ -999,7 +1002,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  type="button"
  onClick={() => setCurrentStep((prev) => (prev + 1) as any)}
  disabled={currentStep === 2 && !selectedSupplier}
- className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+ className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
  >
  <span>Continuar</span>
  <ArrowRight className="w-4 h-4" />

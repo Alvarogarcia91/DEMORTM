@@ -4,7 +4,7 @@ import { Navigation, MapPin, Clock } from 'lucide-react';
 export const EnRutaPlaceholder: React.FC = () => {
   return (
     <div className="bg-theme-surface p-12 border border-theme-subtle rounded-3xl shadow-xs text-center space-y-4 animate-in fade-in duration-200">
-      <div className="w-14 h-14 rounded-2xl bg-white border border-rose-500/30 text-rose-600 flex items-center justify-center mx-auto shadow-sm">
+      <div className="w-14 h-14 rounded-2xl bg-white border border-theme-primary/30 text-theme-primary flex items-center justify-center mx-auto shadow-sm">
         <Navigation className="w-7 h-7" />
       </div>
 

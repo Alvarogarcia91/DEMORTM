@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
  X, 
  Printer, 
@@ -51,7 +51,7 @@ const sortNatural = (a: string | number, b: string | number) =>
 export const LocationBatchPrintModal: React.FC<LocationBatchPrintModalProps> = ({
  isOpen,
  onClose,
- initialWarehouseId = 'wh-mty-norte',
+ initialWarehouseId = 'alm-rtm-mp',
 }) => {
  const [selectedWarehouseId, setSelectedWarehouseId] = useState<string>(initialWarehouseId);
  const [mode, setMode] = useState<'COLUMN' | 'LEVEL' | 'MANUAL'>('COLUMN');
@@ -152,22 +152,22 @@ export const LocationBatchPrintModal: React.FC<LocationBatchPrintModalProps> = (
  });
  });
 
- // 6. Showroom Bays (Exhibición Retail)
- if (selectedWarehouse.showroomBays) {
- selectedWarehouse.showroomBays.forEach((bay) => {
- list.push({
- code: bay.code,
- name: `${bay.name} · Showroom`,
- type: 'SHOWROOM',
- warehouseName: selectedWarehouse.name,
- warehouseCode: selectedWarehouse.code,
- capacity: 1,
- currentUnits: bay.status === 'Ocupada' && bay.mattress ? 1 : 0,
- status: bay.status === 'Ocupada' ? 'Ocupada · En exhibición' : 'Libre para montaje',
- description: `Bahía de exhibición retail en piso de venta (${selectedWarehouse.name}).`,
- });
- });
- }
+ // 6. Bahías de Muestras QA
+  if ((selectedWarehouse as any).sampleBays) {
+    (selectedWarehouse as any).sampleBays.forEach((bay: any) => {
+      list.push({
+        code: bay.code,
+        name: `${bay.name} · Muestras QA`,
+        type: 'MUESTRAS',
+        warehouseName: selectedWarehouse.name,
+        warehouseCode: selectedWarehouse.code,
+        capacity: 1,
+        currentUnits: bay.status === 'Ocupada' ? 1 : 0,
+        status: bay.status === 'Ocupada' ? 'Ocupada · En retención QA' : 'Libre',
+        description: `Bahía de muestras y retención QA (${selectedWarehouse.name}).`,
+      });
+    });
+  }
 
  return list;
  }, [selectedWarehouse]);
@@ -523,7 +523,7 @@ export const LocationBatchPrintModal: React.FC<LocationBatchPrintModalProps> = (
  <div>
  <span className="text-[8px] uppercase font-extrabold text-zinc-600 block">Tipo / Zona</span>
  <strong className="text-[10px] font-black text-black block">
- {currentItem?.location.type === 'SHOWROOM' ? 'Showroom Retail' : currentItem?.location.type === 'EMBARQUE' ? 'Carril de Entrega' : currentItem?.location.type}
+ {currentItem?.location.type === 'MUESTRAS' ? 'Muestras QA' : currentItem?.location.type === 'EMBARQUE' ? 'Carril de Entrega' : currentItem?.location.type}
  </strong>
  </div>
  </div>
@@ -704,7 +704,7 @@ export const LocationBatchPrintModal: React.FC<LocationBatchPrintModalProps> = (
  </span>
  </div>
  <p className="text-xs text-theme-muted mt-0.5">
- Genera paquetes de etiquetas para columnas de rack, niveles completos o áreas operativas de CEDIS y Sucursales.
+ Genera paquetes de etiquetas para columnas de rack, niveles completos o áreas operativas de Almacén Principal y Áreas Operativas.
  </p>
  </div>
  </div>
@@ -879,7 +879,7 @@ export const LocationBatchPrintModal: React.FC<LocationBatchPrintModalProps> = (
  {matchingLoc?.code || `${selectedAisle}-${lvl}-${selectedPosition}`}
  </strong>
  <span className="text-[10px] text-theme-muted">
- Nivel {lvl} ({lvl === 'C' ? 'Superior' : lvl === 'B' ? 'Medio' : 'Piso'}) &middot; Capacidad: 7 colchones
+ Nivel {lvl} ({lvl === 'C' ? 'Superior' : lvl === 'B' ? 'Medio' : 'Piso'}) &middot; Capacidad: 7 tarimas/unidades
  </span>
  </div>
  </div>
@@ -1003,7 +1003,7 @@ export const LocationBatchPrintModal: React.FC<LocationBatchPrintModalProps> = (
  )}
 
  {/* ============================================================= */}
- {/* MODO 3: SELECCIÓN MANUAL & ZONAS ESPECIALES (SHOWROOM, ETC.) */}
+ {/* MODO 3: SELECCIÓN MANUAL & ZONAS ESPECIALES */}
  {/* ============================================================= */}
  {mode === 'MANUAL' && (
  <div className="p-4.5 rounded-3xl bg-theme-muted/40 border border-theme-subtle space-y-4 animate-in fade-in duration-150">
@@ -1060,10 +1060,10 @@ export const LocationBatchPrintModal: React.FC<LocationBatchPrintModalProps> = (
  </div>
  </div>
 
- {/* Special Zones (Showroom, Shipping lanes, Reception, Rework) */}
+ {/* Special Zones (Shipping lanes, Reception, Rework) */}
  <div className="space-y-1.5 pt-2 border-t border-theme-subtle">
  <span className="text-[10px] font-bold text-theme-muted uppercase block">
- Zonas Especiales & Showroom ({selectedWarehouse.name})
+ Zonas Especiales & Muestras QA ({selectedWarehouse.name})
  </span>
 
  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -1134,7 +1134,7 @@ export const LocationBatchPrintModal: React.FC<LocationBatchPrintModalProps> = (
  <button
  type="button"
  onClick={() => setBlocks([])}
- className="text-[10px] text-rose-600 hover:underline font-bold cursor-pointer"
+ className="text-[10px] text-theme-primary hover:underline font-bold cursor-pointer"
  >
  Vaciar paquete
  </button>
@@ -1197,7 +1197,7 @@ export const LocationBatchPrintModal: React.FC<LocationBatchPrintModalProps> = (
  <button
  type="button"
  onClick={() => handleRemoveBlock(block.id)}
- className="p-1.5 text-theme-muted hover:text-rose-600 hover:bg-rose-500/10 rounded-xl transition-colors cursor-pointer"
+ className="p-1.5 text-theme-muted hover:text-theme-primary hover:bg-theme-primary-light rounded-xl transition-colors cursor-pointer"
  title="Quitar este bloque"
  >
  <Trash2 className="w-4 h-4" />

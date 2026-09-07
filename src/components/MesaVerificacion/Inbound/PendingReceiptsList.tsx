@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { 
  Search, 
  Building2, 
@@ -87,14 +87,14 @@ export const PendingReceiptsList: React.FC<PendingReceiptsListProps> = ({
  <div className="bg-theme-surface p-4 border border-theme-subtle rounded-3xl shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
  <div className="space-y-0.5">
  <h3 className="text-xs font-black uppercase tracking-wider text-theme-main flex items-center gap-2">
- <Truck className="w-4 h-4 text-rose-600" />
+ <Truck className="w-4 h-4 text-theme-primary" />
  <span>Compras por Recibir en CEDIS</span>
  </h3>
  <p className="text-xs text-theme-muted">
- Órdenes de compra emitidas y en tránsito listas para validación física, escaneo y serialización individual de colchones al arribo.
+ Órdenes de compra emitidas y en tránsito listas para validación física, escaneo y serialización individual de unidades / bobinas al arribo.
  </p>
  </div>
- <div className="text-xs font-mono font-bold text-rose-600 bg-rose-500/10 px-3 py-1.5 rounded-xl border border-rose-500/20 self-start sm:self-auto whitespace-nowrap">
+ <div className="text-xs font-mono font-bold text-theme-primary bg-theme-primary-light px-3 py-1.5 rounded-xl border border-theme-primary/20 self-start sm:self-auto whitespace-nowrap">
  {filteredAndSortedOrders.length} compras pendientes
  </div>
  </div>
@@ -111,7 +111,7 @@ export const PendingReceiptsList: React.FC<PendingReceiptsListProps> = ({
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar por Orden de Compra (ej. OC-2026-0081), proveedor, artículo o SKU..."
- className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  {searchQuery && (
  <button
@@ -187,7 +187,7 @@ export const PendingReceiptsList: React.FC<PendingReceiptsListProps> = ({
  return (
  <tr key={order.id} className="hover:bg-theme-muted/30 transition-colors">
  {/* Orden de compra Folio */}
- <td className="py-3.5 px-4 font-mono font-black text-rose-600 whitespace-nowrap">
+ <td className="py-3.5 px-4 font-mono font-black text-theme-primary whitespace-nowrap">
  <span className="block">{order.folio}</span>
  {order.referenceFolio && (
  <span className="text-[10px] text-theme-muted font-normal block font-sans">
@@ -213,7 +213,7 @@ export const PendingReceiptsList: React.FC<PendingReceiptsListProps> = ({
  <span className="font-bold text-theme-main block">
  {order.destinationWarehouseName}
  </span>
- <span className="text-[10px] text-rose-600 font-mono font-bold">
+ <span className="text-[10px] text-theme-primary font-mono font-bold">
  Rampa {order.receivingAreaCode}
  </span>
  </td>
@@ -242,7 +242,7 @@ export const PendingReceiptsList: React.FC<PendingReceiptsListProps> = ({
  </td>
 
  {/* Pendientes */}
- <td className="py-3.5 px-3 text-center font-mono font-black text-rose-600 whitespace-nowrap">
+ <td className="py-3.5 px-3 text-center font-mono font-black text-theme-primary whitespace-nowrap">
  {order.totalPendingUnits} u.
  </td>
 
@@ -277,7 +277,7 @@ export const PendingReceiptsList: React.FC<PendingReceiptsListProps> = ({
  <button
  type="button"
  onClick={() => onSelectOrder(order)}
- className="px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 ml-auto cursor-pointer"
+ className="px-4 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 ml-auto cursor-pointer"
  >
  <span>Abrir recepción</span>
  <ArrowRight className="w-3.5 h-3.5" />

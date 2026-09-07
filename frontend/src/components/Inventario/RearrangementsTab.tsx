@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { 
  Zap, 
  ArrowRight, 
@@ -40,94 +40,94 @@ import { StatusBadge } from '../common/StatusBadge';
 import { getRearrangementSuggestions, RearrangementSuggestion } from '../../data/mockReorderSuggestions';
 
 // Initial Mock Suggestions from central Layout Optimizer
-const INITIAL_SUGGESTIONS: RearrangementSuggestionItem[] = getRearrangementSuggestions('wh-mty-norte').suggestions;
+const INITIAL_SUGGESTIONS: RearrangementSuggestionItem[] = getRearrangementSuggestions('wh-alm-rtm').suggestions;
 
 
 // Initial Mock Active Orders
 const INITIAL_ACTIVE_ORDERS: RearrangementOrderRecord[] = [
- {
- id: 'ord-101',
- folio: 'RA-2026-0017',
- uid: 'SC-UID-2026-000150',
- sku: 'SC-SPA-REC-IND',
- productName: 'Spring Air Colchón Record Individual',
- brand: 'Spring Air',
- size: 'Individual',
- warehouseId: 'wh-mty-norte',
- warehouseName: 'CEDIS Monterrey Norte',
- originLocation: 'D-B-02',
- destinationLocation: 'B-B-03',
- reasonType: 'CONSOLIDACIÓN',
- status: 'Pendiente',
- createdAt: '27 Ago 2026',
- },
- {
- id: 'ord-100',
- folio: 'RA-2026-0016',
- uid: 'SC-UID-2026-000122',
- sku: 'SC-RES-ORT-MAT',
- productName: 'Restonic Colchón Ortopedic Matrimonial',
- brand: 'Restonic',
- size: 'Matrimonial',
- warehouseId: 'wh-mty-norte',
- warehouseName: 'CEDIS Monterrey Norte',
- originLocation: 'C-A-05',
- destinationLocation: 'A-A-07',
- reasonType: 'ALTA ROTACIÓN',
- status: 'En ejecución',
- createdAt: '27 Ago 2026',
- },
+  {
+    id: 'ord-101',
+    folio: 'RA-2026-0017',
+    uid: 'TAR-RTM-260906-184',
+    sku: 'MP-COU-090',
+    productName: 'Papel Couché 90 g (Pliegos 70x100 cm)',
+    brand: 'Bio-Pappel',
+    size: 'Tarima 18,000 pliegos',
+    warehouseId: 'wh-alm-rtm',
+    warehouseName: 'Almacén Principal RTM',
+    originLocation: 'PAP-A-03',
+    destinationLocation: 'ACO-01',
+    reasonType: 'ALTA ROTACIÓN',
+    status: 'Pendiente',
+    createdAt: '06 Sep 2026',
+  },
+  {
+    id: 'ord-100',
+    folio: 'RA-2026-0016',
+    uid: 'BOB-RTM-260906-088',
+    sku: 'MP-BOP-WHT',
+    productName: 'BOPP Blanco 50 micras (Bobina 350 mm)',
+    brand: 'Jindal Films',
+    size: 'Bobina 3,000 m',
+    warehouseId: 'wh-alm-rtm',
+    warehouseName: 'Almacén Principal RTM',
+    originLocation: 'FLX-B-02',
+    destinationLocation: 'ACO-01',
+    reasonType: 'CONSOLIDACIÓN',
+    status: 'En ejecución',
+    createdAt: '06 Sep 2026',
+  },
 ];
 
 // Initial Mock History
 const INITIAL_HISTORY: Array<{
- id: string;
- timestamp: string;
- folio: string;
- uid: string;
- productName: string;
- sku: string;
- origin: string;
- destination: string;
- reason: string;
- executedBy: string;
+  id: string;
+  timestamp: string;
+  folio: string;
+  uid: string;
+  productName: string;
+  sku: string;
+  origin: string;
+  destination: string;
+  reason: string;
+  executedBy: string;
 }> = [
- {
- id: 'hist-01',
- timestamp: '27 Ago 2026 16:30',
- folio: 'RA-2026-0015',
- uid: 'SC-UID-2026-000110',
- productName: 'Spring Air Colchón Record Individual',
- sku: 'SC-SPA-REC-IND',
- origin: 'E-A-02',
- destination: 'B-A-04',
- reason: 'Optimización por alta rotación',
- executedBy: 'Admin Demo (Terminal RF-02)',
- },
- {
- id: 'hist-02',
- timestamp: '26 Ago 2026 14:12',
- folio: 'RA-2026-0014',
- uid: 'SC-UID-2026-000165',
- productName: 'Nayt Colchón Flow Basic White Matrimonial',
- sku: 'SC-NAYT-FLOW-MAT',
- origin: 'D-C-01',
- destination: 'A-B-05',
- reason: 'Consolidación con lote W34',
- executedBy: 'Operador Juan Garza',
- },
- {
- id: 'hist-03',
- timestamp: '25 Ago 2026 11:45',
- folio: 'RA-2026-0013',
- uid: 'SC-UID-2026-000092',
- productName: 'Restonic Colchón Ortopedic Matrimonial',
- sku: 'SC-RES-ORT-MAT',
- origin: 'C-B-08',
- destination: 'A-C-06',
- reason: 'Cumplimiento de rotación FIFO',
- executedBy: 'Supervisor Almacén',
- },
+  {
+    id: 'hist-01',
+    timestamp: '06 Sep 2026 16:30',
+    folio: 'RA-2026-0015',
+    uid: 'TAR-RTM-260906-183',
+    productName: 'Papel Couché 90 g (Pliegos 70x100 cm)',
+    sku: 'MP-COU-090',
+    origin: 'PAP-B-01',
+    destination: 'PAP-A-03',
+    reason: 'Optimización por cercanía a Staging Offset',
+    executedBy: 'Almacenista Pedro Méndez (Montacargas 02)',
+  },
+  {
+    id: 'hist-02',
+    timestamp: '05 Sep 2026 14:12',
+    folio: 'RA-2026-0014',
+    uid: 'BOB-RTM-260906-089',
+    productName: 'BOPP Transparente 40 micras (Bobina 330 mm)',
+    sku: 'MP-BOP-CLR',
+    origin: 'FLX-B-04',
+    destination: 'FLX-B-01',
+    reason: 'Consolidación de lote de sustratos Flexo',
+    executedBy: 'Operador Flexo Jorge Ruiz',
+  },
+  {
+    id: 'hist-03',
+    timestamp: '04 Sep 2026 11:45',
+    folio: 'RA-2026-0013',
+    uid: 'REM-RTM-260906-001',
+    productName: 'Remanente BOPP Blanco (Bobina parcial)',
+    sku: 'MP-BOP-WHT',
+    origin: 'ACO-01',
+    destination: 'FLX-B-05',
+    reason: 'Devolución de sobrante de producción OP-2026-0870',
+    executedBy: 'Supervisor de Almacén RTM',
+  },
 ];
 
 interface RearrangementsTabProps {
@@ -389,7 +389,7 @@ export const RearrangementsTab: React.FC<RearrangementsTabProps> = ({ onShowToas
  type="text"
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
- placeholder="Buscar por UID, SKU, colchón o ubicación..."
+ placeholder="Buscar por UID, SKU, material, insumo o ubicación..."
  className="w-full bg-theme-muted border border-theme-subtle rounded-xl pl-10 pr-3 py-2 text-xs text-theme-main placeholder-theme-muted focus:bg-theme-surface focus:outline-none focus:border-theme-primary"
  />
  </div>
@@ -407,9 +407,9 @@ export const RearrangementsTab: React.FC<RearrangementsTabProps> = ({ onShowToas
  onChange={(e) => setFilterWarehouse(e.target.value)}
  className="bg-theme-muted border border-theme-subtle text-xs font-semibold text-theme-main py-2 px-3 rounded-xl focus:outline-none focus:border-theme-primary cursor-pointer"
  >
- <option value="all">Todos los CEDIS</option>
- <option value="wh-mty-norte">CEDIS Monterrey Norte</option>
- <option value="wh-mty-sur">CEDIS Monterrey Sur</option>
+ <option value="all">Todos los Almacenes</option>
+ <option value="wh-alm-rtm">Almacén Principal RTM</option>
+ <option value="wh-alm-virtual">Almacén Virtual / Control</option>
  </select>
 
  {/* Motivo (en Sugerencias) */}
@@ -459,7 +459,7 @@ export const RearrangementsTab: React.FC<RearrangementsTabProps> = ({ onShowToas
  key={sug.id}
  className="bg-theme-surface border border-theme-subtle rounded-2xl p-5 shadow-xs hover:border-theme-primary/40 transition-all flex flex-col lg:flex-row lg:items-center justify-between gap-5"
  >
- {/* Left: Mattress & Warehouse info */}
+ {/* Left: Unit & Warehouse info */}
  <div className="space-y-2 max-w-lg">
  <div className="flex items-center gap-2 flex-wrap">
  <span className="font-mono text-xs font-black text-theme-primary flex items-center gap-1">
@@ -552,7 +552,7 @@ export const RearrangementsTab: React.FC<RearrangementsTabProps> = ({ onShowToas
  <th className="py-3 px-3 text-center">Origen</th>
  <th className="py-3 px-3 text-center">Destino</th>
  <th className="py-3 px-3">Motivo</th>
- <th className="py-3 px-3">CEDIS</th>
+ <th className="py-3 px-3">Almacén</th>
  <th className="py-3 px-3">Estado</th>
  <th className="py-3 px-3">Fecha</th>
  <th className="py-3 px-4 text-center">Acción</th>
@@ -601,7 +601,7 @@ export const RearrangementsTab: React.FC<RearrangementsTabProps> = ({ onShowToas
  </span>
  </td>
 
- {/* CEDIS */}
+ {/* Almacén */}
  <td className="py-3 px-3 text-theme-muted whitespace-nowrap">
  {ord.warehouseName}
  </td>

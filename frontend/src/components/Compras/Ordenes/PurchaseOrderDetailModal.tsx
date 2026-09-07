@@ -144,7 +144,7 @@ export const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> =
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <FileText className="w-5 h-5" />
  </div>
  <div>
@@ -308,7 +308,7 @@ export const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> =
  </div>
  <div className="flex justify-between text-sm font-black text-theme-main pt-1.5 border-t border-theme-subtle">
  <span>Total:</span>
- <strong className="text-rose-600 font-extrabold text-base">${order.total.toLocaleString('es-MX')} MXN</strong>
+ <strong className="text-theme-primary font-extrabold text-base">${order.total.toLocaleString('es-MX')} MXN</strong>
  </div>
  </div>
  </div>
@@ -454,7 +454,7 @@ export const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> =
  <PackageCheck className="w-5 h-5 text-emerald-600 shrink-0" />
  <div>
  <strong className="text-xs font-black uppercase tracking-wider block">
- Recepción en Mesa de Verificación (CEDIS)
+ Recepción en Operaciones de Almacén (Planta Principal RTM)
  </strong>
  <span className="text-[11px] text-zinc-600 dark:text-zinc-400 block font-medium">
  Destino: {order.targetWarehouseName} &bull; Folio de referencia: {order.folio}
@@ -472,7 +472,7 @@ export const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> =
  </div>
 
  <p className="text-xs text-theme-muted leading-relaxed">
- Al arribar el transporte del fabricante al CEDIS, el operador de la Mesa de Verificación validará las partidas contra este folio <strong>{order.folio}</strong> y generará los identificadores individuales (QR) por cada colchón descargado.
+ Al arribar el embarque del proveedor al Almacén Principal RTM, el operador de Recepción validará las partidas contra este folio <strong>{order.folio}</strong> y registrará las materias primas e insumos en Operaciones de Almacén.
  </p>
 
  <div className="pt-2 border-t border-emerald-500/15 flex items-center justify-between flex-wrap gap-2 text-xs">
@@ -487,9 +487,9 @@ export const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> =
  onClose();
  onNavigateToInboundReceipts(order.folio);
  }}
- className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
  >
- <span>Ver en Entradas (Mesa de Verificación)</span>
+ <span>Ver en Entradas (Operaciones de Almacén)</span>
  <ArrowRight className="w-3.5 h-3.5" />
  </button>
  )}
@@ -500,11 +500,11 @@ export const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> =
  <div className="flex items-center gap-2 text-zinc-900">
  <Building2 className="w-5 h-5 text-blue-600" />
  <strong className="text-xs font-black uppercase tracking-wider">
- Entrega Directa a Sucursal ({order.targetWarehouseName})
+ Entrega Directa a Planta / Almacén ({order.targetWarehouseName})
  </strong>
  </div>
  <p className="text-xs text-theme-muted leading-relaxed">
- Esta orden de compra tiene como destino una sucursal de Impresos RTM. La entrega física y recepción se realiza directamente en tienda sin pasar por la Mesa de Verificación de los CEDIS.
+ Esta orden de compra tiene como destino el almacén operativo de Impresos RTM. La entrega física y recepción se valida y registra en Operaciones de Almacén.
  </p>
  </div>
  )}
@@ -541,7 +541,7 @@ export const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> =
  <button
  type="button"
  onClick={handleEmitOrder}
- className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+ className="px-5 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
  >
  <Send className="w-4 h-4" />
  <span>Emitir orden</span>
@@ -556,7 +556,7 @@ export const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> =
  setNewStatus(order.status);
  setStatusUpdateOpen(true);
  }}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
  >
  <Clock className="w-3.5 h-3.5" />
  <span>Actualizar seguimiento</span>
@@ -616,7 +616,7 @@ export const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> =
  </button>
  <button
  onClick={handleConfirmStatusUpdate}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer"
  >
  Guardar actualización
  </button>
@@ -640,7 +640,7 @@ export const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> =
  rows={3}
  value={cancellationReason}
  onChange={(e) => setCancellationReason(e.target.value)}
- placeholder="Ej. Cancelación acordada con proveedor por desabasto de tela..."
+ placeholder="Ej. Cancelación acordada con proveedor por desabasto de sustrato o materia prima..."
  className="w-full bg-theme-muted border border-theme-subtle rounded-xl p-3 text-xs text-theme-main focus:outline-none resize-none"
  />
  <div className="flex items-center justify-end gap-2 text-xs pt-2">
@@ -653,7 +653,7 @@ export const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> =
  <button
  onClick={handleConfirmCancellation}
  disabled={!cancellationReason.trim()}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold cursor-pointer disabled:opacity-50"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer disabled:opacity-50"
  >
  Confirmar cancelación
  </button>

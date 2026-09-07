@@ -71,7 +71,7 @@ export const PickSubstitutionModal: React.FC<PickSubstitutionModalProps> = ({
  <div className="grid grid-cols-2 gap-2 text-xs">
  <div className="p-3 rounded-2xl bg-theme-muted/40 border border-theme-subtle space-y-1">
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Unidad Planeada:</span>
- <strong className="font-mono text-rose-600 block truncate">{plannedStop.uid}</strong>
+ <strong className="font-mono text-theme-primary block truncate">{plannedStop.uid}</strong>
  <span className="text-[10px] text-theme-muted font-mono block">Antigüedad: {plannedStop.ageDays} días</span>
  </div>
 

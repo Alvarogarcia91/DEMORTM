@@ -4,7 +4,7 @@ import { Truck, Clock, BarChart3, Wrench, ShieldAlert } from 'lucide-react';
 export const EmbarquesDashboardPlaceholder: React.FC = () => {
   return (
     <div className="bg-theme-surface p-12 border border-theme-subtle rounded-3xl shadow-xs text-center space-y-6 animate-in fade-in duration-200">
-      <div className="w-16 h-16 rounded-3xl bg-white border border-rose-500/30 text-rose-600 flex items-center justify-center mx-auto shadow-sm">
+      <div className="w-16 h-16 rounded-3xl bg-white border border-theme-primary/30 text-theme-primary flex items-center justify-center mx-auto shadow-sm">
         <Truck className="w-8 h-8" />
       </div>
 
@@ -22,7 +22,7 @@ export const EmbarquesDashboardPlaceholder: React.FC = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto pt-4 text-left">
         <div className="p-4 rounded-2xl bg-white border border-theme-subtle shadow-2xs space-y-1">
-          <div className="flex items-center gap-2 text-rose-600 font-bold text-xs">
+          <div className="flex items-center gap-2 text-theme-primary font-bold text-xs">
             <Truck className="w-4 h-4" />
             <span>Flota Activa</span>
           </div>
@@ -32,7 +32,7 @@ export const EmbarquesDashboardPlaceholder: React.FC = () => {
         </div>
 
         <div className="p-4 rounded-2xl bg-white border border-theme-subtle shadow-2xs space-y-1">
-          <div className="flex items-center gap-2 text-rose-600 font-bold text-xs">
+          <div className="flex items-center gap-2 text-theme-primary font-bold text-xs">
             <BarChart3 className="w-4 h-4" />
             <span>Capacidad & Rutas</span>
           </div>
@@ -42,7 +42,7 @@ export const EmbarquesDashboardPlaceholder: React.FC = () => {
         </div>
 
         <div className="p-4 rounded-2xl bg-white border border-theme-subtle shadow-2xs space-y-1">
-          <div className="flex items-center gap-2 text-rose-600 font-bold text-xs">
+          <div className="flex items-center gap-2 text-theme-primary font-bold text-xs">
             <Clock className="w-4 h-4" />
             <span>Puntualidad de Salida</span>
           </div>
