@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Plus, User, Building2, Phone, Mail, MapPin, Check } from 'lucide-react';
 import { SalesCustomer } from '../../../data/mockSalesData';
+import { ModalPortal } from '../../common/ModalPortal';
 
 interface QuickClientFormModalProps {
   isOpen: boolean;
@@ -98,7 +99,7 @@ export const QuickClientFormModal: React.FC<QuickClientFormModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/60 backdrop-blur-xs animate-in fade-in duration-150">
+    <ModalPortal zIndex={1100} onClose={onClose} closeOnBackdropClick>
       <div className="w-full max-w-lg bg-white border border-zinc-200 rounded-3xl shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="p-5 border-b border-zinc-200 flex items-center justify-between bg-white">
@@ -293,6 +294,6 @@ export const QuickClientFormModal: React.FC<QuickClientFormModalProps> = ({
           </div>
         </form>
       </div>
-    </div>
+    </ModalPortal>
   );
 };
