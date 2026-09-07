@@ -20,7 +20,8 @@ import {
  Scale,
  UserCheck,
  Wrench,
- Factory
+ Factory,
+ ShieldCheck
 } from 'lucide-react';
 import { useNavigationModules } from '../context/NavigationModulesContext';
 
@@ -31,6 +32,7 @@ export type NavItemKey =
  | 'mesa-verificacion'
  | 'logistica'
  | 'produccion'
+ | 'calidad'
  | 'requisiciones'
  | 'compras'
  | 'proveedores'
@@ -98,6 +100,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
  title: 'PRODUCCIÓN',
  items: [
  { key: 'produccion', label: 'Producción', icon: Factory },
+ ],
+ },
+ {
+ title: 'CALIDAD',
+ items: [
+ { key: 'calidad', label: 'Calidad', icon: ShieldCheck },
  ],
  },
  {

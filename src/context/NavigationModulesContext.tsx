@@ -4,13 +4,20 @@ import { NavItemKey } from '../components/Sidebar';
 export interface ModuleDefinition {
   key: NavItemKey;
   label: string;
-  category: 'operaciones' | 'compras' | 'comercial' | 'ventas' | 'finanzas' | 'nomina' | 'mantenimiento' | 'sistema';
+  category: 'operaciones' | 'calidad' | 'compras' | 'comercial' | 'ventas' | 'finanzas' | 'nomina' | 'mantenimiento' | 'sistema';
   categoryLabel: string;
   description: string;
   isLocked?: boolean;
 }
 
 export const MODULE_DEFINITIONS: ModuleDefinition[] = [
+  {
+    key: 'calidad',
+    label: 'Calidad',
+    category: 'calidad',
+    categoryLabel: 'Calidad & SGC',
+    description: 'Liberaciones, primera pieza, auditoría final, no conformes y trazabilidad de lote.',
+  },
   {
     key: 'presupuestos',
     label: 'Presupuestos',
@@ -171,6 +178,7 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'mesa-verificacion': true,
   'logistica': false,
   'produccion': true,
+  'calidad': true,
   'requisiciones': false,
   'compras': false,
   'proveedores': false,
