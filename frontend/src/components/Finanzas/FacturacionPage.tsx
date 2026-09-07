@@ -19,6 +19,7 @@ import {
 import { SalesInvoice, EligibleRemision, INITIAL_SALES_INVOICES, INITIAL_ELIGIBLE_REMISIONES } from '../../data/mockFinanzasData';
 import { FacturaDetailModal } from './FacturaDetailModal';
 import { GenerarFacturaModal } from './GenerarFacturaModal';
+import { FacturaPrintPreviewModal } from './FacturaPrintPreviewModal';
 
 interface FacturacionPageProps {
   invoices?: SalesInvoice[];
@@ -43,6 +44,7 @@ export const FacturacionPage: React.FC<FacturacionPageProps> = ({
   const [selectedInvoice, setSelectedInvoice] = useState<SalesInvoice | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false);
   const [isGenerateOpen, setIsGenerateOpen] = useState<boolean>(false);
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState<boolean>(false);
 
   // Sync if prop changes
   React.useEffect(() => {
@@ -383,9 +385,20 @@ export const FacturacionPage: React.FC<FacturacionPageProps> = ({
                               setIsDetailOpen(true);
                             }}
                             className="p-1.5 rounded-lg text-theme-muted hover:text-theme-main hover:bg-theme-muted transition-colors cursor-pointer"
-                            title="Ver Comprobante CFDI"
+                            title="Ver Detalle Fiscal"
                           >
                             <Eye className="w-4 h-4" />
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              setSelectedInvoice(inv);
+                              setIsPrintPreviewOpen(true);
+                            }}
+                            className="p-1.5 rounded-lg text-theme-muted hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer"
+                            title="Vista previa / Imprimir"
+                          >
+                            <Printer className="w-4 h-4" />
                           </button>
 
                           {!isTimbrada && (
@@ -428,6 +441,15 @@ export const FacturacionPage: React.FC<FacturacionPageProps> = ({
           setSelectedInvoice(null);
         }}
         onNavigateToCxc={onNavigateToCxc}
+      />
+
+      <FacturaPrintPreviewModal
+        invoice={selectedInvoice}
+        isOpen={isPrintPreviewOpen}
+        onClose={() => {
+          setIsPrintPreviewOpen(false);
+          setSelectedInvoice(null);
+        }}
       />
 
       <GenerarFacturaModal

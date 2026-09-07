@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { X, CheckCircle2, ShieldCheck, Printer, Download, FileCode, AlertCircle, Building2, User, Calendar, DollarSign, QrCode } from 'lucide-react';
 import { SalesInvoice } from '../../data/mockFinanzasData';
+import { FacturaPrintPreviewModal } from './FacturaPrintPreviewModal';
 
 interface FacturaDetailModalProps {
   invoice: SalesInvoice | null;
@@ -15,59 +16,62 @@ export const FacturaDetailModal: React.FC<FacturaDetailModalProps> = ({
   onClose,
   onNavigateToCxc,
 }) => {
+  const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
+
   if (!isOpen || !invoice) return null;
 
   const isTimbrada = invoice.status === 'timbrada';
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-zinc-950/70 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-150">
-      <div className="bg-theme-surface border border-theme-subtle rounded-2xl w-full max-w-4xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden text-theme-main">
-        {/* Modal Header */}
-        <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-muted/40">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-theme-primary/10 border border-theme-primary/20 flex items-center justify-center text-theme-primary">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2.5">
-                <h3 className="text-base font-bold text-theme-main">
-                  Representación Impresa CFDI 4.0 (Demo)
-                </h3>
-                <span
-                  className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${
-                    isTimbrada
-                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-300'
-                      : invoice.status === 'lista_timbrar'
-                      ? 'bg-blue-50 text-blue-700 border border-blue-300'
-                      : 'bg-amber-50 text-amber-700 border border-amber-300'
-                  }`}
-                >
-                  {isTimbrada ? 'Timbrada con UUID' : invoice.status === 'lista_timbrar' ? 'Lista para Timbrar' : 'Borrador'}
-                </span>
+    <>
+      <div className="fixed inset-0 z-50 overflow-y-auto bg-zinc-950/70 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-150">
+        <div className="bg-theme-surface border border-theme-subtle rounded-2xl w-full max-w-4xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden text-theme-main">
+          {/* Modal Header */}
+          <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-muted/40">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-theme-primary/10 border border-theme-primary/20 flex items-center justify-center text-theme-primary">
+                <ShieldCheck className="w-5 h-5" />
               </div>
-              <p className="text-xs text-theme-muted">
-                Folio: <strong className="text-theme-main">{invoice.folio}</strong> · Serie RTM Ingreso
-              </p>
+              <div>
+                <div className="flex items-center gap-2.5">
+                  <h3 className="text-base font-bold text-theme-main">
+                    Representación Impresa CFDI 4.0 (Demo)
+                  </h3>
+                  <span
+                    className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${
+                      isTimbrada
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-300'
+                        : invoice.status === 'lista_timbrar'
+                        ? 'bg-blue-50 text-blue-700 border border-blue-300'
+                        : 'bg-amber-50 text-amber-700 border border-amber-300'
+                    }`}
+                  >
+                    {isTimbrada ? 'Timbrada con UUID' : invoice.status === 'lista_timbrar' ? 'Lista para Timbrar' : 'Borrador'}
+                  </span>
+                </div>
+                <p className="text-xs text-theme-muted">
+                  Folio: <strong className="text-theme-main">{invoice.folio}</strong> · Serie RTM Ingreso
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsPrintPreviewOpen(true)}
+                className="px-3 py-1.5 rounded-lg border border-theme-subtle hover:bg-theme-muted text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                title="Vista previa de impresión"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>Imprimir</span>
+              </button>
+              <button
+                onClick={onClose}
+                className="p-2 rounded-lg text-theme-muted hover:text-theme-main hover:bg-theme-muted transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
           </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => window.print()}
-              className="px-3 py-1.5 rounded-lg border border-theme-subtle hover:bg-theme-muted text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
-              title="Imprimir / Vista PDF"
-            >
-              <Printer className="w-3.5 h-3.5" />
-              <span>Imprimir</span>
-            </button>
-            <button
-              onClick={onClose}
-              className="p-2 rounded-lg text-theme-muted hover:text-theme-main hover:bg-theme-muted transition-colors cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
 
         {/* Modal Body */}
         <div className="p-6 overflow-y-auto space-y-6 text-xs">
@@ -306,5 +310,14 @@ export const FacturaDetailModal: React.FC<FacturaDetailModalProps> = ({
         </div>
       </div>
     </div>
+
+    {/* Dedicated A4 Print Preview Modal */}
+    <FacturaPrintPreviewModal
+      invoice={invoice}
+      isOpen={isPrintPreviewOpen}
+      onClose={() => setIsPrintPreviewOpen(false)}
+    />
+  </>
   );
 };
+
