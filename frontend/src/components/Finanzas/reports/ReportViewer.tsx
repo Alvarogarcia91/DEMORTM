@@ -15,7 +15,10 @@ import {
   CheckCircle2,
   Clock,
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  Eye,
+  Info,
+  AlertTriangle
 } from 'lucide-react';
 import {
   MOCK_BALANCE_SHEET,
@@ -126,14 +129,14 @@ export const ReportViewer: React.FC<ReportViewerProps> = ({
           {/* Botones de Exportación */}
           <div className="flex items-center gap-1.5 ml-auto">
             <button
-              onClick={() => toast('Exportando reporte a formato Excel XLSX · Demo RTM')}
+              onClick={() => toast(`Exportando "${reportDef.title}" a formato Excel XLSX · Demo RTM`)}
               className="px-3 py-2 rounded-xl border border-theme-subtle bg-theme-surface text-xs font-bold text-theme-main hover:border-theme-primary/40 flex items-center gap-1.5 transition-colors"
             >
               <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
               Excel
             </button>
             <button
-              onClick={() => toast('Generando documento PDF oficial de alta resolución · Demo RTM')}
+              onClick={() => toast(`Generando documento PDF oficial de "${reportDef.title}" · Demo RTM`)}
               className="px-3 py-2 rounded-xl border border-theme-subtle bg-theme-surface text-xs font-bold text-theme-main hover:border-theme-primary/40 flex items-center gap-1.5 transition-colors"
             >
               <Download className="w-3.5 h-3.5 text-rose-600" />
@@ -214,7 +217,7 @@ export const ReportViewer: React.FC<ReportViewerProps> = ({
         />
       )}
 
-      {/* Reportes Generales restantes con Vistas Operativas Cuadradas */}
+      {/* Reportes Generales restantes con Vista Previa Coherente y Honesta */}
       {![
         'rep-situacion-financiera',
         'rep-estado-resultados',
@@ -224,7 +227,7 @@ export const ReportViewer: React.FC<ReportViewerProps> = ({
         'rep-activos-catalogo',
         'rep-depreciacion-periodo'
       ].includes(reportId) && (
-        <GenericReportView reportDef={reportDef} onSelectLine={setSelectedDrillLine} />
+        <GenericReportView reportDef={reportDef} period={period} toast={toast} />
       )}
 
       {/* Modal de Drill-Down */}
@@ -866,46 +869,460 @@ const DepreciationReportView: React.FC<{
 };
 
 // ----------------------------------------------------------------------------
-// VISTA: REPORTE GENÉRICO OPERATIVO
+// VISTA: REPORTE GENÉRICO / PLANTILLA PRELIMINAR (VISTA DEMOSTRATIVA)
 // ----------------------------------------------------------------------------
+interface ReportPreviewModel {
+  kpis: { label: string; value: string; subtext: string }[];
+  columns: string[];
+  rows: (string | number)[][];
+  sourceModules: string[];
+}
+
+const getReportPreviewModel = (
+  reportId: string,
+  title: string,
+  category: string,
+  period: string
+): ReportPreviewModel => {
+  switch (reportId) {
+    case 'rep-ventas-periodo':
+      return {
+        kpis: [
+          { label: 'Facturación Estimada', value: '$3,480,000', subtext: '+8.2% vs mes anterior' },
+          { label: 'Margen Bruto Promedio', value: '38.4%', subtext: 'Línea Offset & Flexo combinada' },
+          { label: 'Pedidos Entregados', value: '142 órdenes', subtext: '98.5% entrega a tiempo' },
+        ],
+        columns: ['Línea de Negocio', 'Familia', 'Facturación Mes Actual', 'Facturación Mes Anterior', 'Variación %', 'Margen %', 'Participación'],
+        rows: [
+          ['Offset Comercial', 'Catálogos y Folletos Farmacéuticos', '$1,850,000', '$1,720,000', '+7.5%', '39.2%', '53.2%'],
+          ['Flexografía', 'Etiquetas BoPP y Térmico Directo', '$1,280,000', '$1,190,000', '+7.6%', '41.0%', '36.8%'],
+          ['Empaque Plegadizo', 'Cajas Medicamento y Cosmético', '$350,000', '$305,000', '+14.8%', '34.5%', '10.0%'],
+        ],
+        sourceModules: ['Comercial / Cotizaciones', 'Facturación CFDI 4.0', 'Embarques'],
+      };
+
+    case 'rep-rentabilidad-cliente':
+      return {
+        kpis: [
+          { label: 'Cuentas Clave Analizadas', value: '28 clientes', subtext: 'Top 80% facturación' },
+          { label: 'Margen de Contribución', value: '41.2%', subtext: 'Promedio cartera activa' },
+          { label: 'Cliente Mayor Volumen', value: 'Laboratorios Alpharma', subtext: '$780,000 facturados en el mes' },
+        ],
+        columns: ['Razón Social / Cliente', 'Segmento', 'Ventas Netas', 'Costo Estimado Producción', 'Margen Contribución', '% Margen', 'Clasificación'],
+        rows: [
+          ['Laboratorios Alpharma S.A. de C.V.', 'Farmacéutico', '$780,000', '$440,000', '$340,000', '43.6%', 'Tier A+'],
+          ['Tyco Electronics México', 'Industrial / Arneses', '$590,000', '$360,000', '$230,000', '39.0%', 'Tier A'],
+          ['Kimberly Clark de México', 'Consumo Masivo', '$420,000', '$255,000', '$165,000', '39.3%', 'Tier A'],
+        ],
+        sourceModules: ['Comercial / CRM', 'Costeo de Producción', 'Contabilidad'],
+      };
+
+    case 'rep-rentabilidad-producto':
+      return {
+        kpis: [
+          { label: 'SKUs Fabricados', value: '86 artículos', subtext: 'Producción en planta RTM' },
+          { label: 'Familia Más Rentable', value: 'Etiquetas BoPP Metalizado', subtext: '47.5% margen de contribución' },
+          { label: 'Volumen Total Tirado', value: '1.85M piezas', subtext: 'Prensas Offset y Flexo' },
+        ],
+        columns: ['Familia de Artículo', 'Línea Productiva', 'Unidades Producidas', 'Precio Unitario Prom.', 'Costo Directo', 'Margen Bruto', 'Rentabilidad'],
+        rows: [
+          ['Folleto Prospecto 4x4', 'Offset Heidelberg', '450,000 pzas', '$1.45', '$0.88', '$0.57', '39.3%'],
+          ['Etiqueta BoPP Metalizada', 'Flexo Mark Andy', '850,000 pzas', '$0.95', '$0.50', '$0.45', '47.4%'],
+          ['Manual Grapado 32pp', 'Offset + Acabados', '85,000 pzas', '$8.20', '$5.10', '$3.10', '37.8%'],
+        ],
+        sourceModules: ['Piso de Producción', 'Recetas de Material', 'Catálogo de Productos'],
+      };
+
+    case 'rep-facturas-pendientes':
+      return {
+        kpis: [
+          { label: 'Documentos Pendientes', value: '9 folios', subtext: 'Por conciliar o timbrar' },
+          { label: 'Importe en Aclaración', value: '$186,400', subtext: 'Sujeto a complementos' },
+          { label: 'Días Promedio Pendiente', value: '4.2 días', subtext: 'Dentro de umbral operativo' },
+        ],
+        columns: ['Folio Documento', 'Cliente / Proveedor', 'Fecha Emisión', 'Importe Total', 'Moneda', 'Motivo de Pendiente', 'Estatus'],
+        rows: [
+          ['FAC-2026-8912', 'Laboratorios Alpharma', '02/09/2026', '$78,400', 'MXN', 'Pendiente de aceptación portal cliente', 'En trámite'],
+          ['FAC-2026-8915', 'Distribuidora Gráfica', '04/09/2026', '$45,000', 'MXN', 'Complemento de pago por timbrar', 'Por conciliar'],
+          ['NC-2026-0045', 'Envases Farmacéuticos', '05/09/2026', '$12,300', 'MXN', 'Ajuste de volumen en revisión comercial', 'Aprobación'],
+        ],
+        sourceModules: ['Facturación CFDI', 'Cuentas por Cobrar', 'Tesorería'],
+      };
+
+    case 'rep-balanza-comprobacion':
+      return {
+        kpis: [
+          { label: 'Cuentas con Movimiento', value: '118 cuentas', subtext: 'Catálogo contable activo' },
+          { label: 'Sumas Iguales', value: '$28,450,120', subtext: 'Debe = Haber cuadrado riguroso' },
+          { label: 'Estatus Validación', value: '100% Cuadrada', subtext: 'Sin descuadres de mayor' },
+        ],
+        columns: ['No. Cuenta', 'Nombre de la Cuenta', 'Saldo Inicial Deudor', 'Saldo Inicial Acreedor', 'Cargos del Mes', 'Abonos del Mes', 'Saldo Final'],
+        rows: [
+          ['1101-001', 'Bancos Nacionales (BBVA / Banorte)', '$1,850,000', '$0', '$3,420,000', '$2,980,000', '$2,290,000'],
+          ['1105-001', 'Clientes Nacionales', '$3,150,000', '$0', '$3,480,000', '$3,210,000', '$3,420,000'],
+          ['1150-001', 'Almacén de Materias Primas', '$1,920,000', '$0', '$1,450,000', '$1,290,000', '$2,080,000'],
+        ],
+        sourceModules: ['Pólizas de Diario, Ingresos y Egresos', 'Mayor General', 'Bancos'],
+      };
+
+    case 'rep-mayor-auxiliares':
+      return {
+        kpis: [
+          { label: 'Pólizas Contabilizadas', value: '342 pólizas', subtext: 'Mes de ' + period },
+          { label: 'Mayor Movimiento', value: 'Cuenta 1101 Bancos', subtext: '86 transacciones conciliadas' },
+          { label: 'Auditoría Fiscal', value: 'SAT Conforme', subtext: 'Código agrupador integrado' },
+        ],
+        columns: ['Fecha', 'Póliza', 'Cuenta Contable', 'Concepto / Referencia', 'Debe (Cargo)', 'Haber (Abono)', 'Saldo Acumulado'],
+        rows: [
+          ['01/09/2026', 'PI-0901', '1101-001 Bancos', 'Cobranza Factura FAC-8901 Alpharma', '$150,000', '$0', '$2,000,000'],
+          ['03/09/2026', 'PE-0904', '2101-001 Proveedores', 'Liquidación Factura Papelera del Norte', '$0', '$85,000', '$1,915,000'],
+          ['05/09/2026', 'PD-0912', '5101-001 Sueldos Fabriles', 'Nómina 1ra Quincena Planta RTM', '$165,000', '$0', '$165,000'],
+        ],
+        sourceModules: ['Contabilidad General', 'Nómina', 'Tesorería'],
+      };
+
+    case 'rep-presupuesto-real':
+      return {
+        kpis: [
+          { label: 'Presupuesto Operativo Mes', value: '$2,450,000', subtext: 'Aprobado para ' + period },
+          { label: 'Gasto Real Ejercido', value: '$2,310,000', subtext: '94.3% de ejecución' },
+          { label: 'Variación Favorable', value: '$140,000', subtext: 'Eficiencia en consumo de insumos' },
+        ],
+        columns: ['Centro de Costo', 'Responsable', 'Presupuesto Mensual', 'Gasto Real', 'Variación $', '% Ejercido', 'Semáforo'],
+        rows: [
+          ['CC-101 Offset Heidelberg', 'Ing. Roberto Méndez', '$680,000', '$655,000', '+$25,000', '96.3%', 'Dentro de rango'],
+          ['CC-102 Flexo Mark Andy', 'Ing. Carlos Ortiz', '$540,000', '$520,000', '+$20,000', '96.3%', 'Dentro de rango'],
+          ['CC-201 Mantenimiento Industrial', 'Ing. Saúl Estrada', '$180,000', '$168,000', '+$12,000', '93.3%', 'Excelente'],
+        ],
+        sourceModules: ['Centros de Costo', 'Contabilidad de Costos', 'Presupuestos'],
+      };
+
+    case 'rep-oc-abiertas':
+      return {
+        kpis: [
+          { label: 'Órdenes de Compra Vigentes', value: '14 órdenes', subtext: 'En tránsito o suministro' },
+          { label: 'Compromiso Financiero', value: '$520,000', subtext: 'Obligaciones estimadas de pago' },
+          { label: 'Cumplimiento de Entrega', value: '92.8%', subtext: 'Lead time de proveedores' },
+        ],
+        columns: ['No. OC', 'Proveedor', 'Material / Descripción', 'Cantidad', 'Fecha Solicitada', 'Importe Estimado', 'Estatus Logístico'],
+        rows: [
+          ['OC-2026-0412', 'Papelera del Norte S.A.', 'Bobina Couché 130g (100cm)', '12,500 kg', '10/09/2026', '$185,000', 'En tránsito'],
+          ['OC-2026-0415', 'Tintas y Barnices Gráficos', 'Tintas Offset Serie Escala Europa', '450 kg', '08/09/2026', '$72,000', 'Entrega parcial'],
+          ['OC-2026-0419', 'Adhesivos Especializados', 'Película BoPP Transparente 50µm', '3,200 m²', '12/09/2026', '$94,000', 'Confirmada'],
+        ],
+        sourceModules: ['Compras & Abastecimiento', 'Recepción de Almacén', 'Cuentas por Pagar'],
+      };
+
+    case 'rep-compras-proveedor':
+      return {
+        kpis: [
+          { label: 'Proveedores Activos', value: '36 empresas', subtext: 'Directorio calificado RTM' },
+          { label: 'Top 3 Concentración', value: '58.4%', subtext: 'Papelera, Tintas y BoPP' },
+          { label: 'Plazo Promedio de Pago', value: '38 días', subtext: 'Negociación comercial sana' },
+        ],
+        columns: ['Razón Social Proveedor', 'Giro / Insumo Principal', 'Facturas Recibidas', 'Compras Mes', 'Compras Acumuladas', 'Plazo Crédito', 'Desempeño'],
+        rows: [
+          ['Papelera del Norte S.A. de C.V.', 'Papel Couché y Bond', '12 facturas', '$480,000', '$3,920,000', '45 días', 'Aprobado A+'],
+          ['Tintas y Barnices Gráficos', 'Tintas UV y Offset', '8 facturas', '$210,000', '$1,840,000', '30 días', 'Aprobado A'],
+          ['Adhesivos Especializados', 'Sustratos Sintéticos y BoPP', '6 facturas', '$175,000', '$1,450,000', '30 días', 'Aprobado A'],
+        ],
+        sourceModules: ['Compras', 'Facturas de Proveedor', 'Control de Calidad MP'],
+      };
+
+    case 'rep-facturas-excepcion':
+      return {
+        kpis: [
+          { label: 'Facturas en Discrepancia', value: '3 facturas', subtext: 'Detenidas por 3-Way Match' },
+          { label: 'Monto en Aclaración', value: '$46,800', subtext: 'Diferencias precio/cantidad' },
+          { label: 'Tiempo de Resolución', value: '48 horas', subtext: 'Acuerdo con compras' },
+        ],
+        columns: ['Factura Proveedor', 'Proveedor', 'OC Vinculada', 'Recepción Almacén', 'Diferencia Detectada', 'Importe Diferencia', 'Acción Requerida'],
+        rows: [
+          ['FP-78192', 'Papelera del Norte S.A.', 'OC-2026-0398', 'REC-0891', 'Precio unitario mayor al cotizado ($14.80 vs $14.20)', '$7,500', 'Solicitar nota de crédito'],
+          ['FP-78204', 'Tintas y Barnices', 'OC-2026-0402', 'REC-0905', 'Faltante de 2 cubetas en báscula', '$4,200', 'Ajuste de remisión'],
+          ['FP-78211', 'Empaques de Cartón', 'OC-2026-0409', 'REC-0912', 'Cargo no pactado por flete foráneo', '$3,100', 'Revisión comercial'],
+        ],
+        sourceModules: ['Recepción Almacén', 'Validación 3-Way Match', 'Cuentas por Pagar'],
+      };
+
+    case 'rep-valuacion-inventario':
+      return {
+        kpis: [
+          { label: 'Valor en Libros Almacén', value: '$3,890,000', subtext: 'Materia prima, WIP y PT' },
+          { label: 'Existencia Total', value: '412 SKUs', subtext: 'Inventario físico auditado' },
+          { label: 'Método de Valuación', value: 'Costo Promedio', subtext: 'Norma contable NIF C-4' },
+        ],
+        columns: ['Clave Material', 'Descripción Insumo', 'Familia', 'Existencia', 'U.M.', 'Costo Promedio', 'Valor en Libros'],
+        rows: [
+          ['PAP-COU-130', 'Papel Couché 130g Brillante 100cm', 'Bobinas Papel', '24,500', 'kg', '$14.50', '$355,250'],
+          ['BOPP-MET-35', 'Película BoPP Metalizada Plata', 'Sintéticos Flexo', '18,200', 'm²', '$8.40', '$152,880'],
+          ['TIN-OFF-CYA', 'Tinta Offset Proceso Cyan Euro', 'Tintas y Químicos', '650', 'kg', '$120.00', '$78,000'],
+        ],
+        sourceModules: ['Módulo Inventarios', 'Kardex de Entradas/Salidas', 'Contabilidad'],
+      };
+
+    case 'rep-ajustes-inventario':
+      return {
+        kpis: [
+          { label: 'Ajustes en el Mes', value: '5 incidencias', subtext: 'Conteo físico vs sistema' },
+          { label: 'Merma Autorizada', value: '1.4%', subtext: 'Dentro del estándar industrial' },
+          { label: 'Impacto Neto', value: '-$14,200', subtext: 'Ajuste contable aplicado' },
+        ],
+        columns: ['Folio Ajuste', 'Fecha', 'Almacén', 'Material Involucrado', 'Motivo del Ajuste', 'Cantidad Ajustada', 'Impacto Contable'],
+        rows: [
+          ['AJ-2026-0034', '02/09/2026', 'Almacén Flexo', 'Película BoPP Transparente', 'Merma técnica de calibración máquina', '-120 m²', '-$1,020'],
+          ['AJ-2026-0035', '04/09/2026', 'Almacén Central', 'Couché 130g Bobina', 'Diferencia en pesaje de báscula', '-85 kg', '-$1,232'],
+          ['AJ-2026-0036', '06/09/2026', 'Tintas y Químicos', 'Solvente Limpiador UV', 'Consumo operativo no registrado', '-15 L', '-$780'],
+        ],
+        sourceModules: ['Inventarios', 'Calidad en Piso', 'Mantenimiento'],
+      };
+
+    case 'rep-rotacion-inventario':
+      return {
+        kpis: [
+          { label: 'Rotación General', value: '5.8 vueltas/año', subtext: 'Salud de inventarios RTM' },
+          { label: 'Lento Movimiento', value: '8 artículos', subtext: '> 60 días sin consumo' },
+          { label: 'Capital Paralizado', value: '$86,400', subtext: 'Sujeto a reaprovechamiento' },
+        ],
+        columns: ['Clave Insumo', 'Descripción Material', 'Días sin Movimiento', 'Último Movimiento', 'Stock Inmovilizado', 'Valor Estimado', 'Acción Recomendada'],
+        rows: [
+          ['PAP-SEG-90', 'Papel Bond Seguridad 90g Fibra Óptica', '84 días', '14/06/2026', '1,400 kg', '$32,200', 'Priorizar en orden Alpharma'],
+          ['BOPP-TER-MAT', 'BoPP Térmico Especial Mate 30µm', '72 días', '26/06/2026', '2,800 m²', '$21,500', 'Reasignar a empaque cosmético'],
+          ['TIN-PAN-ORANGE', 'Tinta Pantone Especial Orange 021', '65 días', '03/07/2026', '45 kg', '$9,450', 'Consumo en tiraje promocional'],
+        ],
+        sourceModules: ['Inventarios', 'Planificación de la Producción', 'Ventas'],
+      };
+
+    case 'rep-ciclo-documentos':
+      return {
+        kpis: [
+          { label: 'Ciclo Promedio de Orden', value: '6.4 días', subtext: 'Desde pedido hasta remisión' },
+          { label: 'Trazabilidad Digital', value: '100% enlazada', subtext: 'Cadena de custodia documental' },
+          { label: 'Órdenes en Flujo', value: '34 órdenes', subtext: 'En diversas etapas del ciclo' },
+        ],
+        columns: ['Pedido Comercial', 'Orden Producción', 'Cliente', 'Liberación QA', 'Remisión Almacén', 'Factura CFDI', 'Cobranza'],
+        rows: [
+          ['PED-2026-1042', 'OP-2026-95248', 'Laboratorios Alpharma', 'Aprobado QA', 'REM-2026-8812', 'FAC-2026-8912', 'Pendiente crédito'],
+          ['PED-2026-1044', 'OP-2026-95250', 'Tyco Electronics', 'En proceso QA', 'Por generar', 'Por timbrar', 'Por vencer'],
+          ['PED-2026-1048', 'OP-2026-95252', 'Kimberly Clark', '1ra pieza OK', 'En producción', 'Programada', 'Por vencer'],
+        ],
+        sourceModules: ['Comercial', 'Piso Producción', 'Calidad QA', 'Facturación'],
+      };
+
+    case 'rep-capex-presupuesto':
+      return {
+        kpis: [
+          { label: 'Presupuesto CAPEX 2026', value: '$2,800,000', subtext: 'Aprobado por Dirección General' },
+          { label: 'Ejercido Acumulado', value: '$1,940,000', subtext: '69.3% del presupuesto anual' },
+          { label: 'Saldo Disponible', value: '$860,000', subtext: 'Para proyectos de 4Q 2026' },
+        ],
+        columns: ['Proyecto de Inversión', 'Área Destino', 'Presupuesto Asignado', 'Comprometido', 'Ejercido Pagado', 'Saldo Disponible', 'Avance Físico'],
+        rows: [
+          ['Modernización Guillotina Polar', 'Acabados Planta', '$650,000', '$0', '$620,000', '$30,000', '100% Concluido'],
+          ['Renovación Lámparas UV Flexo', 'Flexografía', '$380,000', '$45,000', '$310,000', '$25,000', '90% En pruebas'],
+          ['Subestación Eléctrica Nave 2', 'Instalaciones RTM', '$850,000', '$120,000', '$580,000', '$150,000', '75% En ejecución'],
+        ],
+        sourceModules: ['Activos Fijos', 'Tesorería', 'Ingeniería y Proyectos'],
+      };
+
+    case 'rep-mantenimiento-activo':
+      return {
+        kpis: [
+          { label: 'Gasto Mantenimiento Mes', value: '$118,500', subtext: 'Preventivo y correctivo' },
+          { label: 'Máquinas Atendidas', value: '14 máquinas', subtext: 'Prensas y equipos de acabado' },
+          { label: 'Ratio Preventivo / Correctivo', value: '82% / 18%', subtext: 'Cumplimiento plan de mantenimiento' },
+        ],
+        columns: ['Clave Activo', 'Nombre del Equipo', 'Área Fabril', 'Mtto. Preventivo', 'Mtto. Correctivo', 'Refacciones', 'Gasto Total Mes'],
+        rows: [
+          ['ACT-001', 'Prensa Heidelberg Speedmaster CD 102', 'Offset', '$24,500', '$6,200', '$14,000', '$44,700'],
+          ['ACT-002', 'Prensa Mark Andy 2200-1 (8 colores)', 'Flexografía', '$18,200', '$0', '$8,500', '$26,700'],
+          ['ACT-004', 'Guillotina Polar Mohr 137 ED', 'Acabados', '$8,500', '$0', '$3,200', '$11,700'],
+        ],
+        sourceModules: ['Mantenimiento Industrial', 'Inventario de Refacciones', 'Activos Fijos'],
+      };
+
+    default:
+      return {
+        kpis: [
+          { label: 'Registros Estimados', value: '45 registros', subtext: 'En el período consultado' },
+          { label: 'Frecuencia de Corte', value: 'Mensual', subtext: 'Cierre contable ' + period },
+          { label: 'Estado de Integración', value: 'Plantilla Oficial', subtext: 'Listo para poblar con BD' },
+        ],
+        columns: ['Clave / Folio', 'Concepto Principal', 'Referencia Operativa', 'Área / Centro de Costo', 'Importe Estimado', 'Estatus'],
+        rows: [
+          ['REG-001', title + ' - Muestra A', 'Ref. Op. 95248', 'Planta RTM', '$124,500', 'Vigente'],
+          ['REG-002', title + ' - Muestra B', 'Ref. Op. 95250', 'Planta RTM', '$89,200', 'Vigente'],
+          ['REG-003', title + ' - Muestra C', 'Ref. Op. 95252', 'Planta RTM', '$45,100', 'Vigente'],
+        ],
+        sourceModules: ['Módulos Operativos RTM', 'Contabilidad', 'Tesorería'],
+      };
+  }
+};
+
 const GenericReportView: React.FC<{
   reportDef: any;
-  onSelectLine: (l: FinancialLine) => void;
-}> = ({ reportDef, onSelectLine }) => {
+  period: string;
+  toast: (msg: string) => void;
+}> = ({ reportDef, period, toast }) => {
+  const previewModel = getReportPreviewModel(
+    reportDef.id,
+    reportDef.title,
+    reportDef.category,
+    period
+  );
+
   return (
-    <div className="p-8 rounded-3xl border border-theme-subtle bg-theme-surface space-y-4">
-      <div className="flex items-center justify-between pb-4 border-b border-theme-subtle">
-        <div>
-          <h3 className="font-bold text-base text-theme-main">{reportDef.title}</h3>
-          <p className="text-xs text-theme-muted">{reportDef.description}</p>
+    <div className="space-y-6">
+      {/* Banner Superior Prominente: Vista Demostrativa */}
+      <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 dark:border-amber-500/20 dark:bg-amber-500/5 p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 shadow-xs">
+        <div className="flex items-start gap-3">
+          <div className="p-2 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0">
+            <Eye className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-800 dark:text-amber-300">
+                Vista demostrativa
+              </span>
+              <span className="text-xs font-bold text-theme-main">
+                Plantilla de reporte preliminar · En integración
+              </span>
+            </div>
+            <p className="text-xs text-theme-muted mt-1 max-w-2xl leading-relaxed">
+              Los datos y exportables finales se generarán automáticamente con la información real registrada en los módulos de RTM ({previewModel.sourceModules.join(', ')}). A continuación se presenta la estructura de columnas y dimensiones oficiales que adoptará este informe.
+            </p>
+          </div>
         </div>
-        <span className="px-3 py-1 rounded-full text-xs font-bold bg-theme-primary/10 text-theme-primary">
-          Frecuencia: {reportDef.frequency}
-        </span>
+
+        {/* Botones Excel y PDF Demo con Toast */}
+        <div className="flex items-center gap-2 shrink-0 self-end md:self-center">
+          <button
+            type="button"
+            onClick={() =>
+              toast(
+                `Exportable Excel (XLSX) de muestra para "${reportDef.title}" · Disponible con datos productivos de RTM`
+              )
+            }
+            className="px-3 py-1.5 rounded-xl border border-theme-subtle bg-theme-surface text-xs font-bold text-theme-main hover:border-theme-primary/40 flex items-center gap-1.5 transition-colors shadow-2xs"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
+            Descargar Excel Demo
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              toast(
+                `Vista previa PDF de muestra para "${reportDef.title}" · Formato institucional en integración`
+              )
+            }
+            className="px-3 py-1.5 rounded-xl border border-theme-subtle bg-theme-surface text-xs font-bold text-theme-main hover:border-theme-primary/40 flex items-center gap-1.5 transition-colors shadow-2xs"
+          >
+            <Download className="w-3.5 h-3.5 text-rose-600" />
+            PDF Demo
+          </button>
+        </div>
       </div>
 
-      <div className="p-6 rounded-2xl border border-dashed border-theme-subtle bg-theme-muted/10 text-center space-y-2">
-        <FileSpreadsheet className="w-8 h-8 text-theme-primary mx-auto mb-2" />
-        <h4 className="font-bold text-sm text-theme-main">Datos Consolidados para Demostración</h4>
-        <p className="text-xs text-theme-muted max-w-lg mx-auto">
-          Este reporte operativo se alimenta dinámicamente de los módulos de Ventas, Compras, Inventario y Producción de RTM.
-        </p>
-        <button
-          onClick={() =>
-            onSelectLine({
-              id: 'gen-01',
-              label: reportDef.title,
-              currentAmount: 485000,
-              previousAmount: 460000,
-              varianceAmount: 25000,
-              variancePercent: 5.4,
-              category: 'ingresos'
-            })
-          }
-          className="mt-3 px-4 py-2 rounded-xl text-xs font-bold bg-theme-primary text-white"
-        >
-          Explorar Trazabilidad de Muestra
-        </button>
+      {/* Tarjetas de Proyección de Métricas Coherentes con el Reporte */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {previewModel.kpis.map((kpi, idx) => (
+          <div key={idx} className="p-4 rounded-2xl border border-theme-subtle bg-theme-surface shadow-2xs">
+            <span className="text-[10px] font-bold uppercase text-theme-muted block">{kpi.label}</span>
+            <b className="font-mono text-xl text-theme-main block mt-1">{kpi.value}</b>
+            <span className="text-[11px] text-theme-muted block mt-0.5">{kpi.subtext}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Contenedor Tabular con Columnas Específicas y Filas de Muestra */}
+      <div className="rounded-3xl border border-theme-subtle bg-theme-surface overflow-hidden shadow-xs">
+        <div className="p-5 border-b border-theme-subtle flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="font-bold text-sm text-theme-main">
+                Estructura Tabular Oficial: {reportDef.title}
+              </h3>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-theme-muted/30 text-theme-muted">
+                {period}
+              </span>
+            </div>
+            <p className="text-xs text-theme-muted mt-0.5">
+              Campos, dimensiones y agrupaciones estandarizadas para consulta y descarga ejecutiva.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] text-amber-700 dark:text-amber-400 font-bold bg-amber-500/10 px-2.5 py-1 rounded-lg">
+              3 registros de muestra
+            </span>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead className="bg-theme-muted/30 text-[10px] uppercase text-theme-muted">
+              <tr>
+                {previewModel.columns.map((col, idx) => (
+                  <th
+                    key={idx}
+                    className={`p-3 text-left ${idx === previewModel.columns.length - 1 ? 'text-right' : ''}`}
+                  >
+                    {col}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-theme-subtle">
+              {previewModel.rows.map((row, rIdx) => (
+                <tr key={rIdx} className="hover:bg-theme-muted/10 transition-colors">
+                  {row.map((cell, cIdx) => (
+                    <td
+                      key={cIdx}
+                      className={`p-3 text-theme-main ${cIdx === 0 ? 'font-bold' : ''} ${
+                        cIdx === row.length - 1 ? 'text-right font-mono font-bold text-theme-primary' : ''
+                      }`}
+                    >
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Footer Informativo */}
+        <div className="p-4 bg-theme-muted/10 border-t border-theme-subtle flex flex-col sm:flex-row items-center justify-between text-[11px] text-theme-muted gap-2">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+            <span>
+              Información en modo plantilla · Al conectar datos productivos de RTM se poblarán todos los folios y movimientos correspondientes.
+            </span>
+          </div>
+          <span className="font-bold text-theme-main">
+            Frecuencia programada: {reportDef.frequency}
+          </span>
+        </div>
+      </div>
+
+      {/* Módulos de Origen Integrados */}
+      <div className="p-5 rounded-2xl border border-dashed border-theme-subtle bg-theme-surface/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-theme-primary/10 text-theme-primary shrink-0">
+            <Building2 className="w-5 h-5" />
+          </div>
+          <div>
+            <span className="text-xs font-bold text-theme-main block">Módulos de Origen Integrados</span>
+            <span className="text-[11px] text-theme-muted">
+              Este reporte consumirá en tiempo real los registros de: {previewModel.sourceModules.join(' · ')}
+            </span>
+          </div>
+        </div>
+        <div className="text-left sm:text-right shrink-0">
+          <span className="text-[10px] uppercase font-bold text-theme-muted block">Destinatario Principal</span>
+          <span className="text-xs font-bold text-theme-primary">
+            {reportDef.targetRole || 'Finanzas & Contraloría'}
+          </span>
+        </div>
       </div>
     </div>
   );
