@@ -550,14 +550,52 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
         return <FinanceWorkspace area="dashboard" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
       case 'tesoreria':
         return <FinanceWorkspace area="treasury" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
+      case 'contabilidad-reportes':
+        return (
+          <FinanceWorkspace
+            area="contabilidad-reportes"
+            salesInvoices={salesInvoices}
+            cxc={cxcRecords}
+            cxp={cxpRecords}
+            onNavigateToInvoice={() => setActiveTab('facturacion')}
+            onNavigateToMaintenance={() => setActiveTab('mantenimiento')}
+          />
+        );
       case 'contabilidad':
-        return <FinanceWorkspace area="accounting" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
+        return (
+          <FinanceWorkspace
+            area="accounting"
+            salesInvoices={salesInvoices}
+            cxc={cxcRecords}
+            cxp={cxpRecords}
+            onNavigateToInvoice={() => setActiveTab('facturacion')}
+            onNavigateToMaintenance={() => setActiveTab('mantenimiento')}
+          />
+        );
       case 'presupuestos':
         return <FinanceWorkspace area="budgets" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
       case 'activos-fijos':
-        return <FinanceWorkspace area="assets" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
+        return (
+          <FinanceWorkspace
+            area="assets"
+            salesInvoices={salesInvoices}
+            cxc={cxcRecords}
+            cxp={cxpRecords}
+            onNavigateToInvoice={() => setActiveTab('facturacion')}
+            onNavigateToMaintenance={() => setActiveTab('mantenimiento')}
+          />
+        );
       case 'reportes-financieros':
-        return <FinanceWorkspace area="reports" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
+        return (
+          <FinanceWorkspace
+            area="reports"
+            salesInvoices={salesInvoices}
+            cxc={cxcRecords}
+            cxp={cxpRecords}
+            onNavigateToInvoice={() => setActiveTab('facturacion')}
+            onNavigateToMaintenance={() => setActiveTab('mantenimiento')}
+          />
+        );
       case 'nomina':
         return <NominaPage />;
       case 'produccion':

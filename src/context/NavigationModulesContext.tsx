@@ -26,6 +26,13 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     description: 'Planeación, consumo y desviaciones presupuestales por centro de costo.',
   },
   {
+    key: 'contabilidad-reportes',
+    label: 'Contabilidad & Reportes',
+    category: 'finanzas',
+    categoryLabel: 'Finanzas & Facturación',
+    description: 'Gestión contable, activos fijos, estados financieros y cierre de periodo.',
+  },
+  {
     key: 'activos-fijos',
     label: 'Activos Fijos',
     category: 'finanzas',
@@ -192,6 +199,7 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'finanzas': true,
   'tesoreria': true,
   'contabilidad': true,
+  'contabilidad-reportes': true,
   'reportes-financieros': true,
   'presupuestos': true,
   'activos-fijos': true,
