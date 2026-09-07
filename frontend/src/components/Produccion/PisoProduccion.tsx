@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, Pause, Play, Wrench, ShieldCheck, Plus, FileText, CheckCircle2, Clock } from 'lucide-react';
+import { AlertTriangle, Pause, Play, Wrench, ShieldCheck, Plus, FileText, CheckCircle2, Clock, Monitor } from 'lucide-react';
 import { OperatorDailyReportEntry, ProductionOrder } from '../../data/mockProduccionData';
 import { ProductionCard, StatusBadge, formatNumber } from './productionUi';
 import { SolicitarMaterialExtraModal } from './SolicitarMaterialExtraModal';
@@ -12,6 +12,7 @@ interface Props {
   onIncident: (order: ProductionOrder) => void;
   onSaveDailyReport?: (entry: OperatorDailyReportEntry) => void;
   dailyReports?: OperatorDailyReportEntry[];
+  onOpenTerminal?: () => void;
 }
 
 export const PisoProduccion: React.FC<Props> = ({
@@ -21,6 +22,7 @@ export const PisoProduccion: React.FC<Props> = ({
   onIncident,
   onSaveDailyReport,
   dailyReports = [],
+  onOpenTerminal,
 }) => {
   const [materialOrder, setMaterialOrder] = useState<ProductionOrder | null>(null);
   const [reportOrder, setReportOrder] = useState<ProductionOrder | null>(null);
@@ -127,13 +129,24 @@ export const PisoProduccion: React.FC<Props> = ({
             Ejecución en vivo, cronómetro operativo, solicitud de 1ra pieza a QA, material adicional sin scrap arbitrario y reporte diario.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => setReportOrder(orders[0] || null)}
-          className="flex items-center gap-1.5 rounded-xl bg-theme-primary px-3.5 py-2 text-xs font-bold text-white shadow-xs hover:bg-theme-primary/90"
-        >
-          <FileText className="h-4 w-4" /> Capturar Reporte Diario de Operador
-        </button>
+        <div className="flex items-center gap-2">
+          {onOpenTerminal && (
+            <button
+              type="button"
+              onClick={onOpenTerminal}
+              className="flex items-center gap-1.5 rounded-xl border-2 border-theme-primary/40 bg-theme-primary/10 px-3.5 py-2 text-xs font-bold text-theme-primary hover:bg-theme-primary hover:text-white transition-all shadow-xs"
+            >
+              <Monitor className="h-4 w-4" /> Terminal Táctil de Operador
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setReportOrder(orders[0] || null)}
+            className="flex items-center gap-1.5 rounded-xl bg-theme-primary px-3.5 py-2 text-xs font-bold text-white shadow-xs hover:bg-theme-primary/90"
+          >
+            <FileText className="h-4 w-4" /> Capturar Reporte Diario de Operador
+          </button>
+        </div>
       </div>
 
       {/* Grid de órdenes activas en piso */}

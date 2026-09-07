@@ -12,14 +12,16 @@ import { PlaneacionProduccion } from './PlaneacionProduccion';
 import { OrdenesProduccion } from './OrdenesProduccion';
 import { OrdenProduccionDetail } from './OrdenProduccionDetail';
 import { PisoProduccion } from './PisoProduccion';
+import { PisoOperadorWorkspace } from './PisoOperadorWorkspace';
 import { MaquinasCapacidad } from './MaquinasCapacidad';
 import { AnaliticaProduccion } from './AnaliticaProduccion';
+import { ScrapPérdidasWorkspace } from './ScrapPérdidasWorkspace';
 import { ReportarIncidenciaModal } from './ReportarIncidenciaModal';
 import { NewProductionOrderWizard } from './NewProductionOrderWizard';
 import { ConfiguracionFabricacion } from './ConfiguracionFabricacion';
 import { HojaOpPreviewModal } from './HojaOpPreviewModal';
 
-type ProductionTab = 'Dashboard' | 'Planeación' | 'Órdenes' | 'Piso' | 'Procesos' | 'Máquinas' | 'Analítica';
+type ProductionTab = 'Dashboard' | 'Planeación' | 'Órdenes' | 'Piso' | 'Procesos' | 'Máquinas' | 'Scrap y pérdidas' | 'Analítica';
 
 interface ProduccionPageProps {
   orders?: ProductionOrder[];
@@ -44,6 +46,7 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
   const [initialRecipe, setInitialRecipe] = useState<MasterManufacturingRecipe | null>(null);
   const [dailyReports, setDailyReports] = useState<OperatorDailyReportEntry[]>(OPERATOR_DAILY_REPORTS);
   const [sheetPreviewOrder, setSheetPreviewOrder] = useState<ProductionOrder | null>(null);
+  const [isOperatorTerminalOpen, setIsOperatorTerminalOpen] = useState(false);
 
   const activeOrders = useMemo(
     () => orders.filter((order) => !['Terminada', 'Liberada'].includes(order.status)),
@@ -242,7 +245,7 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
 
       {/* Tabs */}
       <div className="flex gap-1 overflow-x-auto border-b border-theme-subtle">
-        {(['Dashboard', 'Planeación', 'Órdenes', 'Piso', 'Procesos', 'Máquinas', 'Analítica'] as ProductionTab[]).map((item) => (
+        {(['Dashboard', 'Planeación', 'Órdenes', 'Piso', 'Procesos', 'Máquinas', 'Scrap y pérdidas', 'Analítica'] as ProductionTab[]).map((item) => (
           <button
             type="button"
             onClick={() => setTab(item)}
@@ -303,14 +306,33 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
       )}
 
       {tab === 'Piso' && (
-        <PisoProduccion
-          orders={activeOrders}
-          onOpenOrder={openOrder}
-          onUpdate={updateOrder}
-          onIncident={setIncidence}
-          onSaveDailyReport={handleSaveDailyReport}
-          dailyReports={dailyReports}
-        />
+        isOperatorTerminalOpen ? (
+          <div className="space-y-3">
+            <button
+              type="button"
+              onClick={() => setIsOperatorTerminalOpen(false)}
+              className="flex items-center gap-1.5 rounded-xl border border-theme-subtle px-3.5 py-2 text-xs font-bold text-theme-muted hover:text-theme-main bg-theme-surface shadow-xs transition-colors"
+            >
+              &larr; Volver a Consola Supervisor de Piso
+            </button>
+            <PisoOperadorWorkspace
+              orders={orders}
+              onUpdateOrder={updateOrder}
+              onNavigateToProduccion={() => setIsOperatorTerminalOpen(false)}
+              onNavigateToCalidad={onNavigateToCalidad}
+            />
+          </div>
+        ) : (
+          <PisoProduccion
+            orders={activeOrders}
+            onOpenOrder={openOrder}
+            onUpdate={updateOrder}
+            onIncident={setIncidence}
+            onSaveDailyReport={handleSaveDailyReport}
+            dailyReports={dailyReports}
+            onOpenTerminal={() => setIsOperatorTerminalOpen(true)}
+          />
+        )
       )}
 
       {tab === 'Procesos' && (
@@ -323,6 +345,10 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
       )}
 
       {tab === 'Máquinas' && <MaquinasCapacidad />}
+ 
+      {tab === 'Scrap y pérdidas' && (
+        <ScrapPérdidasWorkspace orders={orders} onOpenOrder={openOrder} onNotice={setNotice} />
+      )}
 
       {tab === 'Analítica' && <AnaliticaProduccion orders={orders} onNotice={setNotice} />}
 

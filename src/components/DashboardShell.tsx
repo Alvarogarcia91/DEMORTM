@@ -20,6 +20,7 @@ import { FinanceWorkspace } from './Finanzas/FinanceWorkspace';
 import { NominaPage } from './Nomina/NominaPage';
 import { MantenimientoPage } from './Mantenimiento/MantenimientoPage';
 import { ProduccionPage } from './Produccion/ProduccionPage';
+import { PisoOperadorWorkspace } from './Produccion/PisoOperadorWorkspace';
 import { CalidadPage } from './Calidad/CalidadPage';
 import { CentroAlertasPage } from './CentroAlertasPage';
 import { CrmPage } from './Comercial/CrmPage';
@@ -604,6 +605,15 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
             orders={productionOrders}
             onUpdateOrder={handleUpdateProductionOrder}
             onAddOrder={handleAddProductionOrder}
+            onNavigateToCalidad={() => setActiveTab('calidad')}
+          />
+        );
+      case 'piso-produccion':
+        return (
+          <PisoOperadorWorkspace
+            orders={productionOrders}
+            onUpdateOrder={handleUpdateProductionOrder}
+            onNavigateToProduccion={() => setActiveTab('produccion')}
             onNavigateToCalidad={() => setActiveTab('calidad')}
           />
         );

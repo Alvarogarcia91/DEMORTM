@@ -90,6 +90,13 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     description: 'Planeación, órdenes de producción, piso, materiales e incidencias de planta.',
   },
   {
+    key: 'piso-produccion',
+    label: 'Piso de Producción',
+    category: 'operaciones',
+    categoryLabel: 'Producción & Planta',
+    description: 'Terminal táctil de operador: checklist de máquina, registro en vivo, 1ra pieza y control de scrap 4M.',
+  },
+  {
     key: 'mantenimiento',
     label: 'Mantenimiento & Equipos',
     category: 'mantenimiento',
@@ -185,6 +192,7 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'mesa-verificacion': true,
   'logistica': false,
   'produccion': true,
+  'piso-produccion': true,
   'calidad': true,
   'requisiciones': false,
   'compras': false,

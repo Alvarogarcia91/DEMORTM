@@ -49,6 +49,7 @@ export const Topbar: React.FC<TopbarProps> = ({
  <span className="text-theme-muted">/</span>
  <span className="font-bold text-theme-main">
  {activeTab === 'produccion' ? 'Producción' :
+ activeTab === 'piso-produccion' ? 'Piso de Producción · Operador' :
  activeTab === 'calidad' ? 'Calidad' :
  activeTab === 'mantenimiento' ? 'Mantenimiento' :
  activeTab === 'nomina' ? 'Nómina & Asistencia' :
