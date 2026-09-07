@@ -54,6 +54,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               <img 
                 src="/assets/logo-rtm.svg" 
                 alt="Impresos RTM" 
+                style={{ maxHeight: '40px', width: 'auto' }}
                 className="h-10 w-auto object-contain drop-shadow-sm"
               />
               <span className="text-xs font-black tracking-[0.25em] text-zinc-500 uppercase border-l-2 border-zinc-300 pl-3">
@@ -131,6 +132,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               <img 
                 src="/assets/logo-rtm.svg" 
                 alt="Impresos RTM" 
+                style={{ maxHeight: '32px', width: 'auto' }}
                 className="h-8 w-auto object-contain"
               />
               <span className="text-[11px] font-black tracking-widest text-zinc-500 uppercase border-l-2 border-zinc-300 pl-2.5">

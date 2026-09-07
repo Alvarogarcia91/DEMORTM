@@ -133,6 +133,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
  <img
  src="/assets/logo-rtm.svg"
  alt="Impresos RTM"
+ style={{ maxHeight: '32px', width: 'auto' }}
  className="h-8 w-auto object-contain"
  />
  <span className="text-[11px] font-black tracking-widest text-theme-muted uppercase border-l-2 border-theme-subtle pl-2">
