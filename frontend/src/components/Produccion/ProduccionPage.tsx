@@ -344,7 +344,12 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
         />
       )}
 
-      {tab === 'Máquinas' && <MaquinasCapacidad />}
+      {tab === 'Máquinas' && (
+        <MaquinasCapacidad
+          onNavigateTab={(targetTab) => setTab(targetTab as any)}
+          onNotice={setNotice}
+        />
+      )}
  
       {tab === 'Scrap y pérdidas' && (
         <ScrapPérdidasWorkspace orders={orders} onOpenOrder={openOrder} onNotice={setNotice} />
