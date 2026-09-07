@@ -53,6 +53,7 @@ import { PayrollAuditDrawer } from './PayrollAuditDrawer';
 import { CiclosNominaTab } from './CiclosNominaTab';
 import { NuevoCicloWizardModal } from './NuevoCicloWizardModal';
 import { RhBenefitsTab } from './RhBenefitsTab';
+import { PrePayrollCycleContext, StampCycleContext } from './PayrollCycleContext';
 import { ChevronDown, Plus } from 'lucide-react';
 
 export type NominaSubTab =
@@ -454,8 +455,8 @@ export const NominaPage: React.FC = () => {
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
-        {/* Tarjeta compacta no-sticky de resumen de progreso de flujo (visible en pestañas operativas) */}
-        {activeTab !== 'ciclos' && activeTab !== 'historial' && (
+        {/* El flujo completo pertenece al resumen del ciclo; no funciona como segunda navegación. */}
+        {activeTab === 'resumen' && (
           <PayrollCloseStepper
             period={currentPeriod}
             activeTab={activeTab}
@@ -551,34 +552,53 @@ export const NominaPage: React.FC = () => {
         )}
 
         {activeTab === 'prenomina' && (
-          <PayrollReviewTable
-            period={currentPeriod}
-            calculations={calculations}
-            employees={employees}
-            isCerrada={isPayrollClosed}
-            onClosePayroll={handleClosePayroll}
-            onReopenPayroll={handleReopenPayroll}
-            onTriggerToast={handleToast}
-            onProceedToStamp={() => setActiveTab('timbrado')}
-            loanDeductionTotal={employeeLoans.filter((loan) => loan.status === 'Activo').reduce((sum, loan) => sum + loan.deduction, 0)}
-          />
+          <>
+            <PrePayrollCycleContext
+              period={currentPeriod}
+              incidenciasPendientes={incidents.filter((i) => i.estado === 'pendiente_revision' || i.estado === 'detectada').length}
+              empleadosPorRevisar={calculations.filter((c) => c.estadoValidacion === 'requiere_revision').length}
+              isCerrada={isPayrollClosed}
+              isTimbrada={isAllStamped}
+            />
+            <PayrollReviewTable
+              period={currentPeriod}
+              calculations={calculations}
+              employees={employees}
+              isCerrada={isPayrollClosed}
+              onClosePayroll={handleClosePayroll}
+              onReopenPayroll={handleReopenPayroll}
+              onTriggerToast={handleToast}
+              onProceedToStamp={() => setActiveTab('timbrado')}
+              loanDeductionTotal={employeeLoans.filter((loan) => loan.status === 'Activo').reduce((sum, loan) => sum + loan.deduction, 0)}
+            />
+          </>
         )}
 
         {activeTab === 'timbrado' && (
-          <StampCenter
-            calculations={calculations}
-            employees={employees}
-            isCerrada={isPayrollClosed}
-            isTimbrada={isAllStamped}
-            onStampSuccess={(updated) => {
-              setCalculations(updated);
-              recordAuditAction(
-                'Timbrado CFDI 4.0',
-                `Timbrado completado para 30 empleados ante PAC y SAT con sellos digitales.`
-              );
-            }}
-            onTriggerToast={handleToast}
-          />
+          <>
+            <StampCycleContext
+              period={currentPeriod}
+              incidenciasPendientes={incidents.filter((i) => i.estado === 'pendiente_revision' || i.estado === 'detectada').length}
+              empleadosPorRevisar={calculations.filter((c) => c.estadoValidacion === 'requiere_revision').length}
+              isCerrada={isPayrollClosed}
+              isTimbrada={isAllStamped}
+              onGoToPrePayroll={() => setActiveTab('prenomina')}
+            />
+            <StampCenter
+              calculations={calculations}
+              employees={employees}
+              isCerrada={isPayrollClosed}
+              isTimbrada={isAllStamped}
+              onStampSuccess={(updated) => {
+                setCalculations(updated);
+                recordAuditAction(
+                  'Timbrado CFDI 4.0',
+                  `Timbrado completado para 30 empleados ante PAC y SAT con sellos digitales.`
+                );
+              }}
+              onTriggerToast={handleToast}
+            />
+          </>
         )}
 
         {activeTab === 'historial' && (
