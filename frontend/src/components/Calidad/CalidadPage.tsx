@@ -433,6 +433,7 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
           onOpenControl={(ctrl) => setActiveControlForCapture(ctrl)}
           onStartNewAudit={(type) => handleOpenWizard(type)}
           onOpenDeviation={(dev) => setSelectedDeviationForAnalysis(dev)}
+          onNavigateTab={(targetTab) => setTab(targetTab as any)}
         />
       )}
 

@@ -21,6 +21,7 @@ import {
   QualityAuditItem,
   QualityDeviation,
 } from '../../data/mockCalidadData';
+import { CalidadAnaliticaDashboard } from './CalidadAnaliticaDashboard';
 
 interface Props {
   audits: QualityAuditItem[];
@@ -31,6 +32,7 @@ interface Props {
   onOpenControl: (control: PeriodicControl) => void;
   onStartNewAudit: (type?: QualityAuditItem['type']) => void;
   onOpenDeviation?: (deviation: QualityDeviation) => void;
+  onNavigateTab?: (tab: string) => void;
 }
 
 export const CalidadDashboard: React.FC<Props> = ({
@@ -42,6 +44,7 @@ export const CalidadDashboard: React.FC<Props> = ({
   onOpenControl,
   onStartNewAudit,
   onOpenDeviation,
+  onNavigateTab,
 }) => {
   const pendingAudits = audits.filter(
     (a) => a.status === 'Pendiente' || a.status === 'En inspección'
@@ -399,6 +402,16 @@ export const CalidadDashboard: React.FC<Props> = ({
           </div>
         </div>
       )}
+
+      {/* COMPLEMENTO ANALÍTICO GERENCIAL Y SUGERENCIAS DEL SISTEMA (DOCS V-ANALYTICS) */}
+      <CalidadAnaliticaDashboard
+        controls={controls}
+        deviations={deviations}
+        onNavigateTab={onNavigateTab}
+        onOpenDeviation={onOpenDeviation}
+        onOpenControl={onOpenControl}
+        onStartNewAudit={onStartNewAudit}
+      />
     </div>
   );
 };
