@@ -764,6 +764,51 @@ INITIAL_CXP_RECORDS.push(...cxpSeed.map(([id, supplier, rfc, issued, due, total,
   };
 }));
 
+// Historial adicional para estados de cuenta por proveedor: cada cuenta principal
+// muestra varios cargos, pagos parciales y documentos del periodo.
+const cxpStatementSeed = [
+  ['014', 'prov-01', 'Bio-Pappel S.A.B. de C.V.', 'BPA820101XYZ', '2026-07-28', '2026-08-27', 168200, 168200, 'pagada', 'conciliada'],
+  ['015', 'prov-01', 'Bio-Pappel S.A.B. de C.V.', 'BPA820101XYZ', '2026-08-31', '2026-09-30', 142600, 0, 'pendiente', 'conciliada'],
+  ['016', 'prov-02', 'Sun Chemical México S.A. de C.V.', 'SCM700815AA2', '2026-07-21', '2026-08-20', 78400, 38400, 'parcial', 'conciliada'],
+  ['017', 'prov-02', 'Sun Chemical México S.A. de C.V.', 'SCM700815AA2', '2026-09-02', '2026-10-02', 66400, 0, 'programada', 'conciliada'],
+  ['018', 'prov-03', 'Avery Dennison Materials México S. de R.L. de C.V.', 'ADM981010TX1', '2026-07-30', '2026-08-29', 92500, 0, 'pendiente', 'conciliada'],
+  ['019', 'prov-03', 'Avery Dennison Materials México S. de R.L. de C.V.', 'ADM981010TX1', '2026-08-27', '2026-09-26', 118900, 68900, 'parcial', 'conciliada'],
+  ['020', 'prov-07', 'HEIDELBERG MÉXICO, S.A. DE C.V.', 'HME821206RU9', '2026-08-06', '2026-09-05', 45900, 0, 'bloqueada', 'discrepancia_precio'],
+  ['021', 'prov-04', 'PAPELERA DEL NORTE, S.A. DE C.V.', 'PNO850917DX8', '2026-08-10', '2026-09-09', 97300, 0, 'programada', 'conciliada'],
+] as const;
+
+INITIAL_CXP_RECORDS.push(...cxpStatementSeed.map(([id, supplierId, supplier, rfc, issued, due, total, paid, paymentStatus, matchStatus], index): SupplierInvoice => {
+  const subtotal = Math.round(total / 1.16);
+  const hasDifference = matchStatus === 'discrepancia_precio';
+  return {
+    id: `cxp-${id}`,
+    folioProveedor: `FP-${778120 + index * 193}`,
+    uuidSat: `DEMO-EDOCTA-${id}-4B81-90F${index}`,
+    proveedorId: supplierId,
+    proveedorNombre: supplier,
+    proveedorRfc: rfc,
+    ordenCompraFolio: `OC-RTM-2026-1${14 + index}`,
+    recepcionFolio: `REC-RTM-2026-1${14 + index}`,
+    fechaEmision: issued,
+    fechaRecepcion: issued,
+    fechaVencimiento: due,
+    diasCredito: 30,
+    moneda: 'MXN',
+    subtotal,
+    iva: total - subtotal,
+    total,
+    saldoPendiente: total - paid,
+    totalPagado: paid,
+    matchStatus,
+    toleranciaExcedida: hasDifference,
+    motivoDiscrepancia: hasDifference ? 'Servicio técnico facturado por encima del precio autorizado en la orden de compra.' : undefined,
+    estadoPago: paymentStatus,
+    fechaProgramadaPago: paymentStatus === 'programada' ? due : undefined,
+    matchItems: [{ id: `match-${id}`, sku: `MAT-EDO-${id}`, descripcion: `Suministro industrial ${supplier}`, cantOrdenada: 10, precioOrdenado: Math.round(subtotal / 10), cantRecibida: 10, recepcionFolio: `REC-RTM-2026-1${14 + index}`, cantFacturada: 10, precioFacturado: Math.round(subtotal / 10) + (hasDifference ? 180 : 0), unidad: 'SERV', variacionCantidad: 0, variacionPrecio: hasDifference ? 180 : 0, estado: hasDifference ? 'diferencia_precio' : 'ok' }],
+    historialPagos: paid ? [{ id: `pago-cxp-edo-${id}`, fecha: '2026-09-04', monto: paid, cuentaOrigen: 'BBVA MXN Cta Cheques 8821', metodoPago: 'SPEI', referenciaBancaria: `SPEI-EDOCTA-${id}`, autorizadoPor: 'Lic. Gerardo Morales (Dir. Finanzas)', notas: paymentStatus === 'pagada' ? 'Liquidación total conciliada.' : 'Pago parcial aplicado; saldo vigente en estado de cuenta.' }] : [],
+  };
+}));
+
 export const INITIAL_ELIGIBLE_REMISIONES: EligibleRemision[] = [
   {
     id: 'rem-elig-01',
