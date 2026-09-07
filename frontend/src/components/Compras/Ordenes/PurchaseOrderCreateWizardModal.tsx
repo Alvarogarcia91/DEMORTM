@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
  X,
  ArrowRight,
@@ -219,7 +219,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  supplierRfc: selectedSupplier.rfc,
  contactName: selectedSupplier.contactName,
  targetWarehouseId,
- targetWarehouseName: selectedWarehouse?.name || 'CEDIS Monterrey Norte',
+ targetWarehouseName: selectedWarehouse?.name || 'Almacén Principal RTM',
  targetWarehouseType: selectedWarehouse?.type || 'CEDIS',
  emissionDate: '27 Ago 2026',
  expectedDeliveryDate,
@@ -232,6 +232,8 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  tax,
  total,
  status: 'Borrador',
+ createdAt: '2026-08-27T10:00:00Z',
+ updatedAt: '2026-08-27T10:00:00Z',
  notes: notes.trim() || undefined,
  items: selectedItems.map((it) => ({
  id: it.id,
@@ -283,6 +285,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  purchaseOrderCoverage: {
  coveredItems: selectedItems.length,
  totalItems: requisition.items.length,
+ purchaseOrderFolios: [folio],
  },
  items: requisition.items.map((it) => {
  const matchingOrdered = selectedItems.find((so) => so.sku === it.sku);

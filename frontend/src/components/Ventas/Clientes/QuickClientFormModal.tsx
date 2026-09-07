@@ -20,8 +20,8 @@ export const QuickClientFormModal: React.FC<QuickClientFormModalProps> = ({
  const [phone, setPhone] = useState('');
  const [email, setEmail] = useState('');
  const [contactName, setContactName] = useState('');
- const [preferredBranch, setPreferredBranch] = useState('wh-suc-valle-oriente');
- const [preferredPriceListId, setPreferredPriceListId] = useState('pl-general-2026');
+ const [preferredBranch, setPreferredBranch] = useState('wh-alm-rtm');
+ const [preferredPriceListId, setPreferredPriceListId] = useState('pl-ind-sbd-2026');
  const [street, setStreet] = useState('');
  const [extNumber, setExtNumber] = useState('100');
  const [neighborhood, setNeighborhood] = useState('Centro');
@@ -36,15 +36,13 @@ export const QuickClientFormModal: React.FC<QuickClientFormModalProps> = ({
 
  const codeNum = Math.floor(100 + Math.random() * 900);
  const code = 'CLI-2026-' + codeNum;
- const branchName = preferredBranch === 'wh-suc-valle-oriente' ? 'Sucursal Valle Oriente' : 'Sucursal Cumbres';
+ const branchName = preferredBranch === 'wh-alm-rtm' ? 'Planta Principal RTM' : 'Almacén Virtual / Control';
  const priceListName =
- preferredPriceListId === 'pl-general-2026'
- ? 'Lista General Retail 2026'
- : preferredPriceListId === 'pl-suc-norte-2026'
- ? 'Lista Sucursales Norte 2026'
- : preferredPriceListId === 'pl-promo-agosto'
- ? 'Lista Promoción Agosto'
- : 'Lista Convenio Empresas';
+    preferredPriceListId === 'pl-ind-sbd-2026'
+      ? 'Tarifa Industrial Stanley B&D 2026'
+      : preferredPriceListId === 'pl-farmaceutica-2026'
+      ? 'Tarifa Farmacéutica & Etiquetas 2026'
+      : 'Tarifa General Flexo & Offset 2026';
 
  const newCust: SalesCustomer = {
  id: 'cust-' + Date.now(),
@@ -210,14 +208,14 @@ export const QuickClientFormModal: React.FC<QuickClientFormModalProps> = ({
 
  <div className="grid grid-cols-2 gap-3">
  <div className="space-y-1.5">
- <label className="font-bold text-zinc-900 block">Sucursal Preferida:</label>
+ <label className="font-bold text-zinc-900 block">Planta / Destino Habitual:</label>
  <select
  value={preferredBranch}
  onChange={(e) => setPreferredBranch(e.target.value)}
  className="w-full p-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs shadow-2xs focus:outline-none"
  >
- <option value="wh-suc-valle-oriente">Sucursal Valle Oriente</option>
- <option value="wh-suc-cumbres">Sucursal Cumbres</option>
+ <option value="wh-alm-rtm">Planta Principal RTM</option>
+              <option value="wh-alm-virtual">Almacén Virtual / Control</option>
  </select>
  </div>
 
@@ -228,10 +226,9 @@ export const QuickClientFormModal: React.FC<QuickClientFormModalProps> = ({
  onChange={(e) => setPreferredPriceListId(e.target.value)}
  className="w-full p-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs shadow-2xs focus:outline-none"
  >
- <option value="pl-general-2026">Lista General Retail 2026</option>
- <option value="pl-suc-norte-2026">Lista Sucursales Norte 2026</option>
- <option value="pl-promo-agosto">Lista Promoción Agosto</option>
- <option value="pl-convenio-empresas">Lista Convenio Empresas</option>
+ <option value="pl-ind-sbd-2026">Tarifa Industrial Stanley B&D 2026</option>
+              <option value="pl-farmaceutica-2026">Tarifa Farmacéutica & Etiquetas 2026</option>
+              <option value="pl-flexo-2026">Tarifa General Flexo & Offset 2026</option>
  </select>
  </div>
  </div>

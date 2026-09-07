@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
  X,
  Building2,
@@ -192,8 +192,10 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  size: selectedCatalogArticle.size,
  supplierSku: newRelSupplierSku.trim() || selectedCatalogArticle.sku,
  supplierArticleName: newRelSupplierName.trim() || selectedCatalogArticle.name,
- purchaseUnit: selectedCatalogArticle.baseUnit || 'Colchón',
+ purchaseUnit: selectedCatalogArticle.baseUnit || 'pza',
  referencePrice: newRelPrice,
+ currency: 'MXN',
+ minOrderQuantity: 1,
  estimatedLeadDays: newRelLeadDays,
  isPreferred: newRelIsPreferred,
  status: 'Activo',
@@ -454,7 +456,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  {supplier.commercialNotes || 'Sin notas comerciales registradas.'}
  </p>
  <span className="text-[10px] text-theme-muted block pt-1 border-t border-theme-subtle font-mono">
- Monto mínimo de pedido: ${supplier.minimumOrderAmount.toLocaleString('es-MX')} MXN &bull; Actualizado: {supplier.lastUpdatedTerms}
+ Monto mínimo de pedido: ${(supplier.minimumOrderAmount ?? 0).toLocaleString('es-MX')} MXN &bull; Actualizado: {supplier.lastUpdatedTerms}
  </span>
  </div>
  </div>

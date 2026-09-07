@@ -131,87 +131,87 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
 
  // ---------------------------------------------------------------------------
  // RISK OF STOCKOUT DATA (RIESGO DE ABASTECIMIENTO)
- // ---------------------------------------------------------------------------
- const stockRisks = [
- {
- sku: 'SC-NAYT-FLOW-IND',
- name: 'Nayt Colchón Flow Basic White Individual',
- warehouse: 'Sucursal Valle Oriente',
- available: 2,
- inTransit: 0,
- monthlyConsumption: 8,
- coverageMonths: 0.25,
- status: 'Crítico' as const,
- suggestedQty: 10,
- },
- {
- sku: 'SC-SEA-HYB-KS',
- name: 'Sealy Colchón Hybrid Posture Premier King Size',
- warehouse: 'Sucursal Cumbres',
- available: 1,
- inTransit: 0,
- monthlyConsumption: 4,
- coverageMonths: 0.25,
- status: 'Crítico' as const,
- suggestedQty: 6,
- },
- {
- sku: 'SC-RES-ORT-MAT',
- name: 'Restonic Colchón Ortopedic Matrimonial',
- warehouse: 'CEDIS Monterrey Norte',
- available: 5,
- inTransit: 5,
- monthlyConsumption: 14,
- coverageMonths: 0.71,
- status: 'En riesgo' as const,
- suggestedQty: 15,
- },
- {
- sku: 'SC-SPA-REC-IND',
- name: 'Spring Air Colchón Record Individual',
- warehouse: 'CEDIS Monterrey Sur',
- available: 8,
- inTransit: 12,
- monthlyConsumption: 11,
- coverageMonths: 1.82,
- status: 'Cubierto' as const,
- suggestedQty: 0,
- },
- ];
+  // ---------------------------------------------------------------------------
+  const stockRisks = [
+    {
+      sku: 'MP-COU-090',
+      name: 'Papel Couché 90 g (Pliegos 70x100 cm)',
+      warehouse: 'Almacén Principal RTM',
+      available: 1,
+      inTransit: 4,
+      monthlyConsumption: 12,
+      coverageMonths: 0.1,
+      status: 'Crítico' as const,
+      suggestedQty: 4,
+    },
+    {
+      sku: 'MP-BOP-WHT',
+      name: 'Sustrato BOPP Blanco Brillante 60 mic',
+      warehouse: 'Almacén Principal RTM',
+      available: 2,
+      inTransit: 10,
+      monthlyConsumption: 16,
+      coverageMonths: 0.25,
+      status: 'Crítico' as const,
+      suggestedQty: 8,
+    },
+    {
+      sku: 'TIN-CYN-001',
+      name: 'Tinta Flexográfica Process Cyan',
+      warehouse: 'Almacén Principal RTM',
+      available: 4,
+      inTransit: 12,
+      monthlyConsumption: 14,
+      coverageMonths: 0.71,
+      status: 'En riesgo' as const,
+      suggestedQty: 16,
+    },
+    {
+      sku: 'MP-SBS-240',
+      name: 'Cartulina Sulfatada SBS 240 g / 14 pts',
+      warehouse: 'Almacén Principal RTM',
+      available: 5,
+      inTransit: 3,
+      monthlyConsumption: 8,
+      coverageMonths: 1.82,
+      status: 'Cubierto' as const,
+      suggestedQty: 0,
+    },
+  ];
 
  // ---------------------------------------------------------------------------
  // TOP PURCHASED ARTICLES
- // ---------------------------------------------------------------------------
- const topArticles = [
- {
- sku: 'SC-NAYT-FLOW-IND',
- name: 'Nayt Colchón Flow Basic White Individual',
- purchasedUnits: 48,
- totalAmount: 232800,
- supplier: 'Nayt México',
- },
- {
- sku: 'SC-SPA-POST-KS',
- name: 'Spring Air Colchón Posture Comfort King Size',
- purchasedUnits: 24,
- totalAmount: 156000,
- supplier: 'Spring Air México',
- },
- {
- sku: 'SC-NAYT-FLOW-MAT',
- name: 'Nayt Colchón Flow Basic White Matrimonial',
- purchasedUnits: 28,
- totalAmount: 137200,
- supplier: 'Nayt México',
- },
- {
- sku: 'SC-RES-ORT-MAT',
- name: 'Restonic Colchón Ortopedic Matrimonial',
- purchasedUnits: 25,
- totalAmount: 125000,
- supplier: 'Restonic México',
- },
- ];
+  // ---------------------------------------------------------------------------
+  const topArticles = [
+    {
+      sku: 'MP-COU-090',
+      name: 'Papel Couché 90 g (Pliegos 70x100 cm)',
+      purchasedUnits: 48,
+      totalAmount: 384000,
+      supplier: 'Bio-Pappel S.A.B. de C.V.',
+    },
+    {
+      sku: 'MP-BOP-WHT',
+      name: 'Sustrato BOPP Blanco Brillante 60 mic',
+      purchasedUnits: 32,
+      totalAmount: 288000,
+      supplier: 'Avery Dennison México',
+    },
+    {
+      sku: 'TIN-CYN-001',
+      name: 'Tinta Flexográfica Process Cyan',
+      purchasedUnits: 28,
+      totalAmount: 112000,
+      supplier: 'Sun Chemical México',
+    },
+    {
+      sku: 'MP-SBS-240',
+      name: 'Cartulina Sulfatada SBS 240 g / 14 pts',
+      purchasedUnits: 24,
+      totalAmount: 216000,
+      supplier: 'WestRock Empaques México',
+    },
+  ];
 
  // ---------------------------------------------------------------------------
  // SUPPLIER PERFORMANCE MOCK DATA
@@ -253,41 +253,41 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
 
  // ---------------------------------------------------------------------------
  // PRICE VARIATION DATA
- // ---------------------------------------------------------------------------
- const priceVariations = [
- {
- sku: 'SC-NAYT-FLOW-IND',
- name: 'Nayt Colchón Flow Basic White Individual',
- refPrice: 4850,
- lastPrice: 5000,
- variationPercent: 3.1,
- supplier: 'Nayt México',
- },
- {
- sku: 'SC-SEA-HYB-KS',
- name: 'Sealy Colchón Hybrid Posture Premier King Size',
- refPrice: 12400,
- lastPrice: 12900,
- variationPercent: 4.0,
- supplier: 'Sealy México',
- },
- {
- sku: 'SC-RES-ORT-MAT',
- name: 'Restonic Colchón Ortopedic Matrimonial',
- refPrice: 5300,
- lastPrice: 5300,
- variationPercent: 0.0,
- supplier: 'Restonic México',
- },
- {
- sku: 'SC-SPA-REC-IND',
- name: 'Spring Air Colchón Record Individual',
- refPrice: 6200,
- lastPrice: 5950,
- variationPercent: -4.0,
- supplier: 'Spring Air México',
- },
- ];
+  // ---------------------------------------------------------------------------
+  const priceVariations = [
+    {
+      sku: 'MP-COU-090',
+      name: 'Papel Couché 90 g',
+      refPrice: 7800,
+      lastPrice: 8000,
+      variationPercent: 2.5,
+      supplier: 'Bio-Pappel',
+    },
+    {
+      sku: 'MP-BOP-WHT',
+      name: 'Sustrato BOPP Blanco',
+      refPrice: 8800,
+      lastPrice: 9000,
+      variationPercent: 2.2,
+      supplier: 'Avery Dennison',
+    },
+    {
+      sku: 'TIN-CYN-001',
+      name: 'Tinta Flexo Cyan',
+      refPrice: 3900,
+      lastPrice: 3900,
+      variationPercent: 0.0,
+      supplier: 'Sun Chemical',
+    },
+    {
+      sku: 'MP-SBS-240',
+      name: 'Cartulina SBS 240g',
+      refPrice: 9200,
+      lastPrice: 8900,
+      variationPercent: -3.2,
+      supplier: 'WestRock',
+    },
+  ];
 
  // ---------------------------------------------------------------------------
  // PURCHASES BY DESTINATION
@@ -1367,7 +1367,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  <ul className="space-y-2.5 text-xs text-theme-main">
  <li className="flex items-start gap-2">
  <span className="text-rose-600 font-bold">&bull;</span>
- <span><strong>Nayt México</strong> concentra el mayor monto de compras del periodo ($180,000 MXN).</span>
+ <span><strong>Bio-Pappel S.A.B. de C.V.</strong> concentra el mayor monto de compras del periodo ($384,000 MXN).</span>
  </li>
  <li className="flex items-start gap-2">
  <span className="text-rose-600 font-bold">&bull;</span>
@@ -1375,7 +1375,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  </li>
  <li className="flex items-start gap-2">
  <span className="text-rose-600 font-bold">&bull;</span>
- <span><strong>Sucursal Valle Oriente</strong> presenta la menor cobertura en inventario para el SKU SC-NAYT-FLOW-IND (0.25 meses).</span>
+ <span><strong>Almacén Principal RTM</strong> presenta la menor cobertura en inventario para el insumo crítico MP-COU-090 (0.1 meses).</span>
  </li>
  <li className="flex items-start gap-2">
  <span className="text-rose-600 font-bold">&bull;</span>

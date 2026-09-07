@@ -267,7 +267,7 @@ export const PriceListsTab: React.FC<PriceListsTabProps> = ({
  const newItem: PriceListItem = {
  id: `pli-${Date.now()}`,
  articleSku: articleRel.articleSku,
- articleName: articleRel.articleName,
+ articleName: articleRel.articleName || articleRel.articleSku,
  supplierSku: articleRel.supplierSku,
  unit: articleRel.purchaseUnit || 'pza',
  currentPrice: newItemPrice,

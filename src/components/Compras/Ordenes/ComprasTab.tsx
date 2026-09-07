@@ -131,7 +131,7 @@ export const ComprasTab: React.FC<ComprasTabProps> = ({
  <button
  type="button"
  onClick={() => setActiveSubTab('por_comprar')}
- className="px-4 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer ml-auto"
+ className="px-4 py-2 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer ml-auto"
  >
  <ShoppingBag className="w-4 h-4" />
  <span>Atender Requisiciones ({readyRequisitions.length})</span>

@@ -53,12 +53,12 @@ export const SuppliersList: React.FC<SuppliersListProps> = ({
  const matchContact = sup.contacts.some(
  (c) => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q)
  );
- const matchArticle = sup.articles.some(
- (a) =>
- a.articleName.toLowerCase().includes(q) ||
- a.articleSku.toLowerCase().includes(q) ||
- a.supplierSku.toLowerCase().includes(q)
- );
+    const matchArticle = sup.articles.some(
+      (a) =>
+        (a.articleName || '').toLowerCase().includes(q) ||
+        a.articleSku.toLowerCase().includes(q) ||
+        a.supplierSku.toLowerCase().includes(q)
+    );
 
  if (!matchTrade && !matchLegal && !matchRfc && !matchContact && !matchArticle) {
  return false;

@@ -303,7 +303,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  createdAt: initialRequisition?.createdAt || '27 Ago 2026',
  requester,
  targetWarehouseId,
- targetWarehouseName: warehouseObj?.name || 'CEDIS Monterrey Norte',
+ targetWarehouseName: warehouseObj?.name || 'Almacén Principal RTM',
  requiredDate,
  priority,
  suggestedSupplier: suggestedSupplier.trim() || undefined,
@@ -547,7 +547,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  type="text"
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
- placeholder="Escribe 'Flow', 'Record', 'SC-NAYT' o nombre del artículo..."
+ placeholder="Escribe 'Couché', 'BOPP', 'Tinta Cyan', 'MP-COU-090' o nombre del insumo..."
  className="w-full bg-theme-muted/40 border border-theme-subtle rounded-2xl pl-10 pr-4 py-2.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>

@@ -56,7 +56,7 @@ export const PedidosPage: React.FC<PedidosPageProps> = ({
  Pedidos
  </h1>
  <p className="text-xs sm:text-sm text-theme-muted">
- Monitoreo comercial, autorización de pedidos, análisis de showroom y cruce con inventario local.
+ Monitoreo comercial, autorización de pedidos, disponibilidad de PT y enlace operativo con Producción.
  </p>
  </div>
  </div>

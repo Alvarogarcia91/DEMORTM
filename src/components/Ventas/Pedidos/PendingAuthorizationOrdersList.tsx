@@ -61,14 +61,14 @@ export const PendingAuthorizationOrdersList: React.FC<PendingAuthorizationOrders
  </div>
 
  <select
- value={filterBranch}
- onChange={(e) => setFilterBranch(e.target.value)}
- className="p-2 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs font-semibold shadow-2xs focus:outline-none"
- >
- <option value="all">Todas las sucursales</option>
- <option value="wh-suc-valle-oriente">Sucursal Valle Oriente</option>
- <option value="wh-suc-cumbres">Sucursal Cumbres</option>
- </select>
+          value={filterBranch}
+          onChange={(e) => setFilterBranch(e.target.value)}
+          className="p-2 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs font-semibold shadow-2xs focus:outline-none"
+        >
+          <option value="all">Todas las tecnologías</option>
+          <option value="Offset">Tecnología Offset</option>
+          <option value="Flexografía">Tecnología Flexografía</option>
+        </select>
  </div>
 
  <span className="px-3 py-1.5 rounded-full text-xs font-bold bg-white text-zinc-900 border border-amber-500 shadow-2xs">
@@ -92,7 +92,7 @@ export const PendingAuthorizationOrdersList: React.FC<PendingAuthorizationOrders
  <th className="py-3.5 px-4">Pedido</th>
  <th className="py-3.5 px-3">Cotización Origen</th>
  <th className="py-3.5 px-4">Cliente</th>
- <th className="py-3.5 px-3">Sucursal</th>
+ <th className="py-3.5 px-3">Tecnología</th>
  <th className="py-3.5 px-4">Motivo de Autorización</th>
  <th className="py-3.5 px-2 text-center">Artículos</th>
  <th className="py-3.5 px-2 text-center">Unidades</th>
@@ -120,9 +120,11 @@ export const PendingAuthorizationOrdersList: React.FC<PendingAuthorizationOrders
  <strong className="text-zinc-900 block">{ord.customerName}</strong>
  <span className="text-[10px] text-zinc-500 font-mono">{ord.customerRfc}</span>
  </td>
- <td className="py-3 px-3 text-zinc-600 whitespace-nowrap">
- {ord.branchName}
- </td>
+ <td className="py-3 px-3 whitespace-nowrap">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold border border-theme-primary/30 text-theme-primary bg-theme-primary/5">
+                    {(ord as any).technology || (ord.items[0] as any)?.technology || 'Offset'}
+                  </span>
+                </td>
  <td className="py-3 px-4 max-w-xs">
  <div className="flex items-center gap-1.5 text-amber-800 text-[11px] font-medium bg-amber-50/80 border border-amber-200/70 px-2.5 py-1 rounded-lg">
  <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />

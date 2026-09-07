@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import {
   Users,
-  UserCheck,
   Building2,
+  DollarSign,
+  TrendingUp,
   FileText,
   ShoppingBag,
-  TrendingUp,
-  DollarSign,
-  ArrowRight
+  Plus,
+  ArrowRight,
+  ShieldCheck,
+  CheckCircle2,
 } from 'lucide-react';
 import { SalesCustomer } from '../../../data/mockSalesData';
 import {
   formatCurrencyMXN,
+  formatDateMX,
   formatKpiCurrency,
   formatPercentage,
 } from '../../../utils/formatters';
@@ -42,28 +45,25 @@ export const ClientesDashboard: React.FC<ClientesDashboardProps> = ({
   const totalSpent = filteredCustomers.reduce((acc, c) => acc + c.totalSpent, 0);
   const avgTicketCustomer = totalActiveCustomers > 0 ? totalSpent / totalActiveCustomers : 0;
 
-  const voCustomers = filteredCustomers.filter((c) => c.preferredBranch === 'wh-suc-valle-oriente');
-  const cumbresCustomers = filteredCustomers.filter((c) => c.preferredBranch === 'wh-suc-cumbres');
-
   const topSalesCustomers = [...filteredCustomers].sort((a, b) => b.totalSpent - a.totalSpent).slice(0, 4);
 
   return (
     <div className="space-y-6">
       {/* Top Bar */}
       <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-xs flex items-center gap-3">
-        <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Sucursal:</span>
+        <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Planta / Destino:</span>
         <select
           value={branchFilter}
           onChange={(e) => setBranchFilter(e.target.value)}
           className="p-2 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs font-semibold shadow-2xs focus:outline-none"
         >
-          <option value="all">Todas las sucursales</option>
-          <option value="wh-suc-valle-oriente">Sucursal Valle Oriente</option>
-          <option value="wh-suc-cumbres">Sucursal Cumbres</option>
+          <option value="all">Todas las plantas / destinos</option>
+          <option value="wh-alm-rtm">Planta Principal RTM</option>
+          <option value="wh-alm-virtual">Almacén Virtual / Control</option>
         </select>
       </div>
 
-      {/* KPIs 6 Grid (100% White + Semantic Borders) */}
+      {/* KPIs 6 Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
         <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-1">
           <span className="text-[10px] uppercase font-bold text-zinc-500 block">Clientes Activos</span>
@@ -74,13 +74,13 @@ export const ClientesDashboard: React.FC<ClientesDashboardProps> = ({
         <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-1">
           <span className="text-[10px] uppercase font-bold text-zinc-500 block">Nuevos (Mes)</span>
           <span className="text-2xl font-black font-mono text-zinc-900 block">{newCustomersCount}</span>
-          <span className="text-[10px] text-emerald-600 font-bold">+2 nuevas altas</span>
+          <span className="text-[10px] text-emerald-600 font-bold">+2 cuentas clave</span>
         </div>
 
         <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-1">
           <span className="text-[10px] uppercase font-bold text-zinc-500 block">Recurrentes</span>
           <span className="text-2xl font-black font-mono text-zinc-900 block">{recurringCustomersCount}</span>
-          <span className="text-[10px] text-purple-600 font-bold">Recompra activa</span>
+          <span className="text-[10px] text-purple-600 font-bold">Contratos activos</span>
         </div>
 
         <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-1">
@@ -110,6 +110,7 @@ export const ClientesDashboard: React.FC<ClientesDashboardProps> = ({
 
       {/* Widgets Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* WIDGET 1: TOP CLIENTES */}
         <div className="p-5 rounded-3xl bg-white border border-zinc-200 shadow-xs space-y-4">
           <h3 className="text-xs font-black text-zinc-900 uppercase tracking-wider flex items-center justify-between">
             <span>Top Clientes por Facturación</span>
@@ -129,7 +130,7 @@ export const ClientesDashboard: React.FC<ClientesDashboardProps> = ({
                   </span>
                   <div>
                     <span className="font-bold text-zinc-900 block">{cust.name}</span>
-                    <span className="text-[10px] text-zinc-500">{cust.type} &bull; {cust.preferredBranchName}</span>
+                    <span className="text-[10px] text-zinc-500">{cust.type} &bull; {cust.preferredBranchName || 'Planta Principal RTM'}</span>
                   </div>
                 </div>
                 <div className="text-right">
@@ -143,44 +144,53 @@ export const ClientesDashboard: React.FC<ClientesDashboardProps> = ({
           </div>
         </div>
 
+        {/* WIDGET 2: DISTRIBUCIÓN POR SECTOR INDUSTRIAL */}
         <div className="p-5 rounded-3xl bg-white border border-zinc-200 shadow-xs space-y-4">
           <h3 className="text-xs font-black text-zinc-900 uppercase tracking-wider flex items-center justify-between">
-            <span>Distribución de Cartera por Sucursal</span>
+            <span>Distribución de Cartera por Sector Industrial</span>
             <Building2 className="w-4 h-4 text-zinc-400" />
           </h3>
 
           <div className="space-y-3 text-xs">
             <div className="p-4 rounded-2xl bg-zinc-50/70 border border-zinc-200 shadow-2xs space-y-2">
               <div className="flex justify-between font-bold text-zinc-900">
-                <span>Sucursal Valle Oriente</span>
-                <span className="font-mono">{voCustomers.length} clientes</span>
+                <span>Editorial & Manuales Técnicos (Offset)</span>
+                <span className="font-mono">Stanley Black & Decker</span>
               </div>
               <div className="w-full bg-zinc-200 rounded-full h-2 overflow-hidden">
-                <div
-                  className="bg-theme-primary h-2 rounded-full"
-                  style={{ width: `${(voCustomers.length / totalActiveCustomers) * 100}%` }}
-                />
+                <div className="bg-theme-primary h-2 rounded-full" style={{ width: '48%' }} />
               </div>
               <div className="flex justify-between text-[11px] text-zinc-600">
-                <span>Facturado: <strong className="font-mono">{formatCurrencyMXN(voCustomers.reduce((acc, c) => acc + c.totalSpent, 0), false)}</strong></span>
-                <span className="text-emerald-600 font-bold">58% de cartera</span>
+                <span>Facturado: <strong className="font-mono">$427,500 MXN</strong></span>
+                <span className="text-theme-primary font-bold">48% de cartera</span>
               </div>
             </div>
 
             <div className="p-4 rounded-2xl bg-zinc-50/70 border border-zinc-200 shadow-2xs space-y-2">
               <div className="flex justify-between font-bold text-zinc-900">
-                <span>Sucursal Cumbres</span>
-                <span className="font-mono">{cumbresCustomers.length} clientes</span>
+                <span>Farmacéutica & Cuidado Personal (Flexo)</span>
+                <span className="font-mono">Laboratorios Rex</span>
               </div>
               <div className="w-full bg-zinc-200 rounded-full h-2 overflow-hidden">
-                <div
-                  className="bg-purple-600 h-2 rounded-full"
-                  style={{ width: `${(cumbresCustomers.length / totalActiveCustomers) * 100}%` }}
-                />
+                <div className="bg-purple-600 h-2 rounded-full" style={{ width: '33%' }} />
               </div>
               <div className="flex justify-between text-[11px] text-zinc-600">
-                <span>Facturado: <strong className="font-mono">{formatCurrencyMXN(cumbresCustomers.reduce((acc, c) => acc + c.totalSpent, 0), false)}</strong></span>
-                <span className="text-purple-600 font-bold">42% de cartera</span>
+                <span>Facturado: <strong className="font-mono">$298,400 MXN</strong></span>
+                <span className="text-purple-600 font-bold">33% de cartera</span>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-zinc-50/70 border border-zinc-200 shadow-2xs space-y-2">
+              <div className="flex justify-between font-bold text-zinc-900">
+                <span>Empaque Plegadizo, Blister & Etiquetas</span>
+                <span className="font-mono">Electrodomésticos / Alimentos</span>
+              </div>
+              <div className="w-full bg-zinc-200 rounded-full h-2 overflow-hidden">
+                <div className="bg-emerald-600 h-2 rounded-full" style={{ width: '19%' }} />
+              </div>
+              <div className="flex justify-between text-[11px] text-zinc-600">
+                <span>Facturado: <strong className="font-mono">$171,800 MXN</strong></span>
+                <span className="text-emerald-600 font-bold">19% de cartera</span>
               </div>
             </div>
 

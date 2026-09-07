@@ -27,7 +27,7 @@ export const CotizacionesList: React.FC<CotizacionesListProps> = ({
   onNavigateToOrder,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterBranch, setFilterBranch] = useState('all');
+  const [filterTech, setFilterTech] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
 
   const filteredQuotes = quotes.filter((q) => {
@@ -37,10 +37,11 @@ export const CotizacionesList: React.FC<CotizacionesListProps> = ({
       q.customerRfc.toLowerCase().includes(searchTerm.toLowerCase()) ||
       q.sellerName.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchBranch = filterBranch === 'all' || q.branchId === filterBranch;
+    const qTech = q.technology || (q.items[0]?.sku?.startsWith('PT-ETQ') ? 'Flexografía' : 'Offset');
+    const matchTech = filterTech === 'all' || qTech === filterTech;
     const matchStatus = filterStatus === 'all' || q.status === filterStatus;
 
-    return matchSearch && matchBranch && matchStatus;
+    return matchSearch && matchTech && matchStatus;
   });
 
   const getSemanticTone = (status: SalesQuote['status']) => {
@@ -83,15 +84,15 @@ export const CotizacionesList: React.FC<CotizacionesListProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider hidden sm:inline">Sucursal:</span>
+            <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider hidden sm:inline">Tecnología:</span>
             <select
-              value={filterBranch}
-              onChange={(e) => setFilterBranch(e.target.value)}
+              value={filterTech}
+              onChange={(e) => setFilterTech(e.target.value)}
               className="p-2 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs font-semibold shadow-2xs focus:outline-none"
             >
-              <option value="all">Todas las sucursales</option>
-              <option value="wh-suc-valle-oriente">Sucursal Valle Oriente</option>
-              <option value="wh-suc-cumbres">Sucursal Cumbres</option>
+              <option value="all">Todas las tecnologías</option>
+              <option value="Offset">Offset (Prensas Planas)</option>
+              <option value="Flexografía">Flexografía (Rollos)</option>
             </select>
           </div>
 
@@ -124,12 +125,12 @@ export const CotizacionesList: React.FC<CotizacionesListProps> = ({
                 <th className="py-3.5 px-4">Folio</th>
                 <th className="py-3.5 px-3">Fecha</th>
                 <th className="py-3.5 px-4">Cliente</th>
-                <th className="py-3.5 px-3">Sucursal</th>
+                <th className="py-3.5 px-3">Tecnología / Planta</th>
                 <th className="py-3.5 px-2 text-center">Partidas</th>
                 <th className="py-3.5 px-2 text-center">Unidades</th>
                 <th className="py-3.5 px-4 text-right">Total Cotizado</th>
                 <th className="py-3.5 px-3">Vigencia</th>
-                <th className="py-3.5 px-3">Vendedor</th>
+                <th className="py-3.5 px-3">Ejecutivo</th>
                 <th className="py-3.5 px-3 text-center">Estado</th>
                 <th className="py-3.5 px-4 text-center">Acciones</th>
               </tr>
@@ -140,6 +141,7 @@ export const CotizacionesList: React.FC<CotizacionesListProps> = ({
                 const isPendingAuth = quote.status === 'Pendiente de autorización';
                 const isAccepted = quote.status === 'Aceptada';
                 const isConverted = quote.status === 'Convertida en pedido' || Boolean(quote.generatedOrderFolio);
+                const qTech = quote.technology || (quote.items[0]?.sku?.startsWith('PT-ETQ') ? 'Flexografía' : 'Offset');
 
                 return (
                   <tr key={quote.id} className="hover:bg-zinc-50/70 transition-colors">
@@ -153,8 +155,11 @@ export const CotizacionesList: React.FC<CotizacionesListProps> = ({
                       <strong className="text-zinc-900 block">{quote.customerName}</strong>
                       <span className="text-[10px] text-zinc-500 font-mono">RFC: {quote.customerRfc}</span>
                     </td>
-                    <td className="py-3 px-3 text-zinc-600 whitespace-nowrap">
-                      {quote.branchName}
+                    <td className="py-3 px-3 whitespace-nowrap">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-theme-primary/10 text-theme-primary border border-theme-primary/20">
+                        {qTech}
+                      </span>
+                      <span className="text-[10px] text-zinc-400 block mt-0.5">Planta Principal RTM</span>
                     </td>
                     <td className="py-3 px-2 text-center font-bold text-zinc-900">
                       {quote.items.length}

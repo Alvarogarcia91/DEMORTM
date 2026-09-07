@@ -1,4 +1,4 @@
-﻿export interface SerializedUnitTrace {
+export interface SerializedUnitTrace {
   uid: string;
   lotNumber: string;
   warehouseName: string;
@@ -40,8 +40,8 @@ export interface MasterArticle {
   sku: string;
   name: string;
   brand: string;
-  category: 'Colchones' | 'Bases' | 'Almohadas' | 'Protectores';
-  size: 'Individual' | 'Matrimonial' | 'Queen Size' | 'King Size' | 'Estándar';
+  category: 'Colchones' | 'Bases' | 'Almohadas' | 'Protectores' | 'Editorial' | 'Empaque' | 'Etiquetas' | 'Promocional' | string;
+  size: 'Individual' | 'Matrimonial' | 'Queen Size' | 'King Size' | 'Estándar' | '24 páginas' | '48 páginas' | 'Termosellable' | 'Rollo 4x6"' | 'Colgante UV' | string;
   baseUnit: string;
   serialization: 'Por unidad' | 'No serializado';
   isActive: boolean;
@@ -476,9 +476,263 @@ const createArticleEntry = (data: {
     ],
   };
 };
+const createIndustrialArticle = (data: {
+  id: string;
+  sku: string;
+  name: string;
+  brand: string;
+  category: string;
+  size: string;
+  baseUnit: string;
+  technology: 'Offset' | 'Flexografía';
+  revision: string;
+  classCode: string;
+  className: string;
+  groupCode: string;
+  groupName: string;
+  satCode: string;
+  barcode: string;
+  refCost: number;
+  listPrice: number;
+  totalPhysical: number;
+  available: number;
+  committed: number;
+  location: string;
+}): MasterArticle => {
+  return {
+    id: data.id,
+    sku: data.sku,
+    name: data.name,
+    brand: data.brand,
+    category: data.category,
+    size: data.size,
+    baseUnit: data.baseUnit,
+    serialization: 'No serializado',
+    isActive: true,
+    classCode: data.classCode,
+    className: data.className,
+    groupCode: data.groupCode,
+    groupName: data.groupName,
+    satCode: data.satCode,
+    barcode: data.barcode,
+    descriptions: {
+      internal: `${data.name} — ${data.technology} — ${data.revision}. Control de tiraje y balance PT.`,
+      commercial: `${data.name} fabricado con estándares industriales de Impresos RTM.`,
+      purchasing: `Insumos para producción de ${data.sku} según ficha técnica y requerimiento de tiraje.`,
+    },
+    characteristics: {
+      line: data.technology === 'Offset' ? 'Línea Offset Comercial' : 'Línea Flexografía Bobina',
+      mattressType: data.technology,
+      firmness: 'Media',
+      heightCm: 1,
+      supportTechnology: data.technology,
+      packagingType: 'Empaque corrugado flejado / Tarima protegida',
+      isBoxed: false,
+      isReversible: false,
+      maxWeightPerPersonKg: 0,
+      fabricComposition: data.technology === 'Offset' ? 'Sustrato celulósico / Papel / Cartulina' : 'Película sintética / BOPP autoadherible',
+      warrantyYears: 1,
+    },
+    logisticControl: {
+      requiresQr: false,
+      requiresPhysicalLocation: true,
+      individualHandling: false,
+      rotationStrategy: 'FIFO',
+      fefoEnabled: false,
+      maxDaysInWarehouse: 180,
+      storageType: 'Racks PT Almacén Principal RTM',
+      inspectionLevel: 'Muestreo AQL por Lote de Producción',
+      weightKg: 15,
+      dimensionsCm: { width: 40, length: 60, height: 30 },
+    },
+    inventory: {
+      totalPhysical: data.totalPhysical,
+      available: data.available,
+      inInspection: 0,
+      committed: data.committed,
+      byWarehouse: [
+        {
+          warehouseId: 'wh-alm-rtm',
+          warehouseName: 'Almacén Principal RTM',
+          location: data.location,
+          stock: data.totalPhysical,
+          available: data.available,
+          committed: data.committed,
+          inTransit: 0,
+        },
+      ],
+      recentSerializedUnits: [],
+    },
+    relatedVariants: [],
+    traceabilityEvents: [
+      {
+        timestamp: '01 Sep 08:30',
+        event: 'Acomodado',
+        warehouseName: 'Almacén Principal RTM',
+        location: data.location,
+        user: 'operador_pt',
+        details: `Entrada a almacén de PT desde Prensa ${data.technology}`,
+      },
+    ],
+    purchasing: {
+      primarySupplier: 'Impresos RTM (Manufactura Interna)',
+      supplierCode: 'PROV-RTM-INT',
+      lastReceptionDate: '01 Sep 2026',
+      estimatedLeadTimeDays: 5,
+      internalReferenceCost: data.refCost,
+      lastReceivedLot: 'RTM-PT-2026-09',
+      reorderPoint: Math.round(data.totalPhysical * 0.2),
+      economicOrderQuantity: data.totalPhysical,
+    },
+    commercial: {
+      salesDescription: `${data.name} para cliente corporativo ${data.brand}.`,
+      salesChannel: 'B2B Industrial',
+      commercialStatus: 'Línea Activa',
+      season: '2026',
+      modelYear: '2026',
+      introductionDate: '01 Ene 2026',
+      referenceListPrice: data.listPrice,
+    },
+    images: [
+      {
+        id: `img-${data.id}-01`,
+        url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800',
+        caption: `${data.name} - Vista Producto Terminado`,
+        isPrimary: true,
+        resolution: '1200x800 px',
+      },
+    ],
+    documents: [
+      {
+        id: `doc-${data.id}-01`,
+        title: `Ficha Técnica ${data.sku} ${data.revision}.pdf`,
+        type: 'Ficha Técnica',
+        format: 'PDF',
+        date: '01 Ago 2026',
+        version: data.revision,
+        sizeKb: 340,
+      },
+    ],
+  };
+};
 
 export const MOCK_MASTER_ARTICLES: MasterArticle[] = [
-  // 1. Nayt (Top)
+  // 1. RTM INDUSTRIAL GRAPHIC ARTS PRODUCTS (FASE 3)
+  createIndustrialArticle({
+    id: 'art-rtm-01',
+    sku: 'BD-MAN-024',
+    name: 'Manual instructivo 24 páginas',
+    brand: 'Stanley Black & Decker',
+    category: 'Editorial',
+    size: '24 páginas',
+    baseUnit: 'pza',
+    technology: 'Offset',
+    revision: 'Rev B (Vigente)',
+    classCode: 'MAN',
+    className: 'Manuales & Instructivos',
+    groupCode: 'MAN-OFF',
+    groupName: 'Manuales Offset Cosido / Grapa',
+    satCode: '55101500',
+    barcode: '7501002401082',
+    refCost: 1.85,
+    listPrice: 2.85,
+    totalPhysical: 5000,
+    available: 5000,
+    committed: 0,
+    location: 'PT-02',
+  }),
+  createIndustrialArticle({
+    id: 'art-rtm-02',
+    sku: 'BD-MAN-048',
+    name: 'Manual instructivo 48 páginas',
+    brand: 'Stanley Black & Decker',
+    category: 'Editorial',
+    size: '48 páginas',
+    baseUnit: 'pza',
+    technology: 'Offset',
+    revision: 'Rev A (Vigente)',
+    classCode: 'MAN',
+    className: 'Manuales & Instructivos',
+    groupCode: 'MAN-OFF',
+    groupName: 'Manuales Offset Hotmelt',
+    satCode: '55101500',
+    barcode: '7501004801099',
+    refCost: 2.90,
+    listPrice: 4.20,
+    totalPhysical: 2000,
+    available: 2000,
+    committed: 0,
+    location: 'PT-02',
+  }),
+  createIndustrialArticle({
+    id: 'art-rtm-03',
+    sku: 'BLI-CRD-001',
+    name: 'Blister Card Termosellable',
+    brand: 'Electrodomésticos Monterrey',
+    category: 'Empaque',
+    size: 'Termosellable',
+    baseUnit: 'pza',
+    technology: 'Offset',
+    revision: 'Rev C (Vigente)',
+    classCode: 'BLI',
+    className: 'Empaque Plegadizo & Blister',
+    groupCode: 'BLI-CRD',
+    groupName: 'Tarjetas Blister SBS',
+    satCode: '55121600',
+    barcode: '7501000101105',
+    refCost: 0.95,
+    listPrice: 1.45,
+    totalPhysical: 10000,
+    available: 10000,
+    committed: 0,
+    location: 'PT-04',
+  }),
+  createIndustrialArticle({
+    id: 'art-rtm-04',
+    sku: 'PT-ETQ-001',
+    name: 'Etiqueta Autoadherible 4x6" en Rollo',
+    brand: 'Laboratorios Rex',
+    category: 'Etiquetas',
+    size: 'Rollo 4x6"',
+    baseUnit: 'caja',
+    technology: 'Flexografía',
+    revision: 'Rev A (Vigente)',
+    classCode: 'ETQ',
+    className: 'Etiquetas Autoadheribles',
+    groupCode: 'ETQ-ROL',
+    groupName: 'Etiquetas en Rollo Flexo',
+    satCode: '55121600',
+    barcode: '7501000101112',
+    refCost: 0.58,
+    listPrice: 0.92,
+    totalPhysical: 24000,
+    available: 12000,
+    committed: 12000,
+    location: 'EMB-01 / PT-01',
+  }),
+  createIndustrialArticle({
+    id: 'art-rtm-05',
+    sku: 'TAG-IMP-002',
+    name: 'Tag Colgante con Barniz UV',
+    brand: 'Alimentos y Bebidas del Norte',
+    category: 'Promocional',
+    size: 'Colgante UV',
+    baseUnit: 'pza',
+    technology: 'Offset',
+    revision: 'Rev A (Vigente)',
+    classCode: 'TAG',
+    className: 'Tags & Colgantes Promocionales',
+    groupCode: 'TAG-UV',
+    groupName: 'Tags con Acabado Especial UV',
+    satCode: '55101500',
+    barcode: '7501000201129',
+    refCost: 0.75,
+    listPrice: 1.15,
+    totalPhysical: 8000,
+    available: 8000,
+    committed: 0,
+    location: 'PT-03',
+  }),
   createArticleEntry({
     id: 'art-01',
     sku: 'SC-NAYT-FLOW-IND',

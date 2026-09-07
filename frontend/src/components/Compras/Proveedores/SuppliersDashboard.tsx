@@ -86,7 +86,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  incidentsCount: 1,
  priceVariationPercent: 1.3,
  analyzedOrdersCount: 8,
- recentNotes: 'Proveedor estratégico prioritario. Máxima confiabilidad en entregas a CEDIS Monterrey Norte.',
+ recentNotes: 'Proveedor estratégico prioritario. Máxima confiabilidad en entregas a Almacén Principal RTM.',
  },
  {
  supplierTradeName: 'Restonic México',
@@ -658,7 +658,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  Registro reciente de arribos a CEDIS con validación de puntualidad y completitud física.
  </p>
  </div>
- <span className="text-xs font-mono text-theme-muted">CEDIS Monterrey Norte / Sur</span>
+ <span className="text-xs font-mono text-theme-muted">Almacén Principal RTM</span>
  </div>
 
  <div className="overflow-x-auto">

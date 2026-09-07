@@ -62,9 +62,9 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
   );
   const [clientSearch, setClientSearch] = useState('');
 
-  // Step 2: Sucursal y Lista de Precios
-  const [selectedBranchId, setSelectedBranchId] = useState<string>('wh-suc-valle-oriente');
-  const [selectedPriceListId, setSelectedPriceListId] = useState<string>('pl-general-2026');
+  // Step 2: Planta y Tarifa Comercial
+  const [selectedBranchId, setSelectedBranchId] = useState<string>('wh-alm-rtm');
+  const [selectedPriceListId, setSelectedPriceListId] = useState<string>('pl-ind-sbd-2026');
 
   // Step 3: Partidas
   const [items, setItems] = useState<SalesQuoteItem[]>([]);
@@ -95,7 +95,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
   const currentCustomer = customers.find((c) => c.id === selectedCustomerId) || customers[0];
   const currentPriceList = priceLists.find((p) => p.id === selectedPriceListId) || priceLists[0];
 
-  const branchName = selectedBranchId === 'wh-suc-valle-oriente' ? 'Sucursal Valle Oriente' : 'Sucursal Cumbres';
+  const branchName = selectedBranchId === 'wh-alm-rtm' ? 'Planta Principal RTM' : 'Almacén Auxiliar RTM';
 
   const handleSelectCustomer = (cust: SalesCustomer) => {
     setSelectedCustomerId(cust.id);
@@ -241,8 +241,8 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
       branchId: selectedBranchId,
       branchName,
       priceListId: selectedPriceListId,
-      priceListName: currentPriceList?.name || 'Lista General Retail 2026',
-      sellerName: 'Lic. Alejandro Morales (Ventas Retail VO)',
+      priceListName: currentPriceList?.name || 'Tarifa Industrial RTM 2026',
+      sellerName: 'Ing. Carlos Mendoza (Ventas Industriales RTM)',
       items,
       financials: {
         subtotalList,
@@ -292,14 +292,14 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
             <div>
               <h2 className="text-base font-black text-zinc-900 tracking-tight">
                 {step === 1 && 'Seleccionar Cliente'}
-                {step === 2 && 'Sucursal y Lista de Precios'}
+                {step === 2 && 'Planta / Línea & Tarifa Comercial'}
                 {step === 3 && 'Cotizador Comercial de Partidas'}
                 {step === 4 && 'Condiciones Comerciales y Logísticas'}
                 {step === 5 && 'Resumen Comercial y Validación'}
               </h2>
               <p className="text-xs text-zinc-500">
                 {step === 1 && 'Elige o busca el cliente destinatario de la propuesta.'}
-                {step === 2 && 'Define el punto de venta de despacho y la lista de precios a aplicar.'}
+                {step === 2 && 'Define la planta de producción asignada y la tarifa comercial aplicable.'}
                 {step === 3 && 'Agrega artículos, ajusta descuentos por partida y monitorea el margen estimado.'}
                 {step === 4 && 'Plazos de entrega, vigencia de propuesta y esquema de pago.'}
                 {step === 5 && 'Revisión final de política de precios y dictamen automático.'}
@@ -319,7 +319,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
         <div className="px-6 py-3 bg-zinc-50 border-b border-zinc-200 flex items-center justify-between gap-2 overflow-x-auto text-xs">
           {[
             { s: 1, label: '1. Cliente' },
-            { s: 2, label: '2. Sucursal / Lista' },
+            { s: 2, label: '2. Planta / Tarifa' },
             { s: 3, label: '3. Partidas / Márgenes' },
             { s: 4, label: '4. Condiciones' },
             { s: 5, label: '5. Resumen' },
@@ -409,12 +409,12 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
             <div className="space-y-6">
               <div className="space-y-3">
                 <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider block">
-                  1. Sucursal de Despacho / Piso de Venta
+                  1. Planta de Producción / Almacén de Despacho
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {[
-                    { id: 'wh-suc-valle-oriente', name: 'Sucursal Valle Oriente', desc: 'San Pedro Garza García, N.L. (Showroom + Almacén Local)' },
-                    { id: 'wh-suc-cumbres', name: 'Sucursal Cumbres', desc: 'Monterrey Poniente, N.L. (Showroom + Almacén Local)' },
+                    { id: 'wh-alm-rtm', name: 'Planta Principal RTM', desc: 'Guadalupe, N.L. — Naves Offset y Flexografía' },
+                    { id: 'wh-ext-bodega', name: 'Almacén Auxiliar RTM', desc: 'Guadalupe, N.L. — Resguardo de Materia Prima y PT' },
                   ].map((branch) => {
                     const isSelected = selectedBranchId === branch.id;
                     return (
@@ -490,7 +490,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                       onChange={(e) => setSelectedArticleSku(e.target.value)}
                       className="w-full p-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs focus:outline-none focus:border-theme-primary shadow-2xs"
                     >
-                      <option value="">-- Selecciona un colchón / artículo --</option>
+                      <option value="">-- Selecciona un trabajo / artículo industrial --</option>
                       {MOCK_MASTER_ARTICLES.filter((a) => a.isActive).map((art) => (
                         <option key={art.sku} value={art.sku}>
                           {art.sku} - {art.name} ({art.size})

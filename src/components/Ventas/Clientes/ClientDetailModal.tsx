@@ -154,7 +154,7 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({
                 <p className="font-bold text-zinc-900 text-sm">{customer.legalName}</p>
                 <p className="font-mono text-zinc-600">RFC: {customer.rfc}</p>
                 <p className="text-zinc-600">Tipo de Cliente: <strong className="text-zinc-900">{customer.type}</strong></p>
-                <p className="text-zinc-600">Sucursal Preferida: <strong className="text-zinc-900">{customer.preferredBranchName}</strong></p>
+                <p className="text-zinc-600">Planta / Destino Habitual: <strong className="text-zinc-900">{customer.preferredBranchName || 'Planta Principal RTM'}</strong></p>
                 <p className="text-zinc-600">Lista Asignada: <strong className="text-zinc-900">{customer.preferredPriceListName}</strong></p>
               </div>
             </div>
@@ -257,7 +257,7 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({
                     <tr className="bg-zinc-50 border-b border-zinc-200 text-zinc-500 font-bold text-[10px] uppercase">
                       <th className="py-2.5 px-3">Folio</th>
                       <th className="py-2.5 px-3">Fecha</th>
-                      <th className="py-2.5 px-3">Sucursal</th>
+                      <th className="py-2.5 px-3">Planta Destino</th>
                       <th className="py-2.5 px-3 text-right">Total</th>
                       <th className="py-2.5 px-3 text-center">Estado</th>
                     </tr>

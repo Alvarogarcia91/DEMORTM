@@ -72,9 +72,9 @@ export const ClientesList: React.FC<ClientesListProps> = ({
           onChange={(e) => setFilterBranch(e.target.value)}
           className="p-2 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs font-semibold shadow-2xs focus:outline-none"
         >
-          <option value="all">Todas las sucursales</option>
-          <option value="wh-suc-valle-oriente">Sucursal Valle Oriente</option>
-          <option value="wh-suc-cumbres">Sucursal Cumbres</option>
+          <option value="all">Todas las plantas / destinos</option>
+          <option value="wh-alm-rtm">Planta Principal RTM</option>
+          <option value="wh-alm-virtual">Almacén Virtual / Control</option>
         </select>
       </div>
     </div>
@@ -89,7 +89,7 @@ export const ClientesList: React.FC<ClientesListProps> = ({
  <th className="py-3.5 px-4">Cliente / Razón Social</th>
  <th className="py-3.5 px-3 text-center">Tipo</th>
  <th className="py-3.5 px-3">Contacto</th>
- <th className="py-3.5 px-3">Sucursal Preferida</th>
+ <th className="py-3.5 px-3">Planta / Destino Habitual</th>
  <th className="py-3.5 px-3">Lista Precios</th>
  <th className="py-3.5 px-2 text-center">Cotizaciones</th>
  <th className="py-3.5 px-2 text-center">Pedidos</th>
@@ -117,7 +117,7 @@ export const ClientesList: React.FC<ClientesListProps> = ({
  <span className="text-[10px] text-zinc-500">{cust.email}</span>
  </td>
  <td className="py-3 px-3 text-zinc-600 whitespace-nowrap">
- {cust.preferredBranchName}
+ {cust.preferredBranchName || 'Planta Principal RTM'}
  </td>
  <td className="py-3 px-3 text-zinc-600 whitespace-nowrap truncate max-w-[150px]">
  {cust.preferredPriceListName}
