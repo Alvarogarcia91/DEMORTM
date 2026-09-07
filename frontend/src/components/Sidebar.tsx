@@ -115,7 +115,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
  title: 'FINANZAS',
  items: [
  { key: 'facturacion', label: 'Facturación', icon: Receipt },
- { key: 'finanzas', label: 'Dashboard Financiero', icon: LayoutDashboard },
+ { key: 'finanzas', label: 'Dashboard', icon: LayoutDashboard },
  { key: 'cxc', label: 'Cuentas por Cobrar', icon: CreditCard },
  { key: 'cxp', label: 'Cuentas por Pagar', icon: Scale },
  { key: 'tesoreria', label: 'Tesorería', icon: Building2 },
