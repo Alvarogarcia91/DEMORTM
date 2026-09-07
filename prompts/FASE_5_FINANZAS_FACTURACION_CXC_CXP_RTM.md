@@ -1,96 +1,215 @@
 # FASE 5 — FINANZAS RTM: FACTURACIÓN + CxC + CxP
 
-## Objetivo
-
-Adaptar el demo RTM para incorporar un bloque financiero-operativo coherente con los flujos que ya existen en ventas, almacén y compras. La meta NO es construir contabilidad completa ni integración fiscal real todavía. La meta es que el demo muestre una cadena empresarial sólida y trazable:
-
-**Ventas / salida:**
-
-Cotización → Pedido → Orden de salida → Remisión → Factura de venta → Cuenta por cobrar → Pago.
-
-**Compras / entrada:**
-
-Requisición → Orden de compra → Recepción → Factura de proveedor → Validación / conciliación → Cuenta por pagar → Pago.
-
-El módulo debe sentirse como una continuación natural del ERP, no como una isla nueva.
+> **Documento de ejecución para Anti.**
+>
+> Este MD es la fuente de verdad de esta fase. El prompt externo debe ser mínimo. Antes de tocar código, auditar el estado ACTUAL de `alvaro01`, porque otros cambios pueden haber sido empujados después de redactar este documento.
 
 ---
 
-## Regla crítica de diseño
+# 0. REGLAS DE EJECUCIÓN
 
-La **remisión NO es una factura fiscal**.
-
-Para RTM en este demo debe distinguirse claramente:
-
-- **Remisión:** documento operativo/comercial que respalda la entrega al cliente.
-- **Factura borrador:** documento fiscal aún no timbrado.
-- **Factura timbrada:** CFDI de venta ya emitido fiscalmente.
-
-La remisión sí debe ser la principal fuente de datos para generar la factura de venta, evitando recaptura.
-
-No utilizar wording como “factura no timbrada” para referirse a una remisión.
-
----
-
-# 1. Arquitectura de navegación
-
-Crear o adaptar una agrupación visual de **Finanzas** con tres módulos principales:
-
-1. **Facturación**
-2. **Cuentas por Cobrar**
-3. **Cuentas por Pagar**
-
-Estos módulos deben integrarse al mecanismo existente de visibilidad de navegación / Configuración → Módulos & Navegación.
-
-No eliminar módulos heredados si se requiere preservar compatibilidad; ocultar o adaptar cuando convenga.
-
-No agregar todavía Tesorería, Contabilidad, Pólizas, Balanza, DIOT ni Conciliación Bancaria como módulos completos.
+- Trabajar **únicamente en `alvaro01`**.
+- Hacer pull antes de modificar.
+- No trabajar en `main`.
+- No hacer merge.
+- No abrir PR.
+- No borrar módulos existentes que puedan reutilizarse.
+- No crear una arquitectura paralela si ya existe un patrón equivalente.
+- Reusar componentes, layouts, tablas, badges, modales, drawers, dashboard cards, navegación y theme actuales.
+- Mantener esta fase **frontend/demo-first**. Si el repo actualmente es mock-driven, continuar así.
+- No fingir integraciones externas reales.
+- Todo nuevo mock debe ser industrial y coherente con RTM; cero colchones, showroom, sucursales retail o datos heredados de Super Colchones.
+- Al terminar ejecutar `npm run build` dentro de `frontend` y corregir todos los errores.
 
 ---
 
-# 2. FACTURACIÓN DE VENTA
+# 1. OBJETIVO
 
-## Flujo principal
+Agregar un bloque financiero-operativo coherente sobre los flujos que DEMORTM ya tiene.
+
+No construir contabilidad completa. El objetivo es demostrar que el ERP conecta la operación comercial y de compras con su consecuencia financiera sin recaptura innecesaria.
+
+## Cadena de venta
 
 ```text
+CLIENTE
+  ↓
+COTIZACIÓN
+  ↓
 PEDIDO
   ↓
 ORDEN DE SALIDA
   ↓
 REMISIÓN
   ↓
-GENERAR FACTURA
-  ↓
-FACTURA BORRADOR
-  ↓
-VALIDACIÓN FISCAL / COMERCIAL
+FACTURA DE VENTA BORRADOR
   ↓
 LISTA PARA TIMBRAR
   ↓
-TIMBRADO DEMO
+TIMBRADO CFDI SIMULADO
   ↓
 FACTURA TIMBRADA
   ↓
 CUENTA POR COBRAR
+  ↓
+PAGO PARCIAL / TOTAL
 ```
 
-La factura debe originarse preferentemente desde una remisión ya generada. No duplicar la captura de cliente, pedido, partidas o cantidades si esa información ya existe.
+## Cadena de compra
 
-## Datos precargados desde Remisión / Pedido
+```text
+PROVEEDOR
+  ↓
+REQUISICIÓN
+  ↓
+ORDEN DE COMPRA
+  ↓
+RECEPCIÓN
+  ↓
+FACTURA PROVEEDOR
+  ↓
+VALIDACIÓN 3-WAY MATCH
+  ↓
+CUENTA POR PAGAR
+  ↓
+PAGO PARCIAL / TOTAL
+```
 
-La pantalla o modal de generación debe precargar, donde exista:
+El bloque Finanzas debe sentirse como continuación natural de Ventas, Compras y Almacén, no como otra aplicación dentro del ERP.
+
+---
+
+# 2. CONCEPTO DOCUMENTAL CRÍTICO
+
+No confundir documentos.
+
+## Remisión
+
+Documento operativo/comercial de entrega.
+
+- Nace de una orden de salida o flujo equivalente existente.
+- Puede contener cliente, pedido, PO del cliente, partidas, cantidades, precios y totales.
+- Sirve como origen para facturar sin recaptura.
+- **NO es CFDI.**
+- **NO debe llamarse factura no timbrada.**
+
+## Factura de venta borrador
+
+Documento fiscal preparado pero todavía sin timbrar.
+
+- Tiene serie/folio demo.
+- Contiene datos fiscales básicos.
+- Puede editarse mientras esté en borrador.
+- Todavía no genera CxC definitiva.
+
+## Factura de venta timbrada
+
+CFDI de venta emitido en el contexto del demo.
+
+- Para esta fase el timbrado es **simulado**.
+- Debe visualizar UUID demo, fecha de timbrado, serie/folio y estado.
+- Al timbrarse genera o activa la Cuenta por Cobrar asociada.
+
+## Factura proveedor
+
+Documento recibido del proveedor.
+
+- Se registra y se relaciona con OC y recepción.
+- No se “timbra” desde RTM.
+- Se valida antes de aprobarla para pago.
+
+---
+
+# 3. NAVEGACIÓN Y CONFIGURACIÓN
+
+Agregar o adaptar una agrupación **Finanzas** en la navegación sin convertir el Sidebar en una lista enorme.
+
+Debe contener:
+
+1. **Facturación**
+2. **Cuentas por Cobrar**
+3. **Cuentas por Pagar**
+
+Integrar los tres al mecanismo existente de **Configuración → Módulos & Navegación**.
+
+Requisitos:
+
+- Poder mostrar/ocultar Finanzas o sus entradas según la arquitectura actual del repo.
+- Respetar persistencia de visibilidad existente.
+- No romper navegación heredada.
+- Si el patrón actual agrupa módulos bajo una sola key, usar el patrón existente en vez de inventar uno nuevo.
+- No agregar todavía Tesorería ni Contabilidad.
+
+---
+
+# 4. FACTURACIÓN DE VENTA
+
+## 4.1 Pantalla principal
+
+Construir/reutilizar el patrón del ERP: **dashboard compacto + tabs/filtros + tabla + detalle**.
+
+### KPIs
+
+Mostrar al menos:
+
+- Pendientes por facturar
+- Borradores
+- Timbradas del mes
+- Total facturado del mes
+
+Opcional si encaja naturalmente:
+
+- Facturas con saldo pendiente
+- Ticket promedio
+
+No saturar con KPIs innecesarios.
+
+### Tabs
+
+- Pendientes por facturar
+- Borradores
+- Timbradas
+- Canceladas
+
+### Pendientes por facturar
+
+La unidad principal es la **remisión elegible**.
+
+Columnas sugeridas:
+
+- Remisión
+- Cliente
+- Pedido RTM
+- PO cliente
+- Fecha
+- Moneda
+- Total
+- Estado
+- Acción
+
+CTA principal: **Generar factura**.
+
+No mostrar “Crear factura desde cero” como flujo principal si ya existe remisión. El valor del demo es evitar recaptura.
+
+---
+
+# 5. GENERAR FACTURA DESDE REMISIÓN
+
+Al seleccionar una remisión:
+
+## Precargar automáticamente cuando la información exista
 
 - Cliente
-- RFC
 - Razón social
+- RFC
 - Pedido RTM
-- Pedido / PO del cliente
+- PO / pedido del cliente
 - Remisión
 - Fecha
 - Moneda
 - Condiciones de pago
 - Partidas
-- Número de parte / artículo
+- Número de parte / SKU
 - Revisión
 - Descripción
 - Cantidad
@@ -101,155 +220,210 @@ La pantalla o modal de generación debe precargar, donde exista:
 - Impuestos
 - Total
 
-Además, permitir capturar o confirmar:
+## Capturar o confirmar
 
 - Uso CFDI
-- Régimen fiscal receptor si se decide mostrar en demo
-- Código postal fiscal si se decide mostrar en demo
+- Régimen fiscal receptor, si el demo ya maneja ese concepto
+- Código postal fiscal, si existe en datos del cliente
 - Método de pago
 - Forma de pago
 - Observaciones
 
-No inventar reglas fiscales avanzadas que no estén soportadas por el proyecto.
+No inventar validaciones fiscales complejas que no estén implementadas.
 
-## Estados sugeridos de factura
+## UX esperada
 
-- Borrador
-- Lista para timbrar
-- Timbrada
-- Cancelada
+Mostrar claramente la relación documental:
 
-Puede existir un estado visual de error de timbrado solo para demo si aporta UX, pero no implementar una integración PAC/SAT falsa.
+```text
+Pedido PED-...
+   ↓
+Remisión REM-...
+   ↓
+Factura FAC-...
+```
 
-## Timbrado demo
-
-Debe existir acción visible **Timbrar CFDI** o equivalente.
-
-Como aún no existe integración fiscal real confirmada, el demo debe mostrar claramente una leyenda tipo:
-
-> Timbrado simulado para demo. No se envía información al SAT.
-
-Después de la acción, cambiar el estado a Timbrada y generar datos mock coherentes, por ejemplo:
-
-- UUID demo
-- Fecha de timbrado
-- Serie / folio
-- Estado CFDI
-
-No afirmar que existe conexión PAC o SAT real.
-
-## Pantalla principal de Facturación
-
-Debe tener una experiencia similar al resto del ERP: dashboard compacto + tabs + tabla + detalle.
-
-KPIs sugeridos:
-
-- Pendientes por facturar
-- Borradores
-- Timbradas del mes
-- Total facturado del mes
-
-Tabs sugeridos:
-
-- Pendientes por facturar
-- Borradores
-- Timbradas
-- Canceladas
-
-La tabla de pendientes por facturar debe mostrar remisiones elegibles con columnas como:
-
-- Remisión
-- Cliente
-- Pedido
-- Fecha
-- Total
-- Estado
-- Acción
-
-La acción principal debe ser **Generar factura**.
-
-## Detalle de factura
-
-Mostrar:
-
-- Encabezado y estado
-- Cliente
-- Origen comercial
-- Pedido
-- Remisión
-- Datos fiscales básicos
-- Partidas
-- Totales
-- Historial / timeline
-- Acciones de acuerdo al estado
-
-En factura timbrada mostrar referencia a CxC asociada.
+El usuario debe entender visualmente que la factura heredó las partidas de la entrega.
 
 ---
 
-# 3. CUENTAS POR COBRAR — CxC
+# 6. ESTADOS DE FACTURA
 
-## Propósito funcional
+Estados mínimos:
 
-La pantalla debe responder rápidamente:
+- **Borrador**
+- **Lista para timbrar**
+- **Timbrada**
+- **Cancelada**
 
-- ¿Quién nos debe?
-- ¿Cuánto nos debe?
-- ¿Qué está vencido?
-- ¿Qué vence pronto?
-- ¿Qué pagos se han recibido?
-- ¿Qué saldo queda por factura?
+Opcional:
 
-No convertir CxC en una pantalla de pedidos. Su unidad financiera principal es la factura de venta / documento por cobrar.
+- Error de timbrado demo, únicamente si ayuda a demostrar UX.
 
-## Flujo
+## Reglas de acciones
+
+### Borrador
+
+Puede:
+
+- Editarse
+- Guardarse
+- Pasar a lista para timbrar
+
+### Lista para timbrar
+
+Puede:
+
+- Revisarse
+- Regresar a borrador si el patrón del repo lo permite
+- Timbrarse
+
+### Timbrada
+
+- Ya no debe editarse como borrador.
+- Debe mostrar UUID demo.
+- Debe mostrar fecha/hora demo de timbrado.
+- Debe enlazar a su CxC.
+
+### Cancelada
+
+Solo estado demostrativo. No implementar cancelación SAT real.
+
+---
+
+# 7. TIMBRADO CFDI SIMULADO
+
+Debe existir CTA claro: **Timbrar CFDI**.
+
+Antes de ejecutarlo, mostrar confirmación y una leyenda inequívoca:
+
+> Timbrado simulado para demo. No se envía información al SAT ni a un PAC.
+
+Al confirmar:
+
+1. Cambiar factura a Timbrada.
+2. Generar UUID mock con formato visual realista pero obviamente demo.
+3. Registrar fecha/hora de timbrado.
+4. Mantener serie/folio.
+5. Agregar evento al timeline.
+6. Crear/activar la CxC asociada.
+7. Actualizar dashboards de Facturación y CxC.
+
+No crear llamadas HTTP falsas a SAT/PAC.
+No usar logos o mensajes que hagan creer que hubo comunicación real con SAT.
+
+---
+
+# 8. DETALLE DE FACTURA
+
+El detalle debe mostrar en una sola vista o modal/drawer:
+
+## Encabezado
+
+- Serie / folio
+- Estado
+- Cliente
+- RFC
+- Fecha
+- Moneda
+- Método / forma de pago
+- Condiciones de pago
+
+## Origen
+
+- Cotización, si aplica
+- Pedido
+- PO cliente
+- Orden de salida, si existe la relación actual
+- Remisión
+
+## Partidas
+
+- Artículo / número de parte
+- Revisión
+- Descripción
+- Cantidad
+- UOM
+- Precio
+- Importe
+
+## Totales
+
+- Subtotal
+- Impuestos
+- Total
+
+## Fiscal demo
+
+Si está timbrada:
+
+- UUID demo
+- Fecha de timbrado
+- Estado CFDI demo
+
+## Financiero
+
+- Total factura
+- Pagado
+- Saldo
+- Fecha vencimiento
+- Estado CxC
+- Link / CTA para abrir CxC
+
+## Timeline
+
+Ejemplo:
 
 ```text
-FACTURA TIMBRADA
-      ↓
-CUENTA POR COBRAR
-      ↓
- ┌────┴────┐
- ↓         ↓
-PAGO     PAGO
-PARCIAL  TOTAL
- ↓         ↓
-SALDO    PAGADA
-RESTANTE
+Remisión generada
+Factura borrador creada
+Lista para timbrar
+CFDI timbrado — demo
+CxC generada
+Pago parcial registrado
 ```
 
-## Regla crítica
+---
 
-Soportar desde el demo **pagos parciales**.
+# 9. CUENTAS POR COBRAR — CxC
 
-Nunca asumir que una factura solo puede pagarse completa en una sola operación.
+La pantalla debe contestar de inmediato:
 
-## KPIs sugeridos
+- ¿Quién debe?
+- ¿Cuánto debe?
+- ¿Qué está vencido?
+- ¿Qué vence pronto?
+- ¿Qué se cobró este mes?
+- ¿Qué facturas tienen pagos parciales?
+
+La unidad financiera principal es la **factura de venta**.
+
+## 9.1 KPIs
 
 - Saldo total de cartera
 - Saldo vencido
-- Saldo por vencer próximos 7 días
+- Por vencer en próximos 7 días
 - Cobrado en el mes
 
-## Aging / antigüedad
+## 9.2 Aging
 
-Mostrar visualmente rangos:
+Mostrar:
 
 - Vigente
-- 1–30 días
-- 31–60 días
-- 61–90 días
-- +90 días
+- 1–30 días vencido
+- 31–60
+- 61–90
+- +90
 
-Estos rangos pueden ser calculados sobre datos mock.
+Calcularlo con fechas mock, no con valores escritos manualmente si es fácil derivarlo.
 
-## Tabs sugeridos
+## 9.3 Tabs
 
 - Cartera
 - Facturas
 - Pagos
 
-## Tabla de cartera
+## 9.4 Tabla principal
 
 Columnas sugeridas:
 
@@ -260,9 +434,10 @@ Columnas sugeridas:
 - Total
 - Pagado
 - Saldo
+- Aging
 - Estado
 
-Estados sugeridos:
+Estados:
 
 - Vigente
 - Próxima a vencer
@@ -270,100 +445,144 @@ Estados sugeridos:
 - Parcial
 - Pagada
 
-Semántica visual:
+Priorizar estados financieros sobre estados de pedido.
 
-- Rojo solo para vencido / error real
-- Ámbar para próximo vencimiento
-- Verde para pagado
-- Theme primary para navegación, selección, CTA y branding
+---
 
-## Registro de pago
+# 10. REGISTRAR PAGO DE CLIENTE
 
-Crear modal o drawer para **Registrar pago**.
+Crear/reusar modal o drawer.
 
-Campos demo:
+Campos:
 
 - Fecha
 - Referencia
 - Método
-- Cuenta destino o referencia bancaria demo
+- Cuenta destino demo
 - Monto recibido
 - Observaciones
 
-Mostrar aplicación a la factura:
+Mostrar la aplicación antes de confirmar:
 
-- Saldo anterior
-- Monto aplicado
-- Saldo posterior
+```text
+Saldo anterior      $23,200.00
+Monto aplicado      $15,000.00
+Saldo posterior      $8,200.00
+```
 
-Permitir pago parcial.
+## Reglas
 
-Después de registrar pago:
+- Soportar **pagos parciales** desde el inicio.
+- No permitir aplicar monto negativo.
+- No permitir aplicar más que el saldo sin una UX explícita de remanente; para esta fase, simplemente limitar al saldo.
+- Si saldo posterior > 0 → estado Parcial.
+- Si saldo posterior = 0 → estado Pagada.
+- Registrar evento en historial.
+- Actualizar KPIs y tabla inmediatamente.
 
-- Actualizar total pagado
-- Actualizar saldo
-- Cambiar estado automáticamente
-- Agregar evento al historial
-
-No simular CFDI de complemento de pago todavía salvo que se marque explícitamente como futura funcionalidad.
-
-## Detalle CxC
-
-Debe mostrar trazabilidad hacia atrás:
-
-Factura → Remisión → Pedido → Cliente
-
-Y trazabilidad financiera:
-
-- Total
-- Pagado
-- Saldo
-- Fecha vencimiento
-- Aging
-- Historial de pagos
+No generar complemento de pago CFDI real.
 
 ---
 
-# 4. CUENTAS POR PAGAR — CxP
+# 11. DETALLE CxC
 
-## Propósito funcional
+Mostrar:
 
-La pantalla debe responder:
+- Cliente
+- Factura
+- Fecha factura
+- Vencimiento
+- Total
+- Total pagado
+- Saldo
+- Aging
+- Estado
+
+## Trazabilidad hacia atrás
+
+```text
+Cliente
+  ↓
+Pedido
+  ↓
+Remisión
+  ↓
+Factura
+  ↓
+CxC
+```
+
+## Historial financiero
+
+Por cada pago:
+
+- Fecha
+- Referencia
+- Método
+- Monto
+- Saldo resultante
+
+Debe existir CTA **Registrar pago** solo cuando exista saldo.
+
+---
+
+# 12. CUENTAS POR PAGAR — CxP
+
+La pantalla debe contestar:
 
 - ¿A qué proveedores debemos?
 - ¿Cuánto debemos?
-- ¿Qué vence pronto?
 - ¿Qué está vencido?
-- ¿Qué facturas ya fueron validadas?
-- ¿Qué factura no coincide con OC o recepción?
-- ¿Qué pagos se han hecho?
+- ¿Qué vence pronto?
+- ¿Qué facturas aún no se validan?
+- ¿Qué facturas tienen diferencias contra OC/recepción?
+- ¿Qué se pagó este mes?
 
-## Flujo
+## KPIs
 
-```text
-REQUISICIÓN
-    ↓
-ORDEN DE COMPRA
-    ↓
-RECEPCIÓN
-    ↓
-FACTURA PROVEEDOR
-    ↓
-VALIDACIÓN / CONCILIACIÓN
-    ↓
-CUENTA POR PAGAR
-    ↓
-PAGO PARCIAL O TOTAL
-    ↓
-PAGADA
-```
+- Saldo total a proveedores
+- Vencido
+- Por vencer
+- Pagado del mes
 
-## Factura de proveedor
+## Tabs
 
-Permitir registrar una factura proveedor asociándola a:
+- Facturas proveedor
+- Conciliación
+- Pagos
+
+## Tabla
 
 - Proveedor
-- Número / folio factura proveedor
+- Factura proveedor
+- OC
+- Recepción
+- Fecha
+- Vencimiento
+- Total
+- Pagado
+- Saldo
+- Estado
+
+Estados:
+
+- Pendiente de validar
+- Con diferencia
+- Aprobada para pago
+- Parcial
+- Pagada
+- Vencida
+
+---
+
+# 13. REGISTRO DE FACTURA PROVEEDOR
+
+Debe poder asociarse a información ya existente de compras y recepción.
+
+Campos:
+
+- Proveedor
+- Folio factura proveedor
 - Fecha factura
 - Vencimiento
 - Moneda
@@ -374,35 +593,37 @@ Permitir registrar una factura proveedor asociándola a:
 - Impuestos
 - Total
 
-No intentar timbrar facturas de proveedor; son documentos recibidos.
+Evitar recapturar manualmente lo que ya pueda heredarse desde OC y recepción.
+
+La factura proveedor debe entrar inicialmente como **Pendiente de validar**.
 
 ---
 
-# 5. CONCILIACIÓN OC vs RECEPCIÓN vs FACTURA
+# 14. 3-WAY MATCH — OC ↔ RECEPCIÓN ↔ FACTURA PROVEEDOR
 
-Esta es una pieza importante del demo porque conecta Compras, Almacén y Finanzas.
-
-Mostrar una validación tipo 3-way match simplificada:
-
-**Orden de Compra ↔ Recepción ↔ Factura Proveedor**
+Esta pieza debe verse muy clara en demo porque conecta Compras + Almacén + Finanzas.
 
 Comparar al menos:
 
-- Material / artículo
+- Artículo/material
 - Cantidad ordenada
 - Cantidad recibida
 - Cantidad facturada
-- Precio OC
-- Precio factura
+- Precio de OC
+- Precio facturado
 
 ## Caso correcto
 
 Ejemplo:
 
-- OC: 48,000 pliegos
-- Recibido: 48,000
-- Facturado: 48,000
-- Precio OC = Precio factura
+```text
+Material          Papel Couché 90 g
+OC                48,000 pliegos
+Recibido          48,000 pliegos
+Facturado         48,000 pliegos
+Precio OC         $1.82
+Precio factura    $1.82
+```
 
 Mostrar:
 
@@ -410,70 +631,33 @@ Mostrar:
 - ✓ Precio coincide con OC
 - ✓ Sin diferencias detectadas
 
-Acción:
-
-**Aprobar para pago**
+CTA: **Aprobar para pago**.
 
 ## Caso con diferencia
 
 Ejemplo:
 
-- OC: 50,000 pliegos
-- Recibido: 48,000
-- Facturado: 50,000
+```text
+OC                50,000 pliegos
+Recibido          48,000 pliegos
+Facturado         50,000 pliegos
+Diferencia         2,000 pliegos
+```
 
-Mostrar diferencia visible:
+Mostrar diferencia con semántica de warning/error y acciones demo:
 
-- Diferencia de 2,000 pliegos
+- **Solicitar corrección**
+- **Autorizar excepción**
 
-Acciones demo:
+No inventar tolerancias porcentuales, jerarquías de autorización o políticas reales de RTM.
 
-- Solicitar corrección
-- Autorizar excepción
-
-No inventar reglas reales de tolerancia, porcentajes o autorizadores RTM. Si se requiere mostrar tolerancia, etiquetarla claramente como demo.
+Si se muestra alguna tolerancia, etiquetarla explícitamente como **demo**.
 
 ---
 
-# 6. Dashboard CxP
+# 15. REGISTRAR PAGO A PROVEEDOR
 
-KPIs sugeridos:
-
-- Saldo total proveedor
-- Por vencer
-- Vencido
-- Pagado del mes
-
-Tabs sugeridos:
-
-- Facturas proveedor
-- Conciliación
-- Pagos
-
-Tabla principal:
-
-- Proveedor
-- Factura
-- OC
-- Recepción
-- Vencimiento
-- Total
-- Pagado
-- Saldo
-- Estado
-
-Estados sugeridos:
-
-- Pendiente de validar
-- Con diferencia
-- Aprobada para pago
-- Parcial
-- Pagada
-- Vencida
-
-## Registro de pago proveedor
-
-Modal / drawer similar al de CxC:
+Modal/drawer espejo de CxC:
 
 - Fecha
 - Referencia
@@ -482,228 +666,426 @@ Modal / drawer similar al de CxC:
 - Monto
 - Observaciones
 
-Mostrar saldo anterior y posterior.
+Mostrar:
 
-Permitir pagos parciales.
+- Saldo anterior
+- Monto aplicado
+- Saldo posterior
+
+Soportar pagos parciales.
+
+Estados automáticos:
+
+- Saldo > 0 → Parcial
+- Saldo = 0 → Pagada
+
+Actualizar dashboard, tabla e historial.
 
 ---
 
-# 7. Trazabilidad cruzada
-
-El demo debe permitir navegar entre documentos relacionados.
+# 16. TRAZABILIDAD CRUZADA OBLIGATORIA
 
 ## Venta
 
-Cotización → Pedido → Orden de salida → Remisión → Factura → CxC → Pago
+```text
+Cotización
+  ↓
+Pedido
+  ↓
+Orden de salida
+  ↓
+Remisión
+  ↓
+Factura
+  ↓
+CxC
+  ↓
+Pago(s)
+```
 
-Desde una factura debe poder abrirse su remisión y pedido.
+Desde factura:
 
-Desde CxC debe poder abrirse la factura.
+- abrir remisión
+- abrir pedido
+- abrir CxC
 
-Desde la remisión, si ya fue facturada, mostrar liga a la factura.
+Desde CxC:
+
+- abrir factura
+- ver historial de pagos
+
+Desde remisión:
+
+- si ya fue facturada, mostrar factura asociada
+- si no fue facturada, mostrar acción Generar factura
 
 ## Compra
 
-Requisición → OC → Recepción → Factura proveedor → CxP → Pago
+```text
+Requisición
+  ↓
+Orden de compra
+  ↓
+Recepción
+  ↓
+Factura proveedor
+  ↓
+CxP
+  ↓
+Pago(s)
+```
 
-Desde factura proveedor mostrar OC y recepción.
+Desde factura proveedor:
 
-Desde OC, si existe factura proveedor, mostrar referencia.
+- abrir OC
+- abrir recepción
+- abrir CxP
 
-Desde recepción mostrar factura proveedor relacionada cuando exista.
+Desde OC/recepción:
+
+- mostrar factura proveedor relacionada cuando exista
+
+No es necesario que todas las relaciones tengan rutas nuevas; pueden abrir modal/drawer existente si ese es el patrón del repo.
 
 ---
 
-# 8. Datos demo sugeridos
+# 17. DATOS MOCK COHERENTES
 
-Usar datos industriales coherentes con RTM, evitando cualquier rastro del dominio de colchones / retail.
+No crear datasets aislados por pantalla.
 
-Ejemplos de clientes demo:
+Idealmente compartir IDs/referencias entre mocks para que las mismas entidades aparezcan en todo el flujo.
 
-- Cliente Industrial Norte
-- Black & Decker (solo si ya existe en mocks actuales del proyecto; no introducirlo como cliente real confirmado de RTM si no existe)
-- Cliente Automotriz Demo
+Ejemplo de cadena coherente:
 
-Ejemplos de proveedores demo:
+```text
+Cliente: Cliente Industrial Norte
+Pedido: PED-RTM-2026-0142
+Orden salida: OS-RTM-2026-0081
+Remisión: REM-RTM-2026-0061
+Factura: FAC-RTM-2026-0048
+CxC: CXC-RTM-2026-0048
+Pago: PAG-CLI-2026-0021
+```
 
-- Proveedor Papel Norte
-- Proveedor Tintas Industrial
-- Proveedor Películas Flexibles
+Compra:
 
-Ejemplos de materiales:
+```text
+Proveedor: Proveedor Papel Norte
+OC: OC-RTM-2026-0084
+Recepción: REC-RTM-2026-0057
+Factura proveedor: FP-883724
+CxP: CXP-RTM-2026-0037
+Pago: PAG-PROV-2026-0018
+```
+
+Materiales/partidas industriales permitidas:
 
 - Papel Couché 90 g
+- Papel / cartulina
 - BOPP
 - Papel térmico
-- Tinta negra
-- Adhesivo
+- Tintas
+- Adhesivos
+- Material flexible
+- Etiquetas / impresos industriales ya usados en mocks RTM
 
-Ejemplos de documentos:
+No introducir nuevamente:
 
-- PED-RTM-2026-0142
-- OS-RTM-2026-0081
-- REM-RTM-2026-0061
-- FAC-RTM-2026-0048
-- OC-RTM-2026-0084
-- REC-RTM-2026-0057
+- colchones
+- bases
+- almohadas
+- showroom
+- sucursales retail
+- exposición
+- ventas de piso
+- CEDIS heredados sin relación con RTM
 
-No presentar empresas mock como relaciones comerciales reales de RTM.
-
----
-
-# 9. Diseño UI / Theme compliance
-
-Seguir el sistema visual ya establecido en DEMORTM.
-
-Reglas:
-
-- CTA y branding usan tokens del theme.
-- No hardcodear rojo / rose para botones principales.
-- Rojo solo para error, rechazo, vencido o riesgo real.
-- Verde para éxito / pagado / validado.
-- Ámbar para warning / próximo vencimiento / pendiente sensible.
-- Azul o semantic info para información neutral.
-- Cards blancas, sombras discretas, radios y espaciado consistentes con el proyecto.
-- Reusar primitives compartidos existentes antes de crear nuevos.
-- Modales deben respetar ModalPortal / patrones ya usados.
-- Tablas compactas, legibles y con números tabulares.
-- Todo debe verse correctamente en themes RTM, Navy, Graphite y Emerald.
+Si se usa una empresa real que ya existe en mocks previos, tratarla como dato demo y no afirmar que es cliente/proveedor real de RTM.
 
 ---
 
-# 10. No construir en esta fase
+# 18. DASHBOARDS
 
-NO implementar todavía:
+Cada dashboard debe aportar decisiones, no solo números decorativos.
+
+## Facturación
+
+Responder:
+
+- ¿Qué remisiones todavía no facturo?
+- ¿Cuánto facturé este mes?
+- ¿Qué está en borrador?
+- ¿Qué está listo para timbrar?
+
+## CxC
+
+Responder:
+
+- ¿Cuánto me deben?
+- ¿Cuánto está vencido?
+- ¿Qué vence esta semana?
+- ¿Qué clientes concentran cartera?
+
+Si agrega gráfica, una sola gráfica útil es mejor que cinco decorativas.
+
+## CxP
+
+Responder:
+
+- ¿Cuánto debo?
+- ¿Qué vence pronto?
+- ¿Qué está vencido?
+- ¿Qué facturas tienen diferencias?
+
+No implementar dashboards gigantes.
+
+---
+
+# 19. FILTROS Y BÚSQUEDA
+
+Reusar el patrón actual de filtros del repo.
+
+Facturación:
+
+- búsqueda por cliente, factura, remisión, pedido
+- estado
+- periodo
+
+CxC:
+
+- cliente
+- factura
+- estado
+- vencimiento / aging
+- periodo
+
+CxP:
+
+- proveedor
+- factura
+- OC
+- estado
+- vencimiento
+- periodo
+
+Si ya existe persistencia en query params en otros módulos y puede reutilizarse sin sobrecomplicar, usarla.
+
+---
+
+# 20. UI / THEME / SEMÁNTICA
+
+Seguir el sistema visual actual de DEMORTM.
+
+## Theme
+
+Usar tokens existentes para:
+
+- CTA
+- selección
+- tabs activos
+- focus
+- navegación
+- branding
+
+Ejemplos:
+
+- `bg-theme-primary`
+- `hover:bg-theme-primary-hover`
+- `text-theme-primary`
+- `border-theme-primary`
+- `ring-theme-primary`
+
+No hardcodear rose/red como color de marca.
+
+## Semántica
+
+- Rojo: vencido, rechazo, diferencia grave, error
+- Ámbar: próximo vencimiento, pendiente, revisión
+- Verde: pagado, validado, timbrado exitosamente en demo
+- Azul/info: información neutral
+- Theme primary: navegación/acción/selección
+
+## Componentes
+
+- Reusar ModalPortal/patrón modal actual.
+- Reusar status badges.
+- Tablas compactas.
+- Números con `tabular-nums` si ya existe el patrón.
+- Moneda y cantidades formateadas consistentemente.
+- Responsive razonable; priorizar desktop demo.
+- Verificar RTM, Navy, Graphite y Emerald.
+
+---
+
+# 21. REGLAS DE ESTADO Y CÁLCULO
+
+Evitar mocks inconsistentes.
+
+## CxC
+
+```text
+saldo = totalFactura - sumaPagosAplicados
+```
+
+- saldo = total → Vigente/Vencida según fecha
+- 0 < saldo < total → Parcial o Vencida Parcial según fecha
+- saldo = 0 → Pagada
+
+## CxP
+
+```text
+saldo = totalFacturaProveedor - sumaPagosAplicados
+```
+
+La aprobación de factura y el estado financiero son conceptos diferentes:
+
+- Pendiente de validar
+- Aprobada para pago
+- Parcial
+- Pagada
+
+Una factura con diferencia no debe aparecer como aprobada para pago salvo que se ejecute la acción demo Autorizar excepción.
+
+## Vencimiento
+
+Derivar con fecha de vencimiento, no hardcodear el badge si es viable.
+
+---
+
+# 22. NO CONSTRUIR EN ESTA FASE
+
+NO implementar:
 
 - Contabilidad general
-- Catálogo contable
+- Catálogo de cuentas
 - Pólizas
+- Diario
+- Mayor
 - Balanza
-- Diario / mayor
+- Estados financieros contables reales
 - DIOT
-- Conciliación bancaria automática
 - Tesorería avanzada
-- Flujo bancario real
-- SPEI real
-- Integración bancaria
-- Timbrado SAT/PAC real
+- Flujo de caja bancario real
+- Bancos conectados
+- SPEI
+- Conciliación bancaria automática
+- Integración SAT/PAC real
+- XML fiscal real
+- Sellos / CSD reales
 - Cancelación CFDI real
 - Complemento de pago real
-- XML fiscal real
 - Declaraciones fiscales
+- Portal de proveedores
+- Portal de clientes
 
-Si algún elemento aparece en UI, debe marcarse como demo / futura integración y no fingir funcionalidad real.
-
----
-
-# 11. Reutilización obligatoria
-
-Antes de programar:
-
-1. Auditar completamente el estado actual de `alvaro01`.
-2. Revisar si ya existen componentes de ventas, facturación, pagos, compras, recepción o documentos reutilizables.
-3. Reusar patrones existentes de dashboard, tabs, table, status badges, modals, drawers y details.
-4. No duplicar componentes si existe un primitive o patrón equivalente.
-5. No rehacer Compras, Pedidos, Remisiones ni Recepciones: conectarlos.
-
-Si un documento actual usa campos heredados del dominio Super Colchones, adaptar el wording y mocks a RTM sin romper el flujo existente.
+No agregar botones muertos para estas funciones salvo una referencia explícita de “futura integración” que realmente ayude al demo.
 
 ---
 
-# 12. Criterios de aceptación funcional
+# 23. REUTILIZACIÓN OBLIGATORIA DEL REPO
 
-La fase se considera completa cuando, en demo frontend:
+Antes de crear componentes nuevos:
 
-1. Existe navegación visible a Facturación, CxC y CxP.
-2. Una remisión pendiente puede generar una factura de venta borrador.
-3. La factura puede pasar a lista para timbrar y luego a Timbrada mediante simulación claramente identificada.
-4. Una factura timbrada genera o muestra su CxC.
-5. CxC soporta registrar pagos parciales y totales.
-6. La cartera actualiza saldo y estado después de cada pago.
-7. Una factura de proveedor puede asociarse con OC y recepción.
-8. Existe una vista de conciliación OC vs Recepción vs Factura.
-9. Una factura proveedor aprobada aparece en CxP.
-10. CxP soporta pagos parciales y totales.
-11. Existe trazabilidad navegable entre documentos relacionados.
-12. No existe branding Super Colchones visible en estas pantallas.
-13. No existen CTA de branding hardcodeados en rose/red.
-14. `npm run build` termina correctamente.
+1. Auditar `DashboardShell.tsx` o shell equivalente actual.
+2. Auditar navegación/Sidebar.
+3. Auditar `NavigationModulesContext` o mecanismo equivalente actual.
+4. Auditar componentes de Ventas: Clientes, Cotizaciones y Pedidos.
+5. Auditar Compras: requisiciones/por comprar/OC.
+6. Auditar Operaciones de Almacén/recepción.
+7. Auditar Orden de Salida/Remisión existente.
+8. Auditar primitives compartidos de dashboard, tabs, tables, badges, modal/drawer.
+9. Auditar mocks actuales para compartir entidades y evitar duplicados.
+
+Si algo ya está implementado, **adaptar/conectar**, no reconstruir.
+
+Si el repo cambió desde la redacción de este MD, seguir la arquitectura actual siempre que preserve el objetivo funcional descrito aquí.
 
 ---
 
-# 13. Criterios de demo / UX
+# 24. CASOS DEMO OBLIGATORIOS
 
-El usuario debe poder demostrar en pocos minutos la historia completa:
+Debe ser posible demostrar al menos estos casos manualmente:
 
-## Escenario A — Venta
+## Caso A — Venta completa
 
-1. Abrir remisión entregada.
+1. Abrir remisión pendiente.
 2. Generar factura.
-3. Revisar datos fiscales/comerciales.
+3. Ver datos precargados.
 4. Guardar borrador.
-5. Timbrar en modo demo.
-6. Abrir CxC generada.
-7. Registrar pago parcial.
-8. Ver saldo actualizado.
-9. Registrar pago final.
-10. Ver estado Pagada.
+5. Pasar a Lista para timbrar.
+6. Timbrar CFDI demo.
+7. Ver UUID demo.
+8. Abrir CxC generada.
+9. Registrar pago parcial.
+10. Ver saldo restante.
+11. Registrar segundo pago.
+12. Ver estado Pagada.
 
-## Escenario B — Compra
+## Caso B — Cartera vencida
+
+1. Abrir CxC.
+2. Identificar factura vencida.
+3. Ver aging.
+4. Abrir detalle.
+5. Ver historial y saldo.
+
+## Caso C — Compra correcta
 
 1. Abrir factura proveedor.
-2. Ver OC y recepción ligadas.
-3. Mostrar conciliación correcta o diferencia.
+2. Ver OC y recepción relacionadas.
+3. Ejecutar/visualizar 3-way match sin diferencias.
 4. Aprobar para pago.
-5. Abrir CxP.
-6. Registrar pago parcial o total.
-7. Ver saldo actualizado.
+5. Registrar pago parcial.
+6. Ver saldo restante.
 
-La demo debe comunicar que el sistema evita recaptura y mantiene trazabilidad de punta a punta.
+## Caso D — Compra con diferencia
 
----
-
-# 14. Entrega técnica
-
-Trabajar **ÚNICAMENTE en la rama `alvaro01`**.
-
-No trabajar en `main`.
-
-No hacer merge.
-
-No abrir PR.
-
-Antes de tocar código:
-
-```bash
-git checkout alvaro01
-git pull origin alvaro01
-```
-
-Después:
-
-- Leer este archivo completo.
-- Auditar el repo y documentar brevemente qué componentes se reutilizarán.
-- Implementar incrementalmente.
-- Ejecutar build.
-- Corregir errores.
-- Reportar archivos modificados y decisiones importantes.
-
-Validación final mínima:
-
-```bash
-cd frontend
-npm install
-npm run build
-```
-
-Si el proyecto ya tiene dependencias instaladas, evitar reinstalaciones innecesarias.
+1. Abrir factura proveedor con cantidad/precio discrepante.
+2. Ver diferencia claramente.
+3. Usar Solicitar corrección o Autorizar excepción demo.
+4. Ver timeline/estado actualizado.
 
 ---
 
-# 15. Resultado esperado
+# 25. CRITERIOS DE ACEPTACIÓN
 
-El módulo financiero de RTM debe sentirse como una extensión natural del ERP y dejar clara esta narrativa:
+La fase está terminada cuando:
 
-> RTM no solo controla pedidos, producción, inventario y embarques; también convierte la entrega en factura, la factura en cartera y el abastecimiento en obligaciones a proveedor, manteniendo trazabilidad documental de punta a punta.
+- [ ] Finanzas aparece correctamente en navegación/configuración.
+- [ ] Existen Facturación, CxC y CxP.
+- [ ] Una remisión puede generar factura sin recaptura principal.
+- [ ] Existe factura Borrador.
+- [ ] Existe estado Lista para timbrar.
+- [ ] Existe acción Timbrar CFDI simulada.
+- [ ] Factura timbrada muestra UUID/fecha demo.
+- [ ] Factura timbrada genera o enlaza CxC.
+- [ ] CxC soporta pagos parciales.
+- [ ] CxC recalcula saldo y estado.
+- [ ] CxC tiene aging útil.
+- [ ] CxP permite registrar factura proveedor.
+- [ ] Factura proveedor se relaciona con OC/recepción.
+- [ ] Existe 3-way match visible.
+- [ ] Existe caso con discrepancia.
+- [ ] CxP soporta pagos parciales.
+- [ ] Existe trazabilidad navegable entre documentos.
+- [ ] Dashboards se actualizan coherentemente con los mocks.
+- [ ] No quedan residuos visibles de Super Colchones en lo tocado.
+- [ ] Theme funciona en RTM/Navy/Graphite/Emerald.
+- [ ] No se implementó producción por accidente.
+- [ ] No se fingió integración SAT/PAC real.
+- [ ] `npm run build` termina sin errores.
 
-No sobreconstruir. La prioridad es una demo empresarial coherente, visualmente sólida y funcional.
+---
+
+# 26. RESULTADO QUE DEBE REPORTAR ANTI
+
+Al finalizar entregar un resumen corto con:
+
+1. Archivos modificados/creados.
+2. Componentes existentes reutilizados.
+3. Flujos demo disponibles.
+4. Qué partes son simuladas.
+5. Qué quedó pendiente deliberadamente.
+6. Resultado de `npm run build`.
+
+No entregar una explicación gigante; el detalle ya vive en este MD.
