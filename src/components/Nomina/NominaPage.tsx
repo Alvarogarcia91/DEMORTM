@@ -30,6 +30,14 @@ import {
   INITIAL_MOCK_PAYROLL_CALCULATIONS,
   INITIAL_MOCK_PAYROLL_PERIODS,
   INITIAL_MOCK_AUDIT_LOG,
+  INITIAL_VACATION_BALANCES,
+  INITIAL_VACATION_REQUESTS,
+  INITIAL_EMPLOYEE_LOANS,
+  INITIAL_LOAN_PAYMENTS,
+  VacationBalance,
+  VacationRequest,
+  EmployeeLoan,
+  LoanPayment,
 } from '../../data/mockNominaData';
 
 // Child components
@@ -45,6 +53,7 @@ import { PayrollAuditDrawer } from './PayrollAuditDrawer';
 import { CiclosNominaTab } from './CiclosNominaTab';
 import { NuevoCicloWizardModal } from './NuevoCicloWizardModal';
 import { RhBenefitsTab } from './RhBenefitsTab';
+import { PrePayrollCycleContext, StampCycleContext } from './PayrollCycleContext';
 import { ChevronDown, Plus } from 'lucide-react';
 
 export type NominaSubTab =
@@ -56,7 +65,8 @@ export type NominaSubTab =
   | 'prenomina'
   | 'timbrado'
   | 'historial'
-  | 'rh';
+  | 'vacaciones'
+  | 'prestamos';
 
 interface ToastNotification {
   id: string;
@@ -127,6 +137,10 @@ export const NominaPage: React.FC = () => {
   const [periods, setPeriods] = useState<PayrollPeriod[]>(INITIAL_MOCK_PAYROLL_PERIODS);
   const [currentPeriodId, setCurrentPeriodId] = useState<string>('per-2026-36');
   const [auditLog, setAuditLog] = useState<PayrollAuditEntry[]>(INITIAL_MOCK_AUDIT_LOG);
+  const [vacationBalances, setVacationBalances] = useState<VacationBalance[]>(INITIAL_VACATION_BALANCES);
+  const [vacationRequests, setVacationRequests] = useState<VacationRequest[]>(INITIAL_VACATION_REQUESTS);
+  const [employeeLoans, setEmployeeLoans] = useState<EmployeeLoan[]>(INITIAL_EMPLOYEE_LOANS);
+  const [loanPayments] = useState<LoanPayment[]>(INITIAL_LOAN_PAYMENTS);
 
   // Period Closing State
   const [isPayrollClosed, setIsPayrollClosed] = useState<boolean>(false);
@@ -310,7 +324,8 @@ export const NominaPage: React.FC = () => {
       icon: <AlertTriangle className="w-4 h-4" />,
       badgeCount: incidents.filter((i) => i.estado === 'pendiente_revision' || i.estado === 'detectada').length,
     },
-    { id: 'rh', label: 'Préstamos y vacaciones', icon: <Calendar className="w-4 h-4" /> },
+    { id: 'vacaciones', label: 'Vacaciones', icon: <Calendar className="w-4 h-4" />, badgeCount: vacationRequests.filter((x) => x.status === 'Pendiente').length },
+    { id: 'prestamos', label: 'Préstamos', icon: <Receipt className="w-4 h-4" />, badgeCount: employeeLoans.filter((x) => x.status === 'Activo').length },
     {
       id: 'prenomina',
       label: 'Pre-nómina',
@@ -440,8 +455,8 @@ export const NominaPage: React.FC = () => {
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
-        {/* Tarjeta compacta no-sticky de resumen de progreso de flujo (visible en pestañas operativas) */}
-        {activeTab !== 'ciclos' && activeTab !== 'historial' && (
+        {/* El flujo completo pertenece al resumen del ciclo; no funciona como segunda navegación. */}
+        {activeTab === 'resumen' && (
           <PayrollCloseStepper
             period={currentPeriod}
             activeTab={activeTab}
@@ -481,6 +496,8 @@ export const NominaPage: React.FC = () => {
             onOpenReconciliation={() => setActiveTab('asistencia')}
             isTimbrada={isAllStamped}
             timbradosCount={timbradosCount}
+            vacationImpact={{ employees: vacationBalances.filter((balance) => balance.scheduled > 0).length, pending: vacationRequests.filter((request) => request.status === 'Pendiente').length, days: vacationBalances.reduce((sum, balance) => sum + balance.scheduled, 0) }}
+            loanImpact={{ employees: employeeLoans.filter((loan) => loan.status === 'Activo').length, amount: employeeLoans.filter((loan) => loan.status === 'Activo').reduce((sum, loan) => sum + loan.deduction, 0), paused: employeeLoans.filter((loan) => loan.status === 'Pausado').length }}
           />
         )}
 
@@ -489,6 +506,9 @@ export const NominaPage: React.FC = () => {
             employees={employees}
             payrollCalculations={calculations}
             onTriggerToast={handleToast}
+            vacationBalances={vacationBalances}
+            vacationRequests={vacationRequests}
+            loans={employeeLoans}
           />
         )}
 
@@ -511,43 +531,74 @@ export const NominaPage: React.FC = () => {
           />
         )}
 
-        {activeTab === 'rh' && (
+        {activeTab === 'vacaciones' && (
           <RhBenefitsTab
+            mode="vacations"
             employees={employees}
+            balances={vacationBalances}
+            requests={vacationRequests}
+            loans={employeeLoans}
+            payments={loanPayments}
+            onBalances={setVacationBalances}
+            onRequests={setVacationRequests}
+            onLoans={setEmployeeLoans}
             onAddIncident={(incident) => setIncidents((prev) => [incident, ...prev])}
             onAudit={recordAuditAction}
             onToast={handleToast}
           />
         )}
+        {activeTab === 'prestamos' && (
+          <RhBenefitsTab mode="loans" employees={employees} balances={vacationBalances} requests={vacationRequests} loans={employeeLoans} payments={loanPayments} onBalances={setVacationBalances} onRequests={setVacationRequests} onLoans={setEmployeeLoans} onAddIncident={(incident) => setIncidents((prev) => [incident, ...prev])} onAudit={recordAuditAction} onToast={handleToast}/>
+        )}
 
         {activeTab === 'prenomina' && (
-          <PayrollReviewTable
-            period={currentPeriod}
-            calculations={calculations}
-            employees={employees}
-            isCerrada={isPayrollClosed}
-            onClosePayroll={handleClosePayroll}
-            onReopenPayroll={handleReopenPayroll}
-            onTriggerToast={handleToast}
-            onProceedToStamp={() => setActiveTab('timbrado')}
-          />
+          <>
+            <PrePayrollCycleContext
+              period={currentPeriod}
+              incidenciasPendientes={incidents.filter((i) => i.estado === 'pendiente_revision' || i.estado === 'detectada').length}
+              empleadosPorRevisar={calculations.filter((c) => c.estadoValidacion === 'requiere_revision').length}
+              isCerrada={isPayrollClosed}
+              isTimbrada={isAllStamped}
+            />
+            <PayrollReviewTable
+              period={currentPeriod}
+              calculations={calculations}
+              employees={employees}
+              isCerrada={isPayrollClosed}
+              onClosePayroll={handleClosePayroll}
+              onReopenPayroll={handleReopenPayroll}
+              onTriggerToast={handleToast}
+              onProceedToStamp={() => setActiveTab('timbrado')}
+              loanDeductionTotal={employeeLoans.filter((loan) => loan.status === 'Activo').reduce((sum, loan) => sum + loan.deduction, 0)}
+            />
+          </>
         )}
 
         {activeTab === 'timbrado' && (
-          <StampCenter
-            calculations={calculations}
-            employees={employees}
-            isCerrada={isPayrollClosed}
-            isTimbrada={isAllStamped}
-            onStampSuccess={(updated) => {
-              setCalculations(updated);
-              recordAuditAction(
-                'Timbrado CFDI 4.0',
-                `Timbrado completado para 30 empleados ante PAC y SAT con sellos digitales.`
-              );
-            }}
-            onTriggerToast={handleToast}
-          />
+          <>
+            <StampCycleContext
+              period={currentPeriod}
+              incidenciasPendientes={incidents.filter((i) => i.estado === 'pendiente_revision' || i.estado === 'detectada').length}
+              empleadosPorRevisar={calculations.filter((c) => c.estadoValidacion === 'requiere_revision').length}
+              isCerrada={isPayrollClosed}
+              isTimbrada={isAllStamped}
+              onGoToPrePayroll={() => setActiveTab('prenomina')}
+            />
+            <StampCenter
+              calculations={calculations}
+              employees={employees}
+              isCerrada={isPayrollClosed}
+              isTimbrada={isAllStamped}
+              onStampSuccess={(updated) => {
+                setCalculations(updated);
+                recordAuditAction(
+                  'Timbrado CFDI 4.0',
+                  `Timbrado completado para 30 empleados ante PAC y SAT con sellos digitales.`
+                );
+              }}
+              onTriggerToast={handleToast}
+            />
+          </>
         )}
 
         {activeTab === 'historial' && (

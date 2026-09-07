@@ -4,13 +4,34 @@ import { NavItemKey } from '../components/Sidebar';
 export interface ModuleDefinition {
   key: NavItemKey;
   label: string;
-  category: 'operaciones' | 'compras' | 'comercial' | 'ventas' | 'finanzas' | 'nomina' | 'mantenimiento' | 'sistema';
+  category: 'operaciones' | 'calidad' | 'compras' | 'comercial' | 'ventas' | 'finanzas' | 'nomina' | 'mantenimiento' | 'sistema';
   categoryLabel: string;
   description: string;
   isLocked?: boolean;
 }
 
 export const MODULE_DEFINITIONS: ModuleDefinition[] = [
+  {
+    key: 'calidad',
+    label: 'Calidad',
+    category: 'calidad',
+    categoryLabel: 'Calidad & SGC',
+    description: 'Liberaciones, primera pieza, auditoría final, no conformes y trazabilidad de lote.',
+  },
+  {
+    key: 'presupuestos',
+    label: 'Presupuestos',
+    category: 'finanzas',
+    categoryLabel: 'Finanzas & Facturación',
+    description: 'Planeación, consumo y desviaciones presupuestales por centro de costo.',
+  },
+  {
+    key: 'activos-fijos',
+    label: 'Activos Fijos',
+    category: 'finanzas',
+    categoryLabel: 'Finanzas & Facturación',
+    description: 'Control demo de activos, depreciación y movimientos financieros.',
+  },
   {
     key: 'crm',
     label: 'CRM',
@@ -53,6 +74,13 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     category: 'operaciones',
     categoryLabel: 'Inventario y Operaciones',
     description: 'Despacho de producto terminado liberado por QA, staging de tarimas y validación de carga para clientes industriales.',
+  },
+  {
+    key: 'produccion',
+    label: 'Producción',
+    category: 'operaciones',
+    categoryLabel: 'Producción & Planta',
+    description: 'Planeación, órdenes de producción, piso, materiales e incidencias de planta.',
   },
   {
     key: 'mantenimiento',
@@ -149,6 +177,8 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'inventario': true,
   'mesa-verificacion': true,
   'logistica': false,
+  'produccion': true,
+  'calidad': true,
   'requisiciones': false,
   'compras': false,
   'proveedores': false,
@@ -163,6 +193,8 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'tesoreria': true,
   'contabilidad': true,
   'reportes-financieros': true,
+  'presupuestos': true,
+  'activos-fijos': true,
   'nomina': true,
   'mantenimiento': true,
   'centro-alertas': true,

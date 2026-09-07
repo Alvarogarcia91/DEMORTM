@@ -1,0 +1,26 @@
+export type ProductionStatus = 'Planeada' | 'Lista para producir' | 'En preparación' | 'En proceso' | 'Detenida' | 'Pendiente de calidad' | 'Liberada' | 'Terminada';
+export type ProductionArea = 'Offset' | 'Flexografía' | 'Acabados';
+export interface ProductionOrder {
+ id: string; folio: string; pedido: string; cliente: string; partNumber: string; revision: string;
+ area: ProductionArea; machine: string; due: string; status: ProductionStatus; progress: number;
+ quantity: number; good: number; scrap: number; priority: 'Alta' | 'Media' | 'Normal';
+ materialAlert?: boolean; stopMinutes?: number; operator: string; stockCommitted: number;
+ setupMinutes: number; standardMinutes: number; elapsedMinutes: number; tooling: string; nextJob: string;
+}
+export interface ProductionMachine { id: string; name: string; area: ProductionArea; load: number; status: 'Atención' | 'Operativa'; next: string; }
+const machineRows: [string, ProductionArea, number][] = [
+ ['Heidelberg Speedmaster XL 75','Offset',82],['Conserver 1–2','Offset',64],['Conserver 3–4','Offset',71],['DiDDE 860','Offset',58],['Conserver 8 colores','Offset',76],['Ryobi 1–2','Offset',61],['Guillotina 2','Acabados',88],['Stahl 2','Acabados',73],['Muller Martini','Acabados',69],['Mark Andy 830 7”','Flexografía',67],['Mark Andy 830 10”','Flexografía',96],['Mark Andy Scout 10”','Flexografía',84],['Mark Andy 4120 17”','Flexografía',62],['Allied Gear','Flexografía',55],['Rotoflex I','Flexografía',78],['BGM 2','Flexografía',74],
+];
+export const PRODUCTION_MACHINES: ProductionMachine[] = machineRows.map(([name, area, load], i) => ({ id: `maq-${i + 1}`, name, area, load, status: load > 92 ? 'Atención' : 'Operativa', next: `OP-2026-${95240 + i}` }));
+const customers=['BLACK & DECKER','TYCO','PANASONIC','ILSCO','FRESENIUS','PENTAIR','ENTAIL ENGINE','TRW'];
+const statuses:ProductionStatus[]=['En proceso','Detenida','Pendiente de calidad','Planeada','Lista para producir','En preparación','Liberada','Terminada','En proceso','Detenida','Detenida','Pendiente de calidad','En proceso','Lista para producir','Terminada','Liberada','En preparación','Detenida','Terminada','Pendiente de calidad'];
+export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (_, i) => {
+ const area: ProductionArea = i % 3 === 0 ? 'Offset' : i % 3 === 1 ? 'Flexografía' : 'Acabados';
+ const status = statuses[i];
+ const quantity = 12000 + i * 2250;
+ const progress = status === 'Terminada' || status === 'Liberada' ? 100 : status === 'Pendiente de calidad' ? 96 : status === 'Detenida' ? 42 + (i % 3) * 8 : status === 'En proceso' ? 35 + (i % 4) * 12 : status === 'En preparación' ? 12 : status === 'Lista para producir' ? 4 : 0;
+ return { id: `op-${i + 1}`, folio: `OP-2026-${95240 + i}`, pedido: `PED-RTM-2026-${142 - i}`, cliente: customers[i % customers.length], partNumber: ['NA472050','IS-2420','02-814-556','A163833BHA'][i % 4], revision: i % 2 ? 'Rev I-01' : 'Rev 08/23', area, machine: PRODUCTION_MACHINES[(i * 3) % PRODUCTION_MACHINES.length].name, due: `${8 + i} Sep`, status, progress, quantity, good: Math.round(quantity * progress / 100), scrap: status === 'Detenida' ? 42 : 12 + i * 3, priority: i % 5 === 0 ? 'Alta' : i % 3 === 0 ? 'Media' : 'Normal', materialAlert: i === 1 || i === 9 || i === 17, stopMinutes: status === 'Detenida' ? 47 + i * 9 : 0, operator: ['J. Salinas','M. Ríos','A. Torres','C. Medina'][i % 4], stockCommitted: Math.round(quantity * (i % 4 === 0 ? .26 : .12)), setupMinutes: 25 + (i % 4) * 10, standardMinutes: 90 + (i % 5) * 18, elapsedMinutes: 28 + (i % 5) * 14, tooling: area === 'Flexografía' ? 'Cliché y anilox verificados' : area === 'Offset' ? 'Placas y mantillas verificadas' : 'Herramental de acabado verificado', nextJob: `OP-2026-${95260 + ((i + 3) % 20)}` };
+});
+export interface ProductionIncident { id: string; op: string; category: string; text: string; minutes: number; }
+const incidentRows: [string, string, string, string, number][] = [['INC-2601','OP-2026-95241','Material','Barniz UV insuficiente',47],['INC-2602','OP-2026-95249','Máquina','Ajuste de registro Mark Andy',32],['INC-2603','OP-2026-95257','Método','Cambio de especificación cliente',25],['INC-2604','OP-2026-95244','Mano de obra','Relevo de operador',18],['INC-2605','OP-2026-95258','Material','Sustrato pendiente de liberar',38]];
+export const PRODUCTION_INCIDENTS: ProductionIncident[] = incidentRows.map(([id, op, category, text, minutes]) => ({ id, op, category, text, minutes }));

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Sidebar, NavItemKey } from './Sidebar';
 import { Topbar } from './Topbar';
 import { DashboardInicio } from './DashboardInicio';
@@ -16,9 +16,11 @@ import { EmbarquesPage } from './Embarques/EmbarquesPage';
 import { FacturacionPage } from './Finanzas/FacturacionPage';
 import { CxcPage } from './Finanzas/CxcPage';
 import { CxpPage } from './Finanzas/CxpPage';
-import { FinanceHub } from './Finanzas/FinanceHub';
+import { FinanceWorkspace } from './Finanzas/FinanceWorkspace';
 import { NominaPage } from './Nomina/NominaPage';
 import { MantenimientoPage } from './Mantenimiento/MantenimientoPage';
+import { ProduccionPage } from './Produccion/ProduccionPage';
+import { CalidadPage } from './Calidad/CalidadPage';
 import { CentroAlertasPage } from './CentroAlertasPage';
 import { CrmPage } from './Comercial/CrmPage';
 import { DemoAlert } from '../data/mockAlertasData';
@@ -51,7 +53,11 @@ interface DashboardShellProps {
 
 export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  const [activeTab, setActiveTab] = useState<NavItemKey>('inicio');
- const [isOpenMobile, setIsOpenMobile] = useState(false);
+  const [isOpenMobile, setIsOpenMobile] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }, [activeTab]);
 
  // Global verification desk CEDIS setter
  const { setSelectedCedisId } = useVerificationDeskCedis();
@@ -78,6 +84,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
   const [targetInboundFolio, setTargetInboundFolio] = useState<string | null>(null);
   const [targetQuoteCustomerId, setTargetQuoteCustomerId] = useState<string | null>(null);
   const [targetQuoteFolio, setTargetQuoteFolio] = useState<string | null>(null);
+  const [pendingCrmOpportunity, setPendingCrmOpportunity] = useState<{ id: string; folio: string } | null>(null);
   const [targetOrderFolio, setTargetOrderFolio] = useState<string | null>(null);
   const [targetRequisitionPrefilledItem, setTargetRequisitionPrefilledItem] = useState<{
     sku: string;
@@ -147,11 +154,15 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
 
  // Ventas Actions
  const handleSaveQuote = (newQuote: SalesQuote) => {
- setQuotes((prev) => [newQuote, ...prev]);
+ const quoteWithCrmTrace = pendingCrmOpportunity
+ ? { ...newQuote, crmOpportunityId: pendingCrmOpportunity.id, crmOpportunityFolio: pendingCrmOpportunity.folio }
+ : newQuote;
+ setQuotes((prev) => [quoteWithCrmTrace, ...prev]);
+ setPendingCrmOpportunity(null);
  // Also update customer stats
  setCustomers((prev) =>
  prev.map((c) =>
- c.id === newQuote.customerId
+ c.id === quoteWithCrmTrace.customerId
  ? {
  ...c,
  totalQuotesCount: c.totalQuotesCount + 1,
@@ -491,7 +502,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
           />
         );
       case 'crm':
-        return <CrmPage customers={customers} quotes={quotes} orders={salesOrders} onNavigate={(tab, customerId) => { if (tab === 'cotizaciones' && customerId) setTargetQuoteCustomerId(customerId); setActiveTab(tab); }} />;
+        return <CrmPage customers={customers} quotes={quotes} orders={salesOrders} onNavigate={(tab, customerId) => { if (tab === 'cotizaciones' && customerId) setTargetQuoteCustomerId(customerId); setActiveTab(tab); }} onStartQuote={(customerId, opportunity) => { setTargetQuoteCustomerId(customerId); setTargetQuoteFolio(null); setPendingCrmOpportunity(opportunity); setActiveTab('cotizaciones'); }} onOpenQuote={(folio) => { setTargetQuoteFolio(folio); setTargetQuoteCustomerId(null); setActiveTab('cotizaciones'); }} />;
       case 'facturacion':
         return (
           <FacturacionPage
@@ -524,12 +535,23 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
           />
         );
       case 'finanzas':
+        return <FinanceWorkspace area="dashboard" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
       case 'tesoreria':
+        return <FinanceWorkspace area="treasury" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
       case 'contabilidad':
+        return <FinanceWorkspace area="accounting" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
+      case 'presupuestos':
+        return <FinanceWorkspace area="budgets" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
+      case 'activos-fijos':
+        return <FinanceWorkspace area="assets" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
       case 'reportes-financieros':
-        return <FinanceHub salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
+        return <FinanceWorkspace area="reports" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
       case 'nomina':
         return <NominaPage />;
+      case 'produccion':
+        return <ProduccionPage />;
+      case 'calidad':
+        return <CalidadPage />;
       case 'mantenimiento':
         return (
           <MantenimientoPage

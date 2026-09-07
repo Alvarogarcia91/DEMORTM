@@ -19,7 +19,9 @@ import {
  CreditCard,
  Scale,
  UserCheck,
- Wrench
+ Wrench,
+ Factory,
+ ShieldCheck
 } from 'lucide-react';
 import { useNavigationModules } from '../context/NavigationModulesContext';
 
@@ -29,6 +31,8 @@ export type NavItemKey =
  | 'inventario'
  | 'mesa-verificacion'
  | 'logistica'
+ | 'produccion'
+ | 'calidad'
  | 'requisiciones'
  | 'compras'
  | 'proveedores'
@@ -43,6 +47,8 @@ export type NavItemKey =
  | 'tesoreria'
  | 'contabilidad'
  | 'reportes-financieros'
+ | 'presupuestos'
+ | 'activos-fijos'
  | 'nomina'
  | 'mantenimiento'
  | 'centro-alertas'
@@ -91,6 +97,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
  ],
  },
  {
+ title: 'PRODUCCIÓN',
+ items: [
+ { key: 'produccion', label: 'Producción', icon: Factory },
+ ],
+ },
+ {
+ title: 'CALIDAD',
+ items: [
+ { key: 'calidad', label: 'Calidad', icon: ShieldCheck },
+ ],
+ },
+ {
  title: 'MANTENIMIENTO',
  items: [
  { key: 'mantenimiento', label: 'Mantenimiento', icon: Wrench },
@@ -122,11 +140,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
  title: 'FINANZAS',
  items: [
  { key: 'facturacion', label: 'Facturación', icon: Receipt },
- { key: 'finanzas', label: 'Dashboard', icon: LayoutDashboard },
+ { key: 'finanzas', label: 'Dashboard Financiero', icon: LayoutDashboard },
  { key: 'cxc', label: 'Cuentas por Cobrar', icon: CreditCard },
  { key: 'cxp', label: 'Cuentas por Pagar', icon: Scale },
- { key: 'tesoreria', label: 'Tesorería', icon: Building2 },
- { key: 'contabilidad', label: 'Contabilidad', icon: FileText },
+ { key: 'tesoreria', label: 'Tesorería & Bancos', icon: Building2 },
+ { key: 'contabilidad', label: 'Contabilidad General', icon: FileText },
+ { key: 'presupuestos', label: 'Presupuestos', icon: Scale },
+ { key: 'activos-fijos', label: 'Activos Fijos', icon: Building2 },
  { key: 'reportes-financieros', label: 'Reportes Financieros', icon: Receipt },
  ],
  },

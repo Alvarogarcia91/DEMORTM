@@ -632,6 +632,9 @@ export interface SalesQuote {
     action: 'Pendiente' | 'Autorizada' | 'Rechazada' | 'Ajuste solicitado';
   };
   generatedOrderFolio?: string;
+  /** Optional commercial CRM trace; quotes still belong to Ventas Básico. */
+  crmOpportunityId?: string;
+  crmOpportunityFolio?: string;
 }
 
 export const INITIAL_MOCK_SALES_QUOTES: SalesQuote[] = [
@@ -1505,6 +1508,71 @@ export const INITIAL_MOCK_SALES_ORDERS: SalesOrder[] = [
     },
   },
 ];
+
+// Pedidos adicionales para que Operación Comercial cuente con una carga realista:
+// autorización, producción, surtido, logística, entrega y una incidencia controlada.
+const additionalOrderSeeds = [
+  { n: '0143', customerId: 'cli-002', customerName: 'TRICO TECHNOLOGIES CORPORATION', rfc: 'TTC880315PL1', po: 'PO-TRC-2026-1004', created: '01 Sep 2026', status: 'Pendiente de autorización' as SalesOrderStatus, sku: 'IS-2420', product: 'Etiquetas Slide-In Wiper Blade', brand: 'TRICO', tech: 'Flexografía' as const, qty: 36000, price: 0.92, cost: 0.79, stock: 12000, delivery: '22 Sep 2026', note: 'Descuento por volumen de 8% requiere validación comercial.' },
+  { n: '0144', customerId: 'cli-003', customerName: 'BISSELL INTERNATIONAL TRADING COMPANY B.V.', rfc: 'BIT041120TK8', po: 'PO-BIS-55201', created: '01 Sep 2026', status: 'Pendiente de autorización' as SalesOrderStatus, sku: '1641301', product: 'User Guide POWERFORCE HELIX', brand: 'BISSELL', tech: 'Offset' as const, qty: 28000, price: 1.80, cost: 1.62, stock: 8000, delivery: '24 Sep 2026', note: 'Condición de crédito solicitada a 45 días; en revisión de cartera.' },
+  { n: '0145', customerId: 'cli-004', customerName: 'TYCO (Johnson Controls)', rfc: 'TYC990708M12', po: 'PO-TYC-44218', created: '02 Sep 2026', status: 'Pendiente de autorización' as SalesOrderStatus, sku: '02-814-556', product: 'Instructivo e-Force Seguridad Contra Incendios', brand: 'TYCO', tech: 'Offset' as const, qty: 55000, price: 1.25, cost: 1.13, stock: 15000, delivery: '28 Sep 2026', note: 'Margen estimado 9.6%; requiere dictamen de Gerencia Comercial.' },
+  { n: '0146', customerId: 'cli-001', customerName: 'BLACK & DECKER (Stanley Black & Decker)', rfc: 'SBD920412R34', po: 'PO-SBD-88502', created: '02 Sep 2026', status: 'Pendiente de autorización' as SalesOrderStatus, sku: 'NA698298', product: 'Manual Drill DCD777 NA', brand: 'BLACK & DECKER', tech: 'Offset' as const, qty: 25000, price: 3.95, cost: 3.55, stock: 0, delivery: '30 Sep 2026', note: 'Cambio de arte solicitado por cliente; pendiente de revisión técnica.' },
+  { n: '0147', customerId: 'cli-002', customerName: 'TRICO TECHNOLOGIES CORPORATION', rfc: 'TTC880315PL1', po: 'PO-TRC-2026-1007', created: '03 Sep 2026', status: 'Pendiente de autorización' as SalesOrderStatus, sku: 'A163833BHA', product: 'Etiqueta Poliéster Grado Industrial', brand: 'TRICO', tech: 'Flexografía' as const, qty: 42000, price: 1.05, cost: 0.90, stock: 6000, delivery: '26 Sep 2026', note: 'Precio especial por proyecto; solicita aprobación de Dirección.' },
+  { n: '0148', customerId: 'cli-001', customerName: 'BLACK & DECKER (Stanley Black & Decker)', rfc: 'SBD920412R34', po: 'PO-SBD-88488', created: '27 Ago 2026', status: 'Autorizado' as SalesOrderStatus, sku: 'NA472050', product: 'Manual Cordless Recip Saw DCS382 NA', brand: 'BLACK & DECKER', tech: 'Offset' as const, qty: 18000, price: 2.70, cost: 2.43, stock: 5000, delivery: '20 Sep 2026', note: 'Pedido autorizado. Planeación debe liberar orden de producción.' },
+  { n: '0149', customerId: 'cli-003', customerName: 'BISSELL INTERNATIONAL TRADING COMPANY B.V.', rfc: 'BIT041120TK8', po: 'PO-BIS-55177', created: '26 Ago 2026', status: 'Pendiente de surtido' as SalesOrderStatus, sku: '1641301', product: 'User Guide POWERFORCE HELIX', brand: 'BISSELL', tech: 'Offset' as const, qty: 16000, price: 1.95, cost: 1.67, stock: 16000, delivery: '12 Sep 2026', note: 'Producto terminado reservado; pendiente generar picking.' },
+  { n: '0150', customerId: 'cli-004', customerName: 'TYCO (Johnson Controls)', rfc: 'TYC990708M12', po: 'PO-TYC-44186', created: '24 Ago 2026', status: 'Surtido parcial' as SalesOrderStatus, sku: '02-814-556', product: 'Instructivo e-Force Seguridad Contra Incendios', brand: 'TYCO', tech: 'Offset' as const, qty: 30000, price: 1.35, cost: 1.18, stock: 10000, delivery: '16 Sep 2026', note: 'Primera entrega de 10,000 pzas lista; balance en acabados.' },
+  { n: '0151', customerId: 'cli-002', customerName: 'TRICO TECHNOLOGIES CORPORATION', rfc: 'TTC880315PL1', po: 'PO-TRC-2026-996', created: '22 Ago 2026', status: 'En verificación de salida' as SalesOrderStatus, sku: 'IS-2420', product: 'Etiquetas Slide-In Wiper Blade', brand: 'TRICO', tech: 'Flexografía' as const, qty: 20000, price: 0.92, cost: 0.80, stock: 20000, delivery: '09 Sep 2026', note: 'Picking completado; QA verifica lote y documentación de salida.' },
+  { n: '0152', customerId: 'cli-001', customerName: 'BLACK & DECKER (Stanley Black & Decker)', rfc: 'SBD920412R34', po: 'PO-SBD-88395', created: '18 Ago 2026', status: 'En ruta' as SalesOrderStatus, sku: 'NA698298', product: 'Manual Drill DCD777 NA', brand: 'BLACK & DECKER', tech: 'Offset' as const, qty: 12000, price: 4.20, cost: 3.72, stock: 12000, delivery: '07 Sep 2026', note: 'Unidad RTM-04 en ruta a Apodaca; remisión firmada pendiente.' },
+  { n: '0153', customerId: 'cli-003', customerName: 'BISSELL INTERNATIONAL TRADING COMPANY B.V.', rfc: 'BIT041120TK8', po: 'PO-BIS-55092', created: '12 Ago 2026', status: 'Entrega parcial' as SalesOrderStatus, sku: '1641301', product: 'User Guide POWERFORCE HELIX', brand: 'BISSELL', tech: 'Offset' as const, qty: 45000, price: 1.80, cost: 1.58, stock: 0, delivery: '05 Sep 2026', note: 'Entregadas 30,000 pzas. Segunda entrega de 15,000 en programación.' },
+  { n: '0154', customerId: 'cli-004', customerName: 'TYCO (Johnson Controls)', rfc: 'TYC990708M12', po: 'PO-TYC-44061', created: '06 Ago 2026', status: 'Con incidencia' as SalesOrderStatus, sku: '02-814-556', product: 'Instructivo e-Force Seguridad Contra Incendios', brand: 'TYCO', tech: 'Offset' as const, qty: 22000, price: 1.35, cost: 1.19, stock: 0, delivery: '29 Ago 2026', note: 'Cliente reportó 2 cajas con humedad; calidad abrió caso de reposición.' },
+  { n: '0155', customerId: 'cli-001', customerName: 'BLACK & DECKER (Stanley Black & Decker)', rfc: 'SBD920412R34', po: 'PO-SBD-88271', created: '01 Ago 2026', status: 'Entregado' as SalesOrderStatus, sku: 'NA472050', product: 'Manual Cordless Recip Saw DCS382 NA', brand: 'BLACK & DECKER', tech: 'Offset' as const, qty: 15000, price: 2.70, cost: 2.42, stock: 0, delivery: '22 Ago 2026', note: 'Entrega completa confirmada por cliente y facturada.' },
+] as const;
+
+INITIAL_MOCK_SALES_ORDERS.push(...additionalOrderSeeds.map((seed, index): SalesOrder => {
+  const subtotal = seed.qty * seed.price;
+  const estimatedCost = seed.qty * seed.cost;
+  const remaining = Math.max(0, seed.qty - seed.stock);
+  const pendingAuth = seed.status === 'Pendiente de autorización';
+  const hasOperationalLink = ['Surtido parcial', 'En verificación de salida', 'En ruta', 'Entrega parcial', 'Entregado', 'Con incidencia'].includes(seed.status);
+  return {
+    id: `ord-rtm-${seed.n}`,
+    folio: `PED-RTM-2026-${seed.n}`,
+    quoteId: `cot-rtm-${seed.n}`,
+    originQuoteFolio: `COT-RTM-2026-${seed.n}`,
+    customerPo: seed.po,
+    createdAt: seed.created,
+    customerId: seed.customerId,
+    customerName: seed.customerName,
+    customerRfc: seed.rfc,
+    customerType: 'Empresa',
+    branchId: 'wh-alm-rtm',
+    branchName: 'Planta Principal RTM',
+    fulfillmentOriginId: 'wh-alm-rtm',
+    fulfillmentOriginName: 'Almacén Principal RTM',
+    priceListName: seed.tech === 'Flexografía' ? 'Tarifa General Flexografía & Bobina 2026' : 'Tarifa Corporativa Industrial B2B 2026',
+    sellerName: index % 2 ? 'Lic. Claudia Morales (Ejecutiva Comercial)' : 'Ing. Alejandro Garza (Cuentas Industriales)',
+    partNumber: seed.sku,
+    revision: 'Rev vigente 2026',
+    technology: seed.tech,
+    isObsoleteRevision: false,
+    hasMaterialAlert: remaining > 20000,
+    finishedGoodsStock: seed.stock,
+    reservableQuantity: seed.stock,
+    missingToProduce: remaining,
+    specSummary: `${seed.product} · ${seed.tech}`,
+    requiredDate: seed.delivery,
+    targetDeliveryDate: seed.delivery,
+    paymentConditions: pendingAuth ? 'Crédito comercial en validación' : 'Crédito comercial 30 días',
+    deliveryAddress: seed.customerName.includes('TRICO') ? 'Parque Industrial Reynosa #200, Reynosa, Tamps.' : 'Parque Industrial Milimex, Apodaca, N.L.',
+    items: [{ id: `ord-it-${seed.n}`, sku: seed.sku, partNumber: seed.sku, productName: seed.product, revision: 'Rev vigente 2026', technology: seed.tech, brand: seed.brand, size: seed.tech === 'Offset' ? 'Manual industrial multipágina' : 'Etiqueta industrial en rollo', unit: 'pza', quantity: seed.qty, unitPrice: seed.price, subtotal, costReference: seed.cost, localStock: seed.stock, availablePt: seed.stock, reservableQty: seed.stock, missingToProduce: remaining }],
+    ptAvailability: { orderedQty: seed.qty, availablePt: seed.stock, reservableQty: seed.stock, missingToProduce: remaining },
+    materialStatus: { insufficientMaterial: remaining > 20000, materialName: remaining > 20000 ? 'Sustrato de producción en tránsito' : undefined, alertMessage: remaining > 20000 ? 'Producción requiere confirmar abastecimiento para completar el pedido.' : undefined, relatedRequisitionFolio: remaining > 20000 ? `REQ-2026-${28 + index}` : undefined },
+    financials: { subtotal, discountAmount: 0, taxIva: subtotal * .16, total: subtotal * 1.16, estimatedCost, estimatedMarginAmount: subtotal - estimatedCost, estimatedMarginPct: Number((((subtotal - estimatedCost) / subtotal) * 100).toFixed(1)) },
+    status: seed.status,
+    notes: seed.note,
+    authorizationLog: { status: pendingAuth ? 'Pendiente' : 'Autorizada', authorizedBy: pendingAuth ? undefined : 'Gerencia Comercial RTM', authorizedAt: pendingAuth ? undefined : '03 Sep 2026', notes: pendingAuth ? seed.note : 'Pedido autorizado y liberado para operación.', policyReason: pendingAuth ? seed.note : undefined },
+    operationalLinks: hasOperationalLink ? { pickOrderId: `pick-${seed.n}`, pickOrderFolio: `PICK-2026-${seed.n}`, outboundOrderId: `out-${seed.n}`, outboundOrderFolio: `OS-2026-${seed.n}`, remisionFolio: `REM-2026-${seed.n}`, routeFolio: seed.status === 'En ruta' ? 'RUTA-MTY-04' : undefined } : undefined,
+  };
+}));
 
 export interface ProductionDemandItem {
   id: string;

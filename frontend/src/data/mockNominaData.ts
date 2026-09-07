@@ -196,6 +196,12 @@ export interface PayrollAuditEntry {
   motivo?: string;
 }
 
+export type VacationStatus = 'Pendiente' | 'Autorizada' | 'Rechazada' | 'Cancelada' | 'Disfrutada';
+export interface VacationBalance { employeeId:string; assigned:number; enjoyed:number; scheduled:number; pending:number; nextAbsence?:string; }
+export interface VacationRequest { id:string; employeeId:string; requested:string; start:string; end:string; days:number; returnDate:string; status:VacationStatus; comment:string; approver?:string; }
+export interface EmployeeLoan { id:string; employeeId:string; concept:'Préstamo empresa'|'Adelanto de nómina'|'Descuento de equipo'|'Apoyo extraordinario'; start:string; original:number; balance:number; deduction:number; frequency:'Semanal'|'Quincenal'; payments:number; totalPayments:number; status:'Activo'|'Pausado'|'Liquidado'; nextCycle:string; }
+export interface LoanPayment { id:string; loanId:string; cycle:string; date:string; programmed:number; applied:number; balanceAfter:number; status:'Aplicado'|'Programado'|'Pausado'; }
+
 // =====================================================================
 // 30 EMPLEADOS SEED REALISTAS DE IMPRESOS RTM (Mayoría Operativa)
 // =====================================================================
@@ -1510,3 +1516,16 @@ export const INITIAL_MOCK_AUDIT_LOG: PayrollAuditEntry[] = [
     motivo: 'Dispersión y cumplimiento fiscal de nómina semanal.',
   },
 ];
+
+// RH y descuentos: una sola fuente de verdad para Vacaciones, Préstamos y expediente 360.
+export const INITIAL_VACATION_BALANCES: VacationBalance[] = INITIAL_MOCK_EMPLOYEES.map((employee,index)=>({employeeId:employee.id,assigned:14+(index%5),enjoyed:index%4===0?6:index%3,scheduled:0,pending:0,nextAbsence:index%7===0?'22–23 sep':undefined}));
+export const INITIAL_VACATION_REQUESTS: VacationRequest[] = [
+ {id:'VAC-0042',employeeId:'RTM-007',requested:'2026-08-20',start:'2026-08-31',end:'2026-09-05',days:6,returnDate:'2026-09-06',status:'Disfrutada',comment:'Periodo anual programado.',approver:'Andrea Salazar Ruiz'},
+ {id:'VAC-0048',employeeId:'RTM-011',requested:'2026-09-01',start:'2026-09-21',end:'2026-09-22',days:2,returnDate:'2026-09-23',status:'Autorizada',comment:'Descanso familiar.',approver:'Andrea Salazar Ruiz'},
+ {id:'VAC-0051',employeeId:'RTM-003',requested:'2026-09-04',start:'2026-09-16',end:'2026-09-18',days:3,returnDate:'2026-09-19',status:'Pendiente',comment:'Evento familiar programado.'},
+ {id:'VAC-0052',employeeId:'RTM-014',requested:'2026-09-05',start:'2026-09-24',end:'2026-09-25',days:2,returnDate:'2026-09-26',status:'Pendiente',comment:'Asunto personal.'},
+ {id:'VAC-0053',employeeId:'RTM-021',requested:'2026-09-06',start:'2026-10-02',end:'2026-10-04',days:3,returnDate:'2026-10-05',status:'Pendiente',comment:'Periodo pendiente de confirmar.'},
+];
+INITIAL_VACATION_REQUESTS.filter(x=>x.status==='Autorizada'||x.status==='Pendiente').forEach(request=>{const balance=INITIAL_VACATION_BALANCES.find(x=>x.employeeId===request.employeeId);if(balance){balance.scheduled+=request.status==='Autorizada'?request.days:0;balance.pending+=request.status==='Pendiente'?request.days:0;}});
+export const INITIAL_EMPLOYEE_LOANS: EmployeeLoan[] = INITIAL_MOCK_EMPLOYEES.slice(0,9).map((employee,index)=>({id:`PRE-${101+index}`,employeeId:employee.id,concept:index===2?'Descuento de equipo':index===5?'Adelanto de nómina':'Préstamo empresa',start:`2026-0${3+(index%5)}-15`,original:18000-index*1100,balance:index===7?650:7250+index*830,deduction:index===7?650:750,frequency:'Semanal',payments:14-index,totalPayments:24,status:index===6?'Pausado':index===8?'Liquidado':'Activo',nextCycle:'SEM-2026-36'}));
+export const INITIAL_LOAN_PAYMENTS: LoanPayment[] = INITIAL_EMPLOYEE_LOANS.flatMap(loan=>[1,2,3,4].map((payment,index)=>({id:`${loan.id}-P${payment}`,loanId:loan.id,cycle:`SEM-2026-${32+index}`,date:`2026-08-${10+index*7}`,programmed:loan.deduction,applied:loan.status==='Pausado'&&index===3?0:loan.deduction,balanceAfter:Math.max(0,loan.balance+(4-index)*loan.deduction),status:loan.status==='Pausado'&&index===3?'Pausado':index===3?'Programado':'Aplicado'})));

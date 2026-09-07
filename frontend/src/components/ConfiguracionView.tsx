@@ -41,7 +41,8 @@ import {
   LayoutDashboard,
   CheckCheck,
   ShieldCheck,
-  Wrench
+  Wrench,
+  Factory
 } from 'lucide-react';
 import { NavItemKey } from './Sidebar';
 
@@ -112,6 +113,8 @@ export const ConfiguracionView: React.FC = () => {
       case 'cxp': return Scale;
       case 'nomina': return UserCheck;
       case 'mantenimiento': return Wrench;
+      case 'produccion': return Factory;
+      case 'calidad': return ShieldCheck;
       case 'configuracion': return Palette;
       default: return Layers;
     }
@@ -119,6 +122,7 @@ export const ConfiguracionView: React.FC = () => {
 
   const categories = [
     { id: 'operaciones', label: 'Inventario y Operaciones', desc: 'Módulos de catálogo, almacén físico, control de calidad y logística' },
+    { id: 'calidad', label: 'Calidad & SGC', desc: 'Liberaciones, auditorías, producto no conforme y trazabilidad de lote' },
     { id: 'mantenimiento', label: 'Mantenimiento & Planta', desc: 'Maquinaria y equipos industriales, órdenes de trabajo (OT), preventivos y refacciones' },
     { id: 'compras', label: 'Cadena de Suministro (Compras)', desc: 'Requisiciones internas, compras y directorio de proveedores' },
     { id: 'comercial', label: 'Comercial', desc: 'CRM independiente: prospectos, oportunidades, actividades, pipeline y forecast' },

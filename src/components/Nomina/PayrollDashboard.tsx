@@ -27,6 +27,8 @@ interface PayrollDashboardProps {
   onOpenReconciliation: () => void;
   isTimbrada: boolean;
   timbradosCount: number;
+  vacationImpact?: { employees: number; pending: number; days: number };
+  loanImpact?: { employees: number; amount: number; paused: number };
 }
 
 export const PayrollDashboard: React.FC<PayrollDashboardProps> = ({
@@ -38,6 +40,8 @@ export const PayrollDashboard: React.FC<PayrollDashboardProps> = ({
   onOpenReconciliation,
   isTimbrada,
   timbradosCount,
+  vacationImpact = { employees: 0, pending: 0, days: 0 },
+  loanImpact = { employees: 0, amount: 0, paused: 0 },
 }) => {
   const incidenciasAbiertas = incidents.filter((i) => i.estado === 'pendiente_revision' || i.estado === 'detectada').length;
   const listosParaTimbrar = calculations.filter((c) => c.estadoValidacion === 'listo').length;
@@ -77,6 +81,10 @@ export const PayrollDashboard: React.FC<PayrollDashboardProps> = ({
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
+      <div className="grid md:grid-cols-2 gap-3">
+        <button onClick={() => onSelectTab('vacaciones')} className="p-4 rounded-2xl border border-theme-subtle bg-theme-surface text-left hover:border-theme-primary"><p className="text-[10px] font-black text-theme-muted uppercase">RH que impacta este ciclo · Vacaciones</p><p className="font-black mt-2">{vacationImpact.employees} empleados · {vacationImpact.days} días aplicables</p><p className="text-xs text-theme-muted mt-1">{vacationImpact.pending} solicitud(es) pendiente(s) · Revisar vacaciones →</p></button>
+        <button onClick={() => onSelectTab('prestamos')} className="p-4 rounded-2xl border border-theme-subtle bg-theme-surface text-left hover:border-theme-primary"><p className="text-[10px] font-black text-theme-muted uppercase">RH que impacta este ciclo · Préstamos</p><p className="font-black mt-2">{loanImpact.employees} empleados · {formatCurrency(loanImpact.amount)} a retener</p><p className="text-xs text-theme-muted mt-1">{loanImpact.paused} préstamo(s) pausado(s) · Revisar préstamos →</p></button>
+      </div>
       {/* 0. Tarjeta Principal del Ciclo de Nómina (Requisito Doc V2 Sección 14) */}
       <div className="p-5 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-4">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-zinc-100 pb-3">

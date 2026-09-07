@@ -15,7 +15,7 @@ import {
   CheckCircle2,
   AlertCircle
 } from 'lucide-react';
-import { Employee, EmployeePayroll, DayAttendance } from '../../data/mockNominaData';
+import { Employee, EmployeePayroll, DayAttendance, VacationBalance, VacationRequest, EmployeeLoan } from '../../data/mockNominaData';
 import { formatCurrency } from '../../utils/payrollDemoHelpers';
 
 interface EmployeeDrawerProps {
@@ -23,6 +23,9 @@ interface EmployeeDrawerProps {
   payrollCalc?: EmployeePayroll;
   isOpen: boolean;
   onClose: () => void;
+  vacationBalance?: VacationBalance;
+  vacationRequests?: VacationRequest[];
+  loans?: EmployeeLoan[];
 }
 
 export const EmployeeDrawer: React.FC<EmployeeDrawerProps> = ({
@@ -30,8 +33,11 @@ export const EmployeeDrawer: React.FC<EmployeeDrawerProps> = ({
   payrollCalc,
   isOpen,
   onClose,
+  vacationBalance,
+  vacationRequests = [],
+  loans = [],
 }) => {
-  const [activeTab, setActiveTab] = useState<'general' | 'laboral' | 'fiscal' | 'asistencia' | 'nomina' | 'historial'>('general');
+  const [activeTab, setActiveTab] = useState<'general' | 'laboral' | 'fiscal' | 'asistencia' | 'nomina' | 'vacaciones' | 'prestamos' | 'historial'>('general');
 
   if (!isOpen || !employee) return null;
 
@@ -74,7 +80,9 @@ export const EmployeeDrawer: React.FC<EmployeeDrawerProps> = ({
             { id: 'fiscal', label: '3. Fiscal', icon: ShieldCheck },
             { id: 'asistencia', label: '4. Asistencia', icon: Clock },
             { id: 'nomina', label: '5. Nómina', icon: DollarSign },
-            { id: 'historial', label: '6. Historial', icon: History },
+            { id: 'vacaciones', label: '6. Vacaciones', icon: Calendar },
+            { id: 'prestamos', label: '7. Préstamos', icon: CreditCard },
+            { id: 'historial', label: '8. Historial', icon: History },
           ].map((tab) => {
             const Icon = tab.icon;
             const isSel = activeTab === tab.id;
@@ -300,7 +308,22 @@ export const EmployeeDrawer: React.FC<EmployeeDrawerProps> = ({
             </div>
           )}
 
-          {/* TAB 6: HISTORIAL */}
+          {activeTab === 'vacaciones' && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-4 gap-2">{[['Disponible',(vacationBalance?.assigned||0)-(vacationBalance?.enjoyed||0)-(vacationBalance?.scheduled||0)],['Disfrutado',vacationBalance?.enjoyed||0],['Programado',vacationBalance?.scheduled||0],['Pendiente',vacationBalance?.pending||0]].map(([label,value])=><div key={String(label)} className="p-3 rounded-xl border border-zinc-200 bg-white"><span className="text-[10px] uppercase font-bold text-zinc-500">{label}</span><b className="block font-mono mt-1">{value} días</b></div>)}</div>
+              <p className="font-bold">Solicitudes recientes</p>
+              {vacationRequests.length ? vacationRequests.map((request)=><div key={request.id} className="p-3 rounded-xl border border-zinc-200 bg-white text-xs"><b>{request.id}</b><span className="ml-2">{request.start} · {request.end} · {request.days} días</span><span className="float-right font-bold">{request.status}</span></div>) : <p className="text-zinc-500">Sin solicitudes registradas.</p>}
+              <p className="text-xs text-zinc-500">Las vacaciones autorizadas se reflejan como incidencia en el ciclo activo.</p>
+            </div>
+          )}
+
+          {activeTab === 'prestamos' && (
+            <div className="space-y-4">
+              {loans.length ? <>{<div className="grid grid-cols-3 gap-2"><div className="p-3 rounded-xl border border-zinc-200 bg-white"><span className="text-[10px] text-zinc-500">Saldo total</span><b className="block font-mono">{formatCurrency(loans.reduce((sum,loan)=>sum+loan.balance,0))}</b></div><div className="p-3 rounded-xl border border-zinc-200 bg-white"><span className="text-[10px] text-zinc-500">Retención próxima</span><b className="block font-mono">{formatCurrency(loans.filter(x=>x.status==='Activo').reduce((sum,loan)=>sum+loan.deduction,0))}</b></div><div className="p-3 rounded-xl border border-zinc-200 bg-white"><span className="text-[10px] text-zinc-500">Activos</span><b className="block font-mono">{loans.filter(x=>x.status==='Activo').length}</b></div></div>}{loans.map((loan)=><div key={loan.id} className="p-4 rounded-xl border border-zinc-200 bg-white"><b>{loan.id} · {loan.concept}</b><p className="mt-2 text-zinc-500">Original: {formatCurrency(loan.original)} · Saldo: {formatCurrency(loan.balance)} · Retención: {formatCurrency(loan.deduction)} semanal</p><div className="h-1.5 bg-zinc-200 rounded mt-3"><div className="h-full bg-theme-primary rounded" style={{width:`${loan.payments/loan.totalPayments*100}%`}}/></div><small>{loan.payments}/{loan.totalPayments} pagos · {loan.nextCycle}</small></div>)}</> : <div className="p-6 text-center rounded-xl border border-dashed border-zinc-300 text-zinc-500">Este colaborador no tiene préstamos o descuentos recurrentes activos.</div>}
+            </div>
+          )}
+
+          {/* TAB 8: HISTORIAL */}
           {activeTab === 'historial' && (
             <div className="space-y-3">
               <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 block">
