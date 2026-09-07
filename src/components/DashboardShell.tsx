@@ -20,10 +20,12 @@ import { FinanceWorkspace } from './Finanzas/FinanceWorkspace';
 import { NominaPage } from './Nomina/NominaPage';
 import { MantenimientoPage } from './Mantenimiento/MantenimientoPage';
 import { ProduccionPage } from './Produccion/ProduccionPage';
+import { PisoOperadorWorkspace } from './Produccion/PisoOperadorWorkspace';
 import { CalidadPage } from './Calidad/CalidadPage';
 import { CentroAlertasPage } from './CentroAlertasPage';
 import { CrmPage } from './Comercial/CrmPage';
 import { DemoAlert } from '../data/mockAlertasData';
+import { PRODUCTION_ORDERS, ProductionOrder } from '../data/mockProduccionData';
 import {
   SalesInvoice,
   AccountReceivable,
@@ -94,6 +96,17 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
     targetWarehouseId?: string;
     note?: string;
   } | null>(null);
+
+  // Shared Production & Quality State (Sincronización Operativa en Vivo)
+  const [productionOrders, setProductionOrders] = useState<ProductionOrder[]>(PRODUCTION_ORDERS);
+
+  const handleUpdateProductionOrder = (id: string, patch: Partial<ProductionOrder>) => {
+    setProductionOrders((prev) => prev.map((o) => (o.id === id ? { ...o, ...patch } : o)));
+  };
+
+  const handleAddProductionOrder = (newOrder: ProductionOrder) => {
+    setProductionOrders((prev) => [newOrder, ...prev]);
+  };
 
   const handleInvoiceStamped = (inv: SalesInvoice) => {
     const dueDate = new Date();
@@ -538,20 +551,80 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
         return <FinanceWorkspace area="dashboard" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
       case 'tesoreria':
         return <FinanceWorkspace area="treasury" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
+      case 'contabilidad-reportes':
+        return (
+          <FinanceWorkspace
+            area="contabilidad-reportes"
+            salesInvoices={salesInvoices}
+            cxc={cxcRecords}
+            cxp={cxpRecords}
+            onNavigateToInvoice={() => setActiveTab('facturacion')}
+            onNavigateToMaintenance={() => setActiveTab('mantenimiento')}
+          />
+        );
       case 'contabilidad':
-        return <FinanceWorkspace area="accounting" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
+        return (
+          <FinanceWorkspace
+            area="accounting"
+            salesInvoices={salesInvoices}
+            cxc={cxcRecords}
+            cxp={cxpRecords}
+            onNavigateToInvoice={() => setActiveTab('facturacion')}
+            onNavigateToMaintenance={() => setActiveTab('mantenimiento')}
+          />
+        );
       case 'presupuestos':
         return <FinanceWorkspace area="budgets" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
       case 'activos-fijos':
-        return <FinanceWorkspace area="assets" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
+        return (
+          <FinanceWorkspace
+            area="assets"
+            salesInvoices={salesInvoices}
+            cxc={cxcRecords}
+            cxp={cxpRecords}
+            onNavigateToInvoice={() => setActiveTab('facturacion')}
+            onNavigateToMaintenance={() => setActiveTab('mantenimiento')}
+          />
+        );
       case 'reportes-financieros':
-        return <FinanceWorkspace area="reports" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
+        return (
+          <FinanceWorkspace
+            area="reports"
+            salesInvoices={salesInvoices}
+            cxc={cxcRecords}
+            cxp={cxpRecords}
+            onNavigateToInvoice={() => setActiveTab('facturacion')}
+            onNavigateToMaintenance={() => setActiveTab('mantenimiento')}
+          />
+        );
       case 'nomina':
         return <NominaPage />;
       case 'produccion':
-        return <ProduccionPage />;
+        return (
+          <ProduccionPage
+            orders={productionOrders}
+            onUpdateOrder={handleUpdateProductionOrder}
+            onAddOrder={handleAddProductionOrder}
+            onNavigateToCalidad={() => setActiveTab('calidad')}
+          />
+        );
+      case 'piso-produccion':
+        return (
+          <PisoOperadorWorkspace
+            orders={productionOrders}
+            onUpdateOrder={handleUpdateProductionOrder}
+            onNavigateToProduccion={() => setActiveTab('produccion')}
+            onNavigateToCalidad={() => setActiveTab('calidad')}
+          />
+        );
       case 'calidad':
-        return <CalidadPage />;
+        return (
+          <CalidadPage
+            productionOrders={productionOrders}
+            onUpdateProductionOrder={handleUpdateProductionOrder}
+            onNavigateToProduccion={() => setActiveTab('produccion')}
+          />
+        );
       case 'mantenimiento':
         return (
           <MantenimientoPage

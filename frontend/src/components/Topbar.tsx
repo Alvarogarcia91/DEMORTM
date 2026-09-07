@@ -49,12 +49,14 @@ export const Topbar: React.FC<TopbarProps> = ({
  <span className="text-theme-muted">/</span>
  <span className="font-bold text-theme-main">
  {activeTab === 'produccion' ? 'Producción' :
+ activeTab === 'piso-produccion' ? 'Piso de Producción · Operador' :
  activeTab === 'calidad' ? 'Calidad' :
  activeTab === 'mantenimiento' ? 'Mantenimiento' :
  activeTab === 'nomina' ? 'Nómina & Asistencia' :
  activeTab === 'crm' ? 'CRM' :
  activeTab === 'finanzas' ? 'Finanzas' :
  activeTab === 'tesoreria' ? 'Finanzas · Tesorería' :
+ activeTab === 'contabilidad-reportes' ? 'Finanzas · Contabilidad & Reportes' :
  activeTab === 'contabilidad' ? 'Finanzas · Contabilidad' :
  activeTab === 'reportes-financieros' ? 'Finanzas · Reportes' :
  activeTab === 'presupuestos' ? 'Finanzas · Presupuestos' :

@@ -26,6 +26,13 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     description: 'Planeación, consumo y desviaciones presupuestales por centro de costo.',
   },
   {
+    key: 'contabilidad-reportes',
+    label: 'Contabilidad & Reportes',
+    category: 'finanzas',
+    categoryLabel: 'Finanzas & Facturación',
+    description: 'Gestión contable, activos fijos, estados financieros y cierre de periodo.',
+  },
+  {
     key: 'activos-fijos',
     label: 'Activos Fijos',
     category: 'finanzas',
@@ -81,6 +88,13 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     category: 'operaciones',
     categoryLabel: 'Producción & Planta',
     description: 'Planeación, órdenes de producción, piso, materiales e incidencias de planta.',
+  },
+  {
+    key: 'piso-produccion',
+    label: 'Piso de Producción',
+    category: 'operaciones',
+    categoryLabel: 'Producción & Planta',
+    description: 'Terminal táctil de operador: checklist de máquina, registro en vivo, 1ra pieza y control de scrap 4M.',
   },
   {
     key: 'mantenimiento',
@@ -178,6 +192,7 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'mesa-verificacion': true,
   'logistica': false,
   'produccion': true,
+  'piso-produccion': true,
   'calidad': true,
   'requisiciones': false,
   'compras': false,
@@ -192,6 +207,7 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'finanzas': true,
   'tesoreria': true,
   'contabilidad': true,
+  'contabilidad-reportes': true,
   'reportes-financieros': true,
   'presupuestos': true,
   'activos-fijos': true,

@@ -21,7 +21,8 @@ import {
  UserCheck,
  Wrench,
  Factory,
- ShieldCheck
+ ShieldCheck,
+ Monitor
 } from 'lucide-react';
 import { useNavigationModules } from '../context/NavigationModulesContext';
 
@@ -32,6 +33,7 @@ export type NavItemKey =
  | 'mesa-verificacion'
  | 'logistica'
  | 'produccion'
+ | 'piso-produccion'
  | 'calidad'
  | 'requisiciones'
  | 'compras'
@@ -49,6 +51,7 @@ export type NavItemKey =
  | 'reportes-financieros'
  | 'presupuestos'
  | 'activos-fijos'
+ | 'contabilidad-reportes'
  | 'nomina'
  | 'mantenimiento'
  | 'centro-alertas'
@@ -100,6 +103,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
  title: 'PRODUCCIÓN',
  items: [
  { key: 'produccion', label: 'Producción', icon: Factory },
+ { key: 'piso-produccion', label: 'Piso de Producción', icon: Monitor },
  ],
  },
  {
@@ -144,10 +148,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
  { key: 'cxc', label: 'Cuentas por Cobrar', icon: CreditCard },
  { key: 'cxp', label: 'Cuentas por Pagar', icon: Scale },
  { key: 'tesoreria', label: 'Tesorería & Bancos', icon: Building2 },
- { key: 'contabilidad', label: 'Contabilidad General', icon: FileText },
+ { key: 'contabilidad-reportes', label: 'Contabilidad & Reportes', icon: FileText },
  { key: 'presupuestos', label: 'Presupuestos', icon: Scale },
- { key: 'activos-fijos', label: 'Activos Fijos', icon: Building2 },
- { key: 'reportes-financieros', label: 'Reportes Financieros', icon: Receipt },
  ],
  },
  {
