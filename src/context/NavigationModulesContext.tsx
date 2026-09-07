@@ -4,7 +4,7 @@ import { NavItemKey } from '../components/Sidebar';
 export interface ModuleDefinition {
   key: NavItemKey;
   label: string;
-  category: 'operaciones' | 'compras' | 'ventas' | 'finanzas' | 'sistema';
+  category: 'operaciones' | 'compras' | 'ventas' | 'finanzas' | 'nomina' | 'sistema';
   categoryLabel: string;
   description: string;
   isLocked?: boolean;
@@ -111,6 +111,13 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     description: 'Gestión de facturas de proveedores con validación y conciliación 3-Way Match.',
   },
   {
+    key: 'nomina',
+    label: 'Nómina & Asistencia',
+    category: 'nomina',
+    categoryLabel: 'Nómina & Recursos Humanos',
+    description: 'Gestión de checadas de planta, incidencias con reposición, pre-nómina y timbrado fiscal CFDI 4.0.',
+  },
+  {
     key: 'configuracion',
     label: 'Configuración & Temas',
     category: 'sistema',
@@ -138,6 +145,7 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'facturacion': true,
   'cxc': true,
   'cxp': true,
+  'nomina': true,
   'configuracion': true,
 };
 
@@ -165,7 +173,12 @@ export const NavigationModulesProvider: React.FC<{ children: React.ReactNode }> 
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
-          return { ...DEFAULT_VISIBILITY, ...parsed, 'showroom-expos': false };
+          return {
+            ...DEFAULT_VISIBILITY,
+            ...parsed,
+            'showroom-expos': false,
+            'nomina': parsed.nomina !== undefined ? parsed.nomina : true,
+          };
         } catch {
           return DEFAULT_VISIBILITY;
         }

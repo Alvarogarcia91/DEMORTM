@@ -16,6 +16,7 @@ import { EmbarquesPage } from './Embarques/EmbarquesPage';
 import { FacturacionPage } from './Finanzas/FacturacionPage';
 import { CxcPage } from './Finanzas/CxcPage';
 import { CxpPage } from './Finanzas/CxpPage';
+import { NominaPage } from './Nomina/NominaPage';
 import {
   SalesInvoice,
   AccountReceivable,
@@ -488,6 +489,8 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
             onNavigateToPurchases={() => setActiveTab('compras')}
           />
         );
+      case 'nomina':
+        return <NominaPage />;
       case 'configuracion':
         return <ConfiguracionView />;
  default:

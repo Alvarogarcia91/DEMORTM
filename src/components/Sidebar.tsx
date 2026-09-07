@@ -17,7 +17,8 @@ import {
  Users,
  Receipt,
  CreditCard,
- Scale
+ Scale,
+ UserCheck
 } from 'lucide-react';
 import { useNavigationModules } from '../context/NavigationModulesContext';
 
@@ -37,6 +38,7 @@ export type NavItemKey =
  | 'facturacion'
  | 'cxc'
  | 'cxp'
+ | 'nomina'
  | 'configuracion';
 
 interface SidebarProps {
@@ -104,6 +106,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
  { key: 'facturacion', label: 'Facturación', icon: Receipt },
  { key: 'cxc', label: 'Cuentas por Cobrar', icon: CreditCard },
  { key: 'cxp', label: 'Cuentas por Pagar', icon: Scale },
+ ],
+ },
+ {
+ title: 'NÓMINA & RH',
+ items: [
+ { key: 'nomina', label: 'Nómina & Asistencia', icon: UserCheck },
  ],
  },
  {
