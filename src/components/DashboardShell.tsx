@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Sidebar, NavItemKey } from './Sidebar';
 import { Topbar } from './Topbar';
 import { DashboardInicio } from './DashboardInicio';
@@ -51,7 +51,11 @@ interface DashboardShellProps {
 
 export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  const [activeTab, setActiveTab] = useState<NavItemKey>('inicio');
- const [isOpenMobile, setIsOpenMobile] = useState(false);
+  const [isOpenMobile, setIsOpenMobile] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }, [activeTab]);
 
  // Global verification desk CEDIS setter
  const { setSelectedCedisId } = useVerificationDeskCedis();
