@@ -44,6 +44,7 @@ import { PayrollHistory } from './PayrollHistory';
 import { PayrollAuditDrawer } from './PayrollAuditDrawer';
 import { CiclosNominaTab } from './CiclosNominaTab';
 import { NuevoCicloWizardModal } from './NuevoCicloWizardModal';
+import { RhBenefitsTab } from './RhBenefitsTab';
 import { ChevronDown, Plus } from 'lucide-react';
 
 export type NominaSubTab =
@@ -54,7 +55,8 @@ export type NominaSubTab =
   | 'incidencias'
   | 'prenomina'
   | 'timbrado'
-  | 'historial';
+  | 'historial'
+  | 'rh';
 
 interface ToastNotification {
   id: string;
@@ -262,6 +264,7 @@ export const NominaPage: React.FC = () => {
       icon: <AlertTriangle className="w-4 h-4" />,
       badgeCount: incidents.filter((i) => i.estado === 'pendiente_revision' || i.estado === 'detectada').length,
     },
+    { id: 'rh', label: 'Préstamos y vacaciones', icon: <Calendar className="w-4 h-4" /> },
     {
       id: 'prenomina',
       label: 'Pre-nómina',
@@ -487,6 +490,15 @@ export const NominaPage: React.FC = () => {
             onAuthorizeIncident={handleAuthorizeIncident}
             onRejectIncident={handleRejectIncident}
             onTriggerToast={handleToast}
+          />
+        )}
+
+        {activeTab === 'rh' && (
+          <RhBenefitsTab
+            employees={employees}
+            onAddIncident={(incident) => setIncidents((prev) => [incident, ...prev])}
+            onAudit={recordAuditAction}
+            onToast={handleToast}
           />
         )}
 
