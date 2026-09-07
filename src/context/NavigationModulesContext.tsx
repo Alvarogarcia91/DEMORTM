@@ -4,7 +4,7 @@ import { NavItemKey } from '../components/Sidebar';
 export interface ModuleDefinition {
   key: NavItemKey;
   label: string;
-  category: 'operaciones' | 'compras' | 'ventas' | 'sistema';
+  category: 'operaciones' | 'compras' | 'ventas' | 'finanzas' | 'sistema';
   categoryLabel: string;
   description: string;
   isLocked?: boolean;
@@ -90,6 +90,27 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     description: 'Gestión de cartera de clientes, condiciones de crédito y contactos comerciales.',
   },
   {
+    key: 'facturacion',
+    label: 'Facturación (CFDI 4.0)',
+    category: 'finanzas',
+    categoryLabel: 'Finanzas & Facturación',
+    description: 'Emisión y simulación fiscal de comprobantes CFDI 4.0 a partir de remisiones entregadas.',
+  },
+  {
+    key: 'cxc',
+    label: 'Cuentas por Cobrar (CxC)',
+    category: 'finanzas',
+    categoryLabel: 'Finanzas & Facturación',
+    description: 'Control de cartera, vencimiento de facturas, abonos y antigüedad de saldos.',
+  },
+  {
+    key: 'cxp',
+    label: 'Cuentas por Pagar (CxP)',
+    category: 'finanzas',
+    categoryLabel: 'Finanzas & Facturación',
+    description: 'Gestión de facturas de proveedores con validación y conciliación 3-Way Match.',
+  },
+  {
     key: 'configuracion',
     label: 'Configuración & Temas',
     category: 'sistema',
@@ -114,6 +135,9 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'cotizaciones': false,
   'pedidos': false,
   'clientes': false,
+  'facturacion': true,
+  'cxc': true,
+  'cxp': true,
   'configuracion': true,
 };
 

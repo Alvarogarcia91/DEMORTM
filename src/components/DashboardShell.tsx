@@ -13,6 +13,17 @@ import { CotizacionesPage } from './Ventas/CotizacionesPage';
 import { PedidosPage } from './Ventas/PedidosPage';
 import { ClientesPage } from './Ventas/ClientesPage';
 import { EmbarquesPage } from './Embarques/EmbarquesPage';
+import { FacturacionPage } from './Finanzas/FacturacionPage';
+import { CxcPage } from './Finanzas/CxcPage';
+import { CxpPage } from './Finanzas/CxpPage';
+import {
+  SalesInvoice,
+  AccountReceivable,
+  SupplierInvoice,
+  INITIAL_SALES_INVOICES,
+  INITIAL_CXC_RECORDS,
+  INITIAL_CXP_RECORDS
+} from '../data/mockFinanzasData';
 import { Requisition, INITIAL_MOCK_REQUISITIONS } from '../data/mockRequisitionsData';
 import { SupplierMaster, INITIAL_MOCK_SUPPLIERS } from '../data/mockSuppliersData';
 import { PurchaseOrder, INITIAL_MOCK_PURCHASE_ORDERS } from '../data/mockPurchasesOrdersData';
@@ -50,14 +61,61 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  const [customers, setCustomers] = useState<SalesCustomer[]>(INITIAL_MOCK_SALES_CUSTOMERS);
  const [priceLists] = useState<SalesPriceList[]>(INITIAL_MOCK_SALES_PRICE_LISTS);
 
- // Cross-module targeted navigation state
- const [targetPurchaseOrderFolio, setTargetPurchaseOrderFolio] = useState<string | null>(null);
- const [targetInboundFolio, setTargetInboundFolio] = useState<string | null>(null);
- const [targetQuoteCustomerId, setTargetQuoteCustomerId] = useState<string | null>(null);
- const [targetQuoteFolio, setTargetQuoteFolio] = useState<string | null>(null);
- const [targetOrderFolio, setTargetOrderFolio] = useState<string | null>(null);
+  // Shared Master Data State (Finanzas & Facturación)
+  const [salesInvoices, setSalesInvoices] = useState<SalesInvoice[]>(INITIAL_SALES_INVOICES);
+  const [cxcRecords, setCxcRecords] = useState<AccountReceivable[]>(INITIAL_CXC_RECORDS);
+  const [cxpRecords, setCxpRecords] = useState<SupplierInvoice[]>(INITIAL_CXP_RECORDS);
+  const [targetCxcId, setTargetCxcId] = useState<string | null>(null);
 
- const handleUpdateRequisition = (updated: Requisition) => {
+  // Cross-module targeted navigation state
+  const [targetPurchaseOrderFolio, setTargetPurchaseOrderFolio] = useState<string | null>(null);
+  const [targetInboundFolio, setTargetInboundFolio] = useState<string | null>(null);
+  const [targetQuoteCustomerId, setTargetQuoteCustomerId] = useState<string | null>(null);
+  const [targetQuoteFolio, setTargetQuoteFolio] = useState<string | null>(null);
+  const [targetOrderFolio, setTargetOrderFolio] = useState<string | null>(null);
+
+  const handleInvoiceStamped = (inv: SalesInvoice) => {
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 30);
+    const newCxcId = `cxc-${Date.now()}`;
+
+    const newCxc: AccountReceivable = {
+      id: newCxcId,
+      facturaId: inv.id,
+      facturaFolio: inv.folio,
+      uuidSat: inv.uuidSat,
+      clienteId: inv.clienteId,
+      clienteNombre: inv.clienteNombre,
+      clienteRfc: inv.clienteRfc,
+      fechaEmision: inv.fechaEmision.split('T')[0],
+      fechaVencimiento: dueDate.toISOString().split('T')[0],
+      diasCredito: 30,
+      diasMora: 0,
+      diasParaVencer: 30,
+      montoOriginal: inv.total,
+      saldoPendiente: inv.total,
+      totalPagado: 0,
+      status: 'por_vencer',
+      bucket: 'vigente',
+      metodoPago: inv.metodoPago,
+      historialPagos: [],
+      contactoCobranza: {
+        nombre: 'Dpto. Cuentas por Cobrar',
+        email: `cobranza@${inv.clienteRfc.toLowerCase().substring(0, 4)}.com.mx`,
+        telefono: '55-5000-0000',
+      },
+    };
+
+    // Update invoice with cxc link
+    setSalesInvoices((prev) =>
+      prev.map((i) => (i.id === inv.id ? { ...i, cxcId: newCxcId } : i))
+    );
+
+    // Activate in CxC
+    setCxcRecords((prev) => [newCxc, ...prev]);
+  };
+
+  const handleUpdateRequisition = (updated: Requisition) => {
  setRequisitions((prev) =>
  prev.map((r) => (r.id === updated.id ? updated : r))
  );
@@ -389,18 +447,49 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
   initialSelectedOrderFolio={targetOrderFolio}
   />
   );
- case 'clientes':
- return (
- <ClientesPage
- customers={customers}
- quotes={quotes}
- orders={salesOrders}
- onSaveCustomer={handleSaveCustomer}
- onStartQuoteForCustomer={handleStartQuoteForCustomer}
- />
- );
- case 'configuracion':
- return <ConfiguracionView />;
+      case 'clientes':
+        return (
+          <ClientesPage
+            customers={customers}
+            quotes={quotes}
+            orders={salesOrders}
+            onSaveCustomer={handleSaveCustomer}
+            onStartQuoteForCustomer={handleStartQuoteForCustomer}
+          />
+        );
+      case 'facturacion':
+        return (
+          <FacturacionPage
+            invoices={salesInvoices}
+            onInvoicesChange={setSalesInvoices}
+            onNavigateToCxc={(cxcId) => {
+              setTargetCxcId(cxcId || null);
+              setActiveTab('cxc');
+            }}
+            onInvoiceStamped={handleInvoiceStamped}
+          />
+        );
+      case 'cxc':
+        return (
+          <CxcPage
+            records={cxcRecords}
+            onRecordsChange={setCxcRecords}
+            onNavigateToInvoice={() => {
+              setActiveTab('facturacion');
+            }}
+            targetCxcId={targetCxcId}
+          />
+        );
+      case 'cxp':
+        return (
+          <CxpPage
+            invoices={cxpRecords}
+            onInvoicesChange={setCxpRecords}
+            onNavigateToPurchases={() => setActiveTab('compras')}
+          />
+        );
+      case 'configuracion':
+        return <ConfiguracionView />;
  default:
  return <DashboardInicio onNavigate={(tab) => setActiveTab(tab)} />;
  }

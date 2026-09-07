@@ -14,7 +14,10 @@ import {
  Building2,
  FileText,
  ShoppingBag,
- Users
+ Users,
+ Receipt,
+ CreditCard,
+ Scale
 } from 'lucide-react';
 import { useNavigationModules } from '../context/NavigationModulesContext';
 
@@ -31,6 +34,9 @@ export type NavItemKey =
  | 'cotizaciones'
  | 'pedidos'
  | 'clientes'
+ | 'facturacion'
+ | 'cxc'
+ | 'cxp'
  | 'configuracion';
 
 interface SidebarProps {
@@ -90,6 +96,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
  { key: 'cotizaciones', label: 'Cotizaciones', icon: FileText },
  { key: 'pedidos', label: 'Pedidos', icon: ShoppingBag },
  { key: 'clientes', label: 'Clientes', icon: Users },
+ ],
+ },
+ {
+ title: 'FINANZAS',
+ items: [
+ { key: 'facturacion', label: 'Facturación', icon: Receipt },
+ { key: 'cxc', label: 'Cuentas por Cobrar', icon: CreditCard },
+ { key: 'cxp', label: 'Cuentas por Pagar', icon: Scale },
  ],
  },
  {
