@@ -39,9 +39,11 @@ import { NoConformesWorkspace } from './NoConformesWorkspace';
 import { ZebraLabelPreviewModal } from './ZebraLabelPreviewModal';
 import { GestionSGCWorkspace } from './GestionSGCWorkspace';
 import { AnalizarDesviacionModal } from './AnalizarDesviacionModal';
+import { PisoQaWorkspace } from './PisoQaWorkspace';
 
 type CalidadTab =
   | 'Dashboard'
+  | 'Piso QA'
   | 'Captura'
   | 'Auditorías'
   | 'Liberaciones'
@@ -350,6 +352,15 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
+            onClick={() => setTab('Piso QA')}
+            className="flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/70 dark:border-indigo-900/50 dark:bg-indigo-950/40 px-3.5 py-2 text-xs font-black text-indigo-700 dark:text-indigo-300 shadow-2xs hover:bg-indigo-100 transition-all"
+          >
+            <ShieldCheck className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+            Consola Piso QA
+          </button>
+
+          <button
+            type="button"
             onClick={() => setActiveControlForCapture(controls[0])}
             className="flex items-center gap-1.5 rounded-xl border border-theme-subtle bg-theme-surface px-3.5 py-2 text-xs font-bold text-theme-main shadow-2xs hover:bg-theme-muted/30"
           >
@@ -373,6 +384,7 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
         {(
           [
             'Dashboard',
+            'Piso QA',
             'Captura',
             'Auditorías',
             'Liberaciones',
@@ -392,6 +404,11 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
             }`}
           >
             {item}
+            {item === 'Piso QA' && (
+              <span className="ml-1.5 rounded-full bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300 px-1.5 py-0.2 text-[9px] font-black">
+                {orders.filter((o) => (o.status === 'En preparación' || o.status === 'Pendiente de calidad') && !o.qualityGates?.firstPieceReleased).length + controls.filter((c) => c.status === 'Vencida').length}
+              </span>
+            )}
             {item === 'Captura' && (
               <span className="ml-1.5 rounded-full bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 px-1.5 py-0.2 text-[9px] font-black">
                 1
@@ -433,6 +450,21 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
           onOpenControl={(ctrl) => setActiveControlForCapture(ctrl)}
           onStartNewAudit={(type) => handleOpenWizard(type)}
           onOpenDeviation={(dev) => setSelectedDeviationForAnalysis(dev)}
+          onNavigateTab={(targetTab) => setTab(targetTab as any)}
+        />
+      )}
+
+      {tab === 'Piso QA' && (
+        <PisoQaWorkspace
+          orders={orders}
+          audits={audits}
+          controls={controls}
+          onUpdateProductionOrder={updateOrder}
+          onCompleteAudit={handleCompleteAudit}
+          onOpenControl={(ctrl) => setActiveControlForCapture(ctrl)}
+          onOpenLabelPreview={(op, cli, part, lot) =>
+            setActiveLabelConfig({ opFolio: op, client: cli, partNumber: part, lotNumber: lot })
+          }
           onNavigateTab={(targetTab) => setTab(targetTab as any)}
         />
       )}
