@@ -33,7 +33,7 @@ import {
  MOCK_WAREHOUSES_LIST, 
  WarehouseLayout, 
  PositionRack, 
- PositionSerializedMattress,
+ PositionSerializedItem,
  MOCK_STOCK_ITEMS,
  StockItemRecord,
  SpecialAreaSlot,
@@ -55,9 +55,9 @@ export const WarehousesTab: React.FC = () => {
 
  // Sub-modal states for warehouse detail interactivity
  const [selectedPosition, setSelectedPosition] = useState<PositionRack | null>(null);
- const [selectedUnitDetail, setSelectedUnitDetail] = useState<PositionSerializedMattress | null>(null);
- const [selectedQrUnit, setSelectedQrUnit] = useState<PositionSerializedMattress | null>(null);
- const [selectedPrintUnit, setSelectedPrintUnit] = useState<PositionSerializedMattress | null>(null);
+ const [selectedUnitDetail, setSelectedUnitDetail] = useState<PositionSerializedItem | null>(null);
+ const [selectedQrUnit, setSelectedQrUnit] = useState<PositionSerializedItem | null>(null);
+ const [selectedPrintUnit, setSelectedPrintUnit] = useState<PositionSerializedItem | null>(null);
  const [selectedShowroomBay, setSelectedShowroomBay] = useState<ShowroomBay | null>(null);
  const [isBatchPrintOpen, setIsBatchPrintOpen] = useState<boolean>(false);
 

@@ -2,8 +2,8 @@ export interface IndustrialProduct {
   id: string;
   sku: string;
   name: string;
-  brand: 'Black & Decker' | 'Spring Air' | 'Restonic' | 'América' | 'Sealy' | 'Therapedic' | 'Magnus' | 'Stearns & Foster' | 'Stanley Tools' | 'Medifarma' | 'Avery Dennison' | 'Schneider Electric' | 'Sun Chemical' | 'Bio-Pappel';
-  size: 'Individual' | 'Matrimonial' | 'Queen Size' | 'King Size';
+  brand: 'Medifarma' | 'Avery Dennison' | 'Schneider Electric' | 'Sun Chemical' | 'Bio-Pappel' | 'Impresos RTM' | 'Delphi Technologies' | 'Fasson' | 'Stanley Tools';
+  size: 'Estándar' | 'Personalizado' | 'Caja Chica' | 'Caja Grande' | 'Individual' | 'Matrimonial' | 'Queen Size' | 'King Size';
   firmness: 'Suave' | 'Media' | 'Firme' | 'Extra Firme';
   price: number;
   originalPrice: number;
@@ -28,16 +28,19 @@ export interface SerializedItem {
   locationRack?: string; // ej. A-12-N2
   assignedTruckOrder?: string;
   rawMaterials: {
-    springs: string;
-    foam: string;
-    fabric: string;
+    substrate: string;
+    ink: string;
+    coating: string;
+    springs?: string;
+    foam?: string;
+    fabric?: string;
   };
 }
 
 export interface ReceiptOrder {
   id: string;
   orderNumber: string; // ej. REC-2026-0814
-  origin: string;      // ej. Planta Principal RTM
+  origin: string;      // ej. Planta Principal Impresos RTM
   targetWarehouse: string; // ej. Almacén Principal RTM
   date: string;
   status: 'pendiente' | 'en_verificacion' | 'completada';
@@ -80,46 +83,46 @@ export interface TruckOutboundOrder {
 export const MOCK_PRODUCTS: IndustrialProduct[] = [
   {
     id: 'prod-01',
-    sku: 'SC-NYT-FLW-IND',
-    name: 'Manual Instructivo 24 Páginas Black & Decker',
-    brand: 'Black & Decker',
+    sku: 'RTM-MAN-001',
+    name: 'Manual Instructivo 24 Páginas Stanley Tools',
+    brand: 'Stanley Tools',
     size: 'Individual',
     firmness: 'Media',
     price: 2499,
     originalPrice: 3899,
-    image: '/assets/placeholder-product.svgte-ambiente-1.png',
-    description: 'Estructura ergonómica con espuma de alta resiliencia y tela transpirable fresca.',
+    image: '/assets/placeholder-product.svg',
+    description: 'Manual técnico industrial en pliegos plegados en zigzag con grapa al lomo.',
     comfortSystem: 'Papel bond 75g de alta blancura y opacidad para interiores de manuales',
     warrantyYears: 5,
     stockTotal: 120,
   },
   {
     id: 'prod-02',
-    sku: 'SC-NYT-FLW-MAT',
+    sku: 'RTM-MAN-002',
     name: 'Manual Instructivo 48 Páginas Medifarma',
-    brand: 'Black & Decker',
+    brand: 'Medifarma',
     size: 'Matrimonial',
     firmness: 'Media',
     price: 2899,
     originalPrice: 4299,
-    image: '/assets/placeholder-product.svgte-ambiente-1.png',
-    description: 'Soporte ortopédico equilibrado con tecnología de empaque al alto vacío.',
-    comfortSystem: 'Estructura Bi-Confort + Espuma ViscoSoft',
+    image: '/assets/placeholder-product.svg',
+    description: 'Instructivo médico farmacológico con micropicado y plegado de alta precisión.',
+    comfortSystem: 'Papel biblia farmacológico 40g ultra opaco para inserción en blister',
     warrantyYears: 5,
     stockTotal: 85,
   },
   {
     id: 'prod-03',
-    sku: 'SC-NYT-FLW-QS',
+    sku: 'RTM-FOL-001',
     name: 'Folleto Plegable Médico 48 Páginas Medifarma',
-    brand: 'Black & Decker',
+    brand: 'Medifarma',
     size: 'Queen Size',
     firmness: 'Suave',
     price: 3499,
     originalPrice: 5199,
-    image: '/assets/placeholder-product.svgte-ambiente-1.png',
-    description: 'Manual técnico especializado de alta durabilidad para empaque industrial.',
-    comfortSystem: 'CoolGel Infused Memory Layer + Respaldo Ortopédico',
+    image: '/assets/placeholder-product.svg',
+    description: 'Manual técnico especializado de alta durabilidad para empaque industrial farmacéutico.',
+    comfortSystem: 'Couché 90g con barniz de sobreimpresión para alta definición',
     warrantyYears: 10,
     stockTotal: 60,
   },
@@ -132,9 +135,9 @@ export const MOCK_PRODUCTS: IndustrialProduct[] = [
     firmness: 'Firme',
     price: 2699,
     originalPrice: 4299,
-    image: '/assets/placeholder-product.svgic_frontal.jpg',
-    description: 'Soporte ortopédico integral con resortes continuos que alinean la columna vertebral.',
-    comfortSystem: 'Resortes Continuos ContinuousWire + Aislante Shoddy Pad',
+    image: '/assets/placeholder-product.svg',
+    description: 'Tarjetas blister termosellables con barniz termosellante de alta resistencia.',
+    comfortSystem: 'Cartulina sulfatada SBS 14 pts con termosellante especial para PVC/PET',
     warrantyYears: 5,
     stockTotal: 64,
   },
@@ -147,9 +150,9 @@ export const MOCK_PRODUCTS: IndustrialProduct[] = [
     firmness: 'Media',
     price: 2699,
     originalPrice: 4199,
-    image: '/assets/placeholder-product.svgambiente_6.jpg',
-    description: 'Tarjetas blister termosellables con barniz termosellante de alta resistencia.',
-    comfortSystem: 'Sistema Worry Free (No vuelta) + Resortes Bonnell',
+    image: '/assets/placeholder-product.svg',
+    description: 'Tarjetas blister para herramientas de mano con perforación eurohole.',
+    comfortSystem: 'Cartón microcorrugado flauta E con respaldo de alta adhesión',
     warrantyYears: 5,
     stockTotal: 32,
   },
@@ -157,14 +160,14 @@ export const MOCK_PRODUCTS: IndustrialProduct[] = [
     id: 'prod-06',
     sku: 'PT-CAJ-001',
     name: 'Caja Plegadiza Medicamento Medifarma',
-    brand: 'Stanley Tools',
+    brand: 'Medifarma',
     size: 'Queen Size',
     firmness: 'Suave',
     price: 2699,
     originalPrice: 4599,
-    image: '/assets/placeholder-product.svgplaceholder-product.svg',
-    description: 'Tecnología térmica de descanso fresco con microcápsulas de gel disipadoras de calor.',
-    comfortSystem: 'Gel Infused Memory Foam + Resortes encapsulados Pocket',
+    image: '/assets/placeholder-product.svg',
+    description: 'Cajas plegadizas con fondo automático y barniz UV a registro.',
+    comfortSystem: 'Cartón Caple reverso blanco 24 pts con control antiestático',
     warrantyYears: 10,
     stockTotal: 52,
   },
@@ -177,69 +180,69 @@ export const MOCK_PRODUCTS: IndustrialProduct[] = [
     firmness: 'Firme',
     price: 3199,
     originalPrice: 4999,
-    image: '/assets/placeholder-product.svghon.-record-spring_air.png',
-    description: 'Avalado por el Colegio de Profesionistas en Quiropráctica de México para el máximo descanso.',
-    comfortSystem: 'Resortes Performance Bonnell + Never Turn System',
+    image: '/assets/placeholder-product.svg',
+    description: 'Etiquetas autoadheribles en bobina para frascos y viales clínicos.',
+    comfortSystem: 'BOPP Blanco 50 micras con adhesivo acrílico permanente grado pharma',
     warrantyYears: 5,
     stockTotal: 75,
   },
   {
     id: 'prod-08',
-    sku: 'SC-SPA-VEN-MAT',
+    sku: 'RTM-ETQ-002',
     name: 'Etiqueta en Rollo Térmica Directa',
     brand: 'Medifarma',
     size: 'Matrimonial',
     firmness: 'Media',
     price: 4299,
     originalPrice: 6899,
-    image: '/assets/placeholder-product.svg-spring-air-vendome_blancos.png',
+    image: '/assets/placeholder-product.svg',
     description: 'Etiquetas autoadheribles en bobina para línea de envasado automatizado.',
-    comfortSystem: 'Sistema Back Supporter + Resortes independientes Pocket Springs',
+    comfortSystem: 'Papel térmico protegido top-coated resistente a fricción y humedad',
     warrantyYears: 10,
     stockTotal: 40,
   },
   {
     id: 'prod-09',
     sku: 'EMP-COR-001',
-    name: 'Cartón Plegadizo Caple 24 pts Sultana',
-    brand: 'Avery Dennison',
+    name: 'Cartón Plegadizo Caple 24 pts Bio-Pappel',
+    brand: 'Bio-Pappel',
     size: 'Queen Size',
     firmness: 'Extra Firme',
     price: 4599,
     originalPrice: 7499,
     image: '/assets/placeholder-product.svg',
-    description: 'Refuerzo perimetral Foam Encasement que maximiza el área útil para dormir de borde a borde.',
-    comfortSystem: 'Unidad de resortes Infinity + Marco perimetral HD',
+    description: 'Pliegos de cartulina caple de alta rigidez para empaque secundario.',
+    comfortSystem: 'Caple reciclado grado industrial 360g calibre 24 pts',
     warrantyYears: 10,
     stockTotal: 38,
   },
   {
     id: 'prod-10',
     sku: 'SUS-PAP-001',
-    name: 'Papel Couché 90 g Pliegos BioPapel',
-    brand: 'Schneider Electric',
+    name: 'Papel Couché 90 g Pliegos Bio-Pappel',
+    brand: 'Bio-Pappel',
     size: 'King Size',
     firmness: 'Media',
     price: 5299,
     originalPrice: 8999,
-    image: '/assets/placeholder-product.svglus-ambiente-op.png',
-    description: 'Tecnología Posturepedic desarrollada junto a cirujanos ortopedistas para la postura ideal.',
+    image: '/assets/placeholder-product.svg',
+    description: 'Pliegos couché 70x100 cm brillante para impresión offset comercial.',
     comfortSystem: 'Sustrato sulfatado SBS calibre 14 pts de alta rigidez',
     warrantyYears: 10,
     stockTotal: 26,
   },
   {
     id: 'prod-11',
-    sku: 'SC-THE-GEL-KS',
+    sku: 'RTM-TIN-001',
     name: 'Tinta Process Black Offset Sun Chemical',
     brand: 'Sun Chemical',
     size: 'King Size',
     firmness: 'Suave',
     price: 6499,
     originalPrice: 10999,
-    image: '/assets/placeholder-product.svgente-comp.png',
-    description: 'Refrigeración pasiva constante y alivio total de tensiones musculares con gel termorregulador.',
-    comfortSystem: 'TheraCool Gel Memory Foam + Núcleo aislante HighDensity',
+    image: '/assets/placeholder-product.svg',
+    description: 'Tinta vegetal offset de secado rápido y alta densidad óptica.',
+    comfortSystem: 'Formulación mineral libre de metales pesados con certificación ISO 2846-1',
     warrantyYears: 15,
     stockTotal: 18,
   },
@@ -251,9 +254,9 @@ export const MOCK_PRODUCTS: IndustrialProduct[] = [
 export const INITIAL_SERIALIZED_ITEMS: SerializedItem[] = [
   {
     serialNumber: 'SN-RTM-2026-BD-94101-IND',
-    sku: 'SC-NYT-FLW-IND',
-    productName: 'Manual Instructivo 24 Páginas Black & Decker',
-    brand: 'Black & Decker',
+    sku: 'RTM-MAN-001',
+    productName: 'Manual Instructivo 24 Páginas Stanley Tools',
+    brand: 'Stanley Tools',
     size: 'Individual',
     lotNumber: 'LOTE-2026-W34-01',
     manufactureDate: '2026-08-27',
@@ -262,16 +265,16 @@ export const INITIAL_SERIALIZED_ITEMS: SerializedItem[] = [
     status: 'recepcionado',
     locationRack: 'A-01-N1 (Rápido Despacho)',
     rawMaterials: {
-      springs: 'Núcleo Foam Core HD',
-      foam: 'Poliuretano Confort D24 rebajado de inventario',
-      fabric: 'Tela Fresca Tratada Antibacterial rebajada',
+      substrate: 'Papel Bond 75g Bio-Pappel',
+      ink: 'Tinta Process Black Sun Chemical',
+      coating: 'Barniz de máquina al agua',
     },
   },
   {
     serialNumber: 'SN-RTM-2026-BD-94102-MAT',
-    sku: 'SC-NYT-FLW-MAT',
+    sku: 'RTM-MAN-002',
     productName: 'Manual Instructivo 48 Páginas Medifarma',
-    brand: 'Black & Decker',
+    brand: 'Medifarma',
     size: 'Matrimonial',
     lotNumber: 'LOTE-2026-W34-01',
     manufactureDate: '2026-08-27',
@@ -280,9 +283,9 @@ export const INITIAL_SERIALIZED_ITEMS: SerializedItem[] = [
     status: 'en_rack',
     locationRack: 'A-01-N2',
     rawMaterials: {
-      springs: 'Núcleo Foam Core HD',
-      foam: 'Poliuretano Confort D24 rebajado de inventario',
-      fabric: 'Tela Fresca Tratada Antibacterial rebajada',
+      substrate: 'Papel Biblia 40g Fasson',
+      ink: 'Tinta Pantone Grado Pharma',
+      coating: 'Sin barniz',
     },
   },
   {
@@ -298,9 +301,9 @@ export const INITIAL_SERIALIZED_ITEMS: SerializedItem[] = [
     status: 'en_rack',
     locationRack: 'A-12-N2',
     rawMaterials: {
-      springs: '312 Resortes Bonnell Calibre 13',
-      foam: 'Poliuretano 24kg/m³ D24',
-      fabric: 'Jacquard Antibacterial Tratado',
+      substrate: 'Cartulina SBS 14 pts',
+      ink: 'Tintas Process 4 Colores',
+      coating: 'Barniz Termosellante Blister',
     },
   },
   {
@@ -316,16 +319,16 @@ export const INITIAL_SERIALIZED_ITEMS: SerializedItem[] = [
     status: 'recepcionado',
     locationRack: 'Área de Acomodo Temporal',
     rawMaterials: {
-      springs: 'Bobina Suaje Gráfico',
-      foam: 'Espuma Confort Never Turn',
-      fabric: 'Poliéster Tejido de Punto Suave',
+      substrate: 'BOPP Blanco 50 micras Avery Dennison',
+      ink: 'Tintas Flexo UV Sun Chemical',
+      coating: 'Laminación Transparente 20 micras',
     },
   },
   {
     serialNumber: 'SN-RTM-2026-91204-QS',
     sku: 'PT-CAJ-001',
     productName: 'Caja Plegadiza Medicamento Medifarma',
-    brand: 'Stanley Tools',
+    brand: 'Medifarma',
     size: 'Queen Size',
     lotNumber: 'LOTE-2026-W34-04',
     manufactureDate: '2026-08-26',
@@ -334,9 +337,9 @@ export const INITIAL_SERIALIZED_ITEMS: SerializedItem[] = [
     status: 'en_rack',
     locationRack: 'B-04-N1',
     rawMaterials: {
-      springs: '510 Resortes Independientes Pocket',
-      foam: 'Memory Foam con Gel Fresh',
-      fabric: 'Strech Cooling Ice Touch',
+      substrate: 'Cartulina Caple 24 pts Sultana',
+      ink: 'Tintas Offset Serie Low-Migration',
+      coating: 'Barniz UV a Registro',
     },
   },
 ];
@@ -356,18 +359,18 @@ export const INITIAL_RECEIPT_ORDERS: ReceiptOrder[] = [
     scannedItems: 18,
     items: [
       {
-        sku: 'SC-NYT-FLW-IND',
-        productName: 'Manual Instructivo 24 Páginas Black & Decker',
-        brand: 'Black & Decker',
+        sku: 'RTM-MAN-001',
+        productName: 'Manual Instructivo 24 Páginas Stanley Tools',
+        brand: 'Stanley Tools',
         size: 'Individual',
         quantity: 15,
         scanned: 10,
         serials: ['SN-RTM-2026-BD-94101-IND'],
       },
       {
-        sku: 'SC-NYT-FLW-MAT',
+        sku: 'RTM-MAN-002',
         productName: 'Manual Instructivo 48 Páginas Medifarma',
-        brand: 'Black & Decker',
+        brand: 'Medifarma',
         size: 'Matrimonial',
         quantity: 15,
         scanned: 8,
@@ -378,7 +381,7 @@ export const INITIAL_RECEIPT_ORDERS: ReceiptOrder[] = [
   {
     id: 'rec-02',
     orderNumber: 'REC-2026-0815',
-    origin: 'Planta Ensambladora Regiomontana',
+    origin: 'Bio-Pappel Planta Monterrey',
     targetWarehouse: 'Almacén Principal RTM',
     date: '2026-08-27',
     status: 'pendiente',
@@ -388,7 +391,7 @@ export const INITIAL_RECEIPT_ORDERS: ReceiptOrder[] = [
       {
         sku: 'PT-CAJ-001',
         productName: 'Caja Plegadiza Medicamento Medifarma',
-        brand: 'Stanley Tools',
+        brand: 'Medifarma',
         size: 'Queen Size',
         quantity: 10,
         scanned: 0,
@@ -396,8 +399,8 @@ export const INITIAL_RECEIPT_ORDERS: ReceiptOrder[] = [
       },
       {
         sku: 'SUS-PAP-001',
-        productName: 'Papel Couché 90 g Pliegos BioPapel',
-        brand: 'Schneider Electric',
+        productName: 'Papel Couché 90 g Pliegos Bio-Pappel',
+        brand: 'Bio-Pappel',
         size: 'King Size',
         quantity: 10,
         scanned: 0,
@@ -424,8 +427,8 @@ export const INITIAL_TRUCK_ORDERS: TruckOutboundOrder[] = [
     scannedCount: 40, // Faltan 10 tarimas por cargar
     items: [
       {
-        sku: 'SC-NYT-FLW-IND',
-        productName: 'Manual Instructivo 24 Páginas Black & Decker',
+        sku: 'RTM-MAN-001',
+        productName: 'Manual Instructivo 24 Páginas Stanley Tools',
         size: 'Individual',
         expected: 25,
         scannedSerials: [
@@ -459,7 +462,7 @@ export const INITIAL_TRUCK_ORDERS: TruckOutboundOrder[] = [
     id: 'emb-02',
     orderNumber: 'EMB-2026-043',
     routeNumber: 'RUTA-SALTILLO-EXPRESS',
-    destination: 'CEDIS Regional Saltillo Coahuila',
+    destination: 'Almacén Regional Saltillo Coahuila',
     truckPlate: 'COAH-3190-C (Tráiler 53ft)',
     driverName: 'Roberto Garza Treviño',
     scheduledDate: '2026-08-28',
@@ -468,7 +471,7 @@ export const INITIAL_TRUCK_ORDERS: TruckOutboundOrder[] = [
     scannedCount: 80, // Completo
     items: [
       {
-        sku: 'SC-NYT-FLW-MAT',
+        sku: 'RTM-MAN-002',
         productName: 'Manual Instructivo 48 Páginas Medifarma',
         size: 'Matrimonial',
         expected: 40,

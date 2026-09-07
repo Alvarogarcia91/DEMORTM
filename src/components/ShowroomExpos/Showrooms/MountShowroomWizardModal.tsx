@@ -76,39 +76,39 @@ export const MountShowroomWizardModal: React.FC<MountShowroomWizardModalProps> =
     },
     {
       sku: 'SC-RES-MNC-QS',
-      name: 'Restonic Colchón Moon Cool Queen Size',
-      brand: 'Restonic',
+      name: 'RTM Offset Muestrario Moon Cool Queen Size',
+      brand: 'RTM Offset',
       size: 'Queen Size',
       availableStock: 14,
       inExhibition: 0,
       committed: 2,
       rotation: 'Alta',
       reasons: ['Crecimiento del +24% en cotizaciones.', '14 unidades en almacén.'],
-      uidOption: { uid: 'SC-UID-2026-000184', location: 'A-B-03', ageDays: 32, reason: 'Excelente estado de empaque en nivel piso.' },
+      uidOption: { uid: 'RTM-UID-2026-000184', location: 'A-B-03', ageDays: 32, reason: 'Excelente estado de empaque en nivel piso.' },
     },
     {
       sku: 'SC-SEA-CLB-KS',
-      name: 'Sealy Colchón Crown Jewel King Size',
-      brand: 'Sealy',
+      name: 'RTM Packaging Muestrario Crown Jewel King Size',
+      brand: 'RTM Packaging',
       size: 'King Size',
       availableStock: 8,
       inExhibition: 0,
       committed: 1,
       rotation: 'Media',
       reasons: ['Mayor ticket promedio King Size ($19,899 MXN).', 'Excelente para prueba de cliente.'],
-      uidOption: { uid: 'SC-UID-2026-000186', location: 'A-C-02', ageDays: 38, reason: 'Unidad validada con control de calidad.' },
+      uidOption: { uid: 'RTM-UID-2026-000186', location: 'A-C-02', ageDays: 38, reason: 'Unidad validada con control de calidad.' },
     },
     {
       sku: 'SC-SPA-REC-MAT',
-      name: 'Spring Air Colchón Record Matrimonial',
-      brand: 'Spring Air',
+      name: 'RTM Flexo Muestrario Record Matrimonial',
+      brand: 'RTM Flexo',
       size: 'Matrimonial',
       availableStock: 16,
       inExhibition: 1,
       committed: 5,
       rotation: 'Alta',
       reasons: ['Modelo tradicional de alta rotación.', '16 disponibles en almacén.'],
-      uidOption: { uid: 'SC-UID-2026-000192', location: 'B-A-01', ageDays: 21, reason: 'Rotación estándar FIFO.' },
+      uidOption: { uid: 'RTM-UID-2026-000192', location: 'B-A-01', ageDays: 21, reason: 'Rotación estándar FIFO.' },
     },
   ];
 
@@ -140,7 +140,7 @@ export const MountShowroomWizardModal: React.FC<MountShowroomWizardModalProps> =
     setScanError(null);
     setTimeout(() => {
       setIsScanningUid(false);
-      setScanError('✕ La unidad escaneada (SC-UID-2026-000999) no corresponde a esta orden.');
+      setScanError('✕ La unidad escaneada (RTM-UID-2026-000999) no corresponde a esta orden.');
     }, 400);
   };
 
@@ -403,16 +403,16 @@ export const MountShowroomWizardModal: React.FC<MountShowroomWizardModalProps> =
                   </span>
                   <div
                     onClick={() => {
-                      setSelectedUid('SC-UID-2026-000299');
+                      setSelectedUid('RTM-UID-2026-000299');
                       setSelectedFromLocation('A-B-04');
                     }}
                     className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between text-xs ${
-                      selectedUid === 'SC-UID-2026-000299'
+                      selectedUid === 'RTM-UID-2026-000299'
                         ? 'bg-white border-zinc-900 font-bold shadow-xs'
                         : 'bg-theme-surface border-theme-subtle text-theme-muted hover:border-theme-main'
                     }`}
                   >
-                    <span className="font-mono font-bold">SC-UID-2026-000299</span>
+                    <span className="font-mono font-bold">RTM-UID-2026-000299</span>
                     <span>Ubicación: A-B-04 (19 días)</span>
                     <span className="text-[10px] text-emerald-600 font-bold">Disponible</span>
                   </div>

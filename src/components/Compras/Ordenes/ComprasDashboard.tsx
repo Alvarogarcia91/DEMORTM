@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
  LayoutDashboard,
  ShoppingCart,
@@ -376,8 +376,8 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  <option value="ALL">Todos los destinos</option>
  <option value="wh-mty-norte">Almacén Materia Prima</option>
  <option value="wh-mty-sur">Almacén Producto Terminado</option>
- <option value="wh-suc-valle-oriente">Almacén Auxiliar Reynosa</option>
- <option value="wh-suc-cumbres">Almacén Matamoros</option>
+ <option value="wh-reynosa-aux">Almacén Auxiliar Reynosa</option>
+ <option value="wh-matamoros">Almacén Matamoros</option>
  </select>
 
  {/* Supplier Selector */}

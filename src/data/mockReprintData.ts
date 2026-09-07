@@ -203,7 +203,7 @@ export const INITIAL_UNIT_REPRINT_CANDIDATES: UnitReprintCandidate[] = [
     brand: 'Medifarma',
     size: 'Individual',
     lotNumber: 'LOTE-2026-W34',
-    warehouseId: 'wh-suc-cumbres',
+    warehouseId: 'wh-matamoros',
     warehouseName: 'Almacén Satélite Matamoros',
     locationCode: 'SHOW-03',
     status: 'Exhibición',
@@ -234,15 +234,15 @@ export const INITIAL_LOCATION_REPRINT_CANDIDATES: LocationReprintCandidate[] = [
   { code: 'RET-SUR', name: 'Área de Retrabajo PT', type: 'Área de Retrabajo', warehouseId: 'wh-mty-sur', warehouseName: 'Almacén Producto Terminado', status: 'Activa' },
 
   // Almacén Auxiliar Reynosa locations
-  { code: 'REC-SUC-VO', name: 'Andén Recepción Traspasos Reynosa', type: 'Área de Recepción', warehouseId: 'wh-suc-valle-oriente', warehouseName: 'Almacén Auxiliar Reynosa', status: 'Activa' },
-  { code: 'SHOW-01', name: 'Bahía Principal Staging Reynosa', type: 'Área de Muestras / QA', warehouseId: 'wh-suc-valle-oriente', warehouseName: 'Almacén Auxiliar Reynosa', status: 'Activa' },
-  { code: 'SHOW-02', name: 'Bahía Secundaria Staging Reynosa', type: 'Área de Muestras / QA', warehouseId: 'wh-suc-valle-oriente', warehouseName: 'Almacén Auxiliar Reynosa', status: 'Activa' },
-  { code: 'BOD-VO-01', name: 'Bodega Local Posición 01 Reynosa', type: 'Rack de Almacenamiento', warehouseId: 'wh-suc-valle-oriente', warehouseName: 'Almacén Auxiliar Reynosa', status: 'Activa' },
+  { code: 'REC-REY-AUX', name: 'Andén Recepción Traspasos Reynosa', type: 'Área de Recepción', warehouseId: 'wh-reynosa-aux', warehouseName: 'Almacén Auxiliar Reynosa', status: 'Activa' },
+  { code: 'SHOW-01', name: 'Bahía Principal Staging Reynosa', type: 'Área de Muestras / QA', warehouseId: 'wh-reynosa-aux', warehouseName: 'Almacén Auxiliar Reynosa', status: 'Activa' },
+  { code: 'SHOW-02', name: 'Bahía Secundaria Staging Reynosa', type: 'Área de Muestras / QA', warehouseId: 'wh-reynosa-aux', warehouseName: 'Almacén Auxiliar Reynosa', status: 'Activa' },
+  { code: 'BOD-REY-01', name: 'Bodega Local Posición 01 Reynosa', type: 'Rack de Almacenamiento', warehouseId: 'wh-reynosa-aux', warehouseName: 'Almacén Auxiliar Reynosa', status: 'Activa' },
 
   // Almacén Satélite Matamoros locations
-  { code: 'REC-SUC-CUM', name: 'Andén Recepción Almacén Matamoros', type: 'Área de Recepción', warehouseId: 'wh-suc-cumbres', warehouseName: 'Almacén Satélite Matamoros', status: 'Activa' },
-  { code: 'SHOW-03', name: 'Bahía Inspección Matamoros 03', type: 'Área de Muestras / QA', warehouseId: 'wh-suc-cumbres', warehouseName: 'Almacén Satélite Matamoros', status: 'Activa' },
-  { code: 'BOD-CUM-01', name: 'Bodega Local Matamoros 01', type: 'Rack de Almacenamiento', warehouseId: 'wh-suc-cumbres', warehouseName: 'Almacén Satélite Matamoros', status: 'Activa' },
+  { code: 'REC-MAT', name: 'Andén Recepción Almacén Matamoros', type: 'Área de Recepción', warehouseId: 'wh-matamoros', warehouseName: 'Almacén Satélite Matamoros', status: 'Activa' },
+  { code: 'SHOW-03', name: 'Bahía Inspección Matamoros 03', type: 'Área de Muestras / QA', warehouseId: 'wh-matamoros', warehouseName: 'Almacén Satélite Matamoros', status: 'Activa' },
+  { code: 'BOD-MAT-01', name: 'Bodega Local Matamoros 01', type: 'Rack de Almacenamiento', warehouseId: 'wh-matamoros', warehouseName: 'Almacén Satélite Matamoros', status: 'Activa' },
 ];
 
 export const INITIAL_REPRINT_AUDIT_LOGS: ReprintAuditRecord[] = [

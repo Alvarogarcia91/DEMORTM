@@ -14,8 +14,7 @@ import {
  Building2,
  FileText,
  ShoppingBag,
- Users,
- Store
+ Users
 } from 'lucide-react';
 import { useNavigationModules } from '../context/NavigationModulesContext';
 
@@ -74,7 +73,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
  { key: 'inventario', label: 'Inventario', icon: Boxes },
  { key: 'mesa-verificacion', label: 'Operaciones de Almacén', icon: Scan },
  { key: 'logistica', label: 'Órdenes de Salida', icon: Truck },
- { key: 'showroom-expos', label: 'Showroom & Expos', icon: Store },
  ],
  },
  {

@@ -16,7 +16,7 @@ import {
  History
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
-import { PositionSerializedMattress } from '../../data/mockInventoryData';
+import { PositionSerializedItem } from '../../data/mockInventoryData';
 import { ModalPortal } from '../common/ModalPortal';
 
 export interface TransferRouteMeta {
@@ -31,12 +31,12 @@ export interface TransferRouteMeta {
 }
 
 interface UnitDetailModalProps {
- unit: PositionSerializedMattress | null;
+ unit: PositionSerializedItem | null;
  warehouseName: string;
  transferRoute?: TransferRouteMeta | null;
  onClose: () => void;
- onOpenQr: (unit: PositionSerializedMattress) => void;
- onPrintQr: (unit: PositionSerializedMattress) => void;
+ onOpenQr: (unit: PositionSerializedItem) => void;
+ onPrintQr: (unit: PositionSerializedItem) => void;
 }
 
 export const UnitDetailModal: React.FC<UnitDetailModalProps> = ({

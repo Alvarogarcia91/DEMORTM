@@ -26,7 +26,7 @@ import {
  MOCK_STOCK_ITEMS, 
  MOCK_INVENTORY_MOVEMENTS,
  InventoryTransferOrder, 
- PositionSerializedMattress,
+ PositionSerializedItem,
  InventoryMovement
 } from '../../data/mockInventoryData';
 import { UnitDetailModal, TransferRouteMeta } from './UnitDetailModal';
@@ -62,10 +62,10 @@ export const TransfersTab: React.FC<TransfersTabProps> = ({ onShowToast }) => {
  const [orderToReceive, setOrderToReceive] = useState<InventoryTransferOrder | null>(null);
 
  // Sub-modals for clicking individual serialized units
- const [selectedUnit, setSelectedUnit] = useState<PositionSerializedMattress | null>(null);
+ const [selectedUnit, setSelectedUnit] = useState<PositionSerializedItem | null>(null);
  const [selectedUnitRoute, setSelectedUnitRoute] = useState<TransferRouteMeta | null>(null);
- const [selectedQrUnit, setSelectedQrUnit] = useState<PositionSerializedMattress | null>(null);
- const [selectedPrintUnit, setSelectedPrintUnit] = useState<PositionSerializedMattress | null>(null);
+ const [selectedQrUnit, setSelectedQrUnit] = useState<PositionSerializedItem | null>(null);
+ const [selectedPrintUnit, setSelectedPrintUnit] = useState<PositionSerializedItem | null>(null);
 
  const getTransferType = (t: InventoryTransferOrder) => {
  const isSourceCedis = t.sourceWarehouseName.includes('CEDIS');
@@ -113,7 +113,7 @@ export const TransfersTab: React.FC<TransfersTabProps> = ({ onShowToast }) => {
  const stockItem = MOCK_STOCK_ITEMS.find(i => i.uid === uid);
  const isInTransit = transfer.status === 'En tránsito';
 
- const mattress: PositionSerializedMattress = {
+ const unitItem: PositionSerializedItem = {
  uid: uid,
  sku: item.sku,
  productName: item.productName,
@@ -129,7 +129,7 @@ export const TransfersTab: React.FC<TransfersTabProps> = ({ onShowToast }) => {
  notes: `Unidad asignada a orden de traspaso ${transfer.folio} (${transfer.sourceWarehouseName} → ${transfer.destinationWarehouseName}).`,
  };
 
- setSelectedUnit(mattress);
+ setSelectedUnit(unitItem);
  setSelectedUnitRoute({
  origin: transfer.sourceWarehouseName,
  destination: transfer.destinationWarehouseName,

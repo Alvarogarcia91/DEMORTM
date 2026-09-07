@@ -18,7 +18,7 @@ import {
  ChevronLeft,
  Info
 } from 'lucide-react';
-import { PositionRack, PositionSerializedMattress, LevelItem } from '../../data/mockInventoryData';
+import { PositionRack, PositionSerializedItem, LevelItem } from '../../data/mockInventoryData';
 import { LocationQrModal, PhysicalLocationMeta } from './LocationQrModal';
 import { PrintLocationQrModal } from './PrintLocationQrModal';
 import { ModalPortal } from '../common/ModalPortal';
@@ -36,9 +36,9 @@ interface PositionDetailModalProps {
  position: PositionRack | null;
  warehouseName: string;
  onClose: () => void;
- onOpenUnitDetail: (unit: PositionSerializedMattress) => void;
- onOpenQr: (unit: PositionSerializedMattress) => void;
- onPrintQr: (unit: PositionSerializedMattress) => void;
+ onOpenUnitDetail: (unit: PositionSerializedItem) => void;
+ onOpenQr: (unit: PositionSerializedItem) => void;
+ onPrintQr: (unit: PositionSerializedItem) => void;
 }
 
 export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({

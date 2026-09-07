@@ -37,23 +37,23 @@ export const CreateExpoWizardModal: React.FC<CreateExpoWizardModalProps> = ({
   const [address, setAddress] = useState<string>('');
   const [startDate, setStartDate] = useState<string>('01 Sep 2026');
   const [endDate, setEndDate] = useState<string>('04 Sep 2026');
-  const [originFacilityId, setOriginFacilityId] = useState<string>('wh-suc-valle-oriente');
+  const [originFacilityId, setOriginFacilityId] = useState<string>('wh-reynosa');
   const [responsiblePerson, setResponsiblePerson] = useState<string>('Lic. Sofía Garza (Mkt & Eventos)');
   const [contactPhone, setContactPhone] = useState<string>('81 8399 2000');
   const [notes, setNotes] = useState<string>('');
 
   // Selected catalog items
   const [selectedArticles, setSelectedArticles] = useState<{ sku: string; qty: number }[]>([
-    { sku: 'SC-NAYT-FLOW-IND', qty: 2 },
+    { sku: 'SC-RTM Impresos-FLOW-IND', qty: 2 },
     { sku: 'SC-RES-MNC-QS', qty: 1 },
   ]);
 
   const catalogOptions = [
-    { sku: 'SC-NAYT-FLOW-IND', name: 'Nayt Colchón Flow Basic Individual', brand: 'Nayt', size: 'Individual', available: 18 },
-    { sku: 'SC-NAYT-FLOW-MAT', name: 'Nayt Colchón Flow Basic Matrimonial', brand: 'Nayt', size: 'Matrimonial', available: 14 },
-    { sku: 'SC-NAYT-PRO-QS', name: 'Nayt Colchón Flow Pro Queen Size', brand: 'Nayt', size: 'Queen Size', available: 12 },
-    { sku: 'SC-RES-MNC-QS', name: 'Restonic Colchón Moon Cool Queen Size', brand: 'Restonic', size: 'Queen Size', available: 14 },
-    { sku: 'SC-SEA-CLB-KS', name: 'Sealy Colchón Crown Jewel King Size', brand: 'Sealy', size: 'King Size', available: 8 },
+    { sku: 'SC-RTM Impresos-FLOW-IND', name: 'RTM Impresos Muestrario Flow Basic Individual', brand: 'RTM Impresos', size: 'Individual', available: 18 },
+    { sku: 'SC-RTM Impresos-FLOW-MAT', name: 'RTM Impresos Muestrario Flow Basic Matrimonial', brand: 'RTM Impresos', size: 'Matrimonial', available: 14 },
+    { sku: 'SC-RTM Impresos-PRO-QS', name: 'RTM Impresos Muestrario Flow Pro Queen Size', brand: 'RTM Impresos', size: 'Queen Size', available: 12 },
+    { sku: 'SC-RES-MNC-QS', name: 'RTM Offset Muestrario Moon Cool Queen Size', brand: 'RTM Offset', size: 'Queen Size', available: 14 },
+    { sku: 'SC-SEA-CLB-KS', name: 'RTM Packaging Muestrario Crown Jewel King Size', brand: 'RTM Packaging', size: 'King Size', available: 8 },
   ];
 
   const totalUnitsCount = selectedArticles.reduce((acc, a) => acc + a.qty, 0);
@@ -81,7 +81,7 @@ export const CreateExpoWizardModal: React.FC<CreateExpoWizardModalProps> = ({
       const art = catalogOptions.find((c) => c.sku === sa.sku)!;
       const uids: string[] = [];
       for (let i = 0; i < sa.qty; i++) {
-        const uidStr = `SC-UID-2026-000${Math.floor(350 + Math.random() * 500)}`;
+        const uidStr = `RTM-UID-2026-000${Math.floor(350 + Math.random() * 500)}`;
         uids.push(uidStr);
         uidsData.push({
           uid: uidStr,
@@ -112,7 +112,7 @@ export const CreateExpoWizardModal: React.FC<CreateExpoWizardModalProps> = ({
       startDate,
       endDate,
       originFacilityId,
-      originFacilityName: originFacilityId === 'wh-suc-valle-oriente' ? 'Sucursal Valle Oriente' : originFacilityId === 'wh-suc-cumbres' ? 'Sucursal Cumbres' : 'CEDIS Monterrey Norte',
+      originFacilityName: originFacilityId === 'wh-reynosa' ? 'Planta Principal Reynosa' : originFacilityId === 'wh-matamoros' ? 'Almacén Satélite Matamoros' : 'Almacén Materia Prima',
       responsiblePerson,
       contactPhone,
       status: 'Planeada',
@@ -195,9 +195,9 @@ export const CreateExpoWizardModal: React.FC<CreateExpoWizardModalProps> = ({
                       onChange={(e) => setOriginFacilityId(e.target.value)}
                       className="w-full px-3.5 py-2 rounded-xl bg-theme-surface border border-theme-subtle text-xs text-theme-main font-semibold"
                     >
-                      <option value="wh-suc-valle-oriente">Sucursal Valle Oriente</option>
-                      <option value="wh-suc-cumbres">Sucursal Cumbres</option>
-                      <option value="wh-mty-norte">CEDIS Monterrey Norte</option>
+                      <option value="wh-reynosa">Planta Principal Reynosa</option>
+                      <option value="wh-matamoros">Almacén Satélite Matamoros</option>
+                      <option value="wh-mty-norte">Almacén Materia Prima</option>
                     </select>
                   </div>
                 </div>

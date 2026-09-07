@@ -45,7 +45,7 @@ export const ShowroomExposDashboard: React.FC<ShowroomExposDashboardProps> = ({
   const attentionAlerts = [
     {
       id: 'alt-1',
-      title: 'Bahía SHOW-06 disponible en Sucursal Valle Oriente',
+      title: 'Bahía SHOW-06 disponible en Planta Principal Reynosa',
       description: 'Espacio disponible para montaje de modelo recomendado con alta demanda.',
       type: 'Disponible',
       actionLabel: 'Montar en SHOW-06',
@@ -55,7 +55,7 @@ export const ShowroomExposDashboard: React.FC<ShowroomExposDashboardProps> = ({
     {
       id: 'alt-2',
       title: 'Bahía SHOW-05 con 58 días en exhibición (Alta antigüedad)',
-      description: 'Nayt Flow Pro Queen Size excede el umbral recomendado de 40 días en piso de venta.',
+      description: 'RTM Impresos Flow Pro Queen Size excede el umbral recomendado de 40 días en piso de venta.',
       type: 'Alta Antigüedad',
       actionLabel: 'Ver bahía',
       tab: 'showrooms',

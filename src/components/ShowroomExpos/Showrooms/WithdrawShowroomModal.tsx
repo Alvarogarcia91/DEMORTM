@@ -137,7 +137,7 @@ export const WithdrawShowroomModal: React.FC<WithdrawShowroomModalProps> = ({
             <div className="p-4 rounded-2xl bg-theme-muted/30 border border-theme-subtle space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-mono font-bold text-theme-primary">
-                  {currentUnit?.uid || 'SC-UID-...'}
+                  {currentUnit?.uid || 'RTM-UID-...'}
                 </span>
                 <span className="text-[10px] font-bold text-theme-muted">
                   {currentUnit?.daysInExhibition || 0} días en exhibición
@@ -160,7 +160,7 @@ export const WithdrawShowroomModal: React.FC<WithdrawShowroomModalProps> = ({
                   <Scan className="w-10 h-10 text-theme-primary animate-pulse" />
                   <div className="space-y-1">
                     <strong className="text-xs font-bold text-zinc-900 block">
-                      Escanear código QR del colchón físico
+                      Escanear código QR del Muestrario físico
                     </strong>
                     <span className="text-[11px] text-zinc-500 block">
                       Apunta la terminal al código serializado del artículo en {bay.code}

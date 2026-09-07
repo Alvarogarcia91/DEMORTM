@@ -64,7 +64,7 @@ export const ShowroomPickingExecutionModal: React.FC<ShowroomPickingExecutionMod
 
     setTimeout(() => {
       setIsScanning(false);
-      setScanError(`✕ La unidad escaneada (SC-UID-2026-000999) no coincide con ${currentItem.suggestedUid}.`);
+      setScanError(`✕ La unidad escaneada (RTM-UID-2026-000999) no coincide con ${currentItem.suggestedUid}.`);
     }, 400);
   };
 

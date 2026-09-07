@@ -1,4 +1,4 @@
-﻿export interface HourlyTrafficPoint {
+export interface HourlyTrafficPoint {
   hour: string;
   inbound: number;
   putaway: number;
@@ -596,7 +596,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       insights: ['341 movimientos mensuales en Almacén Auxiliar Reynosa.'],
     },
   },
-  'wh-suc-cumbres': {
+  'wh-matamoros': {
     today: {
       totalMoves: 11,
       pacePerHour: 2,
@@ -615,14 +615,14 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       warehouseMoves: [{ name: 'Almacén Satélite Matamoros', moves: 11, percentage: 100 }],
       topZones: [
         { zone: 'SHOW-03', label: 'Bahía Staging Matamoros 03', moves: 3 },
-        { zone: 'REC-SUC-CUM', label: 'Andén Recepción Almacén Matamoros', moves: 4 },
+        { zone: 'REC-MAT', label: 'Andén Recepción Almacén Matamoros', moves: 4 },
       ],
       dayHourHeatmap: [],
       topArticles: [
         { sku: 'MP-TIN-001', name: 'Tinta Offset Process Cyan (Cubeta 20 Kg)', brand: 'Sun Chemical', category: 'Sustratos Industriales', inbound: 2, putaway: 2, picking: 1, outbound: 1, totalMoves: 6, percentage: 55 },
       ],
       topLocations: [
-        { code: 'SHOW-03', label: 'Bahía Showroom 03', type: 'Staging', moves: 3, occupancyPercentage: 100 },
+        { code: 'SHOW-03', label: 'Bahía Staging Matamoros 03', type: 'Staging', moves: 3, occupancyPercentage: 100 },
       ],
       operators: [
         { id: 'op-cum-1', name: 'Jorge Villarreal', role: 'Supervisor Almacén Matamoros', total: 11, inbound: 4, putaway: 3, picking: 2, outbound: 2, movesCount: 11, avgTimeMinutes: 7, errorRatePercentage: 0.0, status: 'Activo' },

@@ -48,13 +48,6 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     description: 'Despacho de producto terminado liberado por QA, staging de tarimas y validación de carga para clientes industriales.',
   },
   {
-    key: 'showroom-expos',
-    label: 'Showroom & Expos',
-    category: 'operaciones',
-    categoryLabel: 'Inventario y Operaciones',
-    description: 'Control de mercancía en exhibición, montaje de exposiciones y recolecciones temporales.',
-  },
-  {
     key: 'requisiciones',
     label: 'Requisiciones',
     category: 'compras',
@@ -124,7 +117,7 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'configuracion': true,
 };
 
-const STORAGE_KEY = 'rtm_visible_navigation_modules_v2';
+const STORAGE_KEY = 'rtm_visible_navigation_modules_v3';
 
 interface NavigationModulesContextType {
   visibleModules: VisibilityMap;
@@ -147,7 +140,8 @@ export const NavigationModulesProvider: React.FC<{ children: React.ReactNode }> 
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         try {
-          return { ...DEFAULT_VISIBILITY, ...JSON.parse(saved) };
+          const parsed = JSON.parse(saved);
+          return { ...DEFAULT_VISIBILITY, ...parsed, 'showroom-expos': false };
         } catch {
           return DEFAULT_VISIBILITY;
         }
@@ -161,6 +155,8 @@ export const NavigationModulesProvider: React.FC<{ children: React.ReactNode }> 
   }, [visibleModules]);
 
   const isModuleVisible = (key: NavItemKey): boolean => {
+    // Showroom & Expos is disabled in RTM
+    if (key === 'showroom-expos') return false;
     // Locked items are always visible
     if (key === 'inicio' || key === 'configuracion') return true;
     return visibleModules[key] !== false;

@@ -40,11 +40,11 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
   const facilities = [
     {
       id: 'wh-mty-norte',
-      code: 'Nave 1 (ALM-MP)',
-      name: 'Nave 1 — Almacén Materias Primas & Sustratos',
+      code: 'ALM-MP',
+      name: 'Almacén Materias Primas & Sustratos',
       type: 'Almacén Principal de Bobinas, Pliegos y Tintas',
       address: 'Av. Industrial del Norte #120, Parque Industrial del Norte, Reynosa, Tamps.',
-      coordinates: { x: 190, y: 140, lat: 26.0450, lng: -98.2980 },
+      coordinates: { x: 220, y: 225, lat: 26.0450, lng: -98.2980 },
       unitsCount: '158,400 u.',
       rawStock: '158,400 pliegos / bobinas',
       pendingInbound: 3,
@@ -55,33 +55,18 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
     },
     {
       id: 'wh-mty-sur',
-      code: 'Nave 2 (ALM-PT)',
-      name: 'Nave 2 — Producto Terminado & Embarques',
-      type: 'Almacén de PT, Staging B2B y Andenes de Despacho',
+      code: 'ALM-PT',
+      name: 'Almacén Producto Terminado & Embarques',
+      type: 'Almacén de PT, Staging B2B y Andén EMB-01',
       address: 'Av. Industrial del Norte #124, Parque Industrial del Norte, Reynosa, Tamps.',
-      coordinates: { x: 510, y: 140, lat: 26.0465, lng: -98.2950 },
+      coordinates: { x: 480, y: 225, lat: 26.0465, lng: -98.2950 },
       unitsCount: '12,800 u.',
       rawStock: '12,800 cajas / millares',
       pendingInbound: 2,
       activeRoutes: 4,
       pendingOrders: 6,
       openIncidents: 0,
-      accentColor: 'border-theme-primary',
-    },
-    {
-      id: 'area-prod',
-      code: 'Área Producción',
-      name: 'Planta de Impresión & Conversión Industrial',
-      type: 'Líneas Flexo Mark Andy, Offset Heidelberg Speedmaster, Troquel Bobst',
-      address: 'Nave Central de Conversión, Reynosa, Tamps.',
-      coordinates: { x: 350, y: 310, lat: 26.0458, lng: -98.2965 },
-      unitsCount: '28,200 u.',
-      rawStock: '28,200 unidades reservadas OP',
-      pendingInbound: 4,
-      activeRoutes: 0,
-      pendingOrders: 4,
-      openIncidents: 0,
-      accentColor: 'border-blue-500',
+      accentColor: 'border-emerald-600',
     },
   ];
 
@@ -94,7 +79,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
       tag: 'Conteo cíclico',
       tagColor: 'border-rose-500 text-rose-700',
       reference: 'CC-2026-W36-01',
-      facility: 'Nave 1 — Pasillo A-B-03',
+      facility: 'ALM-MP — Pasillo A-B-03',
       description: 'Discrepancia de -19,500 pliegos en Couché 90g 70x100 cm. Auditoría física en curso.',
       actionLabel: 'Investigar',
       targetTab: 'inventario' as NavItemKey,
@@ -104,20 +89,20 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
       tag: 'Retenido QA',
       tagColor: 'border-rose-500 text-rose-700',
       reference: 'LOT-BOPP-2026-03',
-      facility: 'Nave 1 — Cuarentena QA',
+      facility: 'ALM-MP — Cuarentena QA',
       description: 'Lote de 3,200 m BOPP Blanco 50 micras retenido por espesor fuera de tolerancia.',
       actionLabel: 'Ver cuarentena',
       targetTab: 'inventario' as NavItemKey,
     },
     {
       id: 'att-3',
-      tag: 'Remanente OP',
+      tag: 'Reubicación',
       tagColor: 'border-amber-500 text-amber-700',
-      reference: 'REM-2026-0041',
-      facility: 'Área Producción — Prensa Flexo 1',
-      description: 'Bobina devuelta con 680 m de BOPP Transparente. Pendiente de reingreso a stock.',
-      actionLabel: 'Recibir remanente',
-      targetTab: 'mesa-verificacion' as NavItemKey,
+      reference: 'TRF-2026-0041',
+      facility: 'ALM-MP — Pasillo B-02',
+      description: 'Bobina devuelta con 680 m de BOPP Transparente. Pendiente de reubicación a rack de rotación.',
+      actionLabel: 'Reubicar material',
+      targetTab: 'inventario' as NavItemKey,
     },
     {
       id: 'att-4',
@@ -134,7 +119,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
       tag: 'Staging Embarque',
       tagColor: 'border-blue-500 text-blue-700',
       reference: 'REM-2026-0061',
-      facility: 'Nave 2 — Andén 01',
+      facility: 'ALM-PT — Andén EMB-01',
       description: '18 cajas de etiquetas farmacéuticas para Medifarma listas para carga y despacho.',
       actionLabel: 'Ver remisión',
       targetTab: 'logistica' as NavItemKey,
@@ -144,7 +129,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
       tag: 'Reorden sugerido',
       tagColor: 'border-rose-500 text-rose-700',
       reference: 'MP-TER-001',
-      facility: 'Nave 1 — ALM-MP',
+      facility: 'ALM-MP — Pasillo C-01',
       description: 'Papel Térmico Autoadherible 80g en 4 bobinas (cobertura 3.5 días). Reorden prioritario.',
       actionLabel: 'Ver existencias',
       targetTab: 'inventario' as NavItemKey,
@@ -153,24 +138,24 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
 
   // Timeline of 20 real recent industrial platform events
   const recentEvents = [
-    { time: '14:48', title: 'Entrega B2B completada', ref: 'REM-2026-0061 · Medifarma (18 cajas)', user: 'Roberto Garza (Camión #04)', icon: CheckCircle2, iconColor: 'text-emerald-600' },
-    { time: '14:35', title: 'Surtido a producción completado', ref: 'OP-2026-0882 · 3 bobinas BOPP Blanco', user: 'Juan Pablo Rangel (Montacargas 02)', icon: Scan, iconColor: 'text-blue-600' },
+    { time: '14:48', title: 'Entrega B2B completada', ref: 'REM-2026-0061 · Medifarma (18 cajas)', user: 'Mesa de Embarques (Andén EMB-01)', icon: CheckCircle2, iconColor: 'text-emerald-600' },
+    { time: '14:35', title: 'Transferencia interna completada', ref: 'TRF-2026-0882 · 3 bobinas BOPP Blanco', user: 'Juan Pablo Rangel (Montacargas 02)', icon: Scan, iconColor: 'text-blue-600' },
     { time: '14:15', title: 'Liberación de Calidad QA', ref: 'LOT-COUCH-90G-08 · Blancura y calibre OK', user: 'Ing. Elena Fuentes (Control de Calidad)', icon: ShieldCheck, iconColor: 'text-emerald-600' },
-    { time: '13:50', title: 'Remisión B2B timbrada', ref: 'REM-2026-0062 · Delphi Technologies', user: 'Valeria Torres (Mesa 02 Nave 2)', icon: PackageCheck, iconColor: 'text-emerald-600' },
+    { time: '13:50', title: 'Remisión emitida (Salida confirmada)', ref: 'REM-2026-0062 · Delphi Technologies', user: 'Valeria Torres (Mesa 02 ALM-PT)', icon: PackageCheck, iconColor: 'text-emerald-600' },
     { time: '13:30', title: 'Conteo cíclico registrado', ref: 'CC-2026-W36-01 · Discrepancia -19,500 pliegos', user: 'Auditoría Almacén MP (Pasillo A-B-03)', icon: AlertTriangle, iconColor: 'text-rose-600' },
-    { time: '13:05', title: 'Remanente devuelto de prensa', ref: 'REM-2026-0041 · 680 m BOPP Transparente', user: 'Flexo 1 (Operador Héctor Garza)', icon: Layers, iconColor: 'text-purple-600' },
+    { time: '13:05', title: 'Reingreso a almacén registrado', ref: 'TRF-2026-0041 · 680 m BOPP Transparente', user: 'Operador Almacén MP (Pasillo B-02)', icon: Layers, iconColor: 'text-purple-600' },
     { time: '12:40', title: 'Acomodo en rack completado', ref: 'TAR-RTM-0004 · Posición MP-A01-N2', user: 'Carlos Medina (Montacargas 01)', icon: Boxes, iconColor: 'text-blue-600' },
-    { time: '12:15', title: 'Recepción validada en andén', ref: 'OC-2026-0081 · Bio-Pappel (14 tarimas Couché)', user: 'Brenda Cavazos (Mesa 01 Nave 1)', icon: CheckCircle2, iconColor: 'text-emerald-600' },
-    { time: '11:50', title: 'Despacho de unidad a ruta', ref: 'RT-2026-0014 · Freightliner #03 a Parque Del Norte', user: 'Roberto Garza (Chofer)', icon: Truck, iconColor: 'text-theme-primary' },
+    { time: '12:15', title: 'Recepción validada en andén', ref: 'OC-2026-0081 · Bio-Pappel (14 tarimas Couché)', user: 'Brenda Cavazos (Mesa 01 ALM-MP)', icon: CheckCircle2, iconColor: 'text-emerald-600' },
+    { time: '11:50', title: 'Despacho industrial confirmado', ref: 'OS-2026-0014 · Salida en Andén EMB-01 para Parque Del Norte', user: 'Mesa de Despacho RTM', icon: Truck, iconColor: 'text-theme-primary' },
     { time: '11:20', title: 'Muestra QA tomada en andén', ref: 'OC-2026-0082 · Sun Chemical (Viscosidad Tintas)', user: 'Laboratorio de Tintas & Sustratos', icon: ShieldCheck, iconColor: 'text-emerald-600' },
-    { time: '10:55', title: 'OP programada para surtido', ref: 'OP-2026-0891 · Folletos Offset Speedmaster', user: 'Planeación de Producción RTM', icon: ClipboardList, iconColor: 'text-blue-600' },
-    { time: '10:30', title: 'Salida a troquelado entregada', ref: 'OP-2026-0904 · 8,200 pliegos Caple SBS', user: 'Juan Pablo Rangel', icon: Boxes, iconColor: 'text-purple-600' },
-    { time: '10:10', title: 'Entrada de transporte a patio', ref: 'Tráiler Transportes Castores · Andén 01', user: 'Caseta de Control de Acceso', icon: MapPin, iconColor: 'text-zinc-700' },
-    { time: '09:45', title: 'Reingreso de tinta especial', ref: 'REM-2026-0045 · Pantone 186 C (3.5 kg)', user: 'Prensa Offset Heidelberg', icon: Layers, iconColor: 'text-purple-600' },
+    { time: '10:55', title: 'Orden de salida programada', ref: 'OS-2026-0891 · Folletos Industriales para despacho', user: 'Control de Almacén RTM', icon: ClipboardList, iconColor: 'text-blue-600' },
+    { time: '10:30', title: 'Acomodo de pliegos completado', ref: 'LOT-SBS-2026 · 8,200 pliegos Caple SBS', user: 'Juan Pablo Rangel', icon: Boxes, iconColor: 'text-purple-600' },
+    { time: '10:10', title: 'Entrada de transporte a patio', ref: 'Tráiler Bio-Pappel · Andén 01', user: 'Caseta de Control de Acceso', icon: MapPin, iconColor: 'text-zinc-700' },
+    { time: '09:45', title: 'Reingreso a estantería de tintas', ref: 'REM-2026-0045 · Pantone 186 C (3.5 kg)', user: 'Almacén de Tintas y Solventes', icon: Layers, iconColor: 'text-purple-600' },
     { time: '09:15', title: 'Requisición de materia prima autorizada', ref: 'REQ-2026-0052 · Fasson Autoadherible', user: 'Compras Industriales RTM', icon: FileText, iconColor: 'text-zinc-700' },
-    { time: '08:50', title: 'Tarima de PT ingresada a staging', ref: 'TAR-PT-0088 · 450 millares etiquetas pharma', user: 'Línea de Inspección y Empaque', icon: Package, iconColor: 'text-emerald-600' },
-    { time: '08:20', title: 'Carga en andén 02 completada', ref: 'RT-2026-0015 · 3 tarimas cajas corrugadas', user: 'Patio Nave 2 Embarques', icon: Truck, iconColor: 'text-theme-primary' },
-    { time: '07:55', title: 'Apertura de turno operativo', ref: 'Nave 1 (ALM-MP) y Nave 2 (ALM-PT) activas', user: 'Supervisión de Planta Reynosa', icon: ShieldCheck, iconColor: 'text-emerald-600' },
+    { time: '08:50', title: 'Tarima de PT ingresada a staging', ref: 'TAR-PT-0088 · 450 millares etiquetas pharma', user: 'Área de Staging y Verificación', icon: Package, iconColor: 'text-emerald-600' },
+    { time: '08:20', title: 'Carga en andén EMB-01 completada', ref: 'OS-2026-0015 · 3 tarimas cajas corrugadas', user: 'Patio Embarques EMB-01', icon: Truck, iconColor: 'text-theme-primary' },
+    { time: '07:55', title: 'Apertura de turno operativo', ref: 'ALM-MP y ALM-PT activos', user: 'Supervisión de Almacenes Reynosa', icon: ShieldCheck, iconColor: 'text-emerald-600' },
     { time: '07:40', title: 'Calibración de báscula de andén', ref: 'Báscula Toledo Andén MP verificada', user: 'Mantenimiento RTM', icon: Activity, iconColor: 'text-blue-600' },
     { time: '07:15', title: 'Asignación de montacargas', ref: 'Baterías y check-list unidades #01, #02, #03 OK', user: 'Turno Matutino Almacén', icon: Factory, iconColor: 'text-zinc-600' },
   ];
@@ -195,7 +180,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               Centro de Control Operativo
             </h1>
             <p className="text-xs sm:text-sm text-zinc-500">
-              Control integral de materias primas, sustratos, surtido a líneas de producción y embarque de producto terminado.
+              Control integral de materias primas, sustratos, inventario físico y despacho de producto terminado.
             </p>
           </div>
 
@@ -209,10 +194,9 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
                 onChange={(e) => setSelectedFacility(e.target.value)}
                 className="px-3 py-1.5 rounded-xl border border-zinc-300 bg-white text-xs font-semibold text-zinc-800 focus:outline-none focus:ring-2 focus:ring-theme-primary"
               >
-                <option value="ALL">Todas las áreas de planta</option>
-                <option value="wh-mty-norte">Nave 1 — ALM-MP (Materias Primas)</option>
-                <option value="wh-mty-sur">Nave 2 — ALM-PT (Producto Terminado)</option>
-                <option value="area-prod">Área de Producción & Conversión</option>
+                <option value="ALL">Todas las áreas de almacén</option>
+                <option value="wh-mty-norte">Almacén Materias Primas (ALM-MP)</option>
+                <option value="wh-mty-sur">Almacén Producto Terminado (ALM-PT / EMB-01)</option>
               </select>
             </div>
 
@@ -243,7 +227,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
         {/* 2. ACCIONES RÁPIDAS (BARRA COMPACTA) */}
         <div className="pt-2 border-t border-zinc-100 flex items-center justify-between gap-3 flex-wrap">
           <span className="text-[10px] font-bold uppercase text-zinc-400 tracking-wider">
-            Accesos directos de planta:
+            Accesos directos de almacén:
           </span>
 
           <div className="flex items-center gap-2 flex-wrap">
@@ -271,7 +255,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               className="px-3 py-1.5 rounded-xl bg-white hover:bg-zinc-50 text-zinc-900 font-bold text-xs border border-zinc-300 shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer"
             >
               <PackageCheck className="w-3.5 h-3.5 text-purple-600" />
-              <span>Surtido a Producción</span>
+              <span>Surtido Interno</span>
             </button>
 
             <button
@@ -302,7 +286,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
             158,400
           </div>
           <div className="flex items-center justify-between text-[11px] text-zinc-600 font-medium pt-0.5">
-            <span>Disp: 124.6k · OP: 28.2k</span>
+            <span>Disp: 124.6k · Res: 28.2k</span>
             <ChevronRight className="w-3.5 h-3.5 text-zinc-400 group-hover:translate-x-0.5 transition-transform" />
           </div>
         </div>
@@ -325,20 +309,20 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
           </div>
         </div>
 
-        {/* Surtido a Producción */}
+        {/* Surtido Interno */}
         <div
           onClick={() => onNavigate('mesa-verificacion')}
           className="p-4 rounded-3xl bg-white border border-zinc-200 hover:border-zinc-300 hover:shadow-xs transition-all cursor-pointer group space-y-1"
         >
           <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-            <span>Surtido a OP</span>
+            <span>Surtido Interno</span>
             <PackageCheck className="w-3.5 h-3.5 text-zinc-400 group-hover:text-purple-600 transition-colors" />
           </div>
           <div className="text-2xl font-black font-mono text-purple-700">
             4 órdenes
           </div>
           <div className="flex items-center justify-between text-[11px] text-zinc-600 pt-0.5">
-            <span>Flexo, Offset y Troquel</span>
+            <span>Bobinas y pliegos preparados</span>
             <ChevronRight className="w-3.5 h-3.5 text-zinc-400 group-hover:translate-x-0.5 transition-transform" />
           </div>
         </div>
@@ -356,7 +340,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
             12,800
           </div>
           <div className="flex items-center justify-between text-[11px] text-zinc-600 pt-0.5">
-            <span>4 rutas industriales B2B</span>
+            <span>4 órdenes listas en EMB-01</span>
             <ChevronRight className="w-3.5 h-3.5 text-zinc-400 group-hover:translate-x-0.5 transition-transform" />
           </div>
         </div>
@@ -391,11 +375,11 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               <div className="flex items-center gap-2">
                 <Navigation className="w-4 h-4 text-theme-primary" />
                 <h3 className="font-black text-zinc-950 text-sm">
-                  Complejo Industrial Impresos RTM — Reynosa
+                  Complejo de Almacenes Impresos RTM — Reynosa
                 </h3>
               </div>
               <p className="text-[11px] text-zinc-500">
-                Interconexión operativa: Nave 1 (ALM-MP), Planta de Conversión (Flexo/Offset/Troquel) y Nave 2 (ALM-PT).
+                Interconexión operativa: Almacén Materias Primas (ALM-MP) y Almacén Producto Terminado (ALM-PT / EMB-01).
               </p>
             </div>
 
@@ -404,7 +388,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               onClick={() => onNavigate('logistica')}
               className="text-theme-primary font-bold text-xs hover:underline cursor-pointer"
             >
-              Ver rutas y andenes &rarr;
+              Ver andenes y despachos &rarr;
             </button>
           </div>
 
@@ -426,19 +410,17 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               </text>
 
               {/* Material Transfer Arteries */}
-              {/* Nave 1 (ALM-MP) to Production */}
-              <path d="M 190 140 Q 250 250 350 310" fill="none" stroke="#CBD5E1" strokeWidth="3" strokeDasharray="4,4" />
-              {/* Production to Nave 2 (ALM-PT) */}
-              <path d="M 350 310 Q 450 250 510 140" fill="none" stroke="#CBD5E1" strokeWidth="3" strokeDasharray="4,4" />
-              {/* Direct Link between Nave 1 and Nave 2 */}
-              <path d="M 190 140 L 510 140" fill="none" stroke="#E2E8F0" strokeWidth="2" strokeDasharray="3,3" />
+              {/* Direct Link between ALM-MP and ALM-PT */}
+              <path d="M 220 225 L 480 225" fill="none" stroke="#CBD5E1" strokeWidth="3" strokeDasharray="5,5" />
+              {/* Dispatch Outflow to Staging / Andén */}
+              <path d="M 480 225 L 610 225" fill="none" stroke="#059669" strokeWidth="2.5" strokeDasharray="4,4" />
 
               {/* Animated Flow Markers */}
-              <circle cx="270" cy="225" r="4" fill="var(--color-primary)" className="animate-ping opacity-60" />
-              <circle cx="270" cy="225" r="3" fill="var(--color-primary)" />
+              <circle cx="350" cy="225" r="4" fill="var(--color-primary)" className="animate-ping opacity-60" />
+              <circle cx="350" cy="225" r="3" fill="var(--color-primary)" />
 
-              <circle cx="430" cy="225" r="4" fill="#256B3A" className="animate-ping opacity-60" />
-              <circle cx="430" cy="225" r="3" fill="#256B3A" />
+              <circle cx="550" cy="225" r="4" fill="#059669" className="animate-ping opacity-60" />
+              <circle cx="550" cy="225" r="3" fill="#059669" />
 
               {/* Facility Nodes */}
               {facilities.map((fac) => {
@@ -662,9 +644,9 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
             onClick={() => onNavigate('mesa-verificacion')}
             className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 hover:border-zinc-300 transition-all cursor-pointer group space-y-1"
           >
-            <span className="text-[10px] font-bold uppercase text-zinc-500 block">3. Surtido OP</span>
+            <span className="text-[10px] font-bold uppercase text-zinc-500 block">3. Surtido Interno</span>
             <div className="text-2xl font-black font-mono text-purple-700">4</div>
-            <span className="text-[10px] text-zinc-500 block">Flexo & Offset</span>
+            <span className="text-[10px] text-zinc-500 block">Bobinas y pliegos</span>
           </div>
 
           <div
@@ -680,9 +662,9 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
             onClick={() => onNavigate('logistica')}
             className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 hover:border-zinc-300 transition-all cursor-pointer group space-y-1"
           >
-            <span className="text-[10px] font-bold uppercase text-zinc-500 block">5. En Ruta B2B</span>
+            <span className="text-[10px] font-bold uppercase text-zinc-500 block">5. Staging EMB-01</span>
             <div className="text-2xl font-black font-mono text-emerald-700">4</div>
-            <span className="text-[10px] text-zinc-500 block">Unidades en viaje</span>
+            <span className="text-[10px] text-zinc-500 block">Órdenes preparadas</span>
           </div>
 
           <div
@@ -1064,8 +1046,8 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
           </div>
 
           <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 text-center space-y-0.5">
-            <span className="text-[10px] font-bold uppercase text-zinc-500 block">Rutas activas</span>
-            <strong className="text-2xl font-black font-mono text-emerald-700 block">4 unidades</strong>
+            <span className="text-[10px] font-bold uppercase text-zinc-500 block">Despachos en proceso</span>
+            <strong className="text-2xl font-black font-mono text-emerald-700 block">4 órdenes</strong>
           </div>
 
           <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 text-center space-y-0.5">
@@ -1086,7 +1068,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               <tr className="border-b border-zinc-200 bg-zinc-50 text-[10px] font-bold uppercase text-zinc-500">
                 <th className="py-2 px-3">Hora</th>
                 <th className="py-2 px-3">Cliente / Planta Destino</th>
-                <th className="py-2 px-3">Ruta / Unidad</th>
+                <th className="py-2 px-3">Orden de Salida / Andén</th>
                 <th className="py-2 px-3 text-right">Estado</th>
               </tr>
             </thead>
@@ -1094,7 +1076,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               <tr>
                 <td className="py-2.5 px-3 font-mono font-bold text-zinc-900">14:45</td>
                 <td className="py-2.5 px-3 font-medium text-zinc-900">Medifarma Planta Reynosa (Parque Ind. Villa Florida)</td>
-                <td className="py-2.5 px-3 font-mono text-zinc-700">RT-2026-0014 · Camión #03</td>
+                <td className="py-2.5 px-3 font-mono text-zinc-700">OS-2026-0014 · Andén EMB-01</td>
                 <td className="py-2.5 px-3 text-right">
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white border border-blue-500 text-blue-800">
                     En descarga
@@ -1105,7 +1087,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               <tr>
                 <td className="py-2.5 px-3 font-mono font-bold text-zinc-900">15:15</td>
                 <td className="py-2.5 px-3 font-medium text-zinc-900">Delphi Technologies Reynosa (Parque del Norte)</td>
-                <td className="py-2.5 px-3 font-mono text-zinc-700">RT-2026-0015 · Camión #05</td>
+                <td className="py-2.5 px-3 font-mono text-zinc-700">OS-2026-0015 · Andén EMB-02</td>
                 <td className="py-2.5 px-3 text-right">
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white border border-emerald-500 text-emerald-800">
                     En tiempo
@@ -1116,7 +1098,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               <tr>
                 <td className="py-2.5 px-3 font-mono font-bold text-zinc-900">15:40</td>
                 <td className="py-2.5 px-3 font-medium text-zinc-900">Empacadora del Golfo (Matamoros)</td>
-                <td className="py-2.5 px-3 font-mono text-zinc-700">RT-2026-0016 · Camioneta #02</td>
+                <td className="py-2.5 px-3 font-mono text-zinc-700">OS-2026-0016 · Andén EMB-01</td>
                 <td className="py-2.5 px-3 text-right">
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white border border-amber-500 text-amber-800">
                     Retraso estimado: 25 min
@@ -1128,7 +1110,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
         </div>
       </div>
 
-      {/* 9. RED OPERATIVA (3 CARDS DETALLADAS) */}
+      {/* 9. RED OPERATIVA (2 CARDS DETALLADAS) */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
@@ -1136,7 +1118,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               Áreas Operativas de Planta
             </h3>
             <p className="text-[11px] text-zinc-500">
-              Estado en tiempo real de naves de almacenamiento, líneas de conversión y andenes.
+              Estado en tiempo real de naves de almacenamiento de materias primas y producto terminado.
             </p>
           </div>
 
@@ -1149,7 +1131,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {facilities.map((fac) => (
             <div
               key={fac.id}
@@ -1159,8 +1141,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               <div className="flex items-center justify-between">
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border shadow-2xs bg-white ${
                   fac.id === 'wh-mty-norte' ? 'border-theme-primary text-theme-primary' :
-                  fac.id === 'wh-mty-sur' ? 'border-emerald-500 text-emerald-800' :
-                  'border-blue-500 text-blue-800'
+                  'border-emerald-500 text-emerald-800'
                 }`}>
                   {fac.code}
                 </span>
@@ -1178,7 +1159,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
                   <strong>{fac.pendingInbound}</strong>
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-sans">Rutas / Despachos:</span>
+                  <span className="font-sans">Despachos / Salidas:</span>
                   <strong>{fac.activeRoutes}</strong>
                 </div>
                 <div className="flex justify-between">

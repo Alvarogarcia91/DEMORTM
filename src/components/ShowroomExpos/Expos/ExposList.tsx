@@ -167,7 +167,7 @@ export const ExposList: React.FC<ExposListProps> = ({
               <div>
                 <span className="text-[10px] text-zinc-500 uppercase font-bold block">Unidades asignadas</span>
                 <strong className="font-mono font-black text-theme-primary text-sm">
-                  {expo.totalUnits} colchones
+                  {expo.totalUnits} Muestrarioes
                 </strong>
               </div>
               <div className="text-right">

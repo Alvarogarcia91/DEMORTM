@@ -32,7 +32,7 @@ export const ShowroomsList: React.FC<ShowroomsListProps> = ({
   onOpenWithdrawModal,
   onOpenQrModal,
 }) => {
-  const [selectedBranch, setSelectedBranch] = useState<'ALL' | 'wh-suc-valle-oriente' | 'wh-suc-cumbres'>('ALL');
+  const [selectedBranch, setSelectedBranch] = useState<'ALL' | 'wh-reynosa' | 'wh-matamoros'>('ALL');
   const [statusFilter, setStatusFilter] = useState<'ALL' | ShowroomBayStatus>('ALL');
 
   const filteredBays = bays.filter((b) => {
@@ -56,8 +56,8 @@ export const ShowroomsList: React.FC<ShowroomsListProps> = ({
     }
   };
 
-  const valleBays = bays.filter((b) => b.branchId === 'wh-suc-valle-oriente');
-  const cumbresBays = bays.filter((b) => b.branchId === 'wh-suc-cumbres');
+  const valleBays = bays.filter((b) => b.branchId === 'wh-reynosa');
+  const cumbresBays = bays.filter((b) => b.branchId === 'wh-matamoros');
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
@@ -78,26 +78,26 @@ export const ShowroomsList: React.FC<ShowroomsListProps> = ({
             Todas las bahías ({bays.length})
           </button>
           <button
-            onClick={() => setSelectedBranch('wh-suc-valle-oriente')}
+            onClick={() => setSelectedBranch('wh-reynosa')}
             className={`px-3 py-2 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              selectedBranch === 'wh-suc-valle-oriente'
+              selectedBranch === 'wh-reynosa'
                 ? 'bg-theme-primary text-white shadow-xs'
                 : 'bg-theme-muted hover:bg-theme-subtle text-theme-main border border-theme-subtle'
             }`}
           >
             <Store className="w-3.5 h-3.5 text-purple-500" />
-            <span>Sucursal Valle Oriente ({valleBays.length})</span>
+            <span>Planta Principal Reynosa ({valleBays.length})</span>
           </button>
           <button
-            onClick={() => setSelectedBranch('wh-suc-cumbres')}
+            onClick={() => setSelectedBranch('wh-matamoros')}
             className={`px-3 py-2 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              selectedBranch === 'wh-suc-cumbres'
+              selectedBranch === 'wh-matamoros'
                 ? 'bg-theme-primary text-white shadow-xs'
                 : 'bg-theme-muted hover:bg-theme-subtle text-theme-main border border-theme-subtle'
             }`}
           >
             <Store className="w-3.5 h-3.5 text-emerald-500" />
-            <span>Sucursal Cumbres ({cumbresBays.length})</span>
+            <span>Almacén Satélite Matamoros ({cumbresBays.length})</span>
           </button>
         </div>
 
@@ -182,7 +182,7 @@ export const ShowroomsList: React.FC<ShowroomsListProps> = ({
                 ) : (
                   <div className="p-6 rounded-2xl bg-theme-muted/20 border border-dashed border-theme-subtle text-center space-y-1">
                     <span className="text-xs font-bold text-emerald-600 block">Bahía Libre</span>
-                    <span className="text-[10px] text-theme-muted block">Lista para montar colchón de demostración</span>
+                    <span className="text-[10px] text-theme-muted block">Lista para montar Muestrario de demostración</span>
                   </div>
                 )}
               </div>

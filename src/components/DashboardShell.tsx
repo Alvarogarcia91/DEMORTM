@@ -13,7 +13,6 @@ import { CotizacionesPage } from './Ventas/CotizacionesPage';
 import { PedidosPage } from './Ventas/PedidosPage';
 import { ClientesPage } from './Ventas/ClientesPage';
 import { EmbarquesPage } from './Embarques/EmbarquesPage';
-import { ShowroomExposPage } from './ShowroomExpos/ShowroomExposPage';
 import { Requisition, INITIAL_MOCK_REQUISITIONS } from '../data/mockRequisitionsData';
 import { SupplierMaster, INITIAL_MOCK_SUPPLIERS } from '../data/mockSuppliersData';
 import { PurchaseOrder, INITIAL_MOCK_PURCHASE_ORDERS } from '../data/mockPurchasesOrdersData';
@@ -280,7 +279,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  case 'logistica':
  return <EmbarquesPage />;
  case 'showroom-expos':
- return <ShowroomExposPage />;
+ return <DashboardInicio onNavigate={setActiveTab} />;
  case 'requisiciones':
  return (
  <div className="space-y-6 animate-in fade-in duration-200">
