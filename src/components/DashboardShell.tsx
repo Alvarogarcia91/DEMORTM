@@ -78,6 +78,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
   const [targetInboundFolio, setTargetInboundFolio] = useState<string | null>(null);
   const [targetQuoteCustomerId, setTargetQuoteCustomerId] = useState<string | null>(null);
   const [targetQuoteFolio, setTargetQuoteFolio] = useState<string | null>(null);
+  const [pendingCrmOpportunity, setPendingCrmOpportunity] = useState<{ id: string; folio: string } | null>(null);
   const [targetOrderFolio, setTargetOrderFolio] = useState<string | null>(null);
   const [targetRequisitionPrefilledItem, setTargetRequisitionPrefilledItem] = useState<{
     sku: string;
@@ -147,11 +148,15 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
 
  // Ventas Actions
  const handleSaveQuote = (newQuote: SalesQuote) => {
- setQuotes((prev) => [newQuote, ...prev]);
+ const quoteWithCrmTrace = pendingCrmOpportunity
+ ? { ...newQuote, crmOpportunityId: pendingCrmOpportunity.id, crmOpportunityFolio: pendingCrmOpportunity.folio }
+ : newQuote;
+ setQuotes((prev) => [quoteWithCrmTrace, ...prev]);
+ setPendingCrmOpportunity(null);
  // Also update customer stats
  setCustomers((prev) =>
  prev.map((c) =>
- c.id === newQuote.customerId
+ c.id === quoteWithCrmTrace.customerId
  ? {
  ...c,
  totalQuotesCount: c.totalQuotesCount + 1,
@@ -491,7 +496,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
           />
         );
       case 'crm':
-        return <CrmPage customers={customers} quotes={quotes} orders={salesOrders} onNavigate={(tab, customerId) => { if (tab === 'cotizaciones' && customerId) setTargetQuoteCustomerId(customerId); setActiveTab(tab); }} />;
+        return <CrmPage customers={customers} quotes={quotes} orders={salesOrders} onNavigate={(tab, customerId) => { if (tab === 'cotizaciones' && customerId) setTargetQuoteCustomerId(customerId); setActiveTab(tab); }} onStartQuote={(customerId, opportunity) => { setTargetQuoteCustomerId(customerId); setTargetQuoteFolio(null); setPendingCrmOpportunity(opportunity); setActiveTab('cotizaciones'); }} onOpenQuote={(folio) => { setTargetQuoteFolio(folio); setTargetQuoteCustomerId(null); setActiveTab('cotizaciones'); }} />;
       case 'facturacion':
         return (
           <FacturacionPage

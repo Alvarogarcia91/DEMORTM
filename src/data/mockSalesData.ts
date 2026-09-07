@@ -632,6 +632,9 @@ export interface SalesQuote {
     action: 'Pendiente' | 'Autorizada' | 'Rechazada' | 'Ajuste solicitado';
   };
   generatedOrderFolio?: string;
+  /** Optional commercial CRM trace; quotes still belong to Ventas Básico. */
+  crmOpportunityId?: string;
+  crmOpportunityFolio?: string;
 }
 
 export const INITIAL_MOCK_SALES_QUOTES: SalesQuote[] = [
