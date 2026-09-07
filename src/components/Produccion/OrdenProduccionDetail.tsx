@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { CheckCircle2, Circle, X, AlertTriangle, ShieldCheck, Clock, FileText, Printer, Sparkles } from 'lucide-react';
+import { CheckCircle2, Circle, X, AlertTriangle, ShieldCheck, Clock, FileText, Printer, Sparkles, Tag, Layers } from 'lucide-react';
 import { PRODUCTION_INCIDENTS, ProductionOrder, RoutingStep, ToolingRequirement } from '../../data/mockProduccionData';
+import { CUSTOMER_REQUIREMENTS, CustomerQualityRequirement } from '../../data/mockCalidadData';
 import { ModalPortal } from '../common/ModalPortal';
 import { ProductionCard, StatusBadge, formatNumber } from './productionUi';
 
@@ -24,6 +25,13 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
   onPrintSheet,
 }) => {
   const [tab, setTab] = useState<'Resumen' | 'Routing' | 'Paginación / Flexo' | 'Materiales' | 'Herramental' | 'Incidencias' | 'Trazabilidad'>('Resumen');
+  const [showCsrModal, setShowCsrModal] = useState(false);
+
+  const clientReqs: CustomerQualityRequirement[] = CUSTOMER_REQUIREMENTS.filter(
+    (c) =>
+      order.cliente.toLowerCase().includes(c.client.toLowerCase()) ||
+      c.client.toLowerCase().includes(order.cliente.toLowerCase())
+  );
 
   const routingSteps: RoutingStep[] = order.routing && order.routing.length > 0
     ? order.routing
@@ -268,6 +276,28 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
                 </div>
                 <StatusBadge status={order.status} />
               </div>
+
+              {/* Banner de Requisitos Específicos del Cliente (CSR - Sección 16) */}
+              {clientReqs.length > 0 && (
+                <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-blue-400/50 bg-blue-50/50 dark:bg-blue-950/20 p-3.5 text-xs text-blue-950 dark:text-blue-200">
+                  <div className="flex items-center gap-2.5">
+                    <span className="rounded-lg bg-blue-600 px-2 py-0.5 text-[10px] font-black text-white">CSR</span>
+                    <div>
+                      <span className="font-bold text-theme-main">Requisitos Específicos del Cliente Aplicables:</span>
+                      <p className="text-[11px] text-theme-muted">
+                        Esta orden tiene {clientReqs.length} requisitos específicos de cliente ({order.cliente}) auditables por Calidad.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowCsrModal(true)}
+                    className="rounded-xl border border-blue-400 bg-white dark:bg-blue-900/60 px-3 py-1.5 text-xs font-bold text-blue-800 dark:text-blue-200 hover:bg-blue-100 shadow-xs"
+                  >
+                    Ver requisitos aplicables
+                  </button>
+                </div>
+              )}
 
               <div className="grid gap-3 sm:grid-cols-2 text-xs">
                 <div className="rounded-2xl border border-theme-subtle bg-theme-surface p-4 space-y-2">
@@ -856,6 +886,71 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
               Cerrar Detalle
             </button>
           </div>
+          {/* Modal Requisitos Específicos del Cliente (CSR) */}
+          {showCsrModal && (
+            <ModalPortal onClose={() => setShowCsrModal(false)}>
+              <div className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-theme-subtle bg-theme-surface p-6 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between border-b border-theme-subtle pb-4">
+                  <div className="flex items-center gap-2.5">
+                    <span className="rounded-xl bg-blue-600 px-2.5 py-1 text-xs font-black text-white">CSR</span>
+                    <div>
+                      <h3 className="font-black text-sm text-theme-main">
+                        Requisitos Específicos del Cliente: {order.cliente}
+                      </h3>
+                      <small className="text-theme-muted font-mono">
+                        Auditable según IATF 16949 / ISO 9001 · OP {order.folio}
+                      </small>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowCsrModal(false)}
+                    className="rounded-xl p-1.5 text-theme-muted hover:text-theme-main hover:bg-theme-muted/20"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-theme-muted block">
+                    Matriz de Requisitos Mandatorios ({clientReqs.length}):
+                  </span>
+                  <div className="divide-y divide-theme-subtle rounded-2xl border border-theme-subtle bg-theme-surface overflow-hidden">
+                    {clientReqs.map((req) => (
+                      <div key={req.id} className="p-3.5 space-y-1 text-xs hover:bg-theme-muted/10">
+                        <div className="flex items-center justify-between">
+                          <b className="text-theme-main font-bold">{req.requirement}</b>
+                          <span className={`rounded-full px-2 py-0.5 text-[9px] font-bold ${
+                            req.status === 'Cumple'
+                              ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                              : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
+                          }`}>
+                            {req.status}
+                          </span>
+                        </div>
+                        <p className="text-theme-muted text-[11px]">{req.standard}</p>
+                        <div className="flex flex-wrap items-center gap-4 text-[10px] text-theme-muted font-mono pt-1">
+                          <span>Código: <b className="text-theme-main">{req.code}</b></span>
+                          <span>Dueño: <b className="text-theme-main">{req.owner}</b></span>
+                          <span>Evidencia: <b className="text-theme-primary">{req.auditEvidence}</b></span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowCsrModal(false)}
+                    className="rounded-xl bg-theme-primary px-4 py-2 text-xs font-bold text-white shadow-xs"
+                  >
+                    Entendido
+                  </button>
+                </div>
+              </div>
+            </ModalPortal>
+          )}
         </div>
       </div>
     </ModalPortal>

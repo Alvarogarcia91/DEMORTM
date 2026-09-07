@@ -719,7 +719,8 @@ export interface QualityDeviation {
     | 'Orden detenida excesiva'
     | 'Sin movimiento en estación'
     | 'Operación omitida'
-    | 'Retraso vs tiempo estándar';
+    | 'Retraso vs tiempo estándar'
+    | 'Parámetro ambiental fuera de rango';
   expected: string;
   actual: string;
   stoppedMinutes: number;

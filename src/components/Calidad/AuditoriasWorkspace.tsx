@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
+  AlertTriangle,
   Boxes,
   CheckCircle2,
   FileCheck2,
@@ -7,6 +8,7 @@ import {
   Filter,
   Layers,
   PackageCheck,
+  Paperclip,
   Plus,
   Printer,
   Search,
@@ -342,10 +344,11 @@ export const AuditoriasWorkspace: React.FC<Props> = ({
                           <button
                             type="button"
                             onClick={() => onOpenLabelPreview(b.op, b.client, b.part, b.number)}
-                            className="rounded-xl border border-theme-subtle p-1.5 text-theme-muted hover:text-theme-primary hover:bg-theme-muted/30"
+                            className="rounded-xl border border-theme-subtle px-2.5 py-1.5 text-xs font-bold text-theme-muted hover:text-theme-primary hover:bg-theme-muted/30 flex items-center gap-1 shadow-2xs"
                             title="Imprimir etiqueta de bache Zebra"
                           >
-                            <Printer className="h-4 w-4" />
+                            <Printer className="h-3.5 w-3.5" />
+                            <span>[Imprimir etiqueta]</span>
                           </button>
                         )}
 
@@ -354,7 +357,7 @@ export const AuditoriasWorkspace: React.FC<Props> = ({
                           onClick={() => {
                             const aud = audits.find((a) => a.origin === b.op);
                             if (aud) onOpenAudit(aud);
-                            else onToast(`Bache ${b.number} abierto para inspección AQL.`);
+                            else onToast && onToast(`Bache ${b.number} abierto para inspección AQL.`);
                           }}
                           className="rounded-xl bg-theme-primary px-3 py-1.5 text-xs font-bold text-white shadow-xs hover:bg-theme-primary/90"
                         >
@@ -439,18 +442,32 @@ export const AuditoriasWorkspace: React.FC<Props> = ({
 
                     <td className="p-3 text-right">
                       {inc.status === 'Pendiente' ? (
-                        <div className="flex items-center justify-end gap-1.5">
+                        <div className="flex flex-wrap items-center justify-end gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIncomings((prev) =>
+                                prev.map((i) => (i.id === inc.id ? { ...i, coaAttached: true } : i))
+                              );
+                              onToast && onToast(`✓ Certificado de Calidad (CoA) validado para lote ${inc.rtmLot}.`);
+                            }}
+                            className="rounded-xl border border-blue-400 bg-blue-50 dark:bg-blue-950/40 px-2 py-1.5 text-[11px] font-bold text-blue-800 dark:text-blue-300 hover:bg-blue-100 flex items-center gap-1"
+                            title="Adjuntar y verificar certificado del proveedor"
+                          >
+                            <Paperclip className="h-3 w-3" />
+                            CoA
+                          </button>
                           <button
                             type="button"
                             onClick={() => {
                               setIncomings((prev) =>
                                 prev.map((i) => (i.id === inc.id ? { ...i, status: 'Liberado' } : i))
                               );
-                              onToast(`✓ Lote ${inc.rtmLot} (${inc.material}) liberado para producción.`);
+                              onToast && onToast(`✓ Lote ${inc.rtmLot} (${inc.material}) liberado para producción.`);
                             }}
                             className="rounded-xl bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 text-xs font-bold text-white shadow-xs"
                           >
-                            Liberar
+                            Liberar material
                           </button>
                           <button
                             type="button"
@@ -458,11 +475,21 @@ export const AuditoriasWorkspace: React.FC<Props> = ({
                               setIncomings((prev) =>
                                 prev.map((i) => (i.id === inc.id ? { ...i, status: 'HOLD / Rechazado' } : i))
                               );
-                              onToast(`⚠️ Lote ${inc.rtmLot} enviado a HOLD / Cuarentena.`);
+                              onToast && onToast(`⚠️ Lote ${inc.rtmLot} enviado a HOLD / Cuarentena.`);
                             }}
                             className="rounded-xl border border-rose-400 px-2.5 py-1.5 text-xs font-bold text-rose-700 dark:text-rose-300 hover:bg-rose-50"
                           >
-                            HOLD
+                            Rechazar / HOLD
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              onToast && onToast(`📋 Se generó la No Conformidad NC-PROV-${inc.supplier.substring(0, 3).toUpperCase()}-01 para ${inc.supplier}.`);
+                            }}
+                            className="rounded-xl border border-amber-400 px-2 py-1.5 text-[11px] font-bold text-amber-800 dark:text-amber-300 hover:bg-amber-50"
+                            title="Generar no conformidad formal al proveedor"
+                          >
+                            NC Prov
                           </button>
                         </div>
                       ) : (
@@ -543,16 +570,16 @@ export const AuditoriasWorkspace: React.FC<Props> = ({
 
                     <td className="p-3 text-right">
                       {rem.dictamen === 'Pendiente' ? (
-                        <div className="flex items-center justify-end gap-1.5">
+                        <div className="flex flex-wrap items-center justify-end gap-1.5">
                           <button
                             type="button"
                             onClick={() => {
                               setRemnants((prev) =>
                                 prev.map((r) => (r.id === rem.id ? { ...r, dictamen: 'Apto para reutilizar' } : r))
                               );
-                              onToast(`✓ Remanente ${rem.remnantCode} dictaminado APTO para reutilizar.`);
+                              onToast && onToast(`✓ Remanente ${rem.remnantCode} dictaminado APTO para reutilizar.`);
                             }}
-                            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 text-xs font-bold text-white shadow-xs"
+                            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 px-2.5 py-1.5 text-xs font-bold text-white shadow-xs"
                           >
                             Apto
                           </button>
@@ -560,11 +587,23 @@ export const AuditoriasWorkspace: React.FC<Props> = ({
                             type="button"
                             onClick={() => {
                               setRemnants((prev) =>
+                                prev.map((r) => (r.id === rem.id ? { ...r, dictamen: 'Mantener en cuarentena' } : r))
+                              );
+                              onToast && onToast(`⚠️ Remanente ${rem.remnantCode} retenido en CUARENTENA técnica.`);
+                            }}
+                            className="rounded-xl border border-amber-400 bg-amber-50 dark:bg-amber-950/30 px-2 py-1.5 text-xs font-bold text-amber-800 dark:text-amber-300 hover:bg-amber-100"
+                          >
+                            Cuarentena
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setRemnants((prev) =>
                                 prev.map((r) => (r.id === rem.id ? { ...r, dictamen: 'No apto / Scrap' } : r))
                               );
-                              onToast(`⚠️ Remanente ${rem.remnantCode} dictaminado NO APTO (Scrap).`);
+                              onToast && onToast(`⚠️ Remanente ${rem.remnantCode} dictaminado NO APTO (Scrap).`);
                             }}
-                            className="rounded-xl border border-rose-400 px-2.5 py-1.5 text-xs font-bold text-rose-700 dark:text-rose-300 hover:bg-rose-50"
+                            className="rounded-xl border border-rose-400 px-2 py-1.5 text-xs font-bold text-rose-700 dark:text-rose-300 hover:bg-rose-50"
                           >
                             Scrap
                           </button>

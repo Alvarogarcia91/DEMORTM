@@ -25,12 +25,18 @@ interface Props {
     observation: string,
     generateAlert: boolean
   ) => void;
+  onOpenDeviation?: (
+    control: PeriodicControl,
+    value: number,
+    observation: string
+  ) => void;
 }
 
 export const CapturaMedicionModal: React.FC<Props> = ({
   control,
   onClose,
   onSave,
+  onOpenDeviation,
 }) => {
   const [valueStr, setValueStr] = useState(control.lastValue.toString());
   const [observation, setObservation] = useState('');
@@ -43,6 +49,14 @@ export const CapturaMedicionModal: React.FC<Props> = ({
   const handleSave = (createAlert: boolean) => {
     if (!isValidNumber) return;
     onSave(control.id, numVal, observation, createAlert || isOutOfRange);
+  };
+
+  const handleOpenDeviation = () => {
+    if (!isValidNumber) return;
+    onSave(control.id, numVal, observation, true);
+    if (onOpenDeviation) {
+      onOpenDeviation(control, numVal, observation);
+    }
   };
 
   return (
@@ -300,15 +314,25 @@ export const CapturaMedicionModal: React.FC<Props> = ({
             >
               Cancelar
             </button>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {isOutOfRange && (
-                <button
-                  type="button"
-                  onClick={() => handleSave(true)}
-                  className="rounded-xl bg-amber-600 px-4 py-2 text-xs font-bold text-white hover:bg-amber-700 shadow-xs"
-                >
-                  Guardar y generar alerta preventiva
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={() => handleSave(true)}
+                    className="rounded-xl bg-amber-600 px-4 py-2 text-xs font-bold text-white hover:bg-amber-700 shadow-xs"
+                  >
+                    Guardar y generar alerta
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleOpenDeviation}
+                    className="rounded-xl bg-rose-600 px-4 py-2 text-xs font-bold text-white hover:bg-rose-700 shadow-xs flex items-center gap-1.5"
+                  >
+                    <AlertTriangle className="h-3.5 w-3.5" />
+                    Abrir desviación
+                  </button>
+                </>
               )}
               <button
                 type="button"

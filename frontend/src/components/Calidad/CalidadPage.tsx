@@ -543,6 +543,30 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
           control={activeControlForCapture}
           onClose={() => setActiveControlForCapture(null)}
           onSave={handleSaveMeasurement}
+          onOpenDeviation={(ctrl, val, obs) => {
+            const newDev: QualityDeviation = {
+              id: `DEV-ENV-${Date.now().toString().slice(-4)}`,
+              opFolio: 'OP-2026-95250',
+              client: 'Panasonic Industrial',
+              partNumber: '526412 | G |',
+              machine: ctrl.location,
+              type: 'Parámetro ambiental fuera de rango',
+              expected: `${ctrl.minVal} – ${ctrl.maxVal} ${ctrl.unit}`,
+              actual: `${val} ${ctrl.unit}`,
+              stoppedMinutes: 25,
+              severity: 'Media',
+              category4M: 'Máquina',
+              operatorComment: obs || `Medición fuera de rango: ${val} ${ctrl.unit}.`,
+              suggestedResponsible: 'Mantenimiento / Calidad',
+              containmentAction: 'Revisión técnica inmediata del área climatizada y verificación de termohigrómetro.',
+              status: 'Activa',
+              detectedAt: '07 Sep · 12:05',
+            };
+            setDeviations((prev) => [newDev, ...prev]);
+            setActiveControlForCapture(null);
+            setSelectedDeviationForAnalysis(newDev);
+            setToast(`⚠️ Desviación generada para ${ctrl.name}. Abriendo análisis 4M e Ishikawa.`);
+          }}
         />
       )}
 
