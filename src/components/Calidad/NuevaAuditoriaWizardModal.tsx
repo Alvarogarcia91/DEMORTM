@@ -442,6 +442,7 @@ export const NuevaAuditoriaWizardModal: React.FC<Props> = ({
                     'Intercalado / Grapado',
                     'Impresión + Troquel',
                     'Conteo / Rebobinado',
+                    'Serigrafía',
                     'Incoming',
                     'Remanente',
                     'Auditoría Final',
@@ -505,6 +506,21 @@ export const NuevaAuditoriaWizardModal: React.FC<Props> = ({
                   ✓ Marcar todo conforme
                 </button>
               </div>
+
+              {/* Banner de Requisitos Específicos del Cliente (CSR) */}
+              {selectedOrder?.cliente && (
+                <div className="flex items-center justify-between rounded-xl border border-blue-400/40 bg-blue-50/40 dark:bg-blue-950/20 p-3 text-xs">
+                  <div className="flex items-center gap-2">
+                    <Tag className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                    <span>
+                      Requisitos específicos de <b>{selectedOrder.cliente}</b> aplicables (CSR): Retención de muestra testigo y verificación de lote CoA.
+                    </span>
+                  </div>
+                  <span className="rounded-full bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 px-2 py-0.5 text-[9px] font-bold">
+                    Norma auditada
+                  </span>
+                </div>
+              )}
 
               {/* Tabla de criterios */}
               <div className="divide-y divide-theme-subtle rounded-2xl border border-theme-subtle bg-theme-surface">

@@ -213,21 +213,50 @@ export const PisoProduccion: React.FC<Props> = ({
                       </span>
                     </div>
 
-                    <div className="flex gap-1.5">
+                    <div className="flex items-center gap-1.5">
                       {!isFirstPieceReleased && !isFirstPieceRequested && (
-                        <button
-                          type="button"
-                          onClick={() => handleRequestFirstPiece(order)}
-                          className="rounded-lg border border-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2.5 py-1 text-[10px] font-bold text-amber-800 dark:text-amber-200 hover:bg-amber-100"
-                        >
-                          Solicitar liberación a Calidad
-                        </button>
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => handleRequestFirstPiece(order)}
+                            className="rounded-lg border border-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2.5 py-1 text-[10px] font-bold text-amber-800 dark:text-amber-200 hover:bg-amber-100 flex items-center gap-1"
+                          >
+                            <ShieldCheck className="h-3 w-3" />
+                            Solicitar auditoría QA
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleRequestFirstPiece(order)}
+                            className="rounded-lg border border-theme-subtle px-2 py-1 text-[10px] font-bold text-theme-main hover:bg-theme-muted/30"
+                          >
+                            Pieza lista para revisión
+                          </button>
+                        </div>
                       )}
 
                       {!isFirstPieceReleased && isFirstPieceRequested && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 dark:bg-amber-950/60 px-2.5 py-0.5 text-[10px] font-bold text-amber-800 dark:text-amber-300">
-                          <Clock className="h-3 w-3" /> Esperando dictamen de Calidad (Alicia Ramírez)
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 dark:bg-amber-950/60 px-2.5 py-0.5 text-[10px] font-bold text-amber-800 dark:text-amber-300">
+                            <Clock className="h-3 w-3" /> Esperando dictamen de Calidad (Alicia Ramírez)
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => onOpenOrder(order)}
+                            className="rounded-lg border border-theme-subtle px-2 py-0.5 text-[10px] font-bold text-theme-main hover:bg-theme-muted/30"
+                          >
+                            Ver auditoría
+                          </button>
+                        </div>
+                      )}
+
+                      {isFirstPieceReleased && (
+                        <button
+                          type="button"
+                          onClick={() => onOpenOrder(order)}
+                          className="rounded-lg border border-emerald-400/50 bg-emerald-50/50 dark:bg-emerald-950/30 px-2 py-0.5 text-[10px] font-bold text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100"
+                        >
+                          Ver auditoría
+                        </button>
                       )}
                     </div>
                   </div>

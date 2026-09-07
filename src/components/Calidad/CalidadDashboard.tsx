@@ -19,24 +19,29 @@ import {
   NonConformance,
   PeriodicControl,
   QualityAuditItem,
+  QualityDeviation,
 } from '../../data/mockCalidadData';
 
 interface Props {
   audits: QualityAuditItem[];
   controls: PeriodicControl[];
   nonConformances: NonConformance[];
+  deviations?: QualityDeviation[];
   onOpenAudit: (audit: QualityAuditItem) => void;
   onOpenControl: (control: PeriodicControl) => void;
   onStartNewAudit: (type?: QualityAuditItem['type']) => void;
+  onOpenDeviation?: (deviation: QualityDeviation) => void;
 }
 
 export const CalidadDashboard: React.FC<Props> = ({
   audits,
   controls,
   nonConformances,
+  deviations = [],
   onOpenAudit,
   onOpenControl,
   onStartNewAudit,
+  onOpenDeviation,
 }) => {
   const pendingAudits = audits.filter(
     (a) => a.status === 'Pendiente' || a.status === 'En inspección'
@@ -49,6 +54,7 @@ export const CalidadDashboard: React.FC<Props> = ({
   );
   const outOfRangeControls = controls.filter((c) => c.status === 'Fuera de rango');
   const holdItems = nonConformances.filter((n) => n.status === 'Hold');
+  const activeDeviations = deviations.filter((d) => d.status === 'Activa' || d.status === 'En análisis 4M');
 
   const kpis = [
     {
@@ -70,10 +76,10 @@ export const CalidadDashboard: React.FC<Props> = ({
       tone: outOfRangeControls.length > 0 ? 'text-rose-700 dark:text-rose-300' : 'text-theme-main',
     },
     {
-      label: 'Liberaciones Finales PT',
-      val: pendingFinal.length,
-      note: 'Previo a traspaso almacén',
-      tone: 'text-theme-main',
+      label: 'Desviaciones Activas',
+      val: activeDeviations.length,
+      note: 'Paro o fuera de secuencia',
+      tone: activeDeviations.length > 0 ? 'text-rose-700 dark:text-rose-300' : 'text-theme-main',
     },
     {
       label: 'Material en HOLD',
@@ -82,9 +88,9 @@ export const CalidadDashboard: React.FC<Props> = ({
       tone: holdItems.length > 0 ? 'text-rose-700 dark:text-rose-300' : 'text-theme-main',
     },
     {
-      label: 'Auditorías Hoy',
-      val: audits.length,
-      note: 'Eventos registrados',
+      label: 'Liberaciones Finales PT',
+      val: pendingFinal.length,
+      note: 'Previo a traspaso almacén',
       tone: 'text-emerald-700 dark:text-emerald-300',
     },
   ];
@@ -219,6 +225,45 @@ export const CalidadDashboard: React.FC<Props> = ({
                 </div>
               );
             })}
+
+            {/* 3. Desviaciones automáticas detectadas por ERP (Sección 13) */}
+            {activeDeviations.map((dev) => (
+              <div
+                key={dev.id}
+                className="flex flex-wrap items-center justify-between gap-3 py-3.5 hover:bg-theme-muted/10 transition-colors rounded-xl px-2 border-l-2 border-rose-500 pl-3 bg-rose-50/20 dark:bg-rose-950/10"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-xs font-black text-rose-600 dark:text-rose-400 w-12 shrink-0">
+                    {dev.detectedAt.split('·')[1]?.trim() || '11:45'}
+                  </span>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-black text-theme-main text-xs">
+                        {dev.opFolio}
+                      </span>
+                      <span className="text-theme-muted text-xs">·</span>
+                      <span className="font-bold text-rose-600 dark:text-rose-400 text-xs">
+                        {dev.type} ({dev.machine})
+                      </span>
+                      <span className="rounded-full bg-rose-100 dark:bg-rose-950/60 px-2 py-0.2 text-[9px] font-black uppercase text-rose-800 dark:text-rose-300">
+                        ALERTA · {dev.stoppedMinutes} min
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-theme-muted">
+                      {dev.client} · Esp: {dev.expected} vs Eje: {dev.actual}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => onOpenDeviation && onOpenDeviation(dev)}
+                  className="rounded-xl bg-rose-600 hover:bg-rose-700 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs"
+                >
+                  [Revisar]
+                </button>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -291,6 +336,69 @@ export const CalidadDashboard: React.FC<Props> = ({
           </div>
         </div>
       </div>
+
+      {/* SECCIÓN P1: DESVIACIONES AUTOMÁTICAS DETECTADAS (Ishikawa 4M) */}
+      {activeDeviations.length > 0 && (
+        <div className="rounded-3xl border border-rose-400/40 bg-theme-surface p-5 shadow-2xs space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-theme-subtle pb-3">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-rose-500" />
+              <div>
+                <h3 className="font-black text-sm text-theme-main">
+                  Desviaciones de Ruta y Paros Detectados en Planta (Acción Requerida)
+                </h3>
+                <p className="text-xs text-theme-muted">
+                  El sistema detectó órdenes detenidas o saltos de secuencia técnica. Requiere análisis 4M y contención antes de continuar tiraje.
+                </p>
+              </div>
+            </div>
+            <span className="rounded-full bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 px-2.5 py-0.5 text-xs font-bold font-mono">
+              {activeDeviations.length} anomalías
+            </span>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            {activeDeviations.map((dev) => (
+              <div
+                key={dev.id}
+                className="rounded-2xl border border-theme-subtle bg-theme-muted/10 p-4 space-y-2 flex flex-col justify-between"
+              >
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <b className="font-mono text-xs text-rose-600 dark:text-rose-400 font-bold">
+                      {dev.id} · {dev.opFolio}
+                    </b>
+                    <span className="font-mono text-[10px] text-theme-muted">
+                      {dev.stoppedMinutes} min detenido
+                    </span>
+                  </div>
+                  <b className="text-theme-main block text-xs">{dev.type}</b>
+                  <p className="text-[11px] text-theme-muted">
+                    <b>Máquina:</b> {dev.machine} · <b>Cliente:</b> {dev.client}
+                  </p>
+                  <p className="text-[11px] text-rose-700 dark:text-rose-300 font-medium">
+                    {dev.actual}
+                  </p>
+                </div>
+
+                <div className="pt-2 border-t border-theme-subtle flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-theme-muted uppercase">
+                    Factor 4M: {dev.category4M}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => onOpenDeviation && onOpenDeviation(dev)}
+                    className="rounded-xl bg-theme-primary px-3 py-1.5 text-xs font-bold text-white shadow-xs hover:bg-theme-primary/90 flex items-center gap-1"
+                  >
+                    [Analizar 4M]
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

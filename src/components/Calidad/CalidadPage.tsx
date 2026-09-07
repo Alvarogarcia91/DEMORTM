@@ -18,8 +18,12 @@ import {
   PREPRESS_CHECKS,
   PeriodicControl,
   QUALITY_AUDITS,
+  QUALITY_DEVIATIONS,
   QUALITY_RELEASES,
+  ICAR_ACTIONS,
+  IcarAction,
   QualityAuditItem,
+  QualityDeviation,
   QualityRelease,
   QualityStatus,
   ZebraLabelConfig,
@@ -33,6 +37,8 @@ import { NuevaAuditoriaWizardModal } from './NuevaAuditoriaWizardModal';
 import { LiberacionesWorkspace } from './LiberacionesWorkspace';
 import { NoConformesWorkspace } from './NoConformesWorkspace';
 import { ZebraLabelPreviewModal } from './ZebraLabelPreviewModal';
+import { GestionSGCWorkspace } from './GestionSGCWorkspace';
+import { AnalizarDesviacionModal } from './AnalizarDesviacionModal';
 
 type CalidadTab =
   | 'Dashboard'
@@ -75,9 +81,13 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
   const [controls, setControls] = useState<PeriodicControl[]>(PERIODIC_CONTROLS);
   const [releases, setReleases] = useState<QualityRelease[]>(QUALITY_RELEASES);
   const [nonConformances, setNonConformances] = useState<NonConformance[]>(NON_CONFORMANCES);
+  const [deviations, setDeviations] = useState<QualityDeviation[]>(QUALITY_DEVIATIONS);
+  const [icars, setIcars] = useState<IcarAction[]>(ICAR_ACTIONS);
   const [toast, setToast] = useState('');
 
-  // Modales
+  // Modales y roles
+  const [activeRole, setActiveRole] = useState<string>('Aseguramiento de Calidad (Alicia Ramírez)');
+  const [selectedDeviationForAnalysis, setSelectedDeviationForAnalysis] = useState<QualityDeviation | null>(null);
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [wizardInitialType, setWizardInitialType] = useState<QualityAuditItem['type'] | undefined>(undefined);
   const [wizardInitialOp, setWizardInitialOp] = useState<string | undefined>(undefined);
@@ -85,6 +95,39 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
   const [activeControlForCapture, setActiveControlForCapture] = useState<PeriodicControl | null>(null);
 
   const [activeLabelConfig, setActiveLabelConfig] = useState<Partial<ZebraLabelConfig> | null>(null);
+
+  // Handlers de Desviaciones & ICAR (P1)
+  const handleOpenIcarFromDeviation = (deviation: QualityDeviation, icarData: Partial<IcarAction>) => {
+    const newIcar: IcarAction = {
+      id: `ICAR-2026-0${Math.floor(20 + Math.random() * 80)}`,
+      title: icarData.title || `Acción Correctiva para ${deviation.opFolio}`,
+      source: icarData.source || deviation.id,
+      area: icarData.area || 'Flexografía',
+      category4M: icarData.category4M || deviation.category4M,
+      responsible: icarData.responsible || 'Alicia Ramírez / Supervisor',
+      rootCause: icarData.rootCause || 'Análisis de causa raíz completado.',
+      correctiveAction: icarData.correctiveAction || 'Acción preventiva aplicada.',
+      openedDate: 'Hoy · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      verificationDue: '25 Sep 2026',
+      status: 'Abierta',
+      evidence: 'Registro digital vinculado en el expediente SGC.',
+    };
+
+    setIcars((prev) => [newIcar, ...prev]);
+    setDeviations((prev) =>
+      prev.map((d) => (d.id === deviation.id ? { ...d, status: 'ICAR Abierto', icarId: newIcar.id } : d))
+    );
+    setSelectedDeviationForAnalysis(null);
+    setToast(`✓ Acción Correctiva ${newIcar.id} abierta para ${deviation.opFolio} (4M: ${newIcar.category4M}). Registrada en SGC.`);
+  };
+
+  const handleResolveDeviation = (deviationId: string, resolutionNote: string) => {
+    setDeviations((prev) =>
+      prev.map((d) => (d.id === deviationId ? { ...d, status: 'Resuelta' } : d))
+    );
+    setSelectedDeviationForAnalysis(null);
+    setToast(`✓ Desviación ${deviationId} resuelta en piso. Contención verificada: ${resolutionNote}`);
+  };
 
   // Handlers operativos
   const handleOpenWizard = (type?: QualityAuditItem['type'], opFolio?: string) => {
@@ -383,11 +426,13 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
           audits={audits}
           controls={controls}
           nonConformances={nonConformances}
+          deviations={deviations}
           onOpenAudit={(audit) => {
             handleOpenWizard(audit.type, audit.origin);
           }}
           onOpenControl={(ctrl) => setActiveControlForCapture(ctrl)}
           onStartNewAudit={(type) => handleOpenWizard(type)}
+          onOpenDeviation={(dev) => setSelectedDeviationForAnalysis(dev)}
         />
       )}
 
@@ -406,6 +451,7 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
           onOpenLabelPreview={(op, cli, part, lot) =>
             setActiveLabelConfig({ opFolio: op, client: cli, partNumber: part, lotNumber: lot })
           }
+          onToast={setToast}
         />
       )}
 
@@ -467,40 +513,14 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
       )}
 
       {tab === 'Gestión SGC' && (
-        <div className="rounded-3xl border border-theme-subtle bg-theme-surface p-6 space-y-4 text-xs">
-          <div className="border-b border-theme-subtle pb-3">
-            <h3 className="text-base font-black text-theme-main uppercase tracking-wider">
-              Sistema de Gestión de Calidad (SGC / ISO 9001 / IATF)
-            </h3>
-            <p className="text-theme-muted">
-              Módulos de apoyo: control de cambios, acciones correctivas (ICAR), metrología y alertas operativas.
-            </p>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              { title: 'Acciones Correctivas (ICAR)', desc: '4 acciones en contención y análisis de 5 Porqués con Alicia Ramírez.', badge: '4 abiertas' },
-              { title: 'Metrología & Calibración', desc: 'Higrómetro QA-HG-004 y Copa Zahn #2 con calibración vigente.', badge: 'Al corriente' },
-              { title: 'Alertas de Calidad en Piso', desc: '2 alertas activas para verificación de revisión de arte en B&D.', badge: '2 activas' },
-              { title: 'Requisitos Específicos Cliente', desc: 'Panasonic exige trazabilidad de bobinas y retención de muestra testigo.', badge: 'Actualizado' },
-              { title: 'Control de Cambios (ECN)', desc: 'Actualización de herramental suaje troquel para línea Flexo 10”.', badge: 'En revisión' },
-              { title: 'Auditorías Internas', desc: 'Auditoría interna programada para Proceso de Impresión Offset.', badge: 'Próxima semana' },
-            ].map((card, idx) => (
-              <div
-                key={idx}
-                className="rounded-2xl border border-theme-subtle bg-theme-surface p-4 shadow-2xs space-y-1"
-              >
-                <div className="flex items-center justify-between">
-                  <b className="text-theme-main font-bold">{card.title}</b>
-                  <span className="rounded-full bg-theme-muted/20 px-2 py-0.2 text-[10px] font-bold text-theme-muted">
-                    {card.badge}
-                  </span>
-                </div>
-                <p className="text-[11px] text-theme-muted leading-relaxed">{card.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <GestionSGCWorkspace
+          deviations={deviations}
+          icars={icars}
+          onOpenDeviationAnalysis={(dev) => setSelectedDeviationForAnalysis(dev)}
+          onToast={setToast}
+          activeRole={activeRole}
+          onChangeRole={setActiveRole}
+        />
       )}
 
       {/* Modal Wizard de Nueva Auditoría */}
@@ -534,6 +554,16 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
           onPrint={(cfg) => {
             setToast(`✓ Etiqueta ${cfg.standardCode} enviada a Zebra QA-02 para ${cfg.opFolio}.`);
           }}
+        />
+      )}
+
+      {/* Modal Análisis de Desviaciones 4M & Causa Raíz */}
+      {selectedDeviationForAnalysis && (
+        <AnalizarDesviacionModal
+          deviation={selectedDeviationForAnalysis}
+          onClose={() => setSelectedDeviationForAnalysis(null)}
+          onOpenIcar={handleOpenIcarFromDeviation}
+          onResolveDeviation={handleResolveDeviation}
         />
       )}
     </div>

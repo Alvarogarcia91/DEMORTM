@@ -261,6 +261,14 @@ export const OPERATION_CHECKLISTS: Record<string, [string, string, string][]> = 
     ['Empaque y paletizado', 'Cajas rotuladas con FM-QA-153 y estibado seguro', 'Conforme'],
     ['Cantidad neta para entrega', 'Conteo de piezas buenas coincide con remisión interna', 'Conforme'],
   ],
+  'Serigrafía': [
+    ['Tensión de malla', '24 N/cm ± 2 N/cm verificada con tensiómetro', '23.5 N/cm Conforme'],
+    ['Emulsión y definición de esténcil', '100% nítida sin poros, velo ni bordes aserrados', 'Conforme'],
+    ['Presión y ángulo de rasqueta', '75° Shore A con presión uniforme de arrastre', 'Conforme'],
+    ['Espesor de capa de tinta / barniz', 'Depósito uniforme sin burbujas ni marcas de malla', 'Conforme'],
+    ['Curado UV serigráfico', 'Polimerización 100% verificada con prueba de frote MEK', 'Conforme'],
+    ['Registro serigrafía vs impresión base', '± 0.2 mm centrado respecto a gráfico base', '0.1 mm Conforme'],
+  ],
 };
 
 // ----------------------------------------------------
@@ -696,3 +704,523 @@ export const PREPRESS_CHECKS = [
   'Negativo 100% negro cuando aplique',
   'Pantallas adecuadas para placa térmica CTP',
 ];
+
+// ====================================================
+// P1: DESVIACIONES AUTOMÁTICAS DETECTADAS EN PLANTA
+// ====================================================
+export interface QualityDeviation {
+  id: string;
+  opFolio: string;
+  client: string;
+  partNumber: string;
+  machine: string;
+  type:
+    | 'Ruta fuera de secuencia'
+    | 'Orden detenida excesiva'
+    | 'Sin movimiento en estación'
+    | 'Operación omitida'
+    | 'Retraso vs tiempo estándar';
+  expected: string;
+  actual: string;
+  stoppedMinutes: number;
+  severity: 'Crítica' | 'Alta' | 'Media';
+  category4M: 'Máquina' | 'Material' | 'Mano de obra' | 'Método';
+  operatorComment: string;
+  suggestedResponsible: string;
+  containmentAction: string;
+  status: 'Activa' | 'En análisis 4M' | 'ICAR Abierto' | 'Resuelta';
+  icarId?: string;
+  detectedAt: string;
+}
+
+export const QUALITY_DEVIATIONS: QualityDeviation[] = [
+  {
+    id: 'DEV-2026-081',
+    opFolio: 'OP-2026-95254',
+    client: 'BLACK & DECKER',
+    partNumber: 'NA472050',
+    machine: 'Plegadora Stahl TH-82',
+    type: 'Ruta fuera de secuencia',
+    expected: 'Impresión Offset → Guillotina Corte → Plegadora Doblado',
+    actual: 'Impresión Offset → Plegadora Doblado (Pliego completo sin refilar)',
+    stoppedMinutes: 37,
+    severity: 'Alta',
+    category4M: 'Método',
+    operatorComment: 'El operador de doblado recibió la tarima directamente sin ticket de paso por guillotina.',
+    suggestedResponsible: 'Supervisor de Acabados / Logística Interna',
+    containmentAction: 'Detener alimentación de dobladora. Retornar 4 tarimas a estación de corte para refilado de cabeza.',
+    status: 'Activa',
+    detectedAt: '07 Sep · 11:45',
+  },
+  {
+    id: 'DEV-2026-082',
+    opFolio: 'OP-2026-95248',
+    client: 'TYCO Electronics',
+    partNumber: 'IS-2420',
+    machine: 'Mark Andy 830 10”',
+    type: 'Orden detenida excesiva',
+    expected: 'Tiraje continuo a 85 m/min con paros de ajuste < 15 min',
+    actual: 'Prensa detenida por 47 min sin registro de producción',
+    stoppedMinutes: 47,
+    severity: 'Alta',
+    category4M: 'Máquina',
+    operatorComment: 'Vibración y fuga de tinta en rasqueta de estación 3. Mantenimiento convocado.',
+    suggestedResponsible: 'Mantenimiento Mecánico (Carlos Ruiz)',
+    containmentAction: 'Ajuste de portarrasqueta y cambio de cuchilla dosificadora. Reevaluar 1ra pieza antes de reiniciar.',
+    status: 'En análisis 4M',
+    icarId: 'ICAR-2026-019',
+    detectedAt: '07 Sep · 09:30',
+  },
+  {
+    id: 'DEV-2026-083',
+    opFolio: 'OP-2026-95243',
+    client: 'Panasonic Industrial',
+    partNumber: '526412 | G |',
+    machine: 'Mark Andy 2200 7”',
+    type: 'Retraso vs tiempo estándar',
+    expected: 'Tiempo estándar: 180 min para 25,000 etiquetas',
+    actual: 'Tiempo transcurrido: 235 min (Avance 68%)',
+    stoppedMinutes: 55,
+    severity: 'Media',
+    category4M: 'Material',
+    operatorComment: 'Variación de tensión en bobina BoPP requiere reducir velocidad a 45 m/min.',
+    suggestedResponsible: 'Compras / Proveedor Avery Dennison',
+    containmentAction: 'Calibración de freno magnético de desbobinador y ajuste de tacómetro.',
+    status: 'Resuelta',
+    detectedAt: '06 Sep · 15:20',
+  },
+];
+
+// ====================================================
+// P1: ACCIONES CORRECTIVAS (ICAR - 4M / 5 PORQUÉS)
+// ====================================================
+export interface IcarAction {
+  id: string;
+  title: string;
+  source: string;
+  area: string;
+  category4M: 'Máquina' | 'Material' | 'Mano de obra' | 'Método';
+  responsible: string;
+  rootCause: string;
+  correctiveAction: string;
+  openedDate: string;
+  verificationDue: string;
+  status: 'Abierta' | 'En contención' | 'Eficacia Verificada' | 'Cerrada';
+  evidence: string;
+}
+
+export const ICAR_ACTIONS: IcarAction[] = [
+  {
+    id: 'ICAR-2026-018',
+    title: 'Discrepancia de revisión de arte en texto de advertencia frontal',
+    source: 'OP-2026-95249 / MNC-000348 (Black & Decker)',
+    area: 'Offset / Preprensa',
+    category4M: 'Método',
+    responsible: 'Jorge Márquez / Alicia Ramírez',
+    rootCause: 'El operador de CTP utilizó el archivo de preimpresión de la carpeta de trabajo anterior en lugar de jalar la versión autorizada en el ERP.',
+    correctiveAction: 'Bloqueo digital en el RIP Agfa Avalon para impedir ripeado de placas sin folio de aprobación de arte emitido por Calidad.',
+    openedDate: '07 Sep · 09:45',
+    verificationDue: '21 Sep 2026',
+    status: 'En contención',
+    evidence: 'Procedimiento WI-PR-004 actualizado con checklist digital mandatorio.',
+  },
+  {
+    id: 'ICAR-2026-019',
+    title: 'Fuga de tinta y desajuste repetitivo de portarrasqueta en Mark Andy 830',
+    source: 'DEV-2026-082 / OP-2026-95248',
+    area: 'Flexografía',
+    category4M: 'Máquina',
+    responsible: 'Carlos Ruiz (Mantenimiento)',
+    rootCause: 'Desgaste mecánico en la rosca del tornillo micrométrico de ajuste de presión.',
+    correctiveAction: 'Reemplazo de barra de sujeción y tornillos micrométricos en estación 3. Inclusión en preventivo quincenal.',
+    openedDate: '07 Sep · 10:15',
+    verificationDue: '18 Sep 2026',
+    status: 'Abierta',
+    evidence: 'Orden de Mantenimiento OT-MNT-2026-442 generada y refacción solicitada a almacén.',
+  },
+  {
+    id: 'ICAR-2026-016',
+    title: 'Pérdida de temperatura en cuarto de adhesivos por falla de termostato',
+    source: 'CTL-01 (Control Periódico Ambiental)',
+    area: 'Almacén MP Climatizado',
+    category4M: 'Máquina',
+    responsible: 'Mantenimiento General / Alicia Ramírez',
+    rootCause: 'Falla del sensor electrónico de la unidad evaporadora mini-split #2.',
+    correctiveAction: 'Sustitución de termostato digital e instalación de sistema de alarma sonora por desviación > 24.5 °C.',
+    openedDate: '05 Sep · 14:00',
+    verificationDue: '15 Sep 2026',
+    status: 'Eficacia Verificada',
+    evidence: 'Bitácora de lecturas térmicas continuas por 48 horas en rango 21.5–22.8 °C.',
+  },
+  {
+    id: 'ICAR-2026-014',
+    title: 'Contaminación de polvo en orillas de remanente de bobina sin fleje',
+    source: 'REM-VAL-02 (Bobina rechazada BOB-REM-019)',
+    area: 'Almacén MP',
+    category4M: 'Mano de obra',
+    responsible: 'Supervisor de Almacén MP',
+    rootCause: 'Operador no colocó la bolsa de polietileno ni el fleje de retorno tras desmontar sobrante en piso.',
+    correctiveAction: 'Capacitación al 100% de operadores en estándar de reempaque de bobinas y auditoría semanal de anaquel de remanentes.',
+    openedDate: '28 Ago · 11:30',
+    verificationDue: '10 Sep 2026',
+    status: 'Cerrada',
+    evidence: 'Lista de asistencia y evaluación de operadores con calificación 100%.',
+  },
+];
+
+// ====================================================
+// P1: PLAN DE CONTROL POR ARTÍCULO / REVISIÓN
+// ====================================================
+export interface ControlPlanItem {
+  id: string;
+  partNumber: string;
+  revision: string;
+  client: string;
+  process: string;
+  characteristic: string;
+  specTolerance: string;
+  inspectionMethod: string;
+  frequency: string;
+  instrument: string;
+  reactionPlan: string;
+  customerReqCode: string;
+}
+
+export const CONTROL_PLANS: ControlPlanItem[] = [
+  {
+    id: 'CP-526412-01',
+    partNumber: '526412 | G |',
+    revision: 'Rev G',
+    client: 'Panasonic Industrial',
+    process: 'Impresión Flexográfica',
+    characteristic: 'Densidad y Registro de Color (CMYK)',
+    specTolerance: 'ΔE < 2.0 vs Pantone aprobado por cliente',
+    inspectionMethod: 'Espectrofotometría X-Rite e500',
+    frequency: '1ra pieza + Cada cambio de bobina + Cada 2 horas',
+    instrument: 'Espectrofotómetro QA-SP-002',
+    reactionPlan: 'HOLD inmediato, reajuste de tintero, nueva aprobación de 1ra pieza.',
+    customerReqCode: 'CSR-PAN-01',
+  },
+  {
+    id: 'CP-526412-02',
+    partNumber: '526412 | G |',
+    revision: 'Rev G',
+    client: 'Panasonic Industrial',
+    process: 'Troquelado Rotativo',
+    characteristic: 'Profundidad de corte (Kiss-cut)',
+    specTolerance: 'Frontal cortado 100%, liner sin marcas > 5% penetración',
+    inspectionMethod: 'Microscopio de inspección óptica 40X',
+    frequency: '1ra pieza + Cada turno + Fin de lote',
+    instrument: 'Microscopio Digital QA-MIC-001',
+    reactionPlan: 'Ajuste de cilindro de contra o cambio de fleje flexible magnético.',
+    customerReqCode: 'CSR-PAN-04',
+  },
+  {
+    id: 'CP-NA472050-01',
+    partNumber: 'NA472050',
+    revision: 'Rev 08/23',
+    client: 'BLACK & DECKER',
+    process: 'Impresión Offset',
+    characteristic: 'Revisión y Consecutivo de Textos Legales',
+    specTolerance: 'Texto idéntico al PDF máster firmado Rev 08/23',
+    inspectionMethod: 'Cotejo con plantilla de acetato y lectura de código',
+    frequency: '1ra pieza pliego + Cada cambio de plancha',
+    instrument: 'Lector 2D y Mesa de Luz D65',
+    reactionPlan: 'Detención de máquina, cuarentena de pliegos impresos, revisión con Calidad.',
+    customerReqCode: 'CSR-BD-02',
+  },
+  {
+    id: 'CP-NA472050-02',
+    partNumber: 'NA472050',
+    revision: 'Rev 08/23',
+    client: 'BLACK & DECKER',
+    process: 'Doblado y Grapado',
+    characteristic: 'Secuencia de Paginado y Firmeza de Grapa',
+    specTolerance: '64 páginas en orden 1..64, 2 grapas cerradas a 50 mm',
+    inspectionMethod: 'Deshoje y verificación física por muestreo AQL 0.65',
+    frequency: '1 bache por cada 500 ejemplares producidos',
+    instrument: 'Calibrador vernier digital QA-VR-005',
+    reactionPlan: 'Bloqueo del bache en HOLD, reinspección al 100% de la tarima.',
+    customerReqCode: 'CSR-BD-03',
+  },
+  {
+    id: 'CP-A163833-01',
+    partNumber: 'A163833BHA',
+    revision: 'Rev I-01',
+    client: 'Pentair',
+    process: 'Corte y Refilado',
+    characteristic: 'Escuadra y Dimensiones de Pliego',
+    specTolerance: '570 x 870 mm ± 0.5 mm, escuadra 90° ± 0.1°',
+    inspectionMethod: 'Medición con flexómetro de precisión y escuadra de precisión',
+    frequency: 'Inicio de tiro + Cada cambio de cuchilla',
+    instrument: 'Escuadra de verificación QA-ESC-001',
+    reactionPlan: 'Ajuste de topes de guillotina Polar y refilado correctivo.',
+    customerReqCode: 'CSR-PEN-01',
+  },
+];
+
+// ====================================================
+// P1: REQUISITOS ESPECÍFICOS DEL CLIENTE (CSR)
+// ====================================================
+export interface CustomerQualityRequirement {
+  id: string;
+  client: string;
+  code: string;
+  requirement: string;
+  standard: string;
+  owner: string;
+  status: 'Cumple' | 'En revisión' | 'Pendiente';
+  applicableOps: string[];
+  auditEvidence: string;
+}
+
+export const CUSTOMER_REQUIREMENTS: CustomerQualityRequirement[] = [
+  {
+    id: 'CSR-01',
+    client: 'Panasonic Industrial',
+    code: 'CSR-PAN-01',
+    requirement: 'Trazabilidad estricta de lote de materia prima y certificado CoA por cada lote de bopp',
+    standard: 'IATF 16949 §8.5.2',
+    owner: 'Calidad & Almacén MP',
+    status: 'Cumple',
+    applicableOps: ['OP-2026-95250', 'OP-2026-95243'],
+    auditEvidence: 'Certificado CoA Avery AD-78219 verificado y digitalizado en Incoming.',
+  },
+  {
+    id: 'CSR-02',
+    client: 'Panasonic Industrial',
+    code: 'CSR-PAN-02',
+    requirement: 'Liberación de Primera Pieza obligatoria antes de arrancar corrida continua',
+    standard: 'QMS Panasonic Manual Rev 4',
+    owner: 'Calidad (Alicia Ramírez)',
+    status: 'Cumple',
+    applicableOps: ['OP-2026-95250'],
+    auditEvidence: 'FM-QA-172 firmado digitalmente por inspector de Calidad.',
+  },
+  {
+    id: 'CSR-03',
+    client: 'Panasonic Industrial',
+    code: 'CSR-PAN-03',
+    requirement: 'Retención de muestra testigo por 24 meses en archivo controlado',
+    standard: 'VDA 6.3 / Panasonic SQA',
+    owner: 'Calidad',
+    status: 'Cumple',
+    applicableOps: ['OP-2026-95250'],
+    auditEvidence: 'Sobres de retención en gaveta QA-RET-2026 con sello de custodia.',
+  },
+  {
+    id: 'CSR-04',
+    client: 'BLACK & DECKER',
+    code: 'CSR-BD-01',
+    requirement: 'Inspección de revisión de arte y advertencias de seguridad al 100% en CTP y 1ra pieza',
+    standard: 'B&D Corporate Safety Standard',
+    owner: 'Preprensa & Calidad',
+    status: 'En revisión',
+    applicableOps: ['OP-2026-95249', 'OP-2026-95254'],
+    auditEvidence: 'Cotejo digital con PDF aprobado y registro en hoja de viajero.',
+  },
+  {
+    id: 'CSR-05',
+    client: 'Pentair',
+    code: 'CSR-PEN-01',
+    requirement: 'Embalaje con bolsa sellada y etiqueta con código QR grado A de legibilidad',
+    standard: 'ISO 15415 / Pentair Spec 2025',
+    owner: 'Acabados & Calidad',
+    status: 'Cumple',
+    applicableOps: ['OP-2026-95256'],
+    auditEvidence: 'Verificación con lector Honeywell con reporte de reflectancia.',
+  },
+  {
+    id: 'CSR-06',
+    client: 'TYCO Electronics',
+    code: 'CSR-TYC-01',
+    requirement: 'Control de proceso cada 2 horas con registro de viscosidad y registro de suaje',
+    standard: 'TE Connectivity Quality Spec',
+    owner: 'Calidad (Alicia Ramírez)',
+    status: 'Cumple',
+    applicableOps: ['OP-2026-95252', 'OP-2026-95248'],
+    auditEvidence: 'Auditoría periódica AUD-2026-102 registrada en ERP.',
+  },
+];
+
+// ====================================================
+// P2: AUDIT TRAIL MAESTRO / CONTROL DE CAMBIOS
+// ====================================================
+export interface MasterAuditTrailEntry {
+  id: string;
+  module: string;
+  record: string;
+  field: string;
+  previousValue: string;
+  newValue: string;
+  user: string;
+  role: 'Operador' | 'Planeador' | 'Supervisor' | 'Calidad' | 'Administrador';
+  timestamp: string;
+  motive: string;
+  approver: string;
+  version: string;
+}
+
+export const MASTER_AUDIT_TRAIL: MasterAuditTrailEntry[] = [
+  {
+    id: 'AT-001',
+    module: 'Calidad',
+    record: 'Plan de Control PN-526412 Rev G',
+    field: 'Frecuencia de inspección de color',
+    previousValue: 'Cada turno',
+    newValue: '1ra pieza + Cada cambio de bobina + Cada 2 horas',
+    user: 'Alicia Ramírez',
+    role: 'Calidad',
+    timestamp: '07 Sep 2026 · 11:20',
+    motive: 'Actualización por requerimiento específico CSR-PAN-01 de Panasonic',
+    approver: 'Jorge Márquez (Gerente SGC)',
+    version: 'Rev G.2',
+  },
+  {
+    id: 'AT-002',
+    module: 'Producción',
+    record: 'OP-2026-95250 (Panasonic)',
+    field: 'Estatus de Primera Pieza',
+    previousValue: 'Pendiente de Calidad',
+    newValue: 'Liberada por Calidad',
+    user: 'Alicia Ramírez',
+    role: 'Calidad',
+    timestamp: '07 Sep 2026 · 10:35',
+    motive: 'Aprobación de primera pieza con remanente BOB-REM-042',
+    approver: 'Alicia Ramírez (Jefa QA)',
+    version: 'v1.0',
+  },
+  {
+    id: 'AT-003',
+    module: 'Calidad / No Conformes',
+    record: 'OP-2026-95249 (Black & Decker)',
+    field: 'Disposición de material',
+    previousValue: 'En revisión de piso',
+    newValue: 'Bloqueado en HOLD (MNC-000348)',
+    user: 'Jorge Márquez',
+    role: 'Calidad',
+    timestamp: '07 Sep 2026 · 09:30',
+    motive: 'Texto de advertencia con versión de arte no autorizada',
+    approver: 'Alicia Ramírez',
+    version: 'v1.1',
+  },
+  {
+    id: 'AT-004',
+    module: 'Configuración / Recetas',
+    record: 'Receta Maestra Flexo R-FLX-01',
+    field: 'Lineatura Anilox estación blanco opaco',
+    previousValue: '360 lpi / 4.2 BCM',
+    newValue: '400 lpi / 3.8 BCM',
+    user: 'Admin Nexora',
+    role: 'Administrador',
+    timestamp: '06 Sep 2026 · 17:00',
+    motive: 'Optimización de consumo de tinta UV y uniformidad de fondo',
+    approver: 'Dirección Técnica RTM',
+    version: 'Rev 2.4',
+  },
+  {
+    id: 'AT-005',
+    module: 'Almacén MP',
+    record: 'Remanente BOB-REM-042',
+    field: 'Dictamen de Calidad',
+    previousValue: 'En cuarentena',
+    newValue: 'Apto para reutilizar',
+    user: 'Alicia Ramírez',
+    role: 'Calidad',
+    timestamp: '07 Sep 2026 · 08:50',
+    motive: 'Prueba de adherencia ASTM D3359 conforme en 850 ft restantes',
+    approver: 'Alicia Ramírez',
+    version: 'v1.0',
+  },
+];
+
+// ====================================================
+// P2: INTEGRIDAD, RESPALDOS & CONTROL DOCUMENTAL
+// ====================================================
+export interface BackupLogEntry {
+  id: string;
+  timestamp: string;
+  type: 'Respaldo automático' | 'Verificación de integridad' | 'Simulación de recuperación';
+  scope: string;
+  size: string;
+  result: 'Correcto' | 'Advertencia' | 'Fallo';
+  hash: string;
+  auditor: string;
+}
+
+export const BACKUP_LOGS: BackupLogEntry[] = [
+  {
+    id: 'BKP-2026-0907',
+    timestamp: 'Hoy · 02:00',
+    type: 'Respaldo automático',
+    scope: 'Base de datos ERP + Trazabilidad SGC + Registros QA',
+    size: '1.42 GB',
+    result: 'Correcto',
+    hash: 'SHA256: 9e8a71b...4c2d',
+    auditor: 'Admin Nexora (Automático)',
+  },
+  {
+    id: 'VRF-2026-0907',
+    timestamp: 'Hoy · 06:00',
+    type: 'Verificación de integridad',
+    scope: 'Integridad referencial OP ↔ Trazabilidad ↔ Dictámenes QA',
+    size: '0 errores encontrados',
+    result: 'Correcto',
+    hash: 'Check: 100% íntegro',
+    auditor: 'Servicio de Integridad RTM',
+  },
+  {
+    id: 'SIM-2026-0901',
+    timestamp: '01 Sep · 23:00',
+    type: 'Simulación de recuperación',
+    scope: 'Restauración en ambiente sandbox de auditoría externa',
+    size: '1.39 GB restaurados en 4.2 min',
+    result: 'Correcto',
+    hash: 'RPO: 0 min · RTO: 4.2 min',
+    auditor: 'Auditor Externo ISO 9001',
+  },
+];
+
+export interface ControlledDocument {
+  code: string;
+  title: string;
+  type: 'WI' | 'Formato' | 'Plano' | 'Plan de Control' | 'PFMEA' | 'Certificado';
+  revision: string;
+  effectiveDate: string;
+  owner: string;
+  applicableArea: string;
+  status: 'Vigente' | 'En revisión';
+}
+
+export const CONTROLLED_DOCUMENTS: ControlledDocument[] = [
+  { code: 'FM-PR-024', title: 'Hoja de Viajero y Control de OP', type: 'Formato', revision: 'Rev 5', effectiveDate: '01 Ago 2026', owner: 'Producción / Planeación', applicableArea: 'Toda la planta', status: 'Vigente' },
+  { code: 'FM-QA-153', title: 'Etiqueta Térmica de Identificación de Caja PT', type: 'Formato', revision: 'Rev 4', effectiveDate: '15 Jul 2026', owner: 'Calidad', applicableArea: 'Acabados / PT', status: 'Vigente' },
+  { code: 'FM-QA-172', title: 'Registro y Liberación de Primera Pieza', type: 'Formato', revision: 'Rev 3', effectiveDate: '10 Jun 2026', owner: 'Calidad', applicableArea: 'Piso de Prensa', status: 'Vigente' },
+  { code: 'FM-QA-180', title: 'Boleta de Identificación de Material en HOLD / Cuarentena', type: 'Formato', revision: 'Rev 2', effectiveDate: '20 May 2026', owner: 'Calidad', applicableArea: 'Cuarentena', status: 'Vigente' },
+  { code: 'WI-PR-012', title: 'Instructivo de Trabajo: Montaje y Ajuste de Tintas Flexo', type: 'WI', revision: 'Rev 6', effectiveDate: '01 Jun 2026', owner: 'Producción Flexo', applicableArea: 'Prensa Mark Andy', status: 'Vigente' },
+  { code: 'WI-QA-004', title: 'Instructivo: Medición de Temperatura y Humedad en Almacén', type: 'WI', revision: 'Rev 2', effectiveDate: '12 Ene 2026', owner: 'Calidad', applicableArea: 'Almacén MP', status: 'Vigente' },
+  { code: 'PCP-526412', title: 'Plan de Control: Etiqueta Panasonic 526412', type: 'Plan de Control', revision: 'Rev G', effectiveDate: '05 Sep 2026', owner: 'Calidad (Alicia Ramírez)', applicableArea: 'Flexografía', status: 'Vigente' },
+  { code: 'PFMEA-FLX-01', title: 'Análisis de Modo y Efecto de Falla: Flexografía UV', type: 'PFMEA', revision: 'Rev 3', effectiveDate: '15 Mar 2026', owner: 'Ingeniería & Calidad', applicableArea: 'Flexografía', status: 'Vigente' },
+];
+
+// ====================================================
+// P2: CONSULTAS TRANSVERSALES (RH, PROVEEDORES, MANTENIMIENTO)
+// ====================================================
+export const CROSS_CONSULTATIONS = {
+  rh: [
+    { employee: 'María Ríos', role: 'Operador Prensa Flexo', certifiedIn: ['Montaje Flexo 10”', 'Muestreo AQL', 'Control de Tintas UV'], certificationDue: '15 Dic 2026', status: 'Vigente' },
+    { employee: 'J. Salinas', role: 'Operador Prensa Offset', certifiedIn: ['Heidelberg XL 106', 'Densitometría ISO 12647', 'Corte Polar'], certificationDue: '20 Nov 2026', status: 'Vigente' },
+    { employee: 'C. Medina', role: 'Operador Flexo Junior', certifiedIn: ['Mark Andy 830', 'Seguridad en Prensa'], certificationDue: '05 Oct 2026', status: 'Próxima recertificación' },
+  ],
+  suppliers: [
+    { supplier: 'Avery Dennison', category: 'Sustratos BoPP / Papel', qualityScore: 98.4, onTimeDelivery: 96.8, openComplaints: 0, status: 'Aprobado Grado A' },
+    { supplier: 'Sun Chemical México', category: 'Tintas UV y Offset', qualityScore: 99.1, onTimeDelivery: 98.5, openComplaints: 0, status: 'Aprobado Grado A' },
+    { supplier: 'Flint Group', category: 'Placas térmicas CTP', qualityScore: 94.2, onTimeDelivery: 91.0, openComplaints: 1, status: 'Bajo monitoreo' },
+  ],
+  maintenance: [
+    { machine: 'Mark Andy Scout 10”', type: 'Flexografía', lastPreventive: '01 Sep 2026', nextDue: '15 Sep 2026', oee: '87.2%', status: 'Operando Conforme' },
+    { machine: 'Mark Andy 830 10”', type: 'Flexografía', lastPreventive: '25 Ago 2026', nextDue: '08 Sep 2026', oee: '71.5%', status: 'Atención requerida (Rasqueta)' },
+    { machine: 'Heidelberg Speedmaster XL 106', type: 'Offset', lastPreventive: '28 Ago 2026', nextDue: '18 Sep 2026', oee: '89.4%', status: 'Operando Conforme' },
+  ],
+};
+
