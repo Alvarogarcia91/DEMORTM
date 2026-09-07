@@ -1,518 +1,116 @@
-import React, { useState } from 'react';
-import {
-  Scale,
-  Search,
-  Filter,
-  Plus,
-  Eye,
-  DollarSign,
-  AlertTriangle,
-  CheckCircle2,
-  Clock,
-  ShieldAlert,
-  Building2,
-  ArrowUpRight,
-  Truck,
-  FileText,
-  Lock,
-  Layers
-} from 'lucide-react';
-import {
-  SupplierInvoice,
-  SupplierPaymentRecord,
-  INITIAL_CXP_RECORDS
-} from '../../data/mockFinanzasData';
+import React, { useMemo, useState } from 'react';
+import { AlertTriangle, Building2, CalendarClock, CheckCircle2, Clock, DollarSign, Download, Eye, FileText, Pause, Plus, Printer, Scale, Search, ShieldAlert, TrendingUp, WalletCards } from 'lucide-react';
+import { INITIAL_CXP_RECORDS, SupplierInvoice, SupplierPaymentRecord } from '../../data/mockFinanzasData';
 import { ThreeWayMatchModal } from './ThreeWayMatchModal';
 import { RegistrarPagoProveedorModal } from './RegistrarPagoProveedorModal';
 import { RegistrarFacturaProveedorModal } from './RegistrarFacturaProveedorModal';
 import { CxpDetailModal } from './CxpDetailModal';
 
-interface CxpPageProps {
-  invoices?: SupplierInvoice[];
-  onInvoicesChange?: (invoices: SupplierInvoice[]) => void;
-  onNavigateToPurchases?: () => void;
-}
+interface CxpPageProps { invoices?: SupplierInvoice[]; onInvoicesChange?: (invoices: SupplierInvoice[]) => void; onNavigateToPurchases?: () => void; }
+type CxpTab = 'dashboard' | 'payables' | 'payments' | 'recurring' | 'statement';
+type DashboardTotals = { totalDue: number; overdue: number; comingWeek: number; scheduled: number; differences: SupplierInvoice[]; paidMonth: number };
+const currency = (value: number) => '$' + value.toLocaleString('es-MX', { minimumFractionDigits: 2 });
+const isOverdue = (invoice: SupplierInvoice) => invoice.saldoPendiente > 0 && new Date(invoice.fechaVencimiento + 'T12:00:00') < new Date('2026-09-07T12:00:00');
+const recurringItems = [
+  ['Renta de oficina y almacén', 'Inmobiliaria Valle Norte', 'Mensual', '10 Sep 2026', 68500, 'Activa'],
+  ['Internet dedicado', 'Telmex Empresarial', 'Mensual', '12 Sep 2026', 8490, 'Activa'],
+  ['Telefonía corporativa', 'Telcel Empresas', 'Mensual', '15 Sep 2026', 12600, 'Activa'],
+  ['Servicio de limpieza', 'Limpieza Integral del Norte', 'Quincenal', '15 Sep 2026', 18200, 'Activa'],
+  ['Seguridad privada', 'Protección RTM', 'Mensual', '18 Sep 2026', 39800, 'Activa'],
+  ['Póliza de seguros', 'Seguros Atlas', 'Trimestral', '21 Sep 2026', 24500, 'Activa'],
+  ['Mantenimiento contratado', 'TecnoPrensa Servicios', 'Mensual', '25 Sep 2026', 17600, 'Activa'],
+  ['Licencias de diseño', 'Adobe México', 'Mensual', '01 Oct 2026', 9340, 'Pausada'],
+] as const;
 
-export const CxpPage: React.FC<CxpPageProps> = ({
-  invoices: propInvoices,
-  onInvoicesChange,
-  onNavigateToPurchases,
-}) => {
+export const CxpPage: React.FC<CxpPageProps> = ({ invoices: propInvoices, onInvoicesChange, onNavigateToPurchases }) => {
   const [invoices, setInvoices] = useState<SupplierInvoice[]>(propInvoices || INITIAL_CXP_RECORDS);
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [matchFilter, setMatchFilter] = useState<string>('todos');
-  const [estadoPagoFilter, setEstadoPagoFilter] = useState<string>('todos');
-  const [activeView, setActiveView] = useState<'todas' | '3way'>('todas');
-
-  // Modals state
+  const [activeTab, setActiveTab] = useState<CxpTab>('dashboard');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [matchFilter, setMatchFilter] = useState('todos');
+  const [paymentFilter, setPaymentFilter] = useState('todos');
+  const [selectedSupplier, setSelectedSupplier] = useState('todos');
   const [selectedInvoice, setSelectedInvoice] = useState<SupplierInvoice | null>(null);
-  const [isMatchOpen, setIsMatchOpen] = useState<boolean>(false);
-  const [isPaymentOpen, setIsPaymentOpen] = useState<boolean>(false);
-  const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false);
-  const [isRegisterOpen, setIsRegisterOpen] = useState<boolean>(false);
-
-  // Sync if prop changes
-  React.useEffect(() => {
-    if (propInvoices) {
-      setInvoices(propInvoices);
-    }
-  }, [propInvoices]);
-
-  const updateInvoices = (newInvoices: SupplierInvoice[]) => {
-    setInvoices(newInvoices);
-    if (onInvoicesChange) {
-      onInvoicesChange(newInvoices);
-    }
-  };
-
-  const handleRegisterInvoice = (newInvoice: SupplierInvoice) => {
-    const updated = [newInvoice, ...invoices];
-    updateInvoices(updated);
-  };
-
+  const [isMatchOpen, setIsMatchOpen] = useState(false);
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [notice, setNotice] = useState('');
+  React.useEffect(() => { if (propInvoices) setInvoices(propInvoices); }, [propInvoices]);
+  const updateInvoices = (next: SupplierInvoice[]) => { setInvoices(next); onInvoicesChange?.(next); };
+  const openDetail = (invoice: SupplierInvoice) => { setSelectedInvoice(invoice); setIsDetailOpen(true); };
+  const openPayment = (invoice: SupplierInvoice) => { setSelectedInvoice(invoice); setIsPaymentOpen(true); };
+  const openValidation = (invoice: SupplierInvoice) => { setSelectedInvoice(invoice); setIsMatchOpen(true); };
   const handleRegisterPayment = (invoiceId: string, payment: SupplierPaymentRecord) => {
-    const updated = invoices.map((inv) => {
-      if (inv.id === invoiceId) {
-        const newTotalPagado = inv.totalPagado + payment.monto;
-        const newSaldoPendiente = Math.max(0, inv.total - newTotalPagado);
-        const newEstadoPago: SupplierInvoice['estadoPago'] = newSaldoPendiente === 0 ? 'pagada' : 'parcial';
-
-        return {
-          ...inv,
-          totalPagado: newTotalPagado,
-          saldoPendiente: newSaldoPendiente,
-          estadoPago: newEstadoPago,
-          historialPagos: [payment, ...inv.historialPagos],
-        };
-      }
-      return inv;
-    });
-    updateInvoices(updated);
+    updateInvoices(invoices.map((invoice) => invoice.id !== invoiceId ? invoice : {
+      ...invoice, totalPagado: invoice.totalPagado + payment.monto,
+      saldoPendiente: Math.max(0, invoice.total - invoice.totalPagado - payment.monto),
+      estadoPago: invoice.total - invoice.totalPagado - payment.monto <= 0 ? 'pagada' : 'parcial',
+      historialPagos: [payment, ...invoice.historialPagos],
+    }));
+    setNotice('Pago registrado y aplicado a la cuenta por pagar.');
   };
-
-  const handleResolveDiscrepancy = (
-    invoiceId: string,
-    resolutionType: 'correccion' | 'excepcion',
-    note: string
-  ) => {
-    const now = new Date().toISOString().split('T')[0];
-    const updated = invoices.map((inv) => {
-      if (inv.id === invoiceId) {
-        if (resolutionType === 'excepcion') {
-          return {
-            ...inv,
-            estadoPago: 'programada' as const,
-            toleranciaExcedida: false,
-            resolucionExcepcion: {
-              autorizadoPor: 'Lic. Gerardo Morales (Dir. Finanzas)',
-              fecha: now,
-              motivo: note,
-            },
-          };
-        } else {
-          return {
-            ...inv,
-            motivoDiscrepancia: `${inv.motivoDiscrepancia || ''} [SOLICITUD DE CORRECCIÓN: ${note}]`,
-          };
-        }
-      }
-      return inv;
-    });
-    updateInvoices(updated);
+  const handleResolveDiscrepancy = (invoiceId: string, resolutionType: 'correccion' | 'excepcion', note: string) => {
+    updateInvoices(invoices.map((invoice) => invoice.id !== invoiceId ? invoice : resolutionType === 'excepcion' ? {
+      ...invoice, estadoPago: 'programada', toleranciaExcedida: false,
+      resolucionExcepcion: { autorizadoPor: 'Lic. Gerardo Morales (Dir. Finanzas)', fecha: '2026-09-07', motivo: note },
+    } : { ...invoice, motivoDiscrepancia: (invoice.motivoDiscrepancia || '') + ' [SOLICITUD DE CORRECCIÓN: ' + note + ']' }));
+    setNotice(resolutionType === 'excepcion' ? 'Excepción autorizada; la factura quedó lista para programar pago.' : 'Solicitud de corrección registrada para el proveedor.');
   };
-
-  // Metrics
-  const totalPorPagar = invoices.reduce((acc, inv) => acc + inv.saldoPendiente, 0);
-  const facturasBloqueadas = invoices.filter((i) => i.estadoPago === 'bloqueada');
-  const totalBloqueado = facturasBloqueadas.reduce((acc, inv) => acc + inv.saldoPendiente, 0);
-  const pagosProgramados = invoices
-    .filter((i) => i.estadoPago === 'programada' || i.estadoPago === 'parcial')
-    .reduce((acc, inv) => acc + inv.saldoPendiente, 0);
-  const conciliadasCount = invoices.filter((i) => i.matchStatus === 'conciliada').length;
-
-  // Filter logic
-  const filteredInvoices = invoices.filter((inv) => {
-    const term = searchTerm.toLowerCase();
-    const matchesSearch =
-      inv.folioProveedor.toLowerCase().includes(term) ||
-      inv.proveedorNombre.toLowerCase().includes(term) ||
-      inv.proveedorRfc.toLowerCase().includes(term) ||
-      inv.ordenCompraFolio.toLowerCase().includes(term) ||
-      inv.recepcionFolio.toLowerCase().includes(term);
-
-    const matchesMatch =
-      matchFilter === 'todos' ||
-      (matchFilter === 'conciliada' && inv.matchStatus === 'conciliada') ||
-      (matchFilter === 'discrepancia' && inv.matchStatus !== 'conciliada');
-
-    const matchesEstadoPago =
-      estadoPagoFilter === 'todos' || inv.estadoPago === estadoPagoFilter;
-
-    const matchesView = activeView === 'todas' || inv.matchStatus !== 'conciliada';
-
-    return matchesSearch && matchesMatch && matchesEstadoPago && matchesView;
+  const schedulePayment = (invoice: SupplierInvoice) => {
+    updateInvoices(invoices.map((item) => item.id === invoice.id ? { ...item, estadoPago: 'programada', fechaProgramadaPago: '2026-09-10' } : item));
+    setNotice('Pago de ' + invoice.folioProveedor + ' programado para el 10 Sep 2026.');
+  };
+  const totals = useMemo<DashboardTotals>(() => {
+    const totalDue = invoices.reduce((sum, i) => sum + i.saldoPendiente, 0);
+    const overdue = invoices.filter(isOverdue).reduce((sum, i) => sum + i.saldoPendiente, 0);
+    const comingWeek = invoices.filter((i) => i.saldoPendiente > 0 && new Date(i.fechaVencimiento + 'T12:00:00') >= new Date('2026-09-07T12:00:00') && new Date(i.fechaVencimiento + 'T12:00:00') <= new Date('2026-09-14T12:00:00')).reduce((sum, i) => sum + i.saldoPendiente, 0);
+    const scheduled = invoices.filter((i) => i.estadoPago === 'programada').reduce((sum, i) => sum + i.saldoPendiente, 0);
+    const differences = invoices.filter((i) => i.matchStatus !== 'conciliada');
+    const paidMonth = invoices.flatMap((i) => i.historialPagos).filter((p) => p.fecha.startsWith('2026-09')).reduce((sum, p) => sum + p.monto, 0);
+    return { totalDue, overdue, comingWeek, scheduled, differences, paidMonth };
+  }, [invoices]);
+  const filteredInvoices = invoices.filter((invoice) => {
+    const needle = searchTerm.toLowerCase();
+    const matchesSearch = [invoice.folioProveedor, invoice.proveedorNombre, invoice.proveedorRfc, invoice.ordenCompraFolio, invoice.recepcionFolio].some((field) => field.toLowerCase().includes(needle));
+    return matchesSearch && (matchFilter === 'todos' || (matchFilter === 'validada' ? invoice.matchStatus === 'conciliada' : invoice.matchStatus !== 'conciliada')) && (paymentFilter === 'todos' || invoice.estadoPago === paymentFilter);
   });
-
-  return (
-    <div className="space-y-6 animate-in fade-in duration-200">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-black tracking-tight text-theme-main">
-              Cuentas por Pagar (CxP)
-            </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
-              Control Fiscal & Almacén
-            </span>
-          </div>
-          <p className="text-xs text-theme-muted mt-1">
-            Control de facturas de proveedores, vencimientos, pagos y validación contra compras y recepciones.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {onNavigateToPurchases && (
-            <button
-              onClick={onNavigateToPurchases}
-              className="px-3.5 py-2 rounded-xl border border-theme-subtle hover:bg-theme-muted text-xs font-semibold text-theme-main flex items-center gap-1.5 transition-colors cursor-pointer"
-            >
-              <span>Ver Órdenes de Compra</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-theme-muted" />
-            </button>
-          )}
-
-          <button
-            onClick={() => setIsRegisterOpen(true)}
-            className="px-4 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary/90 text-white font-bold text-xs flex items-center gap-2 transition-all shadow-sm cursor-pointer"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Registrar Factura Proveedor</span>
-          </button>
-        </div>
-      </div>
-
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs">
-          <div className="flex items-center justify-between text-theme-muted mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Total por Pagar</span>
-            <DollarSign className="w-4 h-4 text-theme-primary" />
-          </div>
-          <div className="text-xl font-black text-theme-main font-mono">
-            ${totalPorPagar.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
-          </div>
-          <p className="text-[11px] text-theme-muted mt-1">Saldo pendiente con proveedores</p>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs">
-          <div className="flex items-center justify-between text-theme-muted mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Facturas bloqueadas</span>
-            <ShieldAlert className="w-4 h-4 text-rose-600" />
-          </div>
-          <div className="text-xl font-black text-rose-700 font-mono">
-            ${totalBloqueado.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
-          </div>
-          <p className="text-[11px] text-rose-600 font-semibold mt-1">
-            {facturasBloqueadas.length} facturas con discrepancia física
-          </p>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs">
-          <div className="flex items-center justify-between text-theme-muted mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Pagos Programados</span>
-            <Clock className="w-4 h-4 text-amber-600" />
-          </div>
-          <div className="text-xl font-black text-amber-700 font-mono">
-            ${pagosProgramados.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
-          </div>
-          <p className="text-[11px] text-theme-muted mt-1">Autorizados próximos a dispersar</p>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs">
-          <div className="flex items-center justify-between text-theme-muted mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Facturas validadas</span>
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-          </div>
-          <div className="text-xl font-black text-emerald-700 font-mono">
-            {conciliadasCount} <span className="text-xs font-normal text-theme-muted">facturas</span>
-          </div>
-          <p className="text-[11px] text-theme-muted mt-1">Sin discrepancias de OC o recepción</p>
-        </div>
-      </div>
-
-      {/* Tab Selector: Todas vs Facturas con discrepancias */}
-      <div className="flex items-center gap-2 border-b border-theme-subtle pb-2">
-        <button
-          onClick={() => setActiveView('todas')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-            activeView === 'todas'
-              ? 'bg-theme-primary text-white shadow-xs'
-              : 'text-theme-muted hover:text-theme-main hover:bg-theme-muted'
-          }`}
-        >
-          Todas las facturas ({invoices.length})
-        </button>
-
-        <button
-          onClick={() => setActiveView('3way')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
-            activeView === '3way'
-              ? 'bg-theme-primary text-white shadow-xs'
-              : 'text-theme-muted hover:text-theme-main hover:bg-theme-muted'
-          }`}
-        >
-          <Scale className="w-4 h-4" />
-          <span>Facturas con discrepancias ({facturasBloqueadas.length})</span>
-        </button>
-      </div>
-
-      {/* Filters & Search */}
-      <div className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-        <div className="relative flex-1">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-theme-muted" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Buscar por proveedor, folio factura, OC o recepción de almacén..."
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-theme-subtle bg-theme-base text-theme-main text-xs focus:ring-2 focus:ring-theme-primary/20 outline-none"
-          />
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1.5 text-xs text-theme-muted">
-            <Filter className="w-3.5 h-3.5" />
-            <span>Filtro:</span>
-          </div>
-
-          <select
-            value={matchFilter}
-            onChange={(e) => setMatchFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-theme-subtle bg-theme-base text-theme-main text-xs font-medium focus:ring-2 focus:ring-theme-primary/20 outline-none"
-          >
-            <option value="todos">Validación: Todas</option>
-            <option value="conciliada">Validadas</option>
-            <option value="discrepancia">Con diferencia</option>
-          </select>
-
-          <select
-            value={estadoPagoFilter}
-            onChange={(e) => setEstadoPagoFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-theme-subtle bg-theme-base text-theme-main text-xs font-medium focus:ring-2 focus:ring-theme-primary/20 outline-none"
-          >
-            <option value="todos">Estado de Pago: Todos</option>
-            <option value="programada">Programada</option>
-            <option value="bloqueada">Bloqueada</option>
-            <option value="parcial">Parcial</option>
-            <option value="pagada">Pagada</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Supplier Invoices Table */}
-      <div className="rounded-2xl border border-theme-subtle bg-theme-surface overflow-hidden shadow-xs">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-theme-muted/40 border-b border-theme-subtle text-[11px] uppercase font-bold text-theme-muted tracking-wider">
-              <tr>
-                <th className="px-4 py-3">Factura Prov.</th>
-                <th className="px-4 py-3">Proveedor / RFC</th>
-                <th className="px-4 py-3">Trazabilidad (OC & Almacén)</th>
-                <th className="px-4 py-3">Vencimiento</th>
-                <th className="px-4 py-3 text-right">Total Factura</th>
-                <th className="px-4 py-3 text-right">Saldo Pendiente</th>
-                <th className="px-4 py-3 text-center">Validación</th>
-                <th className="px-4 py-3 text-center">Estado Pago</th>
-                <th className="px-4 py-3 text-right">Acciones</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-theme-subtle">
-              {filteredInvoices.length === 0 ? (
-                <tr>
-                  <td colSpan={9} className="px-4 py-8 text-center text-theme-muted text-xs">
-                    No se encontraron facturas de proveedores con los filtros seleccionados.
-                  </td>
-                </tr>
-              ) : (
-                filteredInvoices.map((inv) => {
-                  const isBlocked = inv.estadoPago === 'bloqueada';
-                  const isMatched = inv.matchStatus === 'conciliada';
-                  const isPaid = inv.estadoPago === 'pagada';
-
-                  return (
-                    <tr key={inv.id} className="hover:bg-theme-muted/20 transition-colors">
-                      {/* Factura */}
-                      <td className="px-4 py-3 font-mono">
-                        <div className="font-bold text-theme-main text-xs">{inv.folioProveedor}</div>
-                        <div className="text-[10px] text-theme-muted font-mono truncate max-w-[120px]" title={inv.uuidSat}>
-                          {inv.uuidSat.substring(0, 14)}...
-                        </div>
-                      </td>
-
-                      {/* Proveedor */}
-                      <td className="px-4 py-3 max-w-xs">
-                        <div className="font-semibold text-theme-main truncate" title={inv.proveedorNombre}>
-                          {inv.proveedorNombre}
-                        </div>
-                        <div className="text-[10px] font-mono text-theme-muted">{inv.proveedorRfc}</div>
-                      </td>
-
-                      {/* Trazabilidad */}
-                      <td className="px-4 py-3 text-[11px]">
-                        <div className="flex items-center gap-1 text-theme-main">
-                          <FileText className="w-3 h-3 text-theme-primary" />
-                          <span className="font-mono">{inv.ordenCompraFolio}</span>
-                        </div>
-                        <div className="flex items-center gap-1 text-theme-muted mt-0.5">
-                          <Truck className="w-3 h-3 text-blue-600" />
-                          <span className="font-mono">{inv.recepcionFolio}</span>
-                        </div>
-                      </td>
-
-                      {/* Vencimiento */}
-                      <td className="px-4 py-3 text-[11px] whitespace-nowrap">
-                        <div className="font-medium text-theme-main">{inv.fechaVencimiento}</div>
-                        <div className="text-[10px] text-theme-muted">{inv.diasCredito} días crédito</div>
-                      </td>
-
-                      {/* Total */}
-                      <td className="px-4 py-3 text-right font-mono font-medium text-theme-muted">
-                        ${inv.total.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
-                      </td>
-
-                      {/* Saldo Pendiente */}
-                      <td className="px-4 py-3 text-right font-mono font-bold text-xs">
-                        <span className={inv.saldoPendiente > 0 ? 'text-theme-main' : 'text-theme-muted'}>
-                          ${inv.saldoPendiente.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
-                        </span>
-                      </td>
-
-                      {/* Validación Badge */}
-                      <td className="px-4 py-3 text-center">
-                        <button
-                          onClick={() => {
-                            setSelectedInvoice(inv);
-                            setIsMatchOpen(true);
-                          }}
-                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider cursor-pointer transition-all hover:scale-105 ${
-                            isMatched
-                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-300'
-                              : 'bg-rose-50 text-rose-700 border border-rose-300 animate-pulse'
-                          }`}
-                        >
-                          <Scale className="w-3 h-3" />
-                          <span>{isMatched ? 'Validada' : 'Con diferencia'}</span>
-                        </button>
-                      </td>
-
-                      {/* Estado Pago */}
-                      <td className="px-4 py-3 text-center">
-                        <span
-                          className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                            isPaid
-                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-300'
-                              : isBlocked
-                              ? 'bg-rose-50 text-rose-700 border border-rose-300'
-                              : 'bg-amber-50 text-amber-700 border border-amber-300'
-                          }`}
-                        >
-                          {isPaid ? 'Pagada' : isBlocked ? 'Bloqueada' : inv.estadoPago}
-                        </span>
-                      </td>
-
-                      {/* Acciones */}
-                      <td className="px-4 py-3 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <button
-                            onClick={() => {
-                              setSelectedInvoice(inv);
-                              setIsDetailOpen(true);
-                            }}
-                            className="p-1.5 rounded-lg text-theme-muted hover:text-theme-main hover:bg-theme-muted transition-colors cursor-pointer"
-                            title="Ver Ficha Detalle"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-
-                          <button
-                            onClick={() => {
-                              setSelectedInvoice(inv);
-                              setIsMatchOpen(true);
-                            }}
-                            className="p-1.5 rounded-lg text-theme-primary hover:bg-theme-muted transition-colors cursor-pointer"
-                            title="Ver validación (OC ↔ Recepción ↔ Factura)"
-                          >
-                            <Scale className="w-4 h-4" />
-                          </button>
-
-                          {!isPaid && !isBlocked && (
-                            <button
-                              onClick={() => {
-                                setSelectedInvoice(inv);
-                                setIsPaymentOpen(true);
-                              }}
-                              className="px-2.5 py-1 rounded-lg bg-theme-primary hover:bg-theme-primary/90 text-white text-[11px] font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer"
-                              title="Pagar Proveedor"
-                            >
-                              <DollarSign className="w-3.5 h-3.5" />
-                              <span>Pagar</span>
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Modals */}
-      <ThreeWayMatchModal
-        invoice={selectedInvoice}
-        isOpen={isMatchOpen}
-        onClose={() => {
-          setIsMatchOpen(false);
-          setSelectedInvoice(null);
-        }}
-        onResolveDiscrepancy={handleResolveDiscrepancy}
-      />
-
-      <RegistrarPagoProveedorModal
-        invoice={selectedInvoice}
-        isOpen={isPaymentOpen}
-        onClose={() => {
-          setIsPaymentOpen(false);
-          setSelectedInvoice(null);
-        }}
-        onRegisterPayment={handleRegisterPayment}
-      />
-
-      <RegistrarFacturaProveedorModal
-        isOpen={isRegisterOpen}
-        onClose={() => setIsRegisterOpen(false)}
-        onRegisterInvoice={handleRegisterInvoice}
-      />
-
-      <CxpDetailModal
-        invoice={selectedInvoice}
-        isOpen={isDetailOpen}
-        onClose={() => {
-          setIsDetailOpen(false);
-          setSelectedInvoice(null);
-        }}
-        onOpenThreeWayMatch={(inv) => {
-          setSelectedInvoice(inv);
-          setIsMatchOpen(true);
-        }}
-        onOpenRegisterPayment={(inv) => {
-          setSelectedInvoice(inv);
-          setIsPaymentOpen(true);
-        }}
-      />
-    </div>
-  );
+  const suppliers = Array.from(new Map(invoices.map((i) => [i.proveedorId, i])).values());
+  const statementInvoices = selectedSupplier === 'todos' ? invoices : invoices.filter((i) => i.proveedorId === selectedSupplier);
+  const statementSupplier = selectedSupplier === 'todos' ? undefined : suppliers.find((i) => i.proveedorId === selectedSupplier);
+  const statementTotals = statementInvoices.reduce((acc, i) => ({ billed: acc.billed + i.total, paid: acc.paid + i.totalPagado, balance: acc.balance + i.saldoPendiente, overdue: acc.overdue + (isOverdue(i) ? i.saldoPendiente : 0) }), { billed: 0, paid: 0, balance: 0, overdue: 0 });
+  const payments = invoices.flatMap((invoice) => invoice.historialPagos.map((payment) => ({ invoice, payment }))).sort((a, b) => b.payment.fecha.localeCompare(a.payment.fecha));
+  const statusClass = (status: SupplierInvoice['estadoPago']) => status === 'pagada' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : status === 'bloqueada' ? 'bg-rose-50 text-rose-700 border-rose-200' : status === 'parcial' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-amber-50 text-amber-700 border-amber-200';
+  const tabs: { id: CxpTab; label: string; count?: number }[] = [
+    { id: 'dashboard', label: 'Dashboard' }, { id: 'payables', label: 'Cuentas por Pagar', count: invoices.length }, { id: 'payments', label: 'Historial de Pagos', count: payments.length }, { id: 'recurring', label: 'Recurrentes' }, { id: 'statement', label: 'Estado de Cuenta' },
+  ];
+  return <div className="space-y-5 animate-in fade-in duration-200">
+    <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4"><div><div className="flex items-center gap-2"><h1 className="text-2xl font-black tracking-tight text-theme-main">Cuentas por Pagar</h1><span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-theme-primary/10 text-theme-primary border border-theme-primary/20">FINANZAS</span></div><p className="text-xs text-theme-muted mt-1">Controla facturas de proveedor, vencimientos, pagos y validaciones de compra.</p></div><div className="flex flex-wrap gap-2">{onNavigateToPurchases && <button onClick={onNavigateToPurchases} className="px-3.5 py-2.5 rounded-xl border border-theme-subtle text-xs font-bold text-theme-main hover:bg-theme-muted cursor-pointer">Ver órdenes de compra</button>}<button onClick={() => setIsRegisterOpen(true)} className="px-4 py-2.5 rounded-xl bg-theme-primary text-white text-xs font-bold shadow-sm hover:bg-theme-primary/90 flex items-center gap-2 cursor-pointer"><Plus className="w-4 h-4" />Registrar factura proveedor</button></div></div>
+    <div className="flex overflow-x-auto border-b border-theme-subtle gap-1">{tabs.map((tab) => <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={'shrink-0 px-4 py-3 text-xs font-bold border-b-2 transition-colors cursor-pointer ' + (activeTab === tab.id ? 'border-theme-primary text-theme-primary' : 'border-transparent text-theme-muted hover:text-theme-main')}>{tab.label}{tab.count !== undefined && <span className={'ml-2 px-1.5 py-0.5 rounded-full text-[10px] ' + (activeTab === tab.id ? 'bg-theme-primary/10' : 'bg-theme-muted')}>{tab.count}</span>}</button>)}</div>
+    {notice && <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center justify-between"><span>{notice}</span><button onClick={() => setNotice('')} className="font-bold cursor-pointer">Cerrar</button></div>}
+    {activeTab === 'dashboard' && <Dashboard totals={totals} invoices={invoices} onOpenDetail={openDetail} onOpenValidation={openValidation} onGoToPayables={() => setActiveTab('payables')} />}
+    {activeTab === 'payables' && <Payables invoices={filteredInvoices} searchTerm={searchTerm} setSearchTerm={setSearchTerm} matchFilter={matchFilter} setMatchFilter={setMatchFilter} paymentFilter={paymentFilter} setPaymentFilter={setPaymentFilter} onDetail={openDetail} onPayment={openPayment} onValidation={openValidation} onSchedule={schedulePayment} statusClass={statusClass} />}
+    {activeTab === 'payments' && <Payments payments={payments} />}
+    {activeTab === 'recurring' && <Recurring onNotice={setNotice} />}
+    {activeTab === 'statement' && <Statement suppliers={suppliers} selectedSupplier={selectedSupplier} setSelectedSupplier={setSelectedSupplier} supplier={statementSupplier} invoices={statementInvoices} totals={statementTotals} onDetail={openDetail} onPayment={openPayment} statusClass={statusClass} onNotice={setNotice} />}
+    <ThreeWayMatchModal invoice={selectedInvoice} isOpen={isMatchOpen} onClose={() => { setIsMatchOpen(false); setSelectedInvoice(null); }} onResolveDiscrepancy={handleResolveDiscrepancy} />
+    <RegistrarPagoProveedorModal invoice={selectedInvoice} isOpen={isPaymentOpen} onClose={() => { setIsPaymentOpen(false); setSelectedInvoice(null); }} onRegisterPayment={handleRegisterPayment} />
+    <RegistrarFacturaProveedorModal isOpen={isRegisterOpen} onClose={() => setIsRegisterOpen(false)} onRegisterInvoice={(invoice) => updateInvoices([invoice, ...invoices])} />
+    <CxpDetailModal invoice={selectedInvoice} isOpen={isDetailOpen} onClose={() => { setIsDetailOpen(false); setSelectedInvoice(null); }} onOpenThreeWayMatch={openValidation} onOpenRegisterPayment={openPayment} />
+  </div>;
 };
+
+const Metric = ({ label, value, icon: Icon, tone = 'text-theme-primary', note }: { label: string; value: string; icon: React.ElementType; tone?: string; note: string }) => <div className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs"><div className="flex justify-between items-center text-theme-muted"><span className="text-[10px] uppercase tracking-wider font-bold">{label}</span><Icon className={'w-4 h-4 ' + tone} /></div><p className="mt-2 text-xl font-black font-mono text-theme-main">{value}</p><p className="mt-1 text-[11px] text-theme-muted">{note}</p></div>;
+const Empty = ({ text }: { text: string }) => <p className="p-5 text-center text-xs text-theme-muted">{text}</p>;
+const Section = ({ title, children, action, onAction }: { title: string; children: React.ReactNode; action?: string; onAction?: () => void }) => <section className="rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs overflow-hidden"><div className="p-4 border-b border-theme-subtle flex justify-between items-center"><h2 className="font-black text-sm text-theme-main">{title}</h2>{action && <button onClick={onAction} className="text-[11px] font-bold text-theme-primary cursor-pointer">{action}</button>}</div><div className="p-2 space-y-1">{children}</div></section>;
+const Dashboard = ({ totals, invoices, onOpenDetail, onOpenValidation, onGoToPayables }: { totals: DashboardTotals; invoices: SupplierInvoice[]; onOpenDetail: (i: SupplierInvoice) => void; onOpenValidation: (i: SupplierInvoice) => void; onGoToPayables: () => void }) => {
+  const dueSoon = invoices.filter((i) => i.saldoPendiente > 0).sort((a, b) => a.fechaVencimiento.localeCompare(b.fechaVencimiento)).slice(0, 4);
+  const balances = new Map<string, number>(); invoices.forEach((i) => balances.set(i.proveedorNombre, (balances.get(i.proveedorNombre) || 0) + i.saldoPendiente));
+  return <div className="space-y-5"><div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3"><Metric label="Total por pagar" value={currency(totals.totalDue)} icon={WalletCards} note="Saldo pendiente con proveedores" /><Metric label="Vencido" value={currency(totals.overdue)} icon={AlertTriangle} tone="text-rose-600" note="Requiere atención prioritaria" /><Metric label="Próximos 7 días" value={currency(totals.comingWeek)} icon={CalendarClock} tone="text-amber-600" note="Vencimientos inmediatos" /><Metric label="Pagos programados" value={currency(totals.scheduled)} icon={Clock} tone="text-blue-600" note="Listos para dispersión" /><Metric label="Facturas con diferencia" value={String(totals.differences.length)} icon={ShieldAlert} tone="text-rose-600" note="Validación pendiente o con excepción" /><Metric label="Pagado del mes" value={currency(totals.paidMonth)} icon={CheckCircle2} tone="text-emerald-600" note="Aplicado durante septiembre" /></div><div className="grid grid-cols-1 xl:grid-cols-2 gap-4"><Section title="Atención requerida" action="Ver cuentas por pagar" onAction={onGoToPayables}>{totals.differences.length ? totals.differences.map((i) => <button key={i.id} onClick={() => onOpenValidation(i)} className="w-full text-left p-3 rounded-xl border border-rose-200 bg-rose-50/60 hover:bg-rose-50 cursor-pointer"><div className="flex justify-between gap-3"><span className="font-bold text-xs text-rose-900">{i.folioProveedor} · {i.proveedorNombre}</span><span className="font-mono font-bold text-xs text-rose-700">{currency(i.saldoPendiente)}</span></div><p className="text-[11px] text-rose-700 mt-1">Con diferencia en la validación de OC, recepción y factura.</p></button>) : <Empty text="No hay facturas con diferencia." />}</Section><Section title="Próximos vencimientos">{dueSoon.map((i) => <button key={i.id} onClick={() => onOpenDetail(i)} className="w-full flex justify-between p-3 rounded-xl hover:bg-theme-muted/40 text-left cursor-pointer"><div><p className="font-bold text-xs text-theme-main">{i.proveedorNombre}</p><p className="text-[11px] text-theme-muted">{i.folioProveedor} · vence {i.fechaVencimiento}</p></div><p className="font-mono font-bold text-xs text-theme-main">{currency(i.saldoPendiente)}</p></button>)}</Section><Section title="Facturas con diferencia">{totals.differences.map((i) => <button key={i.id} onClick={() => onOpenValidation(i)} className="w-full flex justify-between p-3 rounded-xl hover:bg-theme-muted/40 text-left cursor-pointer"><div><p className="font-bold text-xs text-theme-main">{i.folioProveedor}</p><p className="text-[11px] text-theme-muted">{i.ordenCompraFolio} · {i.recepcionFolio}</p></div><span className="text-[10px] font-bold text-rose-700">Con diferencia</span></button>)}</Section><Section title="Top proveedores por saldo">{Array.from(balances.entries()).sort((a, b) => b[1] - a[1]).slice(0, 4).map(([name, balance]) => <div key={name} className="flex justify-between p-3"><p className="font-bold text-xs text-theme-main">{name}</p><p className="font-mono font-bold text-xs text-theme-main">{currency(balance)}</p></div>)}</Section></div></div>;
+};
+
+type PayablesProps = { invoices: SupplierInvoice[]; searchTerm: string; setSearchTerm: (v: string) => void; matchFilter: string; setMatchFilter: (v: string) => void; paymentFilter: string; setPaymentFilter: (v: string) => void; onDetail: (i: SupplierInvoice) => void; onPayment: (i: SupplierInvoice) => void; onValidation: (i: SupplierInvoice) => void; onSchedule: (i: SupplierInvoice) => void; statusClass: (status: SupplierInvoice['estadoPago']) => string };
+const Payables = ({ invoices, searchTerm, setSearchTerm, matchFilter, setMatchFilter, paymentFilter, setPaymentFilter, onDetail, onPayment, onValidation, onSchedule, statusClass }: PayablesProps) => <div className="space-y-4"><div className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle flex flex-col lg:flex-row gap-3"><div className="relative flex-1"><Search className="w-4 h-4 absolute top-1/2 -translate-y-1/2 left-3 text-theme-muted" /><input value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Buscar proveedor, factura, RFC, OC o recepción..." className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-theme-subtle bg-theme-base text-xs outline-none" /></div><div className="flex gap-2"><select value={matchFilter} onChange={(e) => setMatchFilter(e.target.value)} className="px-3 py-2 rounded-xl border border-theme-subtle bg-theme-base text-xs"><option value="todos">Validación: todas</option><option value="validada">Validadas</option><option value="diferencia">Con diferencia</option></select><select value={paymentFilter} onChange={(e) => setPaymentFilter(e.target.value)} className="px-3 py-2 rounded-xl border border-theme-subtle bg-theme-base text-xs"><option value="todos">Pago: todos</option><option value="pendiente">Pendiente</option><option value="programada">Programada</option><option value="parcial">Parcial</option><option value="pagada">Pagada</option><option value="bloqueada">Bloqueada</option></select></div></div><div className="rounded-2xl border border-theme-subtle bg-theme-surface overflow-hidden"><div className="overflow-x-auto"><table className="w-full min-w-[1180px] text-left text-xs"><thead className="bg-theme-muted/40 text-[10px] uppercase tracking-wider text-theme-muted"><tr>{['Factura proveedor', 'Proveedor / RFC', 'Fecha', 'Vencimiento', 'OC relacionada', 'Recepción relacionada', 'Total', 'Pagado', 'Saldo', 'Validación', 'Estado de pago', 'Acciones'].map((h) => <th key={h} className="px-3 py-3 font-bold">{h}</th>)}</tr></thead><tbody className="divide-y divide-theme-subtle">{invoices.map((i) => <tr key={i.id} className="hover:bg-theme-muted/20"><td className="px-3 py-3 font-mono font-bold text-theme-main">{i.folioProveedor}</td><td className="px-3 py-3"><p className="font-bold text-theme-main">{i.proveedorNombre}</p><p className="font-mono text-[10px] text-theme-muted">{i.proveedorRfc}</p></td><td className="px-3 py-3">{i.fechaEmision}</td><td className={'px-3 py-3 ' + (isOverdue(i) ? 'text-rose-700 font-bold' : '')}>{i.fechaVencimiento}</td><td className="px-3 py-3 font-mono">{i.ordenCompraFolio}</td><td className="px-3 py-3 font-mono">{i.recepcionFolio}</td><td className="px-3 py-3 font-mono">{currency(i.total)}</td><td className="px-3 py-3 font-mono text-emerald-700">{currency(i.totalPagado)}</td><td className="px-3 py-3 font-mono font-bold">{currency(i.saldoPendiente)}</td><td className="px-3 py-3"><button onClick={() => onValidation(i)} className={'px-2 py-1 rounded-full border font-bold text-[10px] cursor-pointer ' + (i.matchStatus === 'conciliada' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200')}>{i.matchStatus === 'conciliada' ? 'Validada' : 'Con diferencia'}</button></td><td className="px-3 py-3"><span className={'px-2 py-1 rounded-full border font-bold text-[10px] capitalize ' + statusClass(i.estadoPago)}>{i.estadoPago}</span></td><td className="px-3 py-3"><div className="flex gap-1"><button onClick={() => onDetail(i)} title="Ver detalle" className="p-1.5 rounded-lg hover:bg-theme-muted cursor-pointer"><Eye className="w-4 h-4" /></button><button onClick={() => onValidation(i)} title="Ver validación" className="p-1.5 rounded-lg text-theme-primary hover:bg-theme-muted cursor-pointer"><Scale className="w-4 h-4" /></button>{i.saldoPendiente > 0 && i.estadoPago !== 'bloqueada' && <><button onClick={() => onPayment(i)} className="px-2 py-1 rounded-lg bg-theme-primary text-white font-bold text-[10px] cursor-pointer">Pagar</button>{i.estadoPago !== 'programada' && <button onClick={() => onSchedule(i)} title="Programar pago" className="p-1.5 rounded-lg text-blue-700 hover:bg-blue-50 cursor-pointer"><CalendarClock className="w-4 h-4" /></button>}</>}</div></td></tr>)}</tbody></table>{!invoices.length && <Empty text="No hay facturas con esos filtros." />}</div></div></div>;
+const Payments = ({ payments }: { payments: { invoice: SupplierInvoice; payment: SupplierPaymentRecord }[] }) => <div className="rounded-2xl border border-theme-subtle bg-theme-surface overflow-hidden"><div className="p-4 border-b border-theme-subtle"><h2 className="font-black text-sm text-theme-main">Historial de Pagos</h2><p className="text-xs text-theme-muted mt-1">Pagos aplicados a las facturas de proveedores.</p></div><div className="overflow-x-auto"><table className="w-full min-w-[850px] text-left text-xs"><thead className="bg-theme-muted/40 text-[10px] uppercase tracking-wider text-theme-muted"><tr>{['Fecha', 'Proveedor', 'Referencia', 'Método', 'Facturas aplicadas', 'Total aplicado', 'Usuario', 'Observaciones'].map((h) => <th key={h} className="px-4 py-3">{h}</th>)}</tr></thead><tbody className="divide-y divide-theme-subtle">{payments.map(({ invoice, payment }) => <tr key={payment.id}><td className="px-4 py-3">{payment.fecha}</td><td className="px-4 py-3 font-bold">{invoice.proveedorNombre}</td><td className="px-4 py-3 font-mono">{payment.referenciaBancaria}</td><td className="px-4 py-3">{payment.metodoPago}</td><td className="px-4 py-3 font-mono">{invoice.folioProveedor}</td><td className="px-4 py-3 font-mono font-bold text-emerald-700">{currency(payment.monto)}</td><td className="px-4 py-3">{payment.autorizadoPor}</td><td className="px-4 py-3 text-theme-muted">{payment.notas || '—'}</td></tr>)}</tbody></table>{!payments.length && <Empty text="Aún no hay pagos registrados." />}</div></div>;
+const Recurring = ({ onNotice }: { onNotice: (text: string) => void }) => <div className="rounded-2xl border border-theme-subtle bg-theme-surface overflow-hidden"><div className="p-4 border-b border-theme-subtle"><h2 className="font-black text-sm text-theme-main">Cuentas recurrentes</h2><p className="text-xs text-theme-muted mt-1">Gastos operativos previstos para el demo.</p></div><div className="overflow-x-auto"><table className="w-full min-w-[800px] text-left text-xs"><thead className="bg-theme-muted/40 text-[10px] uppercase tracking-wider text-theme-muted"><tr>{['Concepto', 'Proveedor', 'Frecuencia', 'Próxima fecha', 'Importe estimado', 'Estado', 'Acciones'].map((h) => <th key={h} className="px-4 py-3">{h}</th>)}</tr></thead><tbody className="divide-y divide-theme-subtle">{recurringItems.map(([concept, supplier, frequency, date, amount, status]) => <tr key={concept}><td className="px-4 py-3 font-bold">{concept}</td><td className="px-4 py-3">{supplier}</td><td className="px-4 py-3">{frequency}</td><td className="px-4 py-3">{date}</td><td className="px-4 py-3 font-mono font-bold">{currency(amount)}</td><td className="px-4 py-3"><span className={'px-2 py-1 rounded-full border text-[10px] font-bold ' + (status === 'Activa' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-zinc-100 text-zinc-600 border-zinc-200')}>{status}</span></td><td className="px-4 py-3"><div className="flex gap-2"><button onClick={() => onNotice('Detalle de ' + concept + ' abierto para revisión.')} className="text-theme-primary font-bold cursor-pointer">Ver detalle</button><button onClick={() => onNotice('Cuenta por pagar generada para ' + concept + '.')} className="text-theme-primary font-bold cursor-pointer">Generar CxP</button><button onClick={() => onNotice(concept + ' actualizado para el demo.')} className="text-theme-muted cursor-pointer"><Pause className="w-4 h-4" /></button></div></td></tr>)}</tbody></table></div></div>;
+type StatementProps = { suppliers: SupplierInvoice[]; selectedSupplier: string; setSelectedSupplier: (value: string) => void; supplier?: SupplierInvoice; invoices: SupplierInvoice[]; totals: { billed: number; paid: number; balance: number; overdue: number }; onDetail: (i: SupplierInvoice) => void; onPayment: (i: SupplierInvoice) => void; statusClass: (status: SupplierInvoice['estadoPago']) => string; onNotice: (text: string) => void };
+const Statement = ({ suppliers, selectedSupplier, setSelectedSupplier, supplier, invoices, totals, onDetail, onPayment, statusClass, onNotice }: StatementProps) => <div className="space-y-4"><div className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle flex flex-col md:flex-row gap-3 md:items-center justify-between"><div><label className="block text-[10px] font-bold uppercase text-theme-muted mb-1">Proveedor</label><select value={selectedSupplier} onChange={(e) => setSelectedSupplier(e.target.value)} className="px-3 py-2 rounded-xl border border-theme-subtle bg-theme-base text-xs min-w-72"><option value="todos">Todos los proveedores</option>{suppliers.map((i) => <option key={i.proveedorId} value={i.proveedorId}>{i.proveedorNombre}</option>)}</select></div><div className="flex gap-2"><button onClick={() => onNotice('Exportación Excel demo preparada.')} className="px-3 py-2 rounded-xl border border-theme-subtle text-xs font-bold flex gap-1.5 cursor-pointer"><Download className="w-4 h-4" />Exportar Excel demo</button><button onClick={() => onNotice('Vista de impresión del estado de cuenta preparada.')} className="px-3 py-2 rounded-xl border border-theme-subtle text-xs font-bold flex gap-1.5 cursor-pointer"><Printer className="w-4 h-4" />Imprimir</button></div></div><div className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle"><div className="flex items-start gap-3"><div className="p-2.5 rounded-xl bg-theme-primary/10 text-theme-primary"><Building2 className="w-5 h-5" /></div><div><h2 className="font-black text-base text-theme-main">{supplier?.proveedorNombre || 'Estado de cuenta consolidado'}</h2><p className="text-xs text-theme-muted mt-1">{supplier ? 'RFC ' + supplier.proveedorRfc + ' · Contacto de proveedores RTM · Tel. (81) 5555-0101 · proveedores@rtm.mx' : 'Consolidado de saldos por proveedor.'}</p></div></div></div><div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3"><Metric label="Total facturado" value={currency(totals.billed)} icon={FileText} note="Importe de las facturas listadas" /><Metric label="Total abonado" value={currency(totals.paid)} icon={TrendingUp} tone="text-emerald-600" note="Pagos registrados" /><Metric label="Saldo pendiente" value={currency(totals.balance)} icon={WalletCards} tone="text-amber-600" note="Pendiente de liquidar" /><Metric label="Saldo vencido" value={currency(totals.overdue)} icon={AlertTriangle} tone="text-rose-600" note="Requiere atención" /></div><div className="rounded-2xl border border-theme-subtle bg-theme-surface overflow-hidden"><div className="overflow-x-auto"><table className="w-full min-w-[760px] text-left text-xs"><thead className="bg-theme-muted/40 text-[10px] uppercase tracking-wider text-theme-muted"><tr>{['Fecha', 'Referencia', 'Vencimiento', 'Estado', 'Importe', 'Pagado', 'Saldo', 'Acciones'].map((h) => <th key={h} className="px-4 py-3">{h}</th>)}</tr></thead><tbody className="divide-y divide-theme-subtle">{invoices.map((i) => <tr key={i.id}><td className="px-4 py-3">{i.fechaEmision}</td><td className="px-4 py-3 font-mono font-bold">{i.folioProveedor}</td><td className="px-4 py-3">{i.fechaVencimiento}</td><td className="px-4 py-3"><span className={'px-2 py-1 rounded-full border text-[10px] font-bold capitalize ' + statusClass(i.estadoPago)}>{i.estadoPago}</span></td><td className="px-4 py-3 font-mono">{currency(i.total)}</td><td className="px-4 py-3 font-mono text-emerald-700">{currency(i.totalPagado)}</td><td className="px-4 py-3 font-mono font-bold">{currency(i.saldoPendiente)}</td><td className="px-4 py-3"><button onClick={() => onDetail(i)} className="text-theme-primary font-bold mr-3 cursor-pointer">Ver factura</button>{i.saldoPendiente > 0 && i.estadoPago !== 'bloqueada' && <button onClick={() => onPayment(i)} className="text-theme-primary font-bold cursor-pointer">Registrar pago</button>}</td></tr>)}</tbody></table></div></div></div>;
