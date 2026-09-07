@@ -14,9 +14,22 @@ import { ConfiguracionFabricacion } from './ConfiguracionFabricacion';
 
 type ProductionTab = 'Dashboard' | 'Planeación' | 'Órdenes' | 'Piso' | 'Procesos' | 'Máquinas' | 'Analítica';
 
-export const ProduccionPage: React.FC = () => {
+interface ProduccionPageProps {
+  orders?: ProductionOrder[];
+  onUpdateOrder?: (id: string, patch: Partial<ProductionOrder>) => void;
+  onAddOrder?: (newOrder: ProductionOrder) => void;
+  onNavigateToCalidad?: (opFolio?: string) => void;
+}
+
+export const ProduccionPage: React.FC<ProduccionPageProps> = ({
+  orders: externalOrders,
+  onUpdateOrder: externalUpdateOrder,
+  onAddOrder: externalAddOrder,
+  onNavigateToCalidad,
+}) => {
   const [tab, setTab] = useState<ProductionTab>('Dashboard');
-  const [orders, setOrders] = useState<ProductionOrder[]>(PRODUCTION_ORDERS);
+  const [localOrders, setLocalOrders] = useState<ProductionOrder[]>(PRODUCTION_ORDERS);
+  const orders = externalOrders || localOrders;
   const [selected, setSelected] = useState<ProductionOrder | null>(null);
   const [incidence, setIncidence] = useState<ProductionOrder | null>(null);
   const [notice, setNotice] = useState('');
@@ -29,7 +42,11 @@ export const ProduccionPage: React.FC = () => {
   );
 
   const updateOrder = (id: string, patch: Partial<ProductionOrder>) => {
-    setOrders((current) => current.map((order) => (order.id === id ? { ...order, ...patch } : order)));
+    if (externalUpdateOrder) {
+      externalUpdateOrder(id, patch);
+    } else {
+      setLocalOrders((current) => current.map((order) => (order.id === id ? { ...order, ...patch } : order)));
+    }
   };
 
   const openOrder = (order: ProductionOrder) => {
@@ -37,7 +54,11 @@ export const ProduccionPage: React.FC = () => {
   };
 
   const handleCreateOrderFromWizard = (newOrder: ProductionOrder) => {
-    setOrders((prev) => [newOrder, ...prev]);
+    if (externalAddOrder) {
+      externalAddOrder(newOrder);
+    } else {
+      setLocalOrders((prev) => [newOrder, ...prev]);
+    }
     setNotice(
       `✓ ${newOrder.folio} creada exitosamente para ${newOrder.cliente} (${newOrder.area}). Programada en ${newOrder.machine} y disponible en Planeación y Piso.`
     );
@@ -59,30 +80,24 @@ export const ProduccionPage: React.FC = () => {
     setIncidence(null);
   };
 
-  const releaseOrder = () => {
+  const requestFinalAudit = () => {
     if (!selected) return;
     updateOrder(selected.id, {
-      status: 'Liberada',
-      progress: 100,
-      good: selected.quantity,
-      qualityGates: {
-        ...(selected.qualityGates ?? { prepressReleased: true, firstPieceReleased: true }),
-        finalAuditApproved: true,
-      },
+      status: 'Pendiente de calidad',
       traceability: [
         {
-          id: `tr-rel-${Date.now()}`,
+          id: `tr-req-fin-${Date.now()}`,
           timestamp: '07 Sep · 12:00',
-          user: 'Alicia Ramírez (Calidad)',
-          station: 'Mesa de Calidad',
-          event: 'OP Liberada por Calidad Final',
-          notes: 'Cumplimiento 100% especificaciones RTM. Traspaso a Almacén de Producto Terminado.',
-          badgeTone: 'success',
+          user: 'Supervisor de Turno',
+          station: 'Piso de Producción',
+          event: 'Auditoría Final solicitada a Calidad',
+          notes: 'Tiraje terminado. Esperando inspección por muestreo de Alicia Ramírez (Calidad).',
+          badgeTone: 'primary',
         },
         ...(selected.traceability ?? []),
       ],
     });
-    setNotice(`${selected.folio} liberada por Calidad y disponible para entrega a cliente.`);
+    setNotice(`✓ Auditoría final de ${selected.folio} solicitada a Calidad. Ve al módulo de Calidad para emitir el dictamen.`);
     setSelected(null);
   };
 
@@ -309,7 +324,7 @@ export const ProduccionPage: React.FC = () => {
             setIncidence(selected);
             setSelected(null);
           }}
-          onRelease={releaseOrder}
+          onRelease={requestFinalAudit}
           onRequestMaterialExtra={() => {
             const ord = orders.find((order) => order.id === selected.id) ?? selected;
             setSelected(null);

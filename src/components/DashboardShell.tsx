@@ -24,6 +24,7 @@ import { CalidadPage } from './Calidad/CalidadPage';
 import { CentroAlertasPage } from './CentroAlertasPage';
 import { CrmPage } from './Comercial/CrmPage';
 import { DemoAlert } from '../data/mockAlertasData';
+import { PRODUCTION_ORDERS, ProductionOrder } from '../data/mockProduccionData';
 import {
   SalesInvoice,
   AccountReceivable,
@@ -94,6 +95,17 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
     targetWarehouseId?: string;
     note?: string;
   } | null>(null);
+
+  // Shared Production & Quality State (Sincronización Operativa en Vivo)
+  const [productionOrders, setProductionOrders] = useState<ProductionOrder[]>(PRODUCTION_ORDERS);
+
+  const handleUpdateProductionOrder = (id: string, patch: Partial<ProductionOrder>) => {
+    setProductionOrders((prev) => prev.map((o) => (o.id === id ? { ...o, ...patch } : o)));
+  };
+
+  const handleAddProductionOrder = (newOrder: ProductionOrder) => {
+    setProductionOrders((prev) => [newOrder, ...prev]);
+  };
 
   const handleInvoiceStamped = (inv: SalesInvoice) => {
     const dueDate = new Date();
@@ -549,9 +561,22 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
       case 'nomina':
         return <NominaPage />;
       case 'produccion':
-        return <ProduccionPage />;
+        return (
+          <ProduccionPage
+            orders={productionOrders}
+            onUpdateOrder={handleUpdateProductionOrder}
+            onAddOrder={handleAddProductionOrder}
+            onNavigateToCalidad={() => setActiveTab('calidad')}
+          />
+        );
       case 'calidad':
-        return <CalidadPage />;
+        return (
+          <CalidadPage
+            productionOrders={productionOrders}
+            onUpdateProductionOrder={handleUpdateProductionOrder}
+            onNavigateToProduccion={() => setActiveTab('produccion')}
+          />
+        );
       case 'mantenimiento':
         return (
           <MantenimientoPage

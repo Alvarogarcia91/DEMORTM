@@ -93,31 +93,6 @@ export const PisoProduccion: React.FC<Props> = ({
     });
   };
 
-  const handleApproveFirstPiece = (order: ProductionOrder) => {
-    onUpdate(order.id, {
-      qualityGates: {
-        ...(order.qualityGates ?? { prepressReleased: true, finalAuditApproved: false }),
-        firstPieceReleased: true,
-        firstPieceRequested: false,
-        firstPieceApprover: 'Alicia Ramírez (Calidad)',
-      },
-      status: 'En proceso',
-      progress: Math.max(order.progress, 15),
-      traceability: [
-        {
-          id: `tr-qp-${Date.now()}`,
-          timestamp: '07 Sep · 09:27',
-          user: 'Alicia Ramírez (Calidad)',
-          station: order.machine,
-          event: 'Primera Pieza Liberada por Calidad',
-          notes: 'Inspección de registro, tono, código de barras y corte conforme a máster aprobada',
-          badgeTone: 'success',
-        },
-        ...(order.traceability ?? []),
-      ],
-    });
-  };
-
   return (
     <div className="space-y-4">
       {/* Botones rápidos superiores */}
@@ -221,20 +196,16 @@ export const PisoProduccion: React.FC<Props> = ({
                         <button
                           type="button"
                           onClick={() => handleRequestFirstPiece(order)}
-                          className="rounded-lg border border-theme-subtle bg-theme-muted/20 px-2 py-1 text-[10px] font-bold text-theme-main hover:bg-theme-muted/40"
+                          className="rounded-lg border border-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2.5 py-1 text-[10px] font-bold text-amber-800 dark:text-amber-200 hover:bg-amber-100"
                         >
                           Solicitar liberación a Calidad
                         </button>
                       )}
 
-                      {!isFirstPieceReleased && (
-                        <button
-                          type="button"
-                          onClick={() => handleApproveFirstPiece(order)}
-                          className="rounded-lg bg-emerald-600 px-2.5 py-1 text-[10px] font-bold text-white hover:bg-emerald-700"
-                        >
-                          ✓ Aprobar QA
-                        </button>
+                      {!isFirstPieceReleased && isFirstPieceRequested && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 dark:bg-amber-950/60 px-2.5 py-0.5 text-[10px] font-bold text-amber-800 dark:text-amber-300">
+                          <Clock className="h-3 w-3" /> Esperando dictamen de Calidad (Alicia Ramírez)
+                        </span>
                       )}
                     </div>
                   </div>

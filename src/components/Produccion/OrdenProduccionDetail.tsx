@@ -809,13 +809,10 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-theme-subtle pt-4">
             <div className="flex gap-2">
               {order.status === 'Pendiente de calidad' && (
-                <button
-                  type="button"
-                  onClick={onRelease}
-                  className="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700 shadow-xs"
-                >
-                  ✓ Liberar por Calidad y Pasar a Producto Terminado
-                </button>
+                <div className="flex items-center gap-2 rounded-xl border border-amber-400 bg-amber-50 dark:bg-amber-950/40 px-3.5 py-2 text-xs font-bold text-amber-800 dark:text-amber-200">
+                  <Clock className="h-4 w-4 text-amber-600 shrink-0" />
+                  <span>Pendiente de Dictamen y Liberación Final por Calidad (Alicia Ramírez)</span>
+                </div>
               )}
             </div>
 
