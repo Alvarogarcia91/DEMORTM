@@ -313,21 +313,8 @@ export const NominaPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Stepper Section (Required by Section 4) */}
-          <div className="pt-3 pb-4">
-            <PayrollCloseStepper
-              period={currentPeriod}
-              activeTab={activeTab}
-              onSelectTab={(tabKey) => setActiveTab(tabKey as NominaSubTab)}
-              incidenciasPendientesCount={incidents.filter((i) => i.estado === 'pendiente_revision' || i.estado === 'detectada').length}
-              empleadosRequierenRevisionCount={calculations.filter((c) => c.estadoValidacion === 'requiere_revision').length}
-              isTimbrada={isAllStamped}
-              isCerrada={isPayrollClosed}
-            />
-          </div>
-
-          {/* Subtabs Navigation */}
-          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar border-t border-zinc-100 pt-1">
+          {/* Subtabs Navigation (Navegación principal) */}
+          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar pt-1">
             {tabsConfig.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
@@ -361,7 +348,17 @@ export const NominaPage: React.FC = () => {
       </div>
 
       {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
+        {/* Tarjeta compacta no-sticky de resumen de progreso de flujo */}
+        <PayrollCloseStepper
+          period={currentPeriod}
+          activeTab={activeTab}
+          onSelectTab={(tabKey) => setActiveTab(tabKey as NominaSubTab)}
+          incidenciasPendientesCount={incidents.filter((i) => i.estado === 'pendiente_revision' || i.estado === 'detectada').length}
+          empleadosRequierenRevisionCount={calculations.filter((c) => c.estadoValidacion === 'requiere_revision').length}
+          isTimbrada={isAllStamped}
+          isCerrada={isPayrollClosed}
+        />
         {activeTab === 'resumen' && (
           <PayrollDashboard
             period={currentPeriod}
