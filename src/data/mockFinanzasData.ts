@@ -669,6 +669,101 @@ export const INITIAL_CXP_RECORDS: SupplierInvoice[] = [
   }
 ];
 
+// Cartera y obligaciones adicionales: suficientes para que los tableros, aging y
+// estados de cuenta cuenten una historia operativa, no sólo tres documentos aislados.
+const cxcSeed = [
+  ['0052', 'cli-005', 'ILSCO DE MÉXICO, S.A. DE C.V.', 'IME880730KE4', '2026-09-01', '2026-10-01', 118900, 0, 'al_corriente', 'vigente', 0, 24],
+  ['0053', 'cli-006', 'ENTAIL INDUSTRIAL, S. DE R.L.', 'EIN1103248S7', '2026-08-29', '2026-09-08', 76480, 0, 'por_vencer', 'vigente', 0, 1],
+  ['0054', 'cli-001', 'BLACK & DECKER (Stanley Black & Decker)', 'SBD920412R34', '2026-08-18', '2026-09-02', 138620, 58620, 'vencida', '1_30', 5, 0],
+  ['0055', 'cli-007', 'PANASONIC MÉXICO, S.A. DE C.V.', 'PME7402218F8', '2026-08-12', '2026-09-11', 96800, 0, 'por_vencer', 'vigente', 0, 4],
+  ['0056', 'cli-008', 'CARRIER MÉXICO, S.A. DE C.V.', 'CME890512CW0', '2026-07-02', '2026-08-01', 73200, 0, 'vencida', '31_60', 37, 0],
+  ['0057', 'cli-002', 'TRICO TECHNOLOGIES CORPORATION', 'TTC880315PL1', '2026-08-26', '2026-09-25', 146740, 46740, 'por_vencer', 'vigente', 0, 18],
+  ['0058', 'cli-009', 'INVACARE MÉXICO, S.A. DE C.V.', 'IME940508SK4', '2026-05-14', '2026-06-13', 48950, 0, 'vencida', '61_90', 86, 0],
+  ['0059', 'cli-010', 'SPECTRUM BRANDS MÉXICO', 'SBM0702157V6', '2026-04-01', '2026-05-01', 33720, 0, 'vencida', 'mas_90', 129, 0],
+  ['0060', 'cli-003', 'BISSELL INTERNATIONAL TRADING COMPANY B.V.', 'BIT041120TK8', '2026-08-31', '2026-09-15', 62400, 62400, 'pagada', 'vigente', 0, 0],
+  ['0061', 'cli-011', 'WHIRLPOOL MÉXICO, S. DE R.L.', 'WME940527H22', '2026-09-03', '2026-10-03', 184300, 0, 'al_corriente', 'vigente', 0, 26],
+  ['0062', 'cli-004', 'TYCO (Johnson Controls)', 'TYC990708M12', '2026-08-05', '2026-09-04', 101500, 21500, 'vencida', '1_30', 3, 0],
+  ['0063', 'cli-012', 'MABE MÉXICO, S. DE R.L. DE C.V.', 'MME8204174H3', '2026-07-25', '2026-08-24', 87560, 0, 'vencida', '1_30', 14, 0],
+] as const;
+
+INITIAL_CXC_RECORDS.push(...cxcSeed.map(([folio, clientId, client, rfc, issued, due, total, paid, status, bucket, late, toDue], index): AccountReceivable => ({
+  id: `cxc-${folio}`,
+  facturaId: `fac-${folio}`,
+  facturaFolio: `FAC-RTM-2026-${folio}`,
+  uuidSat: `DEMO-${folio}-CXC-4F18-8A${index}2`,
+  clienteId: clientId,
+  clienteNombre: client,
+  clienteRfc: rfc,
+  fechaEmision: issued,
+  fechaVencimiento: due,
+  diasCredito: 30,
+  diasMora: late,
+  diasParaVencer: toDue,
+  montoOriginal: total,
+  saldoPendiente: total - paid,
+  totalPagado: paid,
+  status,
+  bucket,
+  metodoPago: status === 'pagada' ? 'PUE' : 'PPD',
+  historialPagos: paid ? [{
+    id: `pago-cxc-${folio}`,
+    fecha: status === 'pagada' ? '2026-09-04' : '2026-09-02',
+    monto: paid,
+    formaPago: 'Transferencia SPEI (03)',
+    referencia: `SPEI-RTM-${folio}`,
+    bancoDestino: 'BBVA Cta 8821',
+    comprobanteFolio: `REP-RTM-2026-${folio}`,
+    registradoPor: 'L. Mendoza (Crédito y Cobranza)',
+    notas: status === 'pagada' ? 'Liquidación aplicada y conciliada.' : 'Abono parcial aplicado contra factura.'
+  }] : [],
+  contactoCobranza: { nombre: `Contacto de crédito ${client.split(' ')[0]} (Demo)`, email: `credito.${index + 1}@cliente-demo.com`, telefono: `(81) 5555-${String(1100 + index)}` }
+})));
+
+const cxpSeed = [
+  ['004', 'PAPELERA DEL NORTE, S.A. DE C.V.', 'PNO850917DX8', '2026-08-28', '2026-09-12', 86500, 0, 'programada', 'conciliada'],
+  ['005', 'SIEGWERK MÉXICO, S.A. DE C.V.', 'SME900212M72', '2026-08-18', '2026-09-02', 43200, 0, 'pendiente', 'conciliada'],
+  ['006', 'GRAINGER MÉXICO, S.A. DE C.V.', 'GME890104LQ3', '2026-07-10', '2026-08-09', 27840, 0, 'pendiente', 'conciliada'],
+  ['007', 'HEIDELBERG MÉXICO, S.A. DE C.V.', 'HME821206RU9', '2026-08-30', '2026-09-14', 116000, 36000, 'parcial', 'conciliada'],
+  ['008', 'QUÍMICOS Y ADHESIVOS DEL GOLFO', 'QAG950811DY1', '2026-08-21', '2026-09-05', 68120, 0, 'bloqueada', 'discrepancia_precio'],
+  ['009', 'CEMEX ENERGÍA, S.A. DE C.V.', 'CEN010418PH3', '2026-08-26', '2026-09-10', 39400, 0, 'programada', 'conciliada'],
+  ['010', 'MONTACARGAS DEL NORTE, S.A.', 'MNO9602235M5', '2026-07-19', '2026-08-18', 22400, 22400, 'pagada', 'conciliada'],
+  ['011', 'FEDEX EXPRESS MÉXICO', 'FEM020926SS7', '2026-09-01', '2026-09-16', 18750, 0, 'pendiente', 'pendiente_recepcion'],
+  ['012', 'SERVICIOS TÉCNICOS DE PLANTA', 'STP100414LW8', '2026-08-15', '2026-09-09', 52200, 0, 'pendiente', 'conciliada'],
+  ['013', 'MERCERÍA Y EMPAQUES INDUSTRIALES', 'MEI080507NF4', '2026-08-08', '2026-09-07', 74500, 24500, 'parcial', 'conciliada'],
+] as const;
+
+INITIAL_CXP_RECORDS.push(...cxpSeed.map(([id, supplier, rfc, issued, due, total, paid, paymentStatus, matchStatus], index): SupplierInvoice => {
+  const unmatched = matchStatus !== 'conciliada';
+  const itemPrice = Math.round((total / 1.16) / 10);
+  return {
+    id: `cxp-${id}`,
+    folioProveedor: `FP-${772400 + index * 317}`,
+    uuidSat: `DEMO-CXP-${id}-0A17-4E${index}9`,
+    proveedorId: `prov-${String(index + 4).padStart(2, '0')}`,
+    proveedorNombre: supplier,
+    proveedorRfc: rfc,
+    ordenCompraFolio: `OC-RTM-2026-00${94 + index}`,
+    recepcionFolio: `REC-RTM-2026-00${67 + index}`,
+    fechaEmision: issued,
+    fechaRecepcion: matchStatus === 'pendiente_recepcion' ? 'Pendiente' : issued,
+    fechaVencimiento: due,
+    diasCredito: 30,
+    moneda: 'MXN',
+    subtotal: Math.round(total / 1.16),
+    iva: total - Math.round(total / 1.16),
+    total,
+    saldoPendiente: total - paid,
+    totalPagado: paid,
+    matchStatus,
+    toleranciaExcedida: unmatched,
+    motivoDiscrepancia: matchStatus === 'discrepancia_precio' ? 'Precio facturado excede el precio autorizado en la orden de compra.' : matchStatus === 'pendiente_recepcion' ? 'La recepción física del material está pendiente en almacén.' : undefined,
+    estadoPago: paymentStatus,
+    fechaProgramadaPago: paymentStatus === 'programada' ? due : undefined,
+    matchItems: [{ id: `match-${id}-1`, sku: `MAT-${id}`, descripcion: `Material o servicio operativo ${supplier}`, cantOrdenada: 10, precioOrdenado: itemPrice, cantRecibida: matchStatus === 'pendiente_recepcion' ? 0 : 10, recepcionFolio: `REC-RTM-2026-00${67 + index}`, cantFacturada: 10, precioFacturado: unmatched && matchStatus === 'discrepancia_precio' ? itemPrice + 250 : itemPrice, unidad: 'SERV', variacionCantidad: 0, variacionPrecio: unmatched && matchStatus === 'discrepancia_precio' ? 250 : 0, estado: unmatched ? 'diferencia_precio' : 'ok' }],
+    historialPagos: paid ? [{ id: `pago-cxp-${id}`, fecha: paymentStatus === 'pagada' ? '2026-08-18' : '2026-09-03', monto: paid, cuentaOrigen: 'BBVA MXN Cta Cheques 8821', metodoPago: 'SPEI', referenciaBancaria: `SPEI-PROV-${id}`, autorizadoPor: 'Lic. Gerardo Morales (Dir. Finanzas)', notas: paymentStatus === 'pagada' ? 'Liquidación conciliada.' : 'Anticipo aplicado contra factura.' }] : []
+  };
+}));
+
 export const INITIAL_ELIGIBLE_REMISIONES: EligibleRemision[] = [
   {
     id: 'rem-elig-01',
