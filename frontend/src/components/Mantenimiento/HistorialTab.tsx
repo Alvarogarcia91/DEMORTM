@@ -105,6 +105,10 @@ export const HistorialTab: React.FC<HistorialTabProps> = ({
         </div>
       </div>
 
+      <div className="text-[11px] text-theme-muted/80 italic px-1">
+        * Indicadores calculados sobre datos simulados del demo.
+      </div>
+
       {/* Filter and Export Bar */}
       <div className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
