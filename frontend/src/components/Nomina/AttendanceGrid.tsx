@@ -311,7 +311,7 @@ export const AttendanceGrid: React.FC<AttendanceGridProps> = ({
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}
         title="Importar Checadas de Reloj Biométrico"
-        subtitle="Carga de marcajes semanales desde reloj ZKTeco / archivo .dat / Excel"
+        subtitle="Simulación de archivo de reloj checador: Excel (.xlsx), CSV o exportación .dat (ZKTeco / biométrico)"
         templateFileName="RTM_Checadas_ZKTeco_W36.dat"
         sampleColumns={['ID Marcaje', 'No. Emp', 'Fecha', 'Hora', 'Torniquete / Lector', 'Tipo']}
         sampleRows={[
