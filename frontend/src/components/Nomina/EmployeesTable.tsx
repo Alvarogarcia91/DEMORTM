@@ -12,7 +12,7 @@ import {
   CheckCircle2,
   AlertCircle
 } from 'lucide-react';
-import { Employee, EmployeePayroll } from '../../data/mockNominaData';
+import { Employee, EmployeePayroll, VacationBalance, VacationRequest, EmployeeLoan } from '../../data/mockNominaData';
 import { EmployeeDrawer } from './EmployeeDrawer';
 import { ImportModalFake } from './ImportModalFake';
 
@@ -20,12 +20,18 @@ interface EmployeesTableProps {
   employees: Employee[];
   payrollCalculations: EmployeePayroll[];
   onTriggerToast: (message: string, type?: 'success' | 'info' | 'warning') => void;
+  vacationBalances?: VacationBalance[];
+  vacationRequests?: VacationRequest[];
+  loans?: EmployeeLoan[];
 }
 
 export const EmployeesTable: React.FC<EmployeesTableProps> = ({
   employees,
   payrollCalculations,
   onTriggerToast,
+  vacationBalances = [],
+  vacationRequests = [],
+  loans = [],
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDept, setSelectedDept] = useState('TODOS');
@@ -287,6 +293,9 @@ export const EmployeesTable: React.FC<EmployeesTableProps> = ({
           setIsDrawerOpen(false);
           setSelectedEmployee(null);
         }}
+        vacationBalance={vacationBalances.find((balance) => balance.employeeId === selectedEmployee?.id)}
+        vacationRequests={vacationRequests.filter((request) => request.employeeId === selectedEmployee?.id)}
+        loans={loans.filter((loan) => loan.employeeId === selectedEmployee?.id)}
       />
 
       {/* Modal de Importación Fake */}

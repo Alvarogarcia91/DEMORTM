@@ -32,6 +32,7 @@ interface PayrollReviewTableProps {
   onReopenPayroll: (motivo: string) => void;
   onTriggerToast: (message: string, type?: 'success' | 'info' | 'warning') => void;
   onProceedToStamp: () => void;
+  loanDeductionTotal?: number;
 }
 
 export const PayrollReviewTable: React.FC<PayrollReviewTableProps> = ({
@@ -43,6 +44,7 @@ export const PayrollReviewTable: React.FC<PayrollReviewTableProps> = ({
   onReopenPayroll,
   onTriggerToast,
   onProceedToStamp,
+  loanDeductionTotal = 0,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDept, setSelectedDept] = useState('TODOS');
@@ -101,6 +103,7 @@ export const PayrollReviewTable: React.FC<PayrollReviewTableProps> = ({
 
   return (
     <div className="space-y-5 animate-in fade-in duration-200">
+      {loanDeductionTotal > 0 && <div className="p-3 rounded-xl border border-theme-primary/30 bg-theme-surface text-xs flex justify-between"><span><b>Préstamos / descuentos recurrentes</b> · origen programado para {period.codigo}</span><b className="font-mono">-{formatCurrency(loanDeductionTotal)}</b></div>}
       {/* Locked Notice Banner when closed */}
       {isCerrada && (
         <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-blue-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
