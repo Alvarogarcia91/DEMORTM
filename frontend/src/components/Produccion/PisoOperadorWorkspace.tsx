@@ -33,6 +33,7 @@ import {
   TrendingDown,
   Gauge,
   HelpCircle,
+  ShieldAlert,
 } from 'lucide-react';
 import {
   ProductionOrder,
@@ -48,6 +49,7 @@ import {
   INITIAL_DOWNTIME_EVENTS,
   ProductionSuggestion,
   INITIAL_PRODUCTION_SUGGESTIONS,
+  ScrapUom,
 } from '../../data/mockProductionV9Data';
 import { formatNumber } from './productionUi';
 import { SolicitarMaterialExtraModal } from './SolicitarMaterialExtraModal';
@@ -190,10 +192,17 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
 
   // Estados para captura de Scrap
   const [scrapQty, setScrapQty] = useState<number>(350);
+  const [scrapUom, setScrapUom] = useState<ScrapUom>(
+    activeTerminal.area === 'Flexografía' ? 'm' : 'pliegos'
+  );
   const [scrapType, setScrapType] = useState<ProductionScrapEvent['type']>('Ajuste de registro');
   const [scrapCategory4M, setScrapCategory4M] = useState<ProductionScrapEvent['category4M']>('Máquina');
   const [scrapReason, setScrapReason] = useState<string>('Descalce en estación de color 2 por variación de tensión');
   const [scrapComment, setScrapComment] = useState<string>('Se ajustaron los rodillos tensores y se recuperó el registro.');
+
+  useEffect(() => {
+    setScrapUom(activeTerminal.area === 'Flexografía' ? 'm' : 'pliegos');
+  }, [activeTerminal.area]);
 
   // Estados para remanente Flexo al terminar
   const [flexoRemnantMeters, setFlexoRemnantMeters] = useState<number>(145);
@@ -213,6 +222,72 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
   const [scrapEvents, setScrapEvents] = useState<ProductionScrapEvent[]>(INITIAL_SCRAP_EVENTS);
   const [downtimeEvents, setDowntimeEvents] = useState<ProductionDowntimeEvent[]>(INITIAL_DOWNTIME_EVENTS);
   const [dailyReports, setDailyReports] = useState<OperatorDailyReportEntry[]>(OPERATOR_DAILY_REPORTS);
+
+  // Estados para Disparadores QA (Docs produccion-disparadores-qa-v13)
+  const [isBobbinModalOpen, setIsBobbinModalOpen] = useState(false);
+  const [bobbinOldLot, setBobbinOldLot] = useState('BOB-BOPP-260721-A');
+  const [bobbinNewLot, setBobbinNewLot] = useState('BOB-BOPP-260721-B');
+  const [isShiftModalOpen, setIsShiftModalOpen] = useState(false);
+  const [shiftNotes, setShiftNotes] = useState<string>('Registro alineado, viscosidad en 22s copa Zahn 2. Sin novedad en cabezal.');
+  const [stopAffectsQuality, setStopAffectsQuality] = useState<boolean | null>(null);
+
+  // Active QA trigger evaluation for prominent banner
+  const activeQaTrigger = useMemo(() => {
+    if (!activeOrder) return null;
+    const qg = activeOrder.qualityGates;
+    if (!qg) return null;
+
+    if (!qg.firstPieceReleased && qg.firstPieceRequested) {
+      return {
+        key: 'first_piece' as const,
+        label: 'Primera pieza en inspección',
+        desc: 'Muestra en mesa de Alicia Ramírez. Producción bloqueada hasta dictamen conforme.',
+      };
+    }
+    if (qg.bobbinChangePending) {
+      return {
+        key: 'bobbin_change' as const,
+        label: `Cambio de bobina (${qg.bobbinNewLot || 'Nuevo lote'})`,
+        desc: 'Se registró recambio de bobina en prensa flexográfica. Requiere validación de tensión, corona y anclaje antes de continuar tiraje.',
+      };
+    }
+    if (qg.periodicControlDue) {
+      return {
+        key: 'periodic_control' as const,
+        label: 'Control por corrida > 2 horas vencido',
+        desc: 'La corrida continua supera 120 minutos desde la última inspección. Requiere muestreo en línea para verificar estabilidad de registro y tonalidad.',
+      };
+    }
+    if (qg.machineAdjustmentPending) {
+      return {
+        key: 'machine_adjustment' as const,
+        label: 'Ajuste relevante de máquina',
+        desc: qg.machineAdjustmentReason || 'Ajuste mecánico/técnico con posible impacto en registro, corte o color. Producción en espera de nueva muestra liberada.',
+      };
+    }
+    if (qg.powerOutagePending) {
+      return {
+        key: 'power_outage' as const,
+        label: 'Reinicio tras corte eléctrico',
+        desc: 'Paro por suministro eléctrico reportado. Calidad debe verificar estabilización de temperatura, viscosidad y registro.',
+      };
+    }
+    if (qg.shiftChangePending) {
+      return {
+        key: 'shift_change' as const,
+        label: 'Cambio de turno (14:00)',
+        desc: 'Relevo operativo en curso. Requiere validación de continuidad del proceso con muestra testigo firmada.',
+      };
+    }
+    if (qg.finalAuditRequested) {
+      return {
+        key: 'final_audit' as const,
+        label: 'Auditoría final obligatoria pendiente',
+        desc: 'Tiraje terminado. Lote en espera de muestreo AQL 0.65 antes de autorizar el traspaso a Producto Terminado.',
+      };
+    }
+    return null;
+  }, [activeOrder]);
 
   // Cálculo de scrap y alerta roja de umbral 5%
   const currentScrapPercent = useMemo(() => {
@@ -258,9 +333,11 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           user: `${activeTerminal.assignedOperator.name} (${activeTerminal.machineCode})`,
           station: activeTerminal.machineName,
-          event: 'Primera Pieza enviada a inspección de Calidad (FM-CAL-004)',
+          event: 'QA TRIGGER: Primera pieza requerida · Muestra enviada a Calidad',
           notes: 'Esperando dictamen técnico de Alicia Ramírez. La máquina permanece en espera.',
-          badgeTone: 'primary',
+          badgeTone: 'warning',
+          category: 'qa_trigger',
+          isBlocking: true,
         },
         ...(activeOrder.traceability ?? []),
       ],
@@ -268,32 +345,289 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
     setToastMessage('✓ Muestra de Primera Pieza enviada a mesa de Calidad. Bloqueada hasta recibir dictamen de Alicia Ramírez.');
   };
 
-  // Simulación para el demo: Alicia aprueba primera pieza
-  const handleSimulateCalidadApproval = () => {
+  const handleSimulate2HoursRun = () => {
     if (!activeOrder) return;
     onUpdateOrder(activeOrder.id, {
       qualityGates: {
-        ...(activeOrder.qualityGates ?? { prepressReleased: true, finalAuditApproved: false }),
-        firstPieceReleased: true,
-        firstPieceRequested: false,
-        firstPieceApprover: 'Alicia Ramírez (Calidad)',
+        ...(activeOrder.qualityGates ?? { prepressReleased: true, finalAuditApproved: false, firstPieceReleased: true }),
+        periodicControlDue: true,
       },
-      status: 'En proceso',
       traceability: [
         {
-          id: `tr-qa-appr-${Date.now()}`,
+          id: `tr-2h-${Date.now()}`,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          user: 'Alicia Ramírez (Control de Calidad)',
-          station: 'Mesa de Inspección QA',
-          event: 'Primera Pieza CONFORME y Liberada',
-          notes: 'Registro milimétrico, tono Pantone 485C delta E < 1.2, lectura de código de barras grado A. Autorizado tiraje.',
-          badgeTone: 'success',
+          user: 'Sistema RTM',
+          station: activeTerminal.machineCode,
+          event: 'QA TRIGGER: Control periódico > 2h generado',
+          notes: 'Corrida continua supera 120 minutos. Requiere inspección en línea para evitar paro.',
+          badgeTone: 'warning',
+          category: 'qa_trigger',
+          isBlocking: false,
         },
         ...(activeOrder.traceability ?? []),
       ],
     });
-    setIsTimerRunning(true);
-    setToastMessage('✓ Calidad ha APROBADO la Primera Pieza. Máquina autorizada para arrancar tiraje a velocidad nominal.');
+    setToastMessage('⚠️ Alerta QA: Corrida supera 2 horas continuas sin validación. Control periódico vencido.');
+  };
+
+  const handleRequestPeriodicControl = () => {
+    if (!activeOrder) return;
+    onUpdateOrder(activeOrder.id, {
+      qualityGates: {
+        ...(activeOrder.qualityGates ?? { prepressReleased: true, finalAuditApproved: false, firstPieceReleased: true }),
+        periodicControlRequested: true,
+      },
+      traceability: [
+        {
+          id: `tr-req2h-${Date.now()}`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          user: activeTerminal.assignedOperator.name,
+          station: activeTerminal.machineCode,
+          event: 'Solicitud de Control Periódico > 2h enviada a Calidad',
+          notes: 'Inspector asignado en piso notificado para muestreo en línea.',
+          badgeTone: 'primary',
+          category: 'production',
+        },
+        ...(activeOrder.traceability ?? []),
+      ],
+    });
+    setToastMessage('✓ Solicitud de control periódico >2h enviada a Alicia Ramírez.');
+  };
+
+  const handleConfirmBobbinChange = () => {
+    if (!activeOrder) return;
+    setIsTimerRunning(false);
+    onUpdateOrder(activeOrder.id, {
+      qualityGates: {
+        ...(activeOrder.qualityGates ?? { prepressReleased: true, finalAuditApproved: false, firstPieceReleased: true }),
+        bobbinChangePending: true,
+        bobbinOldLot,
+        bobbinNewLot,
+      },
+      traceability: [
+        {
+          id: `tr-bob-${Date.now()}`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          user: activeTerminal.assignedOperator.name,
+          station: activeTerminal.machineCode,
+          event: 'QA TRIGGER: Cambio de bobina registrado',
+          notes: `Bobina anterior: ${bobbinOldLot} -> Nueva bobina: ${bobbinNewLot}. Requiere validación QA de arranque.`,
+          badgeTone: 'warning',
+          category: 'qa_trigger',
+          isBlocking: true,
+        },
+        ...(activeOrder.traceability ?? []),
+      ],
+    });
+    setIsBobbinModalOpen(false);
+    setToastMessage('⚠️ Cambio de bobina registrado. La corrida queda en espera de validación de arranque por Calidad.');
+  };
+
+  const handleConfirmShiftDelivery = () => {
+    if (!activeOrder) return;
+    onUpdateOrder(activeOrder.id, {
+      qualityGates: {
+        ...(activeOrder.qualityGates ?? { prepressReleased: true, finalAuditApproved: false, firstPieceReleased: true }),
+        shiftChangePending: true,
+        shiftDeliveredAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      },
+      traceability: [
+        {
+          id: `tr-shift-${Date.now()}`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          user: `${activeTerminal.assignedOperator.name} (Entrega Turno A)`,
+          station: activeTerminal.machineCode,
+          event: 'QA TRIGGER: Cambio de turno (14:00 hrs)',
+          notes: `Entrega a Turno B. Acumulado: ${activeOrder.good?.toLocaleString()} buenas / ${activeOrder.scrap} scrap. Requiere validación de continuidad.`,
+          badgeTone: 'warning',
+          category: 'qa_trigger',
+          isBlocking: false,
+        },
+        ...(activeOrder.traceability ?? []),
+      ],
+    });
+    setIsShiftModalOpen(false);
+    setToastMessage('✓ Turno entregado a Turno B. Notificación de control de continuidad enviada a Calidad.');
+  };
+
+  const handleApproveTrigger = (
+    triggerType:
+      | 'first_piece'
+      | 'periodic_control'
+      | 'bobbin_change'
+      | 'machine_adjustment'
+      | 'shift_change'
+      | 'power_outage'
+      | 'final_audit'
+  ) => {
+    if (!activeOrder) return;
+    const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    if (triggerType === 'first_piece') {
+      onUpdateOrder(activeOrder.id, {
+        qualityGates: {
+          ...(activeOrder.qualityGates ?? { prepressReleased: true, finalAuditApproved: false }),
+          firstPieceReleased: true,
+          firstPieceRequested: false,
+          firstPieceApprover: 'Alicia Ramírez (Calidad)',
+        },
+        status: 'En proceso',
+        traceability: [
+          {
+            id: `tr-qa-1st-${Date.now()}`,
+            timestamp: nowTime,
+            user: 'Alicia Ramírez (Control de Calidad)',
+            station: 'Mesa de Inspección QA',
+            event: 'CALIDAD: Primera pieza liberada',
+            notes: 'Muestra conforme. Registro 0.05 mm, Delta E < 1.2, código de barras Grado A. Autorizado arranque.',
+            badgeTone: 'success',
+            category: 'quality',
+          },
+          ...(activeOrder.traceability ?? []),
+        ],
+      });
+      setIsTimerRunning(true);
+      setToastMessage('✓ Calidad ha APROBADO la Primera Pieza. Máquina autorizada para continuar tiraje.');
+    } else if (triggerType === 'periodic_control') {
+      onUpdateOrder(activeOrder.id, {
+        qualityGates: {
+          ...(activeOrder.qualityGates ?? { prepressReleased: true, finalAuditApproved: false, firstPieceReleased: true }),
+          periodicControlDue: false,
+          periodicControlRequested: false,
+        },
+        traceability: [
+          {
+            id: `tr-qa-2h-${Date.now()}`,
+            timestamp: nowTime,
+            user: 'Alicia Ramírez (Control de Calidad)',
+            station: activeTerminal.machineCode,
+            event: 'CALIDAD: Control > 2h conforme',
+            notes: 'Muestreo en línea de 1,500 piezas sin desviación cromática ni descalce. Producción continúa.',
+            badgeTone: 'success',
+            category: 'quality',
+          },
+          ...(activeOrder.traceability ?? []),
+        ],
+      });
+      setToastMessage('✓ Calidad ha liberado el Control > 2h. Corrida autorizada.');
+    } else if (triggerType === 'bobbin_change') {
+      onUpdateOrder(activeOrder.id, {
+        qualityGates: {
+          ...(activeOrder.qualityGates ?? { prepressReleased: true, finalAuditApproved: false, firstPieceReleased: true }),
+          bobbinChangePending: false,
+        },
+        status: 'En proceso',
+        traceability: [
+          {
+            id: `tr-qa-bob-${Date.now()}`,
+            timestamp: nowTime,
+            user: 'Alicia Ramírez (Control de Calidad)',
+            station: activeTerminal.machineCode,
+            event: 'CALIDAD: Validación cambio de bobina aprobada',
+            notes: `Tratamiento corona y anclaje UV validados en bobina ${activeOrder.qualityGates?.bobbinNewLot || bobbinNewLot}. Autorizado tiraje continuo.`,
+            badgeTone: 'success',
+            category: 'quality',
+          },
+          ...(activeOrder.traceability ?? []),
+        ],
+      });
+      setIsTimerRunning(true);
+      setToastMessage('✓ Bobina validada y liberada por Calidad. Tiraje reanudado.');
+    } else if (triggerType === 'machine_adjustment') {
+      onUpdateOrder(activeOrder.id, {
+        qualityGates: {
+          ...(activeOrder.qualityGates ?? { prepressReleased: true, finalAuditApproved: false, firstPieceReleased: true }),
+          machineAdjustmentPending: false,
+        },
+        status: 'En proceso',
+        traceability: [
+          {
+            id: `tr-qa-adj-${Date.now()}`,
+            timestamp: nowTime,
+            user: 'Alicia Ramírez (Control de Calidad)',
+            station: activeTerminal.machineCode,
+            event: 'CALIDAD: Ajuste de máquina validado conforme',
+            notes: 'Muestra testigo post-ajuste liberada. Registro y troquel dentro de tolerancia estándar.',
+            badgeTone: 'success',
+            category: 'quality',
+          },
+          ...(activeOrder.traceability ?? []),
+        ],
+      });
+      setIsTimerRunning(true);
+      setToastMessage('✓ Ajuste validado por Calidad. Máquina liberada de HOLD.');
+    } else if (triggerType === 'shift_change') {
+      onUpdateOrder(activeOrder.id, {
+        qualityGates: {
+          ...(activeOrder.qualityGates ?? { prepressReleased: true, finalAuditApproved: false, firstPieceReleased: true }),
+          shiftChangePending: false,
+        },
+        traceability: [
+          {
+            id: `tr-qa-shift-${Date.now()}`,
+            timestamp: nowTime,
+            user: 'Alicia Ramírez (Control de Calidad)',
+            station: activeTerminal.machineCode,
+            event: 'CALIDAD: Continuidad de proceso verificada',
+            notes: 'Relevo Turno A a Turno B conforme. Parámetros de máquina y muestra testigo aprobados.',
+            badgeTone: 'success',
+            category: 'quality',
+          },
+          ...(activeOrder.traceability ?? []),
+        ],
+      });
+      setToastMessage('✓ Continuidad de proceso verificada por Calidad para Turno B.');
+    } else if (triggerType === 'power_outage') {
+      onUpdateOrder(activeOrder.id, {
+        qualityGates: {
+          ...(activeOrder.qualityGates ?? { prepressReleased: true, finalAuditApproved: false, firstPieceReleased: true }),
+          powerOutagePending: false,
+        },
+        status: 'En proceso',
+        traceability: [
+          {
+            id: `tr-qa-power-${Date.now()}`,
+            timestamp: nowTime,
+            user: 'Alicia Ramírez + Mantenimiento',
+            station: activeTerminal.machineCode,
+            event: 'CALIDAD: Reinicio tras corte eléctrico validado',
+            notes: 'Verificación de estabilización de temperaturas de curado UV y registro de línea.',
+            badgeTone: 'success',
+            category: 'quality',
+          },
+          ...(activeOrder.traceability ?? []),
+        ],
+      });
+      setIsTimerRunning(true);
+      setToastMessage('✓ Reinicio post-corte eléctrico aprobado por Calidad. Máquina liberada.');
+    } else if (triggerType === 'final_audit') {
+      onUpdateOrder(activeOrder.id, {
+        qualityGates: {
+          ...(activeOrder.qualityGates ?? { prepressReleased: true, firstPieceReleased: true }),
+          finalAuditApproved: true,
+          finalAuditRequested: false,
+        },
+        status: 'Lista para producir',
+        traceability: [
+          {
+            id: `tr-qa-fin-${Date.now()}`,
+            timestamp: nowTime,
+            user: 'Alicia Ramírez (Control de Calidad)',
+            station: 'Mesa de Calidad PT',
+            event: 'CALIDAD: Auditoría final liberada · Aprobado PT',
+            notes: 'LOTE LIBERADO PARA PRODUCTO TERMINADO bajo norma AQL 0.65. Certificado emitido.',
+            badgeTone: 'success',
+            category: 'quality',
+          },
+          ...(activeOrder.traceability ?? []),
+        ],
+      });
+      setToastMessage('✓ LOTE LIBERADO PARA PRODUCTO TERMINADO por Alicia Ramírez.');
+    }
+  };
+
+  const handleSimulateCalidadApproval = () => {
+    handleApproveTrigger('first_piece');
   };
 
   const handleStartProduction = () => {
@@ -360,7 +694,7 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
       operator: activeTerminal.assignedOperator.name,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       quantity: scrapQty,
-      unit: activeTerminal.area === 'Flexografía' ? 'Etiquetas' : 'Pliegos',
+      unit: scrapUom,
       type: scrapType,
       category4M: scrapCategory4M,
       reason: scrapReason,
@@ -379,9 +713,9 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           user: activeTerminal.assignedOperator.name,
           station: activeTerminal.machineCode,
-          event: `Reporte de Scrap: +${scrapQty.toLocaleString()} ejs (${scrapType} · 4M: ${scrapCategory4M})`,
-          notes: `Razón: ${scrapReason} | Acumulado merma: ${newScrap.toLocaleString()} ejs (${pctAfter}%). ${
-            pctAfter > 5.0 ? '¡ALERTA ROJA: Supera límite del 5.0%!' : 'Dentro de tolerancia.'
+          event: `Reporte de Scrap: +${scrapQty.toLocaleString()} ${scrapUom} (${scrapType} · 4M: ${scrapCategory4M})`,
+          notes: `Razón: ${scrapReason} | Merma reportada: ${scrapQty.toLocaleString()} ${scrapUom} | Acumulado merma: ${newScrap.toLocaleString()} (${pctAfter}%). ${
+            pctAfter > 5.0 ? '¡ALERTA ROJA: Supera límite del 5.0%! Notificación enviada a supervisor y auditor de calidad.' : 'Dentro de tolerancia presupuestada.'
           }`,
           badgeTone: pctAfter > 5.0 ? 'danger' : 'warning',
         },
@@ -392,10 +726,10 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
     setIsScrapModalOpen(false);
     if (pctAfter > 5.0) {
       setToastMessage(
-        `⚠️ ALERTA DE MERMA: El scrap de ${activeOrder.folio} subió a ${pctAfter}% (> 5.0%). Alerta enviada a Supervisor y Calidad.`
+        `⚠️ ALERTA DE MERMA: El scrap de ${activeOrder.folio} subió a ${pctAfter}% (> 5.0%). Notificación enviada a Supervisor de Turno y Calidad.`
       );
     } else {
-      setToastMessage(`✓ Scrap de ${scrapQty.toLocaleString()} ejs registrado correctamente.`);
+      setToastMessage(`✓ Scrap de ${scrapQty.toLocaleString()} ${scrapUom} registrado correctamente.`);
     }
   };
 
@@ -425,10 +759,54 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
 
     setDowntimeEvents((prev) => [newDt, ...prev]);
 
+    const isPowerOutage =
+      stopReason.toLowerCase().includes('corte') ||
+      stopReason.toLowerCase().includes('eléctr') ||
+      stopReason.toLowerCase().includes('luz') ||
+      stopReason.toLowerCase().includes('suministro');
+
+    const isAdjustmentQA = stopAffectsQuality === true;
+
     onUpdateOrder(activeOrder.id, {
       status: 'Detenida',
       stopMinutes: (activeOrder.stopMinutes || 0) + stopMinutes,
+      qualityGates: {
+        ...(activeOrder.qualityGates ?? { prepressReleased: true, finalAuditApproved: false, firstPieceReleased: true }),
+        machineAdjustmentPending: isAdjustmentQA,
+        machineAdjustmentReason: isAdjustmentQA ? `Ajuste en máquina: ${stopReason}` : undefined,
+        powerOutagePending: isPowerOutage,
+      },
       traceability: [
+        ...(isPowerOutage
+          ? [
+              {
+                id: `tr-pwr-${Date.now()}`,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                user: activeTerminal.assignedOperator.name,
+                station: activeTerminal.machineCode,
+                event: 'QA TRIGGER: Corte eléctrico / Reinicio de proceso',
+                notes: 'Reinicio tras corte de energía. Requiere verificación QA antes de reanudar tiraje pleno.',
+                badgeTone: 'danger' as const,
+                category: 'qa_trigger' as const,
+                isBlocking: true,
+              },
+            ]
+          : []),
+        ...(isAdjustmentQA
+          ? [
+              {
+                id: `tr-adj-${Date.now()}`,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                user: activeTerminal.assignedOperator.name,
+                station: activeTerminal.machineCode,
+                event: 'QA TRIGGER: Ajuste relevante de máquina reportado',
+                notes: `El ajuste reportado (${stopReason}) afecta parámetros críticos. Producción detenida hasta validar nueva muestra.`,
+                badgeTone: 'danger' as const,
+                category: 'qa_trigger' as const,
+                isBlocking: true,
+              },
+            ]
+          : []),
         {
           id: `tr-dt-${Date.now()}`,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -436,7 +814,8 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
           station: activeTerminal.machineCode,
           event: `Paro Operativo Cód. ${stopCode} (${stopMinutes} min) - 4M: ${stopCategory4M}`,
           notes: `${descMap[stopCode]}: ${stopReason}`,
-          badgeTone: 'danger',
+          badgeTone: 'danger' as const,
+          category: 'production' as const,
         },
         ...(activeOrder.traceability ?? []),
       ],
@@ -444,7 +823,12 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
 
     setIsTimerRunning(false);
     setIsIncidenceModalOpen(false);
-    setToastMessage(`Paro Cód. ${stopCode} (${stopMinutes} min) registrado. Máquina en estado Detenida.`);
+    setStopAffectsQuality(null);
+    setToastMessage(
+      isAdjustmentQA || isPowerOutage
+        ? `⚠️ Paro Cód. ${stopCode} registrado. REVISIÓN QA REQUERIDA antes de continuar corrida.`
+        : `Paro Cód. ${stopCode} (${stopMinutes} min) registrado. Máquina en estado Detenida.`
+    );
   };
 
   const handleFinishOperation = () => {
@@ -466,11 +850,27 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
       currentStepIndex >= routingSteps.length - 1;
 
     if (isLastStep) {
-      // Solicitar auditoría final de calidad
+      // Solicitar auditoría final de calidad obligatoria
       onUpdateOrder(activeOrder.id, {
         status: 'Pendiente de calidad',
-        progress: 98,
+        progress: 100,
+        qualityGates: {
+          ...(activeOrder.qualityGates ?? { prepressReleased: true, firstPieceReleased: true }),
+          finalAuditApproved: false,
+          finalAuditRequested: true,
+        },
         traceability: [
+          {
+            id: `tr-qa-fin-trig-${Date.now()}`,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            user: activeTerminal.assignedOperator.name,
+            station: activeTerminal.machineCode,
+            event: 'QA TRIGGER: Producción completada · Auditoría final obligatoria solicitada',
+            notes: `Tiraje completado con ${activeOrder.good?.toLocaleString()} buenas y ${activeOrder.scrap} scrap. Lote en espera de dictamen AQL 0.65 de Calidad antes de liberar a PT.`,
+            badgeTone: 'warning',
+            category: 'qa_trigger',
+            isBlocking: true,
+          },
           {
             id: `tr-fin-${Date.now()}`,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -479,12 +879,13 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
             event: 'Operación Final de Planta Terminada',
             notes: `Tiraje completado con ${activeOrder.good?.toLocaleString()} piezas buenas. Esperando Auditoría Final de Calidad y Embalaje.`,
             badgeTone: 'primary',
+            category: 'production',
           },
           ...(activeOrder.traceability ?? []),
         ],
       });
       setToastMessage(
-        `✓ Operación terminada para ${activeOrder.folio}. Enviada a mesa de Calidad para inspección final de lote.`
+        `✓ Producción completada. ⚠️ AUDITORÍA FINAL QA OBLIGATORIA solicitada a Alicia Ramírez antes de transferir a PT.`
       );
     } else {
       // Transferencia al siguiente paso de routing
@@ -976,78 +1377,292 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
                   </div>
                 </div>
 
-                {/* 1.3 QUALITY GATE: SOLICITUD Y DICTAMEN DE PRIMERA PIEZA (CALIDAD) */}
-                <div className="rounded-xl border border-theme-subtle bg-theme-surface p-4 space-y-3">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex items-center gap-2.5">
-                      <div
-                        className={`flex h-9 w-9 items-center justify-center rounded-xl ${
-                          activeOrder.qualityGates?.firstPieceReleased
-                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'
-                            : activeOrder.qualityGates?.firstPieceRequested
-                            ? 'bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 animate-pulse'
-                            : 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300'
-                        }`}
-                      >
-                        <ShieldCheck className="h-5 w-5" />
+                {/* 1.3.A BANNER DESTACADO: REVISIÓN QA REQUERIDA (Docs produccion-disparadores-qa-v13) */}
+                {activeQaTrigger && (
+                  <div className="rounded-2xl border-2 border-amber-400 dark:border-amber-600 bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-rose-500/10 p-4 sm:p-5 shadow-md animate-in zoom-in-95 space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500 text-white shadow-md shadow-amber-500/30 animate-pulse">
+                          <AlertTriangle className="h-6 w-6" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="rounded-md bg-amber-600 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
+                              ⚠ REVISIÓN QA REQUERIDA
+                            </span>
+                            <span className="font-mono text-xs font-bold text-amber-950 dark:text-amber-200">
+                              {activeOrder.folio} &middot; {activeTerminal.machineName}
+                            </span>
+                          </div>
+                          <h3 className="text-sm sm:text-base font-black text-amber-950 dark:text-amber-100 mt-1">
+                            Motivo: {activeQaTrigger.label}
+                          </h3>
+                          <p className="text-xs text-amber-900/90 dark:text-amber-300 leading-relaxed mt-0.5">
+                            {activeQaTrigger.desc}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Botones de acción del banner */}
+                      <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setToastMessage(`✓ Notificación prioritaria enviada a Alicia Ramírez (Calidad) para ${activeQaTrigger.label}.`);
+                          }}
+                          className="flex items-center gap-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 px-3.5 py-2 text-xs font-bold text-white shadow-sm transition-all"
+                        >
+                          <SendHorizontal className="h-4 w-4" /> Solicitar revisión QA
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleApproveTrigger(activeQaTrigger.key)}
+                          className="flex items-center gap-1.5 rounded-xl border border-emerald-500/50 bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/80 px-3 py-2 text-xs font-bold text-emerald-800 dark:text-emerald-200 transition-all shadow-xs cursor-pointer"
+                          title="Herramienta demo para simular dictamen aprobatorio de Calidad"
+                        >
+                          <Sparkles className="h-4 w-4 text-emerald-600" />
+                          <span>[Demo: Liberar QA]</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 1.3.B BLOQUE PERMANENTE: ESTADO DE CALIDAD Y DISPARADORES QA (Docs v13) */}
+                <div className="rounded-2xl border border-theme-subtle bg-theme-surface p-4 sm:p-5 space-y-4 shadow-xs">
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-theme-subtle pb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-theme-primary/10 text-theme-primary">
+                        <ShieldCheck className="h-4 w-4" />
                       </div>
                       <div>
-                        <div className="text-xs font-bold text-theme-main flex items-center gap-1.5">
-                          Quality Gate: Liberación de Primera Pieza (FM-CAL-004)
-                        </div>
-                        <p className="text-[11px] text-theme-muted">
-                          {activeOrder.qualityGates?.firstPieceReleased ? (
-                            <span className="text-emerald-600 dark:text-emerald-400 font-bold">
-                              ✓ Primera pieza Aprobada y Liberada por{' '}
-                              {activeOrder.qualityGates.firstPieceApprover || 'Alicia Ramírez (Calidad)'}.
-                            </span>
-                          ) : activeOrder.qualityGates?.firstPieceRequested ? (
-                            <span className="text-blue-600 dark:text-blue-400 font-bold">
-                              ⏳ Muestra enviada a mesa de Calidad. Esperando dictamen técnico de Alicia Ramírez...
-                            </span>
-                          ) : (
-                            <span>
-                              Termina el alistamiento y envía la primera muestra a Calidad antes de iniciar tiraje.
-                            </span>
-                          )}
-                        </p>
+                        <h3 className="text-xs font-black uppercase tracking-wider text-theme-main">
+                          Estado de Calidad y Disparadores QA
+                        </h3>
+                        <span className="text-[10px] text-theme-muted font-mono">
+                          Puntos de Control FM-CAL-004 &middot; Auditor asignado: Alicia Ramírez
+                        </span>
                       </div>
                     </div>
 
-                    {/* Botones de acción del gate */}
                     <div className="flex items-center gap-2">
-                      {!activeOrder.qualityGates?.firstPieceReleased && !activeOrder.qualityGates?.firstPieceRequested && (
-                        <button
-                          type="button"
-                          onClick={handleRequestFirstPiece}
-                          className="flex items-center gap-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 px-3.5 py-2 text-xs font-bold text-white shadow-xs transition-colors"
-                        >
-                          <SendHorizontal className="h-4 w-4" /> Solicitar Auditoría QA (1ra Pieza)
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        onClick={handleSimulate2HoursRun}
+                        className="rounded-xl border border-purple-300 dark:border-purple-800/60 bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 px-2.5 py-1 text-[11px] font-bold text-purple-700 dark:text-purple-300 flex items-center gap-1 transition-colors"
+                        title="Herramienta demo: simula que transcurrieron 2 horas de tiraje para disparar la alerta de control periódico"
+                      >
+                        <Clock className="h-3.5 w-3.5" /> [Demo: Simular +2h corrida]
+                      </button>
+                    </div>
+                  </div>
 
-                      {!activeOrder.qualityGates?.firstPieceReleased && activeOrder.qualityGates?.firstPieceRequested && (
-                        <div className="flex items-center gap-2">
-                          <span className="inline-flex items-center gap-1.5 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800 px-3 py-1.5 text-xs font-bold text-blue-700 dark:text-blue-300">
-                            <Clock className="h-3.5 w-3.5 animate-spin" /> En revisión por Alicia Ramírez
+                  {/* Grid de los 4 controles visibles principales */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                    {/* Control 1: Primera Pieza */}
+                    <div className="rounded-xl border border-theme-subtle bg-theme-muted/10 p-3.5 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase text-theme-muted">Primera Pieza</span>
+                        <span
+                          className={`rounded-full px-2 py-0.2 text-[9px] font-bold ${
+                            activeOrder.qualityGates?.firstPieceReleased
+                              ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                              : activeOrder.qualityGates?.firstPieceRequested
+                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300'
+                              : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
+                          }`}
+                        >
+                          {activeOrder.qualityGates?.firstPieceReleased
+                            ? '✓ Liberada'
+                            : activeOrder.qualityGates?.firstPieceRequested
+                            ? '⏳ En revisión'
+                            : '○ Pendiente'}
+                        </span>
+                      </div>
+                      <p className="text-[11px] font-medium text-theme-main leading-tight">
+                        {activeOrder.qualityGates?.firstPieceReleased ? (
+                          <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+                            ✓ {activeOrder.qualityGates.firstPieceApprover || 'Alicia Ramírez · 07:56'}
                           </span>
-                          {/* Botón rápido de demo para simular aprobación de Calidad */}
+                        ) : activeOrder.qualityGates?.firstPieceRequested ? (
+                          <span className="text-blue-600 dark:text-blue-400 font-bold">
+                            12 min esperando · Producción bloqueada
+                          </span>
+                        ) : (
+                          'Requiere primer tiro de muestra tras setup'
+                        )}
+                      </p>
+                      <div className="pt-1">
+                        {!activeOrder.qualityGates?.firstPieceReleased && !activeOrder.qualityGates?.firstPieceRequested && (
                           <button
                             type="button"
-                            onClick={handleSimulateCalidadApproval}
-                            className="rounded-xl border border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100"
-                            title="Simular dictamen conforme de Calidad"
+                            onClick={handleRequestFirstPiece}
+                            className="w-full rounded-lg bg-amber-500 hover:bg-amber-600 py-1.5 text-[11px] font-bold text-white shadow-2xs"
                           >
-                            [Demo: Aprobar QA]
+                            Solicitar QA (1ra Pieza)
                           </button>
-                        </div>
-                      )}
+                        )}
+                        {activeOrder.qualityGates?.firstPieceRequested && !activeOrder.qualityGates?.firstPieceReleased && (
+                          <button
+                            type="button"
+                            onClick={() => handleApproveTrigger('first_piece')}
+                            className="w-full rounded-lg bg-emerald-600 hover:bg-emerald-700 py-1.5 text-[11px] font-bold text-white shadow-2xs"
+                          >
+                            [Demo: Aprobar 1ra Pieza]
+                          </button>
+                        )}
+                        {activeOrder.qualityGates?.firstPieceReleased && (
+                          <span className="text-[10px] text-theme-muted block">
+                            Autorizado iniciar tiraje a velocidad nominal
+                          </span>
+                        )}
+                      </div>
+                    </div>
 
-                      {activeOrder.qualityGates?.firstPieceReleased && (
-                        <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 px-3 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
-                          <CheckCircle2 className="h-4 w-4" /> Autorizado para Tiraje
+                    {/* Control 2: Control > 2 Horas */}
+                    <div className="rounded-xl border border-theme-subtle bg-theme-muted/10 p-3.5 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase text-theme-muted">Control &gt; 2 Horas</span>
+                        <span
+                          className={`rounded-full px-2 py-0.2 text-[9px] font-bold ${
+                            activeOrder.qualityGates?.periodicControlDue
+                              ? 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 animate-pulse'
+                              : activeOrder.qualityGates?.periodicControlRequested
+                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300'
+                              : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                          }`}
+                        >
+                          {activeOrder.qualityGates?.periodicControlDue
+                            ? '⚠ VENCIDO'
+                            : activeOrder.qualityGates?.periodicControlRequested
+                            ? '⏳ Solicitado'
+                            : '● Vigente'}
                         </span>
-                      )}
+                      </div>
+                      <p className="text-[11px] font-medium text-theme-main leading-tight">
+                        {activeOrder.qualityGates?.periodicControlDue ? (
+                          <span className="text-rose-600 font-bold">
+                            Corrida supera 2h desde última validación
+                          </span>
+                        ) : activeOrder.qualityGates?.periodicControlRequested ? (
+                          <span className="text-blue-600 font-bold">
+                            En espera de inspector en línea
+                          </span>
+                        ) : (
+                          'Próximo control: 10:05 (Faltan 18 min)'
+                        )}
+                      </p>
+                      <div className="pt-1">
+                        {activeOrder.qualityGates?.periodicControlDue ? (
+                          <button
+                            type="button"
+                            onClick={handleRequestPeriodicControl}
+                            className="w-full rounded-lg bg-rose-600 hover:bg-rose-700 py-1.5 text-[11px] font-bold text-white shadow-2xs"
+                          >
+                            Solicitar Control QA
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={handleSimulate2HoursRun}
+                            className="w-full rounded-lg border border-theme-subtle bg-theme-surface hover:bg-theme-muted/40 py-1.5 text-[11px] font-bold text-theme-muted hover:text-theme-main"
+                          >
+                            Forzar alerta &gt;2h (Demo)
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Control 3: Cambio de Bobina */}
+                    <div className="rounded-xl border border-theme-subtle bg-theme-muted/10 p-3.5 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase text-theme-muted">Cambio de Bobina</span>
+                        <span
+                          className={`rounded-full px-2 py-0.2 text-[9px] font-bold ${
+                            activeOrder.qualityGates?.bobbinChangePending
+                              ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
+                              : 'bg-theme-muted/60 text-theme-muted'
+                          }`}
+                        >
+                          {activeOrder.qualityGates?.bobbinChangePending ? '⚠ Requiere QA' : '○ En espera'}
+                        </span>
+                      </div>
+                      <p className="text-[11px] font-medium text-theme-main leading-tight">
+                        {activeOrder.qualityGates?.bobbinChangePending ? (
+                          <span className="text-amber-700 dark:text-amber-300 font-bold">
+                            Validación de arranque pendiente ({activeOrder.qualityGates.bobbinNewLot || 'Lote nuevo'})
+                          </span>
+                        ) : activeTerminal.area === 'Flexografía' ? (
+                          'Bobina activa: BOB-7410 (Semigloss 2.4 mil)'
+                        ) : (
+                          'Aplica para máquinas rotativas Flexo'
+                        )}
+                      </p>
+                      <div className="pt-1">
+                        {activeTerminal.area === 'Flexografía' && (
+                          <button
+                            type="button"
+                            onClick={() => setIsBobbinModalOpen(true)}
+                            className="w-full rounded-lg border border-purple-300 dark:border-purple-800/60 bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 py-1.5 text-[11px] font-bold text-purple-800 dark:text-purple-300"
+                          >
+                            + Registrar Cambio Bobina
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Control 4: Auditoría Final */}
+                    <div className="rounded-xl border border-theme-subtle bg-theme-muted/10 p-3.5 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase text-theme-muted">Auditoría Final</span>
+                        <span
+                          className={`rounded-full px-2 py-0.2 text-[9px] font-bold ${
+                            activeOrder.qualityGates?.finalAuditApproved
+                              ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                              : activeOrder.qualityGates?.finalAuditRequested
+                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 animate-pulse'
+                              : 'bg-theme-muted/60 text-theme-muted'
+                          }`}
+                        >
+                          {activeOrder.qualityGates?.finalAuditApproved
+                            ? '✓ Liberada'
+                            : activeOrder.qualityGates?.finalAuditRequested
+                            ? '⏳ En dictamen'
+                            : '○ Pendiente'}
+                        </span>
+                      </div>
+                      <p className="text-[11px] font-medium text-theme-main leading-tight">
+                        {activeOrder.qualityGates?.finalAuditApproved ? (
+                          <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+                            ✓ Lote liberado para Producto Terminado
+                          </span>
+                        ) : activeOrder.qualityGates?.finalAuditRequested ? (
+                          <span className="text-blue-600 dark:text-blue-400 font-bold">
+                            Esperando inspección AQL 0.65 de lote
+                          </span>
+                        ) : (
+                          'Se dispara al completar el tiraje programado'
+                        )}
+                      </p>
+                      <div className="pt-1">
+                        {activeOrder.qualityGates?.finalAuditRequested ? (
+                          <button
+                            type="button"
+                            onClick={() => handleApproveTrigger('final_audit')}
+                            className="w-full rounded-lg bg-emerald-600 hover:bg-emerald-700 py-1.5 text-[11px] font-bold text-white shadow-2xs"
+                          >
+                            [Demo: Liberar Lote PT]
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setIsFinishModalOpen(true)}
+                            className="w-full rounded-lg border border-theme-subtle bg-theme-surface hover:bg-theme-muted/40 py-1.5 text-[11px] font-bold text-theme-muted hover:text-theme-main"
+                          >
+                            Finalizar y Solicitar PT
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1240,6 +1855,27 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
                     className="flex items-center gap-1.5 rounded-xl border border-theme-subtle bg-theme-surface hover:bg-theme-muted/30 px-3.5 py-2.5 text-xs font-bold text-theme-main transition-colors"
                   >
                     <AlertOctagon className="h-4 w-4 text-amber-500" /> Reportar Paro 4M
+                  </button>
+
+                  {/* Cambio de Bobina (Flexo) */}
+                  {activeTerminal.area === 'Flexografía' && (
+                    <button
+                      type="button"
+                      onClick={() => setIsBobbinModalOpen(true)}
+                      className="flex items-center gap-1.5 rounded-xl border border-purple-300 dark:border-purple-800/60 bg-purple-50 dark:bg-purple-950/30 hover:bg-purple-100 dark:hover:bg-purple-900/50 px-3.5 py-2.5 text-xs font-bold text-purple-800 dark:text-purple-300 transition-colors"
+                    >
+                      <Disc className="h-4 w-4 text-purple-600" /> + Cambio de Bobina
+                    </button>
+                  )}
+
+                  {/* Relevo de Turno 14:00 */}
+                  <button
+                    type="button"
+                    onClick={() => setIsShiftModalOpen(true)}
+                    className="flex items-center gap-1.5 rounded-xl border border-theme-subtle bg-theme-surface hover:bg-theme-muted/30 px-3.5 py-2.5 text-xs font-bold text-theme-main transition-colors"
+                    title="Entrega de guardia Turno A a Turno B"
+                  >
+                    <UserCheck className="h-4 w-4 text-blue-500" /> Relevo de Turno (14:00)
                   </button>
 
                   {/* Solicitar Material Extra */}
@@ -1699,131 +2335,284 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
       )}
 
       {/* ======================================================================= */}
-      {/* MODAL 2: REPORTAR SCRAP / MERMA CON CATEGORIZACIÓN 4M (P0 CRÍTICO)      */}
+      {/* MODAL 2: REPORTAR SCRAP / MERMA CON CATEGORIZACIÓN 4M & UOM CONTEXTUAL   */}
       {/* ======================================================================= */}
-      {isScrapModalOpen && activeOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in">
-          <div className="w-full max-w-lg rounded-2xl border border-theme-subtle bg-theme-surface p-5 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-theme-subtle">
-              <h3 className="text-sm font-black text-rose-600 uppercase tracking-wider flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4" /> Reportar Scrap / Merma de Producción
-              </h3>
-              <button
-                type="button"
-                onClick={() => setIsScrapModalOpen(false)}
-                className="text-theme-muted hover:text-theme-main"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
+      {isScrapModalOpen && activeOrder && (() => {
+        const projectedScrapTotal = (activeOrder.scrap || 0) + scrapQty;
+        const projectedTotalProcessed = (activeOrder.good || 0) + projectedScrapTotal;
+        const projectedScrapPct = projectedTotalProcessed > 0
+          ? Number(((projectedScrapTotal / projectedTotalProcessed) * 100).toFixed(2))
+          : 0;
+        const isExceeded = projectedScrapPct > 5.0;
+        const remainingMargin = Number((5.0 - projectedScrapPct).toFixed(2));
+        const marginBarPct = Math.min(100, Math.max(0, Math.round((projectedScrapPct / 5.0) * 100)));
 
-            <div className="space-y-3 text-xs">
-              <div className="p-2.5 rounded-xl bg-theme-muted/20 border border-theme-subtle flex justify-between">
-                <div>
-                  <span className="text-theme-muted text-[10px] block">Orden / Cliente</span>
-                  <b className="font-mono text-theme-main">{activeOrder.folio}</b> · {activeOrder.cliente}
+        const availableUoms: { uom: ScrapUom; label: string; desc: string }[] =
+          activeTerminal.area === 'Flexografía'
+            ? [
+                { uom: 'm', label: 'Metros (m)', desc: 'Metros lineales bobina' },
+                { uom: 'kg', label: 'Kilogramos (kg)', desc: 'Peso sustrato/recorte' },
+                { uom: 'piezas', label: 'Piezas / Ejs', desc: 'Etiquetas troqueladas' },
+                { uom: 'rollos', label: 'Rollos', desc: 'Rollos no conformes' },
+                { uom: 'ft', label: 'Pies (ft)', desc: 'Pies lineales' },
+              ]
+            : [
+                { uom: 'pliegos', label: 'Pliegos', desc: 'Hojas / maculaturas' },
+                { uom: 'piezas', label: 'Piezas / Ejs', desc: 'Ejemplares terminados' },
+                { uom: 'kg', label: 'Kilogramos (kg)', desc: 'Recortes / sobrantes' },
+              ];
+
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in">
+            <div className="w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-2xl border border-theme-subtle bg-theme-surface p-5 shadow-2xl space-y-4">
+              {/* Header */}
+              <div className="flex items-center justify-between pb-2 border-b border-theme-subtle">
+                <div className="flex items-center gap-2.5">
+                  <div className={`p-2 rounded-xl ${isExceeded ? 'bg-rose-500/20 text-rose-600' : 'bg-amber-500/20 text-amber-600'}`}>
+                    <AlertTriangle className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black text-theme-main uppercase tracking-wider">
+                      Reportar Scrap / Merma de Proceso
+                    </h3>
+                    <p className="text-[11px] text-theme-muted">
+                      {activeTerminal.machineCode} · {activeTerminal.machineName} ({activeTerminal.area})
+                    </p>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <span className="text-theme-muted text-[10px] block">Merma Actual</span>
-                  <b className="font-mono text-theme-main">{activeOrder.scrap} ejs ({currentScrapPercent}%)</b>
-                </div>
-              </div>
-
-              {/* Cantidad de Scrap */}
-              <div>
-                <label className="text-theme-muted block font-bold mb-1">
-                  Cantidad desperdiciada (unidades/etiquetas):
-                </label>
-                <input
-                  type="number"
-                  value={scrapQty}
-                  onChange={(e) => setScrapQty(parseInt(e.target.value, 10) || 0)}
-                  className="w-full rounded-xl border border-rose-300 bg-rose-50/20 dark:bg-rose-950/20 px-3.5 py-2 font-mono text-base font-bold text-theme-main focus:ring-2 focus:ring-rose-500"
-                />
-              </div>
-
-              {/* Categoría 4M */}
-              <div>
-                <label className="text-theme-muted block font-bold mb-1">
-                  Causa Raíz Ishikawa (Categoría 4M):
-                </label>
-                <div className="grid grid-cols-4 gap-2">
-                  {(['Máquina', 'Material', 'Mano de obra', 'Método'] as const).map((cat) => (
-                    <button
-                      key={cat}
-                      type="button"
-                      onClick={() => setScrapCategory4M(cat)}
-                      className={`py-2 px-1 text-center rounded-xl border text-xs font-bold transition-all ${
-                        scrapCategory4M === cat
-                          ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 shadow-2xs'
-                          : 'border-theme-subtle bg-theme-surface text-theme-muted hover:bg-theme-muted/30'
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Tipo de Merma */}
-              <div>
-                <label className="text-theme-muted block font-bold mb-1">Tipo de Evento:</label>
-                <select
-                  value={scrapType}
-                  onChange={(e) => setScrapType(e.target.value as any)}
-                  className="w-full rounded-xl border border-theme-subtle bg-theme-surface px-3 py-2 text-xs font-bold text-theme-main"
+                <button
+                  type="button"
+                  onClick={() => setIsScrapModalOpen(false)}
+                  className="rounded-lg p-1 text-theme-muted hover:bg-theme-muted/20 hover:text-theme-main"
                 >
-                  <option value="Ajuste de registro">Ajuste de registro (descalce)</option>
-                  <option value="Merma de arranque">Merma de arranque (pruebas de color)</option>
-                  <option value="Merma de proceso">Merma de proceso en tiraje</option>
-                  <option value="Variación de tono">Variación de tono / viscosidad de tinta</option>
-                  <option value="Materia prima defectuosa">Materia prima defectuosa (burbuja/ondulación)</option>
-                  <option value="Falla mecánica">Falla mecánica / desajuste de racleta</option>
-                </select>
+                  <X className="h-4 w-4" />
+                </button>
               </div>
 
-              {/* Motivo específico */}
-              <div>
-                <label className="text-theme-muted block font-bold mb-1">Razón Técnica Detallada:</label>
-                <input
-                  type="text"
-                  value={scrapReason}
-                  onChange={(e) => setScrapReason(e.target.value)}
-                  className="w-full rounded-xl border border-theme-subtle bg-theme-surface px-3 py-2 text-xs text-theme-main"
-                />
+              {/* Banner Didáctico: Remanente ≠ Material Extra ≠ Scrap */}
+              <div className="rounded-xl border border-sky-500/30 bg-sky-50/40 dark:bg-sky-950/20 p-3 text-[11px] text-sky-900 dark:text-sky-300 space-y-1">
+                <div className="flex items-center gap-1.5 font-bold text-sky-800 dark:text-sky-200">
+                  <Sparkles className="h-3.5 w-3.5 text-sky-600 dark:text-sky-400" />
+                  <span>Regla Operativa RTM — Distinción de Materiales:</span>
+                </div>
+                <p className="leading-relaxed">
+                  <b>Scrap:</b> Merma física irreversible por descalce o falla. <span className="opacity-75">|</span> <b>Remanente:</b> Bobina o papel útil devuelto a almacén al cerrar OP. <span className="opacity-75">|</span> <b>Material Extra:</b> Solicitud adicional de almacén para completar tiraje.
+                </p>
               </div>
 
-              {/* Comentarios del operador */}
-              <div>
-                <label className="text-theme-muted block font-bold mb-1">Acción Correctiva en Máquina:</label>
-                <textarea
-                  value={scrapComment}
-                  onChange={(e) => setScrapComment(e.target.value)}
-                  rows={2}
-                  className="w-full rounded-xl border border-theme-subtle bg-theme-surface px-3 py-2 text-xs text-theme-main"
-                />
-              </div>
-            </div>
+              {/* Comparador de Margen e Impacto 5.0% */}
+              <div className={`rounded-xl border p-3.5 space-y-2.5 ${
+                isExceeded
+                  ? 'border-rose-500/50 bg-rose-50/50 dark:bg-rose-950/30'
+                  : 'border-theme-subtle bg-theme-muted/15'
+              }`}>
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="rounded-lg bg-theme-surface p-2 border border-theme-subtle">
+                    <span className="text-[10px] text-theme-muted block font-medium">Scrap Actual OP</span>
+                    <b className="text-xs font-mono text-theme-main">
+                      {formatNumber(activeOrder.scrap || 0)} <span className="text-[10px] font-normal">{scrapUom}</span>
+                    </b>
+                    <span className="text-[10px] font-bold text-theme-muted block mt-0.5">
+                      {currentScrapPercent.toFixed(2)}%
+                    </span>
+                  </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-theme-subtle">
-              <button
-                type="button"
-                onClick={() => setIsScrapModalOpen(false)}
-                className="rounded-xl border border-theme-subtle px-4 py-2 text-xs font-bold text-theme-muted hover:bg-theme-muted/40"
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                onClick={handleSaveScrapEvent}
-                className="rounded-xl bg-rose-600 hover:bg-rose-700 px-4 py-2 text-xs font-bold text-white shadow-xs"
-              >
-                Registrar Scrap 4M
-              </button>
+                  <div className={`rounded-lg p-2 border ${
+                    isExceeded
+                      ? 'bg-rose-100/70 dark:bg-rose-900/40 border-rose-400 text-rose-900 dark:text-rose-200'
+                      : 'bg-theme-surface border-theme-subtle'
+                  }`}>
+                    <span className="text-[10px] text-theme-muted block font-medium">Proyectado con Evento</span>
+                    <b className={`text-xs font-mono ${isExceeded ? 'text-rose-600 dark:text-rose-400' : 'text-theme-main'}`}>
+                      {formatNumber(projectedScrapTotal)} <span className="text-[10px] font-normal">{scrapUom}</span>
+                    </b>
+                    <span className={`text-[10px] font-black block mt-0.5 ${isExceeded ? 'text-rose-600' : 'text-amber-600'}`}>
+                      {projectedScrapPct.toFixed(2)}%
+                    </span>
+                  </div>
+
+                  <div className="rounded-lg bg-theme-surface p-2 border border-theme-subtle">
+                    <span className="text-[10px] text-theme-muted block font-medium">Margen vs 5.0% Límite</span>
+                    <b className={`text-xs font-mono font-bold ${remainingMargin >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                      {remainingMargin >= 0 ? `+${remainingMargin.toFixed(2)}%` : `${remainingMargin.toFixed(2)}%`}
+                    </b>
+                    <span className="text-[10px] text-theme-muted block mt-0.5">
+                      {isExceeded ? '🔴 Exceso Límite' : '🟢 En Tolerancia'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Barra de progreso de consumo de margen */}
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[10px] text-theme-muted font-mono">
+                    <span>Consumo de margen presupuestado (5.0% máx):</span>
+                    <span className={isExceeded ? 'font-bold text-rose-600' : 'font-bold text-theme-main'}>
+                      {projectedScrapPct.toFixed(2)}% / 5.00%
+                    </span>
+                  </div>
+                  <div className="h-2 w-full rounded-full bg-theme-muted/30 overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-300 ${
+                        isExceeded
+                          ? 'bg-rose-600'
+                          : projectedScrapPct > 3.8
+                          ? 'bg-amber-500'
+                          : 'bg-emerald-500'
+                      }`}
+                      style={{ width: `${Math.min(100, (projectedScrapPct / 5.0) * 100)}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Alerta si sobrepasa 5.0% */}
+              {isExceeded && (
+                <div className="rounded-xl border border-rose-500/60 bg-rose-500/15 p-3 text-xs text-rose-800 dark:text-rose-200 flex items-start gap-2.5 animate-in fade-in">
+                  <AlertOctagon className="h-4 w-4 shrink-0 text-rose-600 mt-0.5" />
+                  <div className="space-y-0.5">
+                    <p className="font-bold">¡ALERTA CRÍTICA: La merma superará la tolerancia presupuestada del 5.0%!</p>
+                    <p className="text-[11px] opacity-90">
+                      Este registro emitirá una notificación obligatoria al Supervisor de Turno y Auditor de Calidad para firma de control y análisis de causa raíz.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Formulario de captura */}
+              <div className="space-y-3 text-xs">
+                {/* Cantidad y Selector de UOM */}
+                <div className="space-y-1.5">
+                  <label className="text-theme-muted block font-bold">
+                    Cantidad Desperdiciada & Unidad de Medida (UOM):
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="number"
+                      min={1}
+                      value={scrapQty}
+                      onChange={(e) => setScrapQty(Math.max(0, parseInt(e.target.value, 10) || 0))}
+                      className="flex-1 rounded-xl border border-theme-subtle bg-theme-surface px-3.5 py-2 font-mono text-base font-bold text-theme-main focus:ring-2 focus:ring-rose-500"
+                    />
+                  </div>
+
+                  {/* Selector visual contextual de UOM */}
+                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 pt-1">
+                    {availableUoms.map((opt) => (
+                      <button
+                        key={opt.uom}
+                        type="button"
+                        onClick={() => setScrapUom(opt.uom)}
+                        className={`rounded-lg border px-2 py-1.5 text-left transition-all ${
+                          scrapUom === opt.uom
+                            ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 font-bold shadow-2xs'
+                            : 'border-theme-subtle bg-theme-surface text-theme-muted hover:bg-theme-muted/20'
+                        }`}
+                      >
+                        <span className="block text-[11px]">{opt.label}</span>
+                        <span className="block text-[9px] opacity-75 font-normal truncate">{opt.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Categoría 4M Ishikawa */}
+                <div>
+                  <label className="text-theme-muted block font-bold mb-1">
+                    Causa Raíz Ishikawa (4M):
+                  </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {(['Máquina', 'Material', 'Mano de obra', 'Método'] as const).map((cat) => (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => setScrapCategory4M(cat)}
+                        className={`py-2 px-2 text-center rounded-xl border text-xs font-bold transition-all ${
+                          scrapCategory4M === cat
+                            ? 'border-rose-500 bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 shadow-2xs'
+                            : 'border-theme-subtle bg-theme-surface text-theme-muted hover:bg-theme-muted/30'
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tipo de Merma */}
+                <div>
+                  <label className="text-theme-muted block font-bold mb-1">Tipo de Evento:</label>
+                  <select
+                    value={scrapType}
+                    onChange={(e) => setScrapType(e.target.value as any)}
+                    className="w-full rounded-xl border border-theme-subtle bg-theme-surface px-3 py-2 text-xs font-bold text-theme-main"
+                  >
+                    <option value="Ajuste de registro">Ajuste de registro (descalce)</option>
+                    <option value="Merma de arranque">Merma de arranque (pruebas de color / tiro inicial)</option>
+                    <option value="Merma de proceso">Merma de proceso en tiraje continuo</option>
+                    <option value="Variación de tono">Variación de tono / viscosidad de tinta</option>
+                    <option value="Materia prima defectuosa">Materia prima defectuosa (burbuja / ondulación)</option>
+                    <option value="Falla mecánica">Falla mecánica / desajuste de racleta</option>
+                  </select>
+                </div>
+
+                {/* Motivo específico */}
+                <div>
+                  <label className="text-theme-muted block font-bold mb-1">Razón Técnica Detallada:</label>
+                  <input
+                    type="text"
+                    value={scrapReason}
+                    onChange={(e) => setScrapReason(e.target.value)}
+                    className="w-full rounded-xl border border-theme-subtle bg-theme-surface px-3 py-2 text-xs text-theme-main"
+                  />
+                </div>
+
+                {/* Comentarios del operador */}
+                <div>
+                  <label className="text-theme-muted block font-bold mb-1">Acción Correctiva en Máquina:</label>
+                  <textarea
+                    value={scrapComment}
+                    onChange={(e) => setScrapComment(e.target.value)}
+                    rows={2}
+                    className="w-full rounded-xl border border-theme-subtle bg-theme-surface px-3 py-2 text-xs text-theme-main"
+                  />
+                </div>
+              </div>
+
+              {/* Botones de acción */}
+              <div className="flex justify-end gap-2 pt-3 border-t border-theme-subtle">
+                <button
+                  type="button"
+                  onClick={() => setIsScrapModalOpen(false)}
+                  className="rounded-xl border border-theme-subtle px-4 py-2 text-xs font-bold text-theme-muted hover:bg-theme-muted/40"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveScrapEvent}
+                  className={`rounded-xl px-4 py-2 text-xs font-bold text-white shadow-xs flex items-center gap-1.5 ${
+                    isExceeded
+                      ? 'bg-rose-600 hover:bg-rose-700'
+                      : 'bg-rose-600 hover:bg-rose-700'
+                  }`}
+                >
+                  {isExceeded ? (
+                    <>
+                      <AlertTriangle className="h-4 w-4" />
+                      <span>Registrar y notificar a supervisor</span>
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="h-4 w-4" />
+                      <span>Registrar Scrap 4M ({scrapQty.toLocaleString()} {scrapUom})</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* ======================================================================= */}
       {/* MODAL 3: REPORTAR PARO 4M (CÓDIGOS 100, 200, 300, 400)                  */}
@@ -1846,7 +2635,20 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="text-theme-muted block font-bold mb-1">Código RTM Oficial:</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-theme-muted block font-bold">Código RTM Oficial:</label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStopCode('100');
+                      setStopReason('Corte eléctrico / reinicio de proceso');
+                      setStopAffectsQuality(true);
+                    }}
+                    className="text-[10px] text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 font-bold"
+                  >
+                    <Zap className="h-3 w-3" /> ⚡ Corte Eléctrico
+                  </button>
+                </div>
                 <div className="grid grid-cols-2 gap-2">
                   {[
                     { code: '100', label: '100 - Falla Máquina' },
@@ -1889,6 +2691,41 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
                   onChange={(e) => setStopReason(e.target.value)}
                   className="w-full rounded-xl border border-theme-subtle bg-theme-surface px-3 py-2 text-xs text-theme-main"
                 />
+              </div>
+
+              {/* Pregunta P0 sobre disparador QA por ajuste */}
+              <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 space-y-2">
+                <div className="flex items-center gap-1.5 font-bold text-amber-900 dark:text-amber-200">
+                  <ShieldAlert className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                  <span>¿El ajuste afecta registro, color, corte o dimensiones?</span>
+                </div>
+                <p className="text-[11px] text-amber-800 dark:text-amber-300 leading-tight">
+                  Si la intervención altera parámetros críticos del producto, se generará un disparador QA para inspección obligatoria.
+                </p>
+                <div className="grid grid-cols-2 gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setStopAffectsQuality(true)}
+                    className={`py-2 px-2.5 rounded-xl border text-xs font-bold transition-all ${
+                      stopAffectsQuality
+                        ? 'border-amber-500 bg-amber-500/25 text-amber-900 dark:text-amber-100 ring-2 ring-amber-500/50 shadow-2xs'
+                        : 'border-theme-subtle bg-theme-surface text-theme-muted hover:bg-theme-muted/30'
+                    }`}
+                  >
+                    ⚠️ Sí · Solicitar revisión QA
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setStopAffectsQuality(false)}
+                    className={`py-2 px-2.5 rounded-xl border text-xs font-bold transition-all ${
+                      !stopAffectsQuality
+                        ? 'border-emerald-500 bg-emerald-500/20 text-emerald-800 dark:text-emerald-200'
+                        : 'border-theme-subtle bg-theme-surface text-theme-muted hover:bg-theme-muted/30'
+                    }`}
+                  >
+                    ✓ No · Continuar sin QA
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -2006,6 +2843,17 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
                   Las unidades producidas quedarán disponibles inmediatamente en la cola de la siguiente máquina.
                 </p>
               </div>
+
+              {/* Disparador QA #7: Auditoría Final Obligatoria (P0) */}
+              <div className="rounded-xl border border-indigo-500/30 bg-indigo-50/40 dark:bg-indigo-950/20 p-3 space-y-1">
+                <div className="flex items-center gap-1.5 font-bold text-indigo-900 dark:text-indigo-200">
+                  <ShieldCheck className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                  <span>Disparador QA #7: Auditoría Final Obligatoria (Liberación PT)</span>
+                </div>
+                <p className="text-[11px] text-indigo-800 dark:text-indigo-300 leading-relaxed">
+                  Al completar esta operación, el sistema registrará la solicitud formal de <b>Auditoría Final de Calidad</b> para que el inspector libere el lote antes de su ingreso formal al Almacén de Producto Terminado.
+                </p>
+              </div>
             </div>
 
             <div className="flex justify-end gap-2 pt-3 border-t border-theme-subtle">
@@ -2098,6 +2946,168 @@ export const PisoOperadorWorkspace: React.FC<PisoOperadorWorkspaceProps> = ({
             setToastMessage(`✓ Reporte de turno guardado para OP ${entry.opFolio} (Cód. ${entry.code}).`);
           }}
         />
+      )}
+
+      {/* ======================================================================= */}
+      {/* MODAL 7: REGISTRAR CAMBIO DE BOBINA (FLEXOGRAFÍA · P0)                  */}
+      {/* ======================================================================= */}
+      {isBobbinModalOpen && activeOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in">
+          <div className="w-full max-w-md rounded-2xl border border-purple-500/40 bg-theme-surface p-5 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-theme-subtle">
+              <h3 className="text-sm font-black text-purple-700 dark:text-purple-300 uppercase tracking-wider flex items-center gap-2">
+                <Disc className="h-4 w-4 text-purple-600" /> Registrar Cambio de Bobina (Flexo)
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsBobbinModalOpen(false)}
+                className="text-theme-muted hover:text-theme-main"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div className="rounded-xl border border-purple-500/20 bg-purple-50/50 dark:bg-purple-950/20 p-3 text-purple-900 dark:text-purple-200">
+                <p className="text-[11px] leading-relaxed">
+                  <b>Disparador QA #3:</b> El cambio de bobina genera un ticket de validación para asegurar tensión, adherencia de tinta y tono antes de continuar con la velocidad de crucero.
+                </p>
+              </div>
+
+              <div>
+                <label className="text-theme-muted block font-bold mb-1">
+                  Lote de Bobina Anterior (Desmontada):
+                </label>
+                <input
+                  type="text"
+                  value={bobbinOldLot}
+                  onChange={(e) => setBobbinOldLot(e.target.value)}
+                  placeholder="Ej. BOB-BOPP-2024-08"
+                  className="w-full rounded-xl border border-theme-subtle bg-theme-muted/20 px-3 py-2 font-mono text-xs font-bold text-theme-main"
+                />
+              </div>
+
+              <div>
+                <label className="text-theme-muted block font-bold mb-1">
+                  Lote de Bobina Nueva (Montada en Devanador):
+                </label>
+                <input
+                  type="text"
+                  value={bobbinNewLot}
+                  onChange={(e) => setBobbinNewLot(e.target.value)}
+                  placeholder="Ej. BOB-BOPP-2024-09"
+                  className="w-full rounded-xl border border-theme-subtle bg-theme-surface px-3 py-2 font-mono text-xs font-bold text-theme-main focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+
+              <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-2.5 text-[11px] text-amber-800 dark:text-amber-200 flex items-start gap-2">
+                <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 mt-0.5" />
+                <span>
+                  Al confirmar, se registrará el evento en la Trazabilidad y se notificará al Auditor de Calidad en turno para validación de tiro inicial.
+                </span>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-3 border-t border-theme-subtle">
+              <button
+                type="button"
+                onClick={() => setIsBobbinModalOpen(false)}
+                className="rounded-xl border border-theme-subtle px-4 py-2 text-xs font-bold text-theme-muted hover:bg-theme-muted/40"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmBobbinChange}
+                className="rounded-xl bg-purple-600 hover:bg-purple-700 px-4 py-2 text-xs font-bold text-white shadow-xs flex items-center gap-1.5"
+              >
+                <CheckCircle2 className="h-4 w-4" />
+                <span>Confirmar y Notificar QA</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ======================================================================= */}
+      {/* MODAL 8: RELEVO Y CAMBIO DE TURNO (14:00 · P0)                          */}
+      {/* ======================================================================= */}
+      {isShiftModalOpen && activeOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in">
+          <div className="w-full max-w-md rounded-2xl border border-blue-500/40 bg-theme-surface p-5 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-theme-subtle">
+              <h3 className="text-sm font-black text-blue-700 dark:text-blue-300 uppercase tracking-wider flex items-center gap-2">
+                <Clock className="h-4 w-4 text-blue-600" /> Entrega y Relevo de Turno (14:00)
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsShiftModalOpen(false)}
+                className="text-theme-muted hover:text-theme-main"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div className="rounded-xl border border-blue-500/20 bg-blue-50/50 dark:bg-blue-950/20 p-3 text-blue-900 dark:text-blue-200">
+                <p className="text-[11px] leading-relaxed">
+                  <b>Disparador QA #5:</b> Cambio de turno. El operador saliente entrega la máquina con los parámetros de proceso estables y solicita confirmación del Auditor QA para garantizar continuidad.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 text-[11px]">
+                <div className="p-2.5 rounded-lg border border-theme-subtle bg-theme-muted/15">
+                  <span className="text-theme-muted block font-medium">Operador Saliente:</span>
+                  <b className="text-theme-main block mt-0.5">{activeTerminal.assignedOperator.name}</b>
+                  <span className="text-[10px] text-theme-muted font-mono">Turno Matutino</span>
+                </div>
+                <div className="p-2.5 rounded-lg border border-theme-subtle bg-theme-muted/15">
+                  <span className="text-theme-muted block font-medium">Operador Entrante:</span>
+                  <b className="text-theme-main block mt-0.5">Roberto Méndez G.</b>
+                  <span className="text-[10px] text-theme-muted font-mono">Turno Vespertino</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-theme-muted block font-bold mb-1">
+                  Condición del Proceso / Observaciones de Relevo:
+                </label>
+                <textarea
+                  value={shiftNotes}
+                  onChange={(e) => setShiftNotes(e.target.value)}
+                  rows={3}
+                  className="w-full rounded-xl border border-theme-subtle bg-theme-surface px-3 py-2 text-xs text-theme-main focus:ring-2 focus:ring-blue-500"
+                  placeholder="Registro alineado, viscosidad en 22s copa Zahn 2. Sin novedad en cabezal."
+                />
+              </div>
+
+              <div className="p-2.5 rounded-xl border border-theme-subtle bg-theme-muted/20 text-[11px] text-theme-muted flex items-center justify-between">
+                <span>Piezas producidas en el turno:</span>
+                <b className="font-mono text-theme-main font-bold">
+                  {activeOrder.good?.toLocaleString()} ejs
+                </b>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-3 border-t border-theme-subtle">
+              <button
+                type="button"
+                onClick={() => setIsShiftModalOpen(false)}
+                className="rounded-xl border border-theme-subtle px-4 py-2 text-xs font-bold text-theme-muted hover:bg-theme-muted/40"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmShiftDelivery}
+                className="rounded-xl bg-blue-600 hover:bg-blue-700 px-4 py-2 text-xs font-bold text-white shadow-xs flex items-center gap-1.5"
+              >
+                <CheckCircle2 className="h-4 w-4" />
+                <span>Confirmar Relevo y Notificar QA</span>
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

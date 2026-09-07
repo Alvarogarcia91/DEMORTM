@@ -47,6 +47,7 @@ interface Props {
   onUpdateComplaint: (updated: CustomerComplaint) => void;
   onToast: (msg: string) => void;
   activeRole: string;
+  onNavigateToTraceability?: (query: string) => void;
 }
 
 export const ExpedienteQueja360Modal: React.FC<Props> = ({
@@ -55,6 +56,7 @@ export const ExpedienteQueja360Modal: React.FC<Props> = ({
   onUpdateComplaint,
   onToast,
   activeRole,
+  onNavigateToTraceability,
 }) => {
   const [complaint, setComplaint] = useState<CustomerComplaint>(initialComplaint);
   const [activeTab, setActiveTab] = useState<
@@ -580,6 +582,22 @@ export const ExpedienteQueja360Modal: React.FC<Props> = ({
                   <b className="text-xs font-bold text-theme-main block">{complaint.traceability.operator}</b>
                   <span className="text-[9px] text-theme-muted">Turno A</span>
                 </div>
+
+                {onNavigateToTraceability && (
+                  <div className="col-span-2 sm:col-span-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        onNavigateToTraceability(complaint.traceability.opFolio);
+                      }}
+                      className="w-full flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-3 text-xs font-bold text-white hover:from-indigo-700 hover:to-purple-700 transition-all shadow-md shadow-indigo-600/20 cursor-pointer"
+                    >
+                      <FileSearch className="h-4 w-4" />
+                      <span>Abrir Expediente Completo de Trazabilidad 360° en Calidad ({complaint.traceability.opFolio})</span>
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           )}

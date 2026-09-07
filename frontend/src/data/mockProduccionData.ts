@@ -30,6 +30,8 @@ export interface RoutingStep {
   inQuantity?: number;
   goodQuantity?: number;
   scrapQuantity?: number;
+  scrapUom?: string; // 'pliegos' | 'piezas' | 'm' | 'kg' | 'ft' | 'rollos'
+  scrapPercentContribution?: number; // % contribution to cumulative OP margin
   operator?: string;
   startTime?: string;
   endTime?: string;
@@ -114,6 +116,154 @@ export interface TraceabilityEvent {
   event: string;
   notes?: string;
   badgeTone?: 'primary' | 'success' | 'warning' | 'danger';
+  category?: 'production' | 'qa_trigger' | 'quality';
+  isBlocking?: boolean;
+}
+
+export interface ProcessQaControl {
+  id: string;
+  trigger:
+    | 'Preimpresión'
+    | 'Primera pieza'
+    | 'Control > 2 horas'
+    | 'Cambio de bobina'
+    | 'Ajuste de máquina'
+    | 'Cambio de turno'
+    | 'Corte eléctrico'
+    | 'Auditoría final';
+  status: 'Pendiente' | 'Solicitada' | 'En revisión' | 'Liberada' | 'No conforme / HOLD';
+  timingDescription: string;
+  isBlocking: boolean;
+  responsible: string;
+  lastVerifiedAt?: string;
+  evidenceNotes?: string;
+  badgeTone?: 'success' | 'warning' | 'danger' | 'info' | 'neutral';
+}
+
+export function getDefaultQaControls(
+  folio: string,
+  area: ProductionArea,
+  progress: number,
+  isHold: boolean = false
+): ProcessQaControl[] {
+  return [
+    {
+      id: `${folio}-qa-0`,
+      trigger: 'Preimpresión',
+      status: 'Liberada',
+      timingDescription: 'Previo a montaje y arranque de máquina',
+      isBlocking: true,
+      responsible: 'Preprensa / QA',
+      lastVerifiedAt: '07 Sep · 07:30',
+      evidenceNotes: 'Archivos RIP, separación de color y curvas calibradas aprobadas.',
+      badgeTone: 'success',
+    },
+    {
+      id: `${folio}-qa-1`,
+      trigger: 'Primera pieza',
+      status: progress > 20 ? 'Liberada' : progress > 0 ? 'Solicitada' : 'Pendiente',
+      timingDescription: 'Al concluir setup y primer tiro de muestra',
+      isBlocking: true,
+      responsible: 'Alicia Ramírez (Calidad)',
+      lastVerifiedAt: progress > 20 ? '07 Sep · 08:35' : undefined,
+      evidenceNotes:
+        progress > 20
+          ? 'Tono Delta E < 1.8, registro 0.05 mm y lectura de código de barras conforme.'
+          : 'Muestra en mesa de inspección esperando dictamen.',
+      badgeTone: progress > 20 ? 'success' : progress > 0 ? 'warning' : 'neutral',
+    },
+    {
+      id: `${folio}-qa-2`,
+      trigger: 'Control > 2 horas',
+      status: progress > 55 ? 'Liberada' : progress > 35 ? 'Solicitada' : 'Pendiente',
+      timingDescription: 'Inspección periódica cada 120 minutos de corrida',
+      isBlocking: false,
+      responsible: 'Inspector QA en Piso',
+      lastVerifiedAt: progress > 55 ? '07 Sep · 10:40' : undefined,
+      evidenceNotes:
+        progress > 55
+          ? '1,500 piezas inspeccionadas en línea: sin descalce ni variación cromática.'
+          : progress > 35
+          ? 'Próximo control sugerido en 18 min para evitar parada.'
+          : 'Ciclo periódico activo (vigencia 2 horas).',
+      badgeTone: progress > 55 ? 'success' : progress > 35 ? 'warning' : 'neutral',
+    },
+    {
+      id: `${folio}-qa-3`,
+      trigger: 'Cambio de bobina',
+      status:
+        area === 'Flexografía'
+          ? progress > 60
+            ? 'Liberada'
+            : progress > 25
+            ? 'Solicitada'
+            : 'Pendiente'
+          : 'Pendiente',
+      timingDescription: 'Al realizar empalme o montaje de nueva bobina de sustrato',
+      isBlocking: true,
+      responsible: 'Auditor de Proceso',
+      lastVerifiedAt: area === 'Flexografía' && progress > 60 ? '07 Sep · 11:15' : undefined,
+      evidenceNotes:
+        area === 'Flexografía'
+          ? 'Validación de sustrato lote BOB-BOPP-2026-088, corona y anclaje de tinta.'
+          : 'Aplica en prensas flexográficas y continuas.',
+      badgeTone:
+        area === 'Flexografía' && progress > 60
+          ? 'success'
+          : area === 'Flexografía' && progress > 25
+          ? 'warning'
+          : 'neutral',
+    },
+    {
+      id: `${folio}-qa-4`,
+      trigger: 'Ajuste de máquina',
+      status: isHold ? 'No conforme / HOLD' : progress > 40 ? 'Liberada' : 'Pendiente',
+      timingDescription: 'Si el ajuste en máquina altera registro, color, corte o dimensiones',
+      isBlocking: true,
+      responsible: 'Alicia Ramírez (Calidad)',
+      lastVerifiedAt: isHold ? undefined : progress > 40 ? '07 Sep · 09:45' : undefined,
+      evidenceNotes: isHold
+        ? 'Parada por descalce en estación 3; requiere nueva muestra liberada antes de continuar.'
+        : 'Tiro de ajuste dentro de rangos paramétricos.',
+      badgeTone: isHold ? 'danger' : progress > 40 ? 'success' : 'neutral',
+    },
+    {
+      id: `${folio}-qa-5`,
+      trigger: 'Cambio de turno',
+      status: 'Pendiente',
+      timingDescription: 'Entrega y relevo de guardia operativa (14:00 hrs)',
+      isBlocking: false,
+      responsible: 'Supervisor de Turno / QA',
+      lastVerifiedAt: undefined,
+      evidenceNotes: 'Chequeo de continuidad de parámetros y muestra testigo en entrega.',
+      badgeTone: 'neutral',
+    },
+    {
+      id: `${folio}-qa-6`,
+      trigger: 'Corte eléctrico',
+      status: 'Pendiente',
+      timingDescription: 'Reinicio de línea posterior a paro no programado por suministro eléctrico',
+      isBlocking: true,
+      responsible: 'Mantenimiento + Calidad',
+      lastVerifiedAt: undefined,
+      evidenceNotes: 'Línea eléctrica estable sin variaciones de tensión reportadas.',
+      badgeTone: 'neutral',
+    },
+    {
+      id: `${folio}-qa-7`,
+      trigger: 'Auditoría final',
+      status: progress === 100 ? 'Liberada' : progress >= 95 ? 'Solicitada' : 'Pendiente',
+      timingDescription: 'Al terminar producción completa antes de transferir a PT',
+      isBlocking: true,
+      responsible: 'Alicia Ramírez (Calidad PT)',
+      lastVerifiedAt: progress === 100 ? '07 Sep · 13:20' : undefined,
+      evidenceNotes:
+        progress === 100
+          ? 'Inspección AQL 0.65 Nivel II conforme. Certificado de calidad emitido.'
+          : 'Obligatoria para habilitar liberación y entrada a Producto Terminado.',
+      badgeTone: progress === 100 ? 'success' : progress >= 95 ? 'warning' : 'neutral',
+    },
+  ];
 }
 
 export interface OperatorDailyReportEntry {
@@ -227,8 +377,20 @@ export interface ProductionOrder {
     firstPieceReleased: boolean;
     firstPieceApprover?: string;
     firstPieceRequested?: boolean;
+    periodicControlDue?: boolean;
+    periodicControlRequested?: boolean;
+    bobbinChangePending?: boolean;
+    bobbinOldLot?: string;
+    bobbinNewLot?: string;
+    machineAdjustmentPending?: boolean;
+    machineAdjustmentReason?: string;
+    shiftChangePending?: boolean;
+    shiftDeliveredAt?: string;
+    powerOutagePending?: boolean;
     finalAuditApproved: boolean;
+    finalAuditRequested?: boolean;
   };
+  qaControls?: ProcessQaControl[];
   expedited?: boolean;
   expeditedReason?: string;
 }
@@ -964,6 +1126,7 @@ const statuses: ProductionStatus[] = [
   'Pendiente de calidad',
 ];
 
+
 export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (_, i) => {
   const area: ProductionArea = i % 3 === 0 ? 'Offset' : i % 3 === 1 ? 'Flexografía' : 'Acabados';
   const status = statuses[i];
@@ -1002,7 +1165,9 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
             firstPieceTime: progress > 20 ? '09:27' : undefined,
             inQuantity: quantity + 500,
             goodQuantity: Math.round(quantity * (progress / 100)),
-            scrapQuantity: status === 'Detenida' ? 150 : 35,
+            scrapQuantity: status === 'Detenida' ? 205 : 95,
+            scrapUom: 'm',
+            scrapPercentContribution: status === 'Detenida' ? 2.33 : 1.15,
             operator: 'M. Ríos',
             startTime: '08:30',
             subOperations: ['Impresión (4 tintas UV)', 'Barniz sobreimpresión', 'Troquelado rotativo', 'Laminado BOPP'],
@@ -1016,6 +1181,9 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
             runMinutes: 60,
             status: progress >= 100 ? 'Completada' : 'Pendiente',
             requiresFirstPieceQuality: false,
+            scrapQuantity: 46,
+            scrapUom: 'm',
+            scrapPercentContribution: 0.39,
             subOperations: ['Corte longitudinal', 'Conteo estroboscópico', 'Inspección de etiquetas'],
           },
           {
@@ -1026,6 +1194,9 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
             runMinutes: 30,
             status: progress === 100 ? 'Completada' : 'Pendiente',
             requiresFirstPieceQuality: false,
+            scrapQuantity: 12,
+            scrapUom: 'piezas',
+            scrapPercentContribution: 0.10,
           },
         ]
       : [
@@ -1040,6 +1211,9 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
             firstPieceApproved: true,
             firstPieceApprover: 'J. Méndez (Preprensa)',
             firstPieceTime: '08:10',
+            scrapQuantity: 0,
+            scrapUom: 'placas',
+            scrapPercentContribution: 0,
           },
           {
             stepNumber: 2,
@@ -1055,14 +1229,16 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
             firstPieceTime: progress > 20 ? '09:40' : undefined,
             inQuantity: quantity + 800,
             goodQuantity: Math.round(quantity * (progress / 100)),
-            scrapQuantity: status === 'Detenida' ? 220 : 60,
+            scrapQuantity: status === 'Detenida' ? 240 : 180,
+            scrapUom: 'pliegos',
+            scrapPercentContribution: status === 'Detenida' ? 1.80 : 1.35,
             operator: 'J. Salinas',
             startTime: '09:00',
           },
-          { stepNumber: 3, process: 'Guillotina', machine: 'Guillotina 2', setupMinutes: 15, runMinutes: 45, status: progress > 70 ? 'Completada' : 'Pendiente', requiresFirstPieceQuality: false },
-          { stepNumber: 4, process: 'Doblado', machine: 'Stahl 2', setupMinutes: 25, runMinutes: 60, status: progress > 85 ? 'Completada' : 'Pendiente', requiresFirstPieceQuality: false },
-          { stepNumber: 5, process: 'Intercalado y Grapado', machine: 'Muller Martini', setupMinutes: 30, runMinutes: 70, status: progress >= 100 ? 'Completada' : 'Pendiente', requiresFirstPieceQuality: true },
-          { stepNumber: 6, process: 'Empaque', machine: 'Mesa Empaque', setupMinutes: 10, runMinutes: 30, status: progress === 100 ? 'Completada' : 'Pendiente', requiresFirstPieceQuality: false },
+          { stepNumber: 3, process: 'Guillotina', machine: 'Guillotina 2', setupMinutes: 15, runMinutes: 45, status: progress > 70 ? 'Completada' : 'Pendiente', requiresFirstPieceQuality: false, scrapQuantity: 42, scrapUom: 'pliegos', scrapPercentContribution: 0.31 },
+          { stepNumber: 4, process: 'Doblado', machine: 'Stahl 2', setupMinutes: 25, runMinutes: 60, status: progress > 85 ? 'Completada' : 'Pendiente', requiresFirstPieceQuality: false, scrapQuantity: 95, scrapUom: 'piezas', scrapPercentContribution: 0.71 },
+          { stepNumber: 5, process: 'Intercalado y Grapado', machine: 'Muller Martini', setupMinutes: 30, runMinutes: 70, status: progress >= 100 ? 'Completada' : 'Pendiente', requiresFirstPieceQuality: true, scrapQuantity: 54, scrapUom: 'piezas', scrapPercentContribution: 0.40 },
+          { stepNumber: 6, process: 'Empaque', machine: 'Mesa Empaque', setupMinutes: 10, runMinutes: 30, status: progress === 100 ? 'Completada' : 'Pendiente', requiresFirstPieceQuality: false, scrapQuantity: 15, scrapUom: 'piezas', scrapPercentContribution: 0.12 },
         ];
 
   const defaultMaterials: ProductionMaterialItem[] =
@@ -1219,6 +1395,7 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
       event: 'Pedido recibido y validado',
       notes: `Pedido PED-RTM-2026-${142 - i} generado con receta maestra vinculada`,
       badgeTone: 'primary',
+      category: 'production',
     },
     {
       id: 'tr-2',
@@ -1228,6 +1405,7 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
       event: 'OP creada heredando configuración maestra',
       notes: area === 'Offset' ? 'Paginación Offset calculada según máquina: 64 págs (32+32)' : 'Flexo: 4 tintas UV + barniz + troquel en Scout 10”',
       badgeTone: 'primary',
+      category: 'production',
     },
     {
       id: 'tr-3',
@@ -1237,7 +1415,133 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
       event: i === 9 ? 'Alerta: Papel insuficiente en almacén' : 'Material reservado en almacén',
       notes: i === 9 ? 'Faltante de 11,700 pliegos; requiere compra o desviación de sustituto' : 'Insumos reservados para surtido a 24h',
       badgeTone: i === 9 ? 'danger' : 'success',
+      category: 'production',
     },
+    {
+      id: 'tr-4',
+      timestamp: '07 Sep · 08:15',
+      user: ['J. Salinas', 'M. Ríos', 'A. Torres', 'C. Medina'][i % 4],
+      station: machineName,
+      event: 'Setup terminado · Tiraje de prueba listo',
+      notes: 'Calibración de tinteros/anilox y montaje de herramental completado',
+      badgeTone: 'primary',
+      category: 'production',
+    },
+    {
+      id: 'tr-5',
+      timestamp: '07 Sep · 08:20',
+      user: 'Sistema RTM',
+      station: 'Disparador QA',
+      event: 'QA TRIGGER: Primera pieza requerida',
+      notes: 'Producción bloqueada hasta dictamen formal de calidad en piso',
+      badgeTone: 'warning',
+      category: 'qa_trigger',
+      isBlocking: true,
+    },
+    ...(progress > 20
+      ? [
+          {
+            id: 'tr-6',
+            timestamp: '07 Sep · 08:35',
+            user: 'Alicia Ramírez',
+            station: 'Control Calidad',
+            event: 'CALIDAD: Primera pieza liberada',
+            notes: 'Muestra conforme a especificación. Delta E < 1.8, código de barras Grado A. Autorizado arranque.',
+            badgeTone: 'success' as const,
+            category: 'quality' as const,
+          },
+        ]
+      : []),
+    ...(progress > 50
+      ? [
+          {
+            id: 'tr-7',
+            timestamp: '07 Sep · 10:20',
+            user: 'Sistema RTM',
+            station: 'Disparador QA',
+            event: 'QA TRIGGER: Control periódico > 2h generado',
+            notes: 'Corrida continua supera 120 minutos. Requiere muestreo en línea.',
+            badgeTone: 'warning' as const,
+            category: 'qa_trigger' as const,
+            isBlocking: false,
+          },
+          {
+            id: 'tr-8',
+            timestamp: '07 Sep · 10:35',
+            user: 'Alicia Ramírez',
+            station: 'Piso Producción',
+            event: 'CALIDAD: Control > 2h conforme',
+            notes: 'Sin descalce ni variación de color en muestreo de 1,500 piezas. Producción continúa.',
+            badgeTone: 'success' as const,
+            category: 'quality' as const,
+          },
+        ]
+      : []),
+    ...(area === 'Flexografía' && progress > 60
+      ? [
+          {
+            id: 'tr-9',
+            timestamp: '07 Sep · 11:10',
+            user: 'M. Ríos',
+            station: 'Mark Andy Scout',
+            event: 'QA TRIGGER: Cambio de bobina registrado',
+            notes: 'Bobina agotada. Ingreso nuevo lote BOB-BOPP-2026-088. Esperando validación de tensión y corona.',
+            badgeTone: 'warning' as const,
+            category: 'qa_trigger' as const,
+            isBlocking: true,
+          },
+          {
+            id: 'tr-10',
+            timestamp: '07 Sep · 11:22',
+            user: 'Alicia Ramírez',
+            station: 'Control Calidad',
+            event: 'CALIDAD: Validación cambio de bobina aprobada',
+            notes: 'Tratamiento corona y anclaje UV validados en nueva bobina. Autorizado tiro continuo.',
+            badgeTone: 'success' as const,
+            category: 'quality' as const,
+          },
+        ]
+      : []),
+    ...(status === 'Detenida'
+      ? [
+          {
+            id: 'tr-11',
+            timestamp: '07 Sep · 11:45',
+            user: 'Operador / Mantenimiento',
+            station: machineName,
+            event: 'QA TRIGGER: Ajuste de máquina / Paro registrado',
+            notes: 'Descalce en estación de tiro. Máquina en HOLD preventivo hasta nueva liberación QA.',
+            badgeTone: 'danger' as const,
+            category: 'qa_trigger' as const,
+            isBlocking: true,
+          },
+        ]
+      : []),
+    ...(progress === 100
+      ? [
+          {
+            id: 'tr-12',
+            timestamp: '07 Sep · 13:15',
+            user: 'Operador RTM',
+            station: machineName,
+            event: 'QA TRIGGER: Producción completada · Auditoría final solicitada',
+            notes: 'Tiraje terminado. Muestreo de tarima completa para liberación a PT.',
+            badgeTone: 'warning' as const,
+            category: 'qa_trigger' as const,
+            isBlocking: true,
+          },
+          {
+            id: 'tr-13',
+            timestamp: '07 Sep · 13:30',
+            user: 'Alicia Ramírez',
+            station: 'Auditoría PT',
+            event: 'CALIDAD: Auditoría final liberada · Aprobado PT',
+            notes: 'Lote dictaminado CONFORME bajo estándar AQL 0.65. Habilitado ingreso a Almacén de Producto Terminado.',
+            badgeTone: 'success' as const,
+            category: 'quality' as const,
+          },
+        ]
+      : []),
   ];
 
   return {
@@ -1337,8 +1641,25 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
       prepressReleased: true,
       firstPieceReleased: progress > 20,
       firstPieceApprover: progress > 20 ? 'Alicia Ramírez (Calidad)' : undefined,
+      firstPieceRequested: progress <= 20 && progress > 5,
+      periodicControlDue: progress > 50 && progress < 85,
+      periodicControlRequested: progress > 60 && progress < 75,
+      bobbinChangePending: area === 'Flexografía' && i === 1,
+      bobbinOldLot: 'BOB-BOPP-2026-041',
+      bobbinNewLot: 'BOB-BOPP-2026-088',
+      machineAdjustmentPending: status === 'Detenida',
+      machineAdjustmentReason: status === 'Detenida' ? 'Ajuste de registro y tensión tras paro de máquina' : undefined,
+      shiftChangePending: false,
+      powerOutagePending: false,
       finalAuditApproved: progress === 100,
+      finalAuditRequested: progress >= 95 && progress < 100,
     },
+    qaControls: getDefaultQaControls(
+      `OP-2026-${95240 + i}`,
+      area,
+      progress,
+      status === 'Detenida' || status === 'Pendiente de calidad'
+    ),
   };
 });
 

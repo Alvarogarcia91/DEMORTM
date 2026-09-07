@@ -22,6 +22,7 @@ import {
   QUALITY_RELEASES,
   ICAR_ACTIONS,
   IcarAction,
+  IncomingInspection,
   QualityAuditItem,
   QualityDeviation,
   QualityRelease,
@@ -29,6 +30,7 @@ import {
   ZebraLabelConfig,
 } from '../../data/mockCalidadData';
 import { PRODUCTION_ORDERS, ProductionOrder } from '../../data/mockProduccionData';
+import { FinishedGoodsRelease } from '../../data/mockFinishedGoodsData';
 import { CalidadDashboard } from './CalidadDashboard';
 import { CapturasWorkspace } from './CapturasWorkspace';
 import { CapturaMedicionModal } from './CapturaMedicionModal';
@@ -41,6 +43,9 @@ import { GestionSGCWorkspace } from './GestionSGCWorkspace';
 import { AnalizarDesviacionModal } from './AnalizarDesviacionModal';
 import { PisoQaWorkspace } from './PisoQaWorkspace';
 import { CustomerQualityWorkspace } from './CustomerQualityWorkspace';
+import { ProductoTerminadoLiberadoModal } from './ProductoTerminadoLiberadoModal';
+import { Traceability360Workspace } from './Trazabilidad/Traceability360Workspace';
+import { PpapWorkspace } from './PPAP/PpapWorkspace';
 import { INITIAL_CUSTOMER_COMPLAINTS } from '../../data/mockCustomerQualityData';
 
 type CalidadTab =
@@ -52,18 +57,31 @@ type CalidadTab =
   | 'Trazabilidad'
   | 'No conformes'
   | 'Quejas & RMA'
+  | 'PPAP & Core Tools'
   | 'Gestión SGC';
 
 interface CalidadPageProps {
   productionOrders?: ProductionOrder[];
   onUpdateProductionOrder?: (id: string, patch: Partial<ProductionOrder>) => void;
   onNavigateToProduccion?: (opFolio?: string) => void;
+  incomings?: IncomingInspection[];
+  onUpdateIncoming?: (updated: IncomingInspection) => void;
+  onNavigateToSupplierQuality?: (supplierName: string) => void;
+  onReleaseToFinishedGoods?: (release: FinishedGoodsRelease) => void;
+  onNavigateToEmbarques?: () => void;
+  onOpenPtDetail?: (pt: FinishedGoodsRelease) => void;
 }
 
 export const CalidadPage: React.FC<CalidadPageProps> = ({
   productionOrders: externalOrders,
   onUpdateProductionOrder,
   onNavigateToProduccion,
+  incomings,
+  onUpdateIncoming,
+  onNavigateToSupplierQuality,
+  onReleaseToFinishedGoods,
+  onNavigateToEmbarques,
+  onOpenPtDetail,
 }) => {
   const [tab, setTab] = useState<CalidadTab>('Dashboard');
 
@@ -100,6 +118,14 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
   const [activeControlForCapture, setActiveControlForCapture] = useState<PeriodicControl | null>(null);
 
   const [activeLabelConfig, setActiveLabelConfig] = useState<Partial<ZebraLabelConfig> | null>(null);
+  const [recentLiberadoModalData, setRecentLiberadoModalData] = useState<FinishedGoodsRelease | null>(null);
+  const [traceabilityQuery, setTraceabilityQuery] = useState<string>('OP-2026-95250');
+
+  const handleNavigateToTraceability = (query: string) => {
+    setTraceabilityQuery(query);
+    setTab('Trazabilidad');
+    setToast(`✓ Expediente de Trazabilidad 360° cargado: ${query}`);
+  };
 
   // Handlers de Desviaciones & ICAR (P1)
   const handleOpenIcarFromDeviation = (deviation: QualityDeviation, icarData: Partial<IcarAction>) => {
@@ -238,10 +264,17 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
             ],
           });
         } else if (audit.type === 'Auditoría final') {
+          const goodQty =
+            matchedOrder.good && matchedOrder.good > 0
+              ? matchedOrder.good
+              : Math.max(0, matchedOrder.quantity - (matchedOrder.scrap || 0));
+          const ptLotNumber = `PT-260907-${audit.folio.replace(/[^0-9]/g, '').slice(-3) || '088'}`;
+          const pkgCount = Math.max(1, Math.round(goodQty / 1000));
+
           updateOrder(matchedOrder.id, {
             status: 'Liberada',
             progress: 100,
-            good: matchedOrder.quantity,
+            good: goodQty,
             qualityGates: {
               ...(matchedOrder.qualityGates || { prepressReleased: true, firstPieceReleased: true }),
               finalAuditApproved: true,
@@ -249,16 +282,49 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
             traceability: [
               {
                 id: `tr-fin-rel-${Date.now()}`,
-                timestamp: '07 Sep · 12:10',
+                timestamp: '07 Sep · 14:40',
                 user: 'Alicia Ramírez (Calidad)',
                 station: 'Mesa de Calidad Final',
                 event: 'Lote PT Liberado por Calidad Final',
-                notes: 'Inspección de baches AQL 0.65 conforme. Traspaso formal a Almacén de Producto Terminado.',
+                notes: `Inspección de baches AQL 0.65 conforme. Lote ${ptLotNumber} asignado a Almacén PT ubicación PT-A-03. Disponible para Embarques.`,
                 badgeTone: 'success',
               },
               ...(matchedOrder.traceability || []),
             ],
           });
+
+          // Creación de Lote de Producto Terminado formal hacia Almacén PT y Embarques
+          const newPtRelease: FinishedGoodsRelease = {
+            id: `pt-rel-${Date.now().toString().slice(-4)}`,
+            opId: matchedOrder.id,
+            opFolio: matchedOrder.folio,
+            pedido:
+              matchedOrder.cliente === 'Fresenius Kabi'
+                ? 'PED-RTM-2026-86153'
+                : `PED-RTM-2026-${matchedOrder.folio.slice(-4)}`,
+            client: matchedOrder.cliente,
+            partNumber: matchedOrder.partNumber,
+            revision: matchedOrder.revision,
+            area: (matchedOrder.area as any) || 'Flexografía',
+            finishedQty: goodQty,
+            lotNumber: ptLotNumber,
+            packageCount: pkgCount,
+            unitsPerPackage: Math.round(goodQty / pkgCount),
+            warehouseId: 'alm-rtm-pt',
+            warehouseName: 'Almacén Producto Terminado',
+            location: 'PT-A-03',
+            qualityReleaseId: audit.folio,
+            releasedBy: audit.auditor || 'Alicia Ramírez (Calidad)',
+            releasedAt: '07 Sep · 14:45',
+            status: 'Disponible para embarque',
+            traceabilityNotes: `Inspección AQL 0.65 conforme. ${goodQty.toLocaleString()} pzas transferidas formalmente a PT-A-03. Disponible para Embarques.`,
+            isRecentRelease: true,
+          };
+
+          if (onReleaseToFinishedGoods) {
+            onReleaseToFinishedGoods(newPtRelease);
+          }
+          setRecentLiberadoModalData(newPtRelease);
         } else {
           // Evento en proceso
           updateOrder(matchedOrder.id, {
@@ -282,16 +348,18 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
         `✓ ${audit.folio} Aprobada (${audit.type} · ${audit.origin}). Efecto reflejado inmediatamente en Producción.`
       );
 
-      // Ofrecer preview de etiqueta Zebra
-      setActiveLabelConfig({
-        type: audit.type === 'Primera pieza' ? 'Primera Pieza Aprobada' : 'Identificación de Caja',
-        opFolio: audit.origin,
-        client: audit.client,
-        partNumber: audit.part,
-        revision: audit.revision,
-        lotNumber: `PT-${audit.folio}`,
-        quantity: matchedOrder?.quantity || 1000,
-      });
+      // Ofrecer preview de etiqueta Zebra si no es final (la final tiene su propio modal)
+      if (audit.type !== 'Auditoría final') {
+        setActiveLabelConfig({
+          type: audit.type === 'Primera pieza' ? 'Primera Pieza Aprobada' : 'Identificación de Caja',
+          opFolio: audit.origin,
+          client: audit.client,
+          partNumber: audit.part,
+          revision: audit.revision,
+          lotNumber: `PT-${audit.folio}`,
+          quantity: matchedOrder?.quantity || 1000,
+        });
+      }
     } else if (effect === 'reject') {
       if (matchedOrder) {
         updateOrder(matchedOrder.id, {
@@ -394,6 +462,7 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
             'Trazabilidad',
             'No conformes',
             'Quejas & RMA',
+            'PPAP & Core Tools',
             'Gestión SGC',
           ] as CalidadTab[]
         ).map((item) => (
@@ -426,6 +495,11 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
             {item === 'Quejas & RMA' && (
               <span className="ml-1.5 rounded-full bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 px-1.5 py-0.2 text-[9px] font-black">
                 {INITIAL_CUSTOMER_COMPLAINTS.filter((c) => c.status !== 'Cerrada' && c.status !== 'Rechazada').length}
+              </span>
+            )}
+            {item === 'PPAP & Core Tools' && (
+              <span className="ml-1.5 rounded-full bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 px-1.5 py-0.2 text-[9px] font-black">
+                2
               </span>
             )}
           </button>
@@ -494,6 +568,9 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
             setActiveLabelConfig({ opFolio: op, client: cli, partNumber: part, lotNumber: lot })
           }
           onToast={setToast}
+          incomings={incomings}
+          onUpdateIncoming={onUpdateIncoming}
+          onNavigateToSupplierQuality={onNavigateToSupplierQuality}
         />
       )}
 
@@ -508,34 +585,19 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
       )}
 
       {tab === 'Trazabilidad' && (
-        <div className="space-y-4">
-          <div className="rounded-3xl border border-theme-subtle bg-theme-surface p-5 space-y-4">
-            <div className="flex items-center gap-2">
-              <FileSearch className="h-5 w-5 text-theme-primary" />
-              <div>
-                <h3 className="font-black text-sm text-theme-main">
-                  Expediente de Trazabilidad Digital 360°
-                </h3>
-                <p className="text-xs text-theme-muted">
-                  Inspecciona el historial de preimpresión, primera pieza, insumos, baches y auditoría final ligados a la OP.
-                </p>
-              </div>
-            </div>
-
-            <div className="divide-y divide-theme-subtle rounded-2xl border border-theme-subtle bg-theme-muted/10 p-4 text-xs space-y-3">
-              {[
-                { title: 'OP-2026-95250 · Panasonic 526412 | G |', detail: 'Preimpresión conforme · Primera pieza con BOB-REM-042 conforme · Control >2h programado' },
-                { title: 'OP-2026-95249 · BLACK & DECKER NA472050', detail: 'Auditoría final rechazada · 145 folletos en HOLD (MNC-000348) por revisión desactualizada' },
-                { title: 'OP-2026-95256 · Pentair A163833BHA', detail: 'Lote 100% liberado · 500 pliegos · Etiquetas Zebra FM-QA-153 emitidas' },
-              ].map((item, idx) => (
-                <div key={idx} className="pt-2">
-                  <b className="text-theme-main font-mono text-xs">{item.title}</b>
-                  <p className="text-theme-muted text-[11px] mt-0.5">{item.detail}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        <Traceability360Workspace
+          orders={orders}
+          initialQuery={traceabilityQuery}
+          onNavigateToProduccion={onNavigateToProduccion}
+          onOpenQualityRelease={(opFolio) => {
+            handleOpenWizard(undefined, opFolio);
+          }}
+          onOpenLabelPreview={(op, cli, part, lot) => {
+            setActiveLabelConfig({ opFolio: op, client: cli, partNumber: part, lotNumber: lot });
+          }}
+          onNavigateToEmbarques={onNavigateToEmbarques}
+          onToast={setToast}
+        />
       )}
 
       {tab === 'No conformes' && (
@@ -558,6 +620,15 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
         <CustomerQualityWorkspace
           onToast={setToast}
           activeRole={activeRole}
+          onNavigateToTraceability={handleNavigateToTraceability}
+        />
+      )}
+
+      {tab === 'PPAP & Core Tools' && (
+        <PpapWorkspace
+          onNavigateToProduccion={onNavigateToProduccion}
+          onNavigateToTraceability={(opFolio) => handleNavigateToTraceability(opFolio || 'OP-2026-95250')}
+          onNotice={(msg) => setToast(msg)}
         />
       )}
 
@@ -637,6 +708,34 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
           onClose={() => setSelectedDeviationForAnalysis(null)}
           onOpenIcar={handleOpenIcarFromDeviation}
           onResolveDeviation={handleResolveDeviation}
+        />
+      )}
+
+      {/* Modal WOW de Producto Terminado Liberado hacia Embarques */}
+      {recentLiberadoModalData && (
+        <ProductoTerminadoLiberadoModal
+          release={recentLiberadoModalData}
+          onClose={() => setRecentLiberadoModalData(null)}
+          onOpenPtSheet={(rel) => {
+            if (onOpenPtDetail) {
+              onOpenPtDetail(rel);
+            }
+          }}
+          onPrintLabelDemo={(rel) => {
+            setActiveLabelConfig({
+              type: 'Identificación de Caja',
+              opFolio: rel.opFolio,
+              client: rel.client,
+              partNumber: rel.partNumber,
+              revision: rel.revision,
+              lotNumber: rel.lotNumber,
+              quantity: rel.finishedQty,
+            });
+          }}
+          onNavigateToEmbarques={() => {
+            setRecentLiberadoModalData(null);
+            onNavigateToEmbarques?.();
+          }}
         />
       )}
     </div>

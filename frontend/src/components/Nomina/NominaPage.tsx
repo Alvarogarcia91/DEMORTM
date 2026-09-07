@@ -54,12 +54,14 @@ import { CiclosNominaTab } from './CiclosNominaTab';
 import { NuevoCicloWizardModal } from './NuevoCicloWizardModal';
 import { RhBenefitsTab } from './RhBenefitsTab';
 import { PrePayrollCycleContext, StampCycleContext } from './PayrollCycleContext';
-import { ChevronDown, Plus } from 'lucide-react';
+import { CompetenciasWorkspace } from './Competencias/CompetenciasWorkspace';
+import { ChevronDown, Plus, GraduationCap } from 'lucide-react';
 
 export type NominaSubTab =
   | 'ciclos'
   | 'resumen'
   | 'personal'
+  | 'competencias'
   | 'asistencia'
   | 'incidencias'
   | 'prenomina'
@@ -312,6 +314,7 @@ export const NominaPage: React.FC = () => {
     { id: 'ciclos', label: 'Ciclos', icon: <Calendar className="w-4 h-4" />, badgeCount: periods.length },
     { id: 'resumen', label: 'Resumen', icon: <LayoutDashboard className="w-4 h-4" /> },
     { id: 'personal', label: 'Personal', icon: <Users className="w-4 h-4" />, badgeCount: employees.length },
+    { id: 'competencias', label: 'Competencias & Capacitación', icon: <GraduationCap className="w-4 h-4" />, badgeCount: 3 },
     {
       id: 'asistencia',
       label: 'Asistencia',
@@ -509,6 +512,13 @@ export const NominaPage: React.FC = () => {
             vacationBalances={vacationBalances}
             vacationRequests={vacationRequests}
             loans={employeeLoans}
+          />
+        )}
+
+        {activeTab === 'competencias' && (
+          <CompetenciasWorkspace
+            employees={employees}
+            onNotice={(msg) => handleToast(msg, 'info')}
           />
         )}
 

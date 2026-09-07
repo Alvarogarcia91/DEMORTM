@@ -20,14 +20,32 @@ import { ReportarIncidenciaModal } from './ReportarIncidenciaModal';
 import { NewProductionOrderWizard } from './NewProductionOrderWizard';
 import { ConfiguracionFabricacion } from './ConfiguracionFabricacion';
 import { HojaOpPreviewModal } from './HojaOpPreviewModal';
+import { SalesOrder } from '../../data/mockSalesData';
+import { FinishedGoodsRelease } from '../../data/mockFinishedGoodsData';
+import { ProductionCostWorkspace } from './Costeo/ProductionCostWorkspace';
+import { MaterialesMrpWorkspace } from './MRP/MaterialesMrpWorkspace';
 
-type ProductionTab = 'Dashboard' | 'Planeación' | 'Órdenes' | 'Piso' | 'Procesos' | 'Máquinas' | 'Scrap y pérdidas' | 'Analítica';
+type ProductionTab = 'Dashboard' | 'Planeación' | 'Órdenes' | 'Piso' | 'Procesos' | 'Máquinas' | 'Scrap y pérdidas' | 'Costeo' | 'Materiales MRP' | 'Analítica';
 
 interface ProduccionPageProps {
   orders?: ProductionOrder[];
   onUpdateOrder?: (id: string, patch: Partial<ProductionOrder>) => void;
   onAddOrder?: (newOrder: ProductionOrder) => void;
   onNavigateToCalidad?: (opFolio?: string) => void;
+  salesOrders?: SalesOrder[];
+  onNavigateToSalesOrder?: (folio: string) => void;
+  finishedGoods?: FinishedGoodsRelease[];
+  onNavigateToEmbarques?: () => void;
+  onOpenPtDetail?: (pt: FinishedGoodsRelease) => void;
+  onNavigateToRequisitions?: (prefill?: {
+    sku: string;
+    productName: string;
+    brand: string;
+    quantity: number;
+    targetWarehouseId?: string;
+    note?: string;
+  }) => void;
+  onNavigateToPurchaseOrder?: (poFolio: string) => void;
 }
 
 export const ProduccionPage: React.FC<ProduccionPageProps> = ({
@@ -35,11 +53,19 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
   onUpdateOrder: externalUpdateOrder,
   onAddOrder: externalAddOrder,
   onNavigateToCalidad,
+  salesOrders,
+  onNavigateToSalesOrder,
+  finishedGoods,
+  onNavigateToEmbarques,
+  onOpenPtDetail,
+  onNavigateToRequisitions,
+  onNavigateToPurchaseOrder,
 }) => {
   const [tab, setTab] = useState<ProductionTab>('Dashboard');
   const [localOrders, setLocalOrders] = useState<ProductionOrder[]>(PRODUCTION_ORDERS);
   const orders = externalOrders || localOrders;
   const [selected, setSelected] = useState<ProductionOrder | null>(null);
+  const [selectedInitialTab, setSelectedInitialTab] = useState<string | undefined>(undefined);
   const [incidence, setIncidence] = useState<ProductionOrder | null>(null);
   const [notice, setNotice] = useState('');
   const [isWizardOpen, setIsWizardOpen] = useState(false);
@@ -61,8 +87,9 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
     }
   };
 
-  const openOrder = (order: ProductionOrder) => {
+  const openOrder = (order: ProductionOrder, initialTabName: string = 'Resumen') => {
     setSelected(orders.find((item) => item.id === order.id) ?? order);
+    setSelectedInitialTab(initialTabName);
   };
 
   const handleCreateOrderFromWizard = (newOrder: ProductionOrder) => {
@@ -245,7 +272,7 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
 
       {/* Tabs */}
       <div className="flex gap-1 overflow-x-auto border-b border-theme-subtle">
-        {(['Dashboard', 'Planeación', 'Órdenes', 'Piso', 'Procesos', 'Máquinas', 'Scrap y pérdidas', 'Analítica'] as ProductionTab[]).map((item) => (
+        {(['Dashboard', 'Planeación', 'Órdenes', 'Piso', 'Procesos', 'Máquinas', 'Scrap y pérdidas', 'Costeo', 'Materiales MRP', 'Analítica'] as ProductionTab[]).map((item) => (
           <button
             type="button"
             onClick={() => setTab(item)}
@@ -371,6 +398,45 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
         />
       )}
 
+      {tab === 'Costeo' && (
+        <ProductionCostWorkspace
+          orders={orders}
+          salesOrders={salesOrders || []}
+          onOpenOrderCost={(order) => openOrder(order, 'Costeo')}
+          onNavigateToTab={(targetTab) => setTab(targetTab as any)}
+          onNavigateToSalesOrder={onNavigateToSalesOrder}
+        />
+      )}
+
+      {tab === 'Materiales MRP' && (
+        <MaterialesMrpWorkspace
+          orders={orders}
+          onNavigateToRequisitions={(prefill) => {
+            if (onNavigateToRequisitions) {
+              onNavigateToRequisitions(prefill);
+            } else {
+              setNotice(`Requisición precargada generada para ${prefill.sku} (${prefill.quantity.toLocaleString()} ${prefill.brand}).`);
+            }
+          }}
+          onNavigateToPurchaseOrder={(poFolio: string) => {
+            if (onNavigateToPurchaseOrder) {
+              onNavigateToPurchaseOrder(poFolio);
+            } else {
+              setNotice(`Navegando a Orden de Compra ${poFolio}`);
+            }
+          }}
+          onNavigateToOp={(opFolio: string) => {
+            const found = orders.find((o) => o.folio === opFolio);
+            if (found) {
+              openOrder(found);
+            } else {
+              setNotice(`Detalle de OP ${opFolio} seleccionado.`);
+            }
+          }}
+          onNotice={(msg: string) => setNotice(msg)}
+        />
+      )}
+
       {/* Modal Wizard de Nueva OP */}
       {isWizardOpen && (
         <NewProductionOrderWizard
@@ -391,18 +457,37 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
       {selected && (
         <OrdenProduccionDetail
           order={orders.find((order) => order.id === selected.id) ?? selected}
-          onClose={() => setSelected(null)}
+          onClose={() => {
+            setSelected(null);
+            setSelectedInitialTab(undefined);
+          }}
           onIncident={() => {
             setIncidence(selected);
             setSelected(null);
+            setSelectedInitialTab(undefined);
           }}
           onRelease={requestFinalAudit}
           onPrintSheet={handlePrintSheet}
           onRequestMaterialExtra={() => {
             const ord = orders.find((order) => order.id === selected.id) ?? selected;
             setSelected(null);
+            setSelectedInitialTab(undefined);
             setTab('Piso');
             setNotice(`Para solicitar material adicional de ${ord.folio}, usa el botón en la consola de Piso.`);
+          }}
+          salesOrders={salesOrders}
+          onNavigateToSalesOrder={onNavigateToSalesOrder}
+          initialTab={selectedInitialTab}
+          finishedGoods={finishedGoods}
+          onNavigateToEmbarques={onNavigateToEmbarques}
+          onOpenPtDetail={onOpenPtDetail}
+          onNavigateToMrp={(opFolio) => {
+            setSelected(null);
+            setSelectedInitialTab(undefined);
+            setTab('Materiales MRP');
+            if (opFolio) {
+              setNotice(`Visualizando planeación de materiales MRP para ${opFolio}.`);
+            }
           }}
         />
       )}

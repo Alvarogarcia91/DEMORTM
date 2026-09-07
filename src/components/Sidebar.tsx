@@ -22,7 +22,8 @@ import {
  Wrench,
  Factory,
  ShieldCheck,
- Monitor
+ Monitor,
+ History
 } from 'lucide-react';
 import { useNavigationModules } from '../context/NavigationModulesContext';
 
@@ -55,6 +56,7 @@ export type NavItemKey =
  | 'nomina'
  | 'mantenimiento'
  | 'centro-alertas'
+ | 'bitacora'
  | 'configuracion';
 
 interface SidebarProps {
@@ -161,6 +163,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
  {
  title: 'SISTEMA',
  items: [
+ { key: 'bitacora', label: 'Bitácora & Cambios', icon: History },
  { key: 'configuracion', label: 'Configuración & Temas', icon: Palette },
  ],
  },

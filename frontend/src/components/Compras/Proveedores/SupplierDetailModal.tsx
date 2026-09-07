@@ -39,15 +39,23 @@ import {
 import { MOCK_MASTER_ARTICLES, MasterArticle } from '../../../data/mockArticlesData';
 import { SupplierStatusBadge } from './SupplierStatusBadge';
 import { PriceListsTab } from './PriceListsTab';
+import { SupplierQualityTab } from './SupplierQualityTab';
 import { ModalPortal } from '../../common/ModalPortal';
 import { StatusBadge } from '../../common/StatusBadge';
+import { IncomingInspection } from '../../../data/mockCalidadData';
+import { SupplierCorrectiveAction } from '../../../data/mockSupplierQualityData';
 
 interface SupplierDetailModalProps {
  supplier: SupplierMaster;
- initialTab?: 'resumen' | 'contactos' | 'direcciones' | 'articulos' | 'listas_precios' | 'condiciones' | 'documentos' | 'historial';
+ initialTab?: 'resumen' | 'contactos' | 'direcciones' | 'articulos' | 'listas_precios' | 'condiciones' | 'documentos' | 'historial' | 'calidad';
  onClose: () => void;
  onUpdateSupplier: (updated: SupplierMaster) => void;
  onOpenEditForm: (sup: SupplierMaster) => void;
+ incomings?: IncomingInspection[];
+ correctiveActions?: SupplierCorrectiveAction[];
+ onAddCorrectiveAction?: (action: Omit<SupplierCorrectiveAction, 'id'>) => void;
+ onUpdateCorrectiveAction?: (action: SupplierCorrectiveAction) => void;
+ onNavigateToIncoming?: (folio: string) => void;
 }
 
 export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
@@ -56,8 +64,19 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  onClose,
  onUpdateSupplier,
  onOpenEditForm,
+ incomings,
+ correctiveActions,
+ onAddCorrectiveAction,
+ onUpdateCorrectiveAction,
+ onNavigateToIncoming,
 }) => {
  const [activeTab, setActiveTab] = useState(initialTab);
+
+ React.useEffect(() => {
+   if (initialTab) {
+     setActiveTab(initialTab);
+   }
+ }, [initialTab]);
 
  // Sub-modal states
  const [contactModalOpen, setContactModalOpen] = useState(false);
@@ -287,6 +306,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
 
  const tabs = [
  { id: 'resumen' as const, label: 'Resumen' },
+ { id: 'calidad' as const, label: 'Calidad & Evaluación' },
  { id: 'contactos' as const, label: `Contactos (${supplier.contacts.length})` },
  { id: 'direcciones' as const, label: `Direcciones (${supplier.addresses.length})` },
  { id: 'articulos' as const, label: `Artículos (${supplier.articles.length})` },
@@ -488,6 +508,20 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  </div>
 
  </div>
+ )}
+
+ {/* ========================================================================= */}
+ {/* TAB CALIDAD: EVALUACIÓN & SCORECARD */}
+ {/* ========================================================================= */}
+ {activeTab === 'calidad' && (
+   <SupplierQualityTab
+     supplier={supplier}
+     incomings={incomings || []}
+     correctiveActions={correctiveActions || []}
+     onAddCorrectiveAction={onAddCorrectiveAction || (() => {})}
+     onUpdateCorrectiveAction={onUpdateCorrectiveAction}
+     onNavigateToIncoming={onNavigateToIncoming}
+   />
  )}
 
  {/* ========================================================================= */}

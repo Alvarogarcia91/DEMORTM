@@ -1,9 +1,39 @@
 import React, { useState } from 'react';
-import { CheckCircle2, Circle, X, AlertTriangle, ShieldCheck, Clock, FileText, Printer, Sparkles, Tag, Layers } from 'lucide-react';
-import { PRODUCTION_INCIDENTS, ProductionOrder, RoutingStep, ToolingRequirement } from '../../data/mockProduccionData';
+import {
+  CheckCircle2,
+  Circle,
+  X,
+  AlertTriangle,
+  ShieldCheck,
+  Clock,
+  FileText,
+  Printer,
+  Sparkles,
+  Tag,
+  Layers,
+  Lock,
+  Unlock,
+  Package,
+  Truck,
+  ArrowRight,
+} from 'lucide-react';
+import {
+  PRODUCTION_INCIDENTS,
+  ProductionOrder,
+  RoutingStep,
+  ToolingRequirement,
+  ProcessQaControl,
+  getDefaultQaControls,
+} from '../../data/mockProduccionData';
 import { CUSTOMER_REQUIREMENTS, CustomerQualityRequirement } from '../../data/mockCalidadData';
+import { FinishedGoodsRelease } from '../../data/mockFinishedGoodsData';
+import { FichaLotePtModal } from './FichaLotePtModal';
+import { SalesOrder } from '../../data/mockSalesData';
+import { ProductionCostConfig } from '../../data/mockProductionCostData';
+import { ProductionOrderCostTab } from './Costeo/ProductionOrderCostTab';
 import { ModalPortal } from '../common/ModalPortal';
 import { ProductionCard, StatusBadge, formatNumber } from './productionUi';
+import { ScrapLedgerPorEtapa } from './ScrapLedgerPorEtapa';
 
 interface Props {
   order: ProductionOrder;
@@ -13,6 +43,14 @@ interface Props {
   onAdvanceOperation?: (stepNumber: number) => void;
   onRequestMaterialExtra?: () => void;
   onPrintSheet?: (order: ProductionOrder) => void;
+  salesOrders?: SalesOrder[];
+  onNavigateToSalesOrder?: (folio: string) => void;
+  initialTab?: string;
+  costConfig?: ProductionCostConfig;
+  finishedGoods?: FinishedGoodsRelease[];
+  onNavigateToEmbarques?: () => void;
+  onOpenPtDetail?: (pt: FinishedGoodsRelease) => void;
+  onNavigateToMrp?: (opFolio?: string) => void;
 }
 
 export const OrdenProduccionDetail: React.FC<Props> = ({
@@ -23,9 +61,32 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
   onAdvanceOperation,
   onRequestMaterialExtra,
   onPrintSheet,
+  salesOrders,
+  onNavigateToSalesOrder,
+  initialTab,
+  costConfig,
+  finishedGoods,
+  onNavigateToEmbarques,
+  onOpenPtDetail,
+  onNavigateToMrp,
 }) => {
-  const [tab, setTab] = useState<'Resumen' | 'Routing' | 'Paginación / Flexo' | 'Materiales' | 'Herramental' | 'Incidencias' | 'Trazabilidad'>('Resumen');
+  const [tab, setTab] = useState<
+    | 'Resumen'
+    | 'Costeo'
+    | 'Routing'
+    | 'Paginación / Flexo'
+    | 'Materiales'
+    | 'Herramental'
+    | 'Controles QA'
+    | 'Incidencias'
+    | 'Trazabilidad'
+  >((initialTab as any) || 'Resumen');
   const [showCsrModal, setShowCsrModal] = useState(false);
+  const [localPtModal, setLocalPtModal] = useState<FinishedGoodsRelease | null>(null);
+
+  const matchingPt = finishedGoods?.find(
+    (pt) => pt.opFolio === order.folio || pt.opId === order.id
+  );
 
   const clientReqs: CustomerQualityRequirement[] = CUSTOMER_REQUIREMENTS.filter(
     (c) =>
@@ -154,12 +215,23 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
         { id: 'm-3', item: 'Barniz UV', type: 'Barniz' as const, required: '2.1 kg', reserved: order.materialAlert ? '0 kg' : '2.1 kg', delivered: order.materialAlert ? '0 kg' : '2.1 kg', available: order.materialAlert ? '0.8 kg' : '8 kg', status: order.materialAlert ? 'Insuficiente' as const : 'Disponible' as const, substituteAuthorized: order.materialAlert ? 'Barniz UV 804-AX' : undefined },
       ];
 
+  const qaControls: ProcessQaControl[] =
+    order.qaControls ??
+    getDefaultQaControls(
+      order.folio,
+      order.area,
+      order.progress,
+      order.status === 'Detenida' || order.status === 'Pendiente de calidad'
+    );
+
   const tabs = [
     'Resumen',
+    'Costeo',
     'Routing',
     order.area === 'Offset' ? 'Paginación / Offset' : 'Operaciones Flexo',
     'Materiales',
     'Herramental',
+    'Controles QA',
     'Incidencias',
     'Trazabilidad',
   ] as const;
@@ -299,6 +371,145 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
                 </div>
               )}
 
+              {/* 5/5 CIERRE DE MANUFACTURA · PRODUCTO TERMINADO DISPONIBLE PARA EMBARQUES (v14) */}
+              {(order.status === 'Liberada' || order.qualityGates?.finalAuditApproved || matchingPt) && (
+                <div className="rounded-3xl border-2 border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent p-5 text-xs shadow-xs">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-start gap-3.5">
+                      <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0 mt-0.5 shadow-xs">
+                        <CheckCircle2 className="w-6 h-6" />
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="rounded-md bg-emerald-600 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
+                            CIERRE DE MANUFACTURA CONFORME
+                          </span>
+                          <span className="rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-bold px-2 py-0.5 text-[10px]">
+                            Disponible para Embarques
+                          </span>
+                          <span className="font-mono text-emerald-600 dark:text-emerald-400 font-black text-xs">
+                            {matchingPt?.lotNumber || `PT-260907-${order.folio.slice(-3)}`}
+                          </span>
+                        </div>
+                        <h4 className="text-sm font-black text-theme-main">
+                          Lote de Producto Terminado Ubicado en Almacén
+                        </h4>
+                        <p className="text-theme-muted text-[11px] leading-relaxed max-w-2xl">
+                          Inspección final de calidad AQL 0.65 concluida. Producto físico identificado, estibado en Almacén PT (<b className="text-theme-main font-mono">{matchingPt?.location || 'PT-A-03'}</b>) y registrado en el listado de Órdenes de Salida de Logística/Embarques.
+                        </p>
+
+                        <div className="pt-2 flex flex-wrap items-center gap-4 text-[11px]">
+                          <div>
+                            <span className="text-theme-muted">Cantidad Conforme: </span>
+                            <b className="font-mono text-theme-main font-bold">
+                              {formatNumber(matchingPt?.finishedQty || order.good || order.quantity)} pzas
+                            </b>
+                            {order.scrap ? (
+                              <span className="text-theme-muted text-[10px] ml-1.5">
+                                ({formatNumber(order.scrap)} scrap)
+                              </span>
+                            ) : null}
+                          </div>
+                          <div className="h-3 w-px bg-theme-subtle" />
+                          <div>
+                            <span className="text-theme-muted">Presentación: </span>
+                            <b className="text-theme-main font-bold">
+                              {matchingPt?.packageCount || Math.max(1, Math.round((order.good || order.quantity) / 1000))} bultos corrugados
+                            </b>
+                          </div>
+                          <div className="h-3 w-px bg-theme-subtle" />
+                          <div>
+                            <span className="text-theme-muted">Liberado por: </span>
+                            <b className="text-theme-main font-bold">
+                              {matchingPt?.releasedBy || 'Alicia Ramírez (Calidad)'}
+                            </b>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex md:flex-col items-center gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const ptData: FinishedGoodsRelease = matchingPt || {
+                            id: `pt-rel-${order.id}`,
+                            opId: order.id,
+                            opFolio: order.folio,
+                            pedido:
+                              order.cliente === 'Fresenius Kabi'
+                                ? 'PED-RTM-2026-86153'
+                                : `PED-RTM-2026-${order.folio.slice(-4)}`,
+                            client: order.cliente,
+                            partNumber: order.partNumber,
+                            revision: order.revision,
+                            area: (order.area as any) || 'Flexografía',
+                            finishedQty: order.good || order.quantity,
+                            lotNumber: `PT-260907-${order.folio.slice(-3)}`,
+                            packageCount: Math.max(1, Math.round((order.good || order.quantity) / 1000)),
+                            unitsPerPackage: 1000,
+                            warehouseId: 'alm-rtm-pt',
+                            warehouseName: 'Almacén Producto Terminado',
+                            location: 'PT-A-03',
+                            releasedBy: 'Alicia Ramírez (Calidad)',
+                            releasedAt: '07 Sep · 14:45',
+                            status: 'Disponible para embarque',
+                            traceabilityNotes: 'Inspección AQL 0.65 conforme. Traspaso formal a Almacén PT-A-03.',
+                            isRecentRelease: true,
+                          };
+                          if (onOpenPtDetail) {
+                            onOpenPtDetail(ptData);
+                          } else {
+                            setLocalPtModal(ptData);
+                          }
+                        }}
+                        className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-emerald-500/30 bg-theme-surface px-3.5 py-2 text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10 shadow-xs transition-colors"
+                      >
+                        <Package className="w-4 h-4" />
+                        Ver Ficha Lote PT
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onClose();
+                          onNavigateToEmbarques?.();
+                        }}
+                        className="w-full flex items-center justify-center gap-1.5 rounded-xl bg-theme-primary px-3.5 py-2 text-xs font-bold text-white hover:bg-theme-primary/90 shadow-xs transition-colors"
+                      >
+                        <Truck className="w-4 h-4" />
+                        Ir a Embarques
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Si la OP está en HOLD por rechazo en calidad */}
+              {order.status === 'Detenida' && (
+                <div className="rounded-3xl border-2 border-rose-500/30 bg-rose-500/5 p-4 text-xs">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 flex items-center justify-center shrink-0">
+                      <AlertTriangle className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="rounded-md bg-rose-600 px-2 py-0.5 text-[10px] font-black uppercase text-white">
+                          EN HOLD POR CALIDAD
+                        </span>
+                        <span className="font-bold text-rose-700 dark:text-rose-400">
+                          No disponible para Producto Terminado ni Embarques
+                        </span>
+                      </div>
+                      <p className="text-theme-muted text-[11px] mt-1">
+                        La orden presenta hallazgos de auditoría no conformes o se encuentra detenida por contención técnica. Los baches físicos no pueden ingresar a Almacén de PT hasta que se emita disposición de Calidad (MNC).
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="grid gap-3 sm:grid-cols-2 text-xs">
                 <div className="rounded-2xl border border-theme-subtle bg-theme-surface p-4 space-y-2">
                   <span className="font-bold text-theme-main uppercase tracking-wider text-[11px]">
@@ -326,6 +537,15 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
                   <p><b className="text-theme-muted">Herramental:</b> {order.tooling}</p>
                   <p><b className="text-theme-muted">Próxima OP en cola:</b> {order.nextJob}</p>
                   <p><b className="text-theme-muted">Riesgo de Entrega:</b> {order.deliveryRisk ?? 'Bajo'}</p>
+                  {onNavigateToMrp && (
+                    <button
+                      type="button"
+                      onClick={() => onNavigateToMrp(order.folio)}
+                      className="mt-1 inline-flex items-center gap-1 text-[11px] font-bold text-theme-primary hover:underline"
+                    >
+                      Ver cobertura en MRP Materiales &rarr;
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -423,6 +643,17 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
                 </div>
               )}
             </div>
+          )}
+
+          {/* COSTEO REAL Y PROYECTADO */}
+          {tab === 'Costeo' && (
+            <ProductionOrderCostTab
+              order={order}
+              salesOrders={salesOrders}
+              onNavigateToSalesOrder={onNavigateToSalesOrder}
+              onNavigateToInternalTab={(targetTab) => setTab(targetTab)}
+              costConfig={costConfig}
+            />
           )}
 
           {/* 2. ROUTING (Sección 18 del doc) */}
@@ -523,7 +754,12 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
                         <div>
                           <span className="text-theme-muted">Scrap:</span>
                           <b className="block font-mono text-rose-600">
-                            {step.scrapQuantity ?? order.scrap} piezas
+                            {formatNumber(step.scrapQuantity ?? order.scrap)} {step.scrapUom || (order.area === 'Offset' ? 'pliegos' : 'm')}
+                            {step.scrapPercentContribution !== undefined && (
+                              <span className="ml-1 text-[10px] font-normal text-rose-500">
+                                ({step.scrapPercentContribution.toFixed(1)}%)
+                              </span>
+                            )}
                           </b>
                         </div>
                         <div>
@@ -546,6 +782,11 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
                     </div>
                   );
                 })}
+              </div>
+
+              {/* Scrap Ledger por Etapa & Consumo de Margen */}
+              <div className="mt-5">
+                <ScrapLedgerPorEtapa order={order} />
               </div>
             </div>
           )}
@@ -667,15 +908,26 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
                     Balance de inventario para la orden de producción.
                   </p>
                 </div>
-                {onRequestMaterialExtra && (
-                  <button
-                    type="button"
-                    onClick={onRequestMaterialExtra}
-                    className="rounded-xl border border-amber-400 bg-amber-50/50 dark:bg-amber-950/20 px-3 py-1.5 text-xs font-bold text-amber-800 dark:text-amber-200 hover:bg-amber-100"
-                  >
-                    + Solicitar Material Adicional / Merma
-                  </button>
-                )}
+                <div className="flex items-center gap-2">
+                  {onNavigateToMrp && (
+                    <button
+                      type="button"
+                      onClick={() => onNavigateToMrp(order.folio)}
+                      className="rounded-xl border border-theme-primary/30 bg-theme-primary/10 px-3 py-1.5 text-xs font-bold text-theme-primary hover:bg-theme-primary/20 transition-colors"
+                    >
+                      📊 Ver Planeación MRP
+                    </button>
+                  )}
+                  {onRequestMaterialExtra && (
+                    <button
+                      type="button"
+                      onClick={onRequestMaterialExtra}
+                      className="rounded-xl border border-amber-400 bg-amber-50/50 dark:bg-amber-950/20 px-3 py-1.5 text-xs font-bold text-amber-800 dark:text-amber-200 hover:bg-amber-100"
+                    >
+                      + Solicitar Material Adicional / Merma
+                    </button>
+                  )}
+                </div>
               </div>
 
               {order.activeDeviation && (
@@ -824,7 +1076,149 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
             </div>
           )}
 
-          {/* 7. TRAZABILIDAD COMPLETA (Sección 20 del doc) */}
+          {/* 6. CONTROLES QA DEL PROCESO (Docs produccion-disparadores-qa-v13) */}
+          {tab === 'Controles QA' && (
+            <div className="space-y-5 animate-in fade-in duration-150">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-theme-subtle pb-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="rounded-lg bg-purple-600/10 dark:bg-purple-900/30 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-purple-700 dark:text-purple-300">
+                      Disparadores y Calidad en Línea
+                    </span>
+                    <span className="text-xs font-mono text-theme-muted">
+                      Matriz de 7 Eventos de Control
+                    </span>
+                  </div>
+                  <h3 className="text-base font-black text-theme-main mt-1">
+                    Controles QA del Proceso de Fabricación
+                  </h3>
+                  <p className="text-xs text-theme-muted">
+                    Puntos críticos de inspección durante la corrida. Los eventos marcados como bloqueantes detienen el tiraje hasta dictamen técnico de Calidad.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="rounded-xl border border-emerald-300 dark:border-emerald-800/60 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
+                    ✓ {qaControls.filter((c) => c.status === 'Liberada').length} Liberados
+                  </span>
+                  <span className="rounded-xl border border-amber-300 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/40 px-3 py-1.5 text-xs font-bold text-amber-700 dark:text-amber-300">
+                    ● {qaControls.filter((c) => c.status === 'Solicitada' || c.status === 'En revisión' || c.status === 'No conforme / HOLD').length} En Atención
+                  </span>
+                </div>
+              </div>
+
+              {/* Lista de Controles */}
+              <div className="space-y-3">
+                {qaControls.map((ctrl, index) => {
+                  const isLiberada = ctrl.status === 'Liberada';
+                  const isHold = ctrl.status === 'No conforme / HOLD';
+                  const isSolicitada = ctrl.status === 'Solicitada' || ctrl.status === 'En revisión';
+
+                  return (
+                    <div
+                      key={ctrl.id}
+                      className={`rounded-2xl border p-4 transition-all ${
+                        isHold
+                          ? 'border-rose-400 bg-rose-50/40 dark:bg-rose-950/20'
+                          : isSolicitada
+                          ? 'border-amber-300 dark:border-amber-700/60 bg-amber-50/30 dark:bg-amber-950/20'
+                          : isLiberada
+                          ? 'border-theme-subtle bg-theme-surface'
+                          : 'border-theme-subtle bg-theme-surface opacity-80'
+                      }`}
+                    >
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        <div className="flex items-start gap-3">
+                          <div
+                            className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl font-bold text-xs ${
+                              isLiberada
+                                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'
+                                : isHold
+                                ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300'
+                                : isSolicitada
+                                ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 animate-pulse'
+                                : 'bg-theme-muted/40 text-theme-muted'
+                            }`}
+                          >
+                            {isLiberada ? (
+                              <CheckCircle2 className="h-5 w-5" />
+                            ) : isHold ? (
+                              <AlertTriangle className="h-5 w-5" />
+                            ) : (
+                              <span>{index + 1}</span>
+                            )}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <b className="text-sm font-black text-theme-main">{ctrl.trigger}</b>
+                              <span
+                                className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                                  isLiberada
+                                    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                                    : isHold
+                                    ? 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300'
+                                    : isSolicitada
+                                    ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
+                                    : 'bg-theme-muted/50 text-theme-muted'
+                                }`}
+                              >
+                                {ctrl.status}
+                              </span>
+                              {ctrl.isBlocking ? (
+                                <span className="inline-flex items-center gap-1 rounded-md bg-rose-100 dark:bg-rose-950/60 px-1.5 py-0.5 text-[10px] font-black text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
+                                  <Lock className="h-3 w-3" /> BLOQUEA PRODUCCIÓN
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 rounded-md bg-theme-muted/30 px-1.5 py-0.5 text-[10px] font-medium text-theme-muted">
+                                  <Unlock className="h-3 w-3" /> No bloqueante
+                                </span>
+                              )}
+                            </div>
+
+                            <p className="mt-1 text-xs text-theme-muted">
+                              <b className="text-theme-main">Cuándo se dispara:</b> {ctrl.timingDescription}
+                            </p>
+
+                            {ctrl.evidenceNotes && (
+                              <p className="mt-1 text-[11px] text-theme-muted italic">
+                                Evidencia: "{ctrl.evidenceNotes}"
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="text-left md:text-right text-xs shrink-0 space-y-1">
+                          <div>
+                            <span className="text-[10px] text-theme-muted uppercase font-bold block">Responsable</span>
+                            <span className="font-bold text-theme-main">{ctrl.responsible}</span>
+                          </div>
+                          {ctrl.lastVerifiedAt && (
+                            <div className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400">
+                              ✓ Verificado: {ctrl.lastVerifiedAt}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Nota de Procedimiento Operativo */}
+              <div className="rounded-2xl border border-purple-200 dark:border-purple-800/60 bg-purple-50/50 dark:bg-purple-950/20 p-4 text-xs text-purple-900 dark:text-purple-200 flex items-start gap-3">
+                <Sparkles className="h-5 w-5 text-purple-600 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <b className="font-bold text-purple-950 dark:text-purple-100">
+                    Procedimiento de Calidad en Planta (ISO 9001:2015 · FM-CAL-004)
+                  </b>
+                  <p className="text-[11px] text-purple-800 dark:text-purple-300 leading-relaxed">
+                    Toda desviación o disparo de control bloqueante requiere presencia física del auditor asignado (Alicia Ramírez) y firma digital en la terminal de Calidad antes de que el operador pueda registrar piezas buenas o continuar la velocidad nominal.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 7. TRAZABILIDAD COMPLETA (Sección 20 del doc y Disparadores QA v13) */}
           {tab === 'Trazabilidad' && (
             <div className="space-y-4">
               <div className="border-b border-theme-subtle pb-3">
@@ -832,37 +1226,92 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
                   Trazabilidad de Punta a Punta RTM
                 </h3>
                 <p className="text-xs text-theme-muted">
-                  Bitácora inmutable de eventos: pedido → configuración → planeación → ejecución → calidad → entrega.
+                  Bitácora inmutable de eventos con segregación de fases: Producción, Disparadores QA (alertas / bloqueos) y Dictámenes de Calidad.
                 </p>
               </div>
 
               <div className="relative border-l-2 border-theme-subtle pl-4 ml-2 space-y-4 text-xs">
                 {(order.traceability ?? [
-                  { id: '1', timestamp: '07 Sep · 07:15', user: 'Ventas Básico', station: 'Sistema Ventas', event: 'Pedido recibido', notes: `Pedido ${order.pedido} creado y validado` },
-                  { id: '2', timestamp: '07 Sep · 07:45', user: 'Planner RTM', station: 'Configurador Técnico', event: 'OP creada y proceso configurado', notes: `Routing de ${routingSteps.length} etapas confirmado` },
-                  { id: '3', timestamp: '07 Sep · 08:00', user: 'Almacén MP', station: 'Inventario', event: 'Materiales reservados', notes: 'Papel/bobina y tintas asignados con lote' },
-                  { id: '4', timestamp: '07 Sep · 08:30', user: 'Taller Suajes', station: 'Herramental', event: 'Herramental liberado', notes: order.tooling },
-                  { id: '5', timestamp: '07 Sep · 09:15', user: 'Operador Piso', station: order.machine, event: 'Inicio preparación y setup', notes: `Setup estándar ${order.setupMinutes} min` },
-                  { id: '6', timestamp: '07 Sep · 09:27', user: 'Alicia Ramírez', station: 'Control Calidad', event: 'Primera pieza liberada', notes: 'Tono, registro y corte aprobados' },
-                ]).map((event, index) => (
-                  <div key={event.id} className="relative group">
-                    <span className="absolute -left-[23px] top-1 h-3 w-3 rounded-full bg-theme-primary ring-4 ring-theme-surface" />
-                    <div className="rounded-xl border border-theme-subtle bg-theme-surface p-3 hover:bg-theme-muted/20 transition-all">
-                      <div className="flex items-center justify-between text-[11px]">
-                        <b className="text-theme-main text-xs">{event.event}</b>
-                        <span className="font-mono text-theme-muted">{event.timestamp}</span>
-                      </div>
-                      <p className="mt-1 text-theme-muted">
-                        Responsable: <b className="text-theme-main">{event.user}</b> · Estación: <i>{event.station}</i>
-                      </p>
-                      {event.notes && (
-                        <p className="mt-1 text-[11px] text-theme-primary font-medium">
-                          {event.notes}
+                  { id: '1', timestamp: '07 Sep · 07:15', user: 'Ventas Básico', station: 'Sistema Ventas', event: 'Pedido recibido', notes: `Pedido ${order.pedido} creado y validado`, category: 'production' },
+                  { id: '2', timestamp: '07 Sep · 07:45', user: 'Planner RTM', station: 'Configurador Técnico', event: 'OP creada y proceso configurado', notes: `Routing de ${routingSteps.length} etapas confirmado`, category: 'production' },
+                  { id: '3', timestamp: '07 Sep · 08:00', user: 'Almacén MP', station: 'Inventario', event: 'Materiales reservados', notes: 'Papel/bobina y tintas asignados con lote', category: 'production' },
+                  { id: '4', timestamp: '07 Sep · 08:30', user: 'Taller Suajes', station: 'Herramental', event: 'Herramental liberado', notes: order.tooling, category: 'production' },
+                  { id: '5', timestamp: '07 Sep · 09:15', user: 'Operador Piso', station: order.machine, event: 'Inicio preparación y setup', notes: `Setup estándar ${order.setupMinutes} min`, category: 'production' },
+                  { id: '6', timestamp: '07 Sep · 09:27', user: 'Alicia Ramírez', station: 'Control Calidad', event: 'Primera pieza liberada', notes: 'Tono, registro y corte aprobados', category: 'quality' },
+                ]).map((event, index) => {
+                  const isQaTrigger = event.category === 'qa_trigger' || event.event.includes('QA TRIGGER:');
+                  const isQuality = event.category === 'quality' || event.event.includes('CALIDAD:');
+                  const isBlocking = event.isBlocking;
+
+                  return (
+                    <div key={event.id || index} className="relative group">
+                      <span
+                        className={`absolute -left-[23px] top-1 h-3 w-3 rounded-full ring-4 ring-theme-surface ${
+                          isQuality
+                            ? 'bg-emerald-500'
+                            : isQaTrigger
+                            ? isBlocking
+                              ? 'bg-rose-500 animate-pulse'
+                              : 'bg-amber-500'
+                            : 'bg-theme-primary'
+                        }`}
+                      />
+                      <div
+                        className={`rounded-xl border p-3.5 transition-all ${
+                          isQuality
+                            ? 'border-emerald-300/60 dark:border-emerald-800/40 bg-emerald-50/30 dark:bg-emerald-950/15'
+                            : isQaTrigger
+                            ? isBlocking
+                              ? 'border-rose-300 dark:border-rose-800/50 bg-rose-50/40 dark:bg-rose-950/20'
+                              : 'border-amber-300 dark:border-amber-800/50 bg-amber-50/30 dark:bg-amber-950/15'
+                            : 'border-theme-subtle bg-theme-surface hover:bg-theme-muted/20'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between text-[11px] gap-2 flex-wrap">
+                          <div className="flex items-center gap-2">
+                            {isQuality ? (
+                              <span className="rounded-md bg-emerald-600 px-2 py-0.5 text-[9px] font-black tracking-wider text-white uppercase flex items-center gap-1">
+                                <ShieldCheck className="h-3 w-3" /> CALIDAD
+                              </span>
+                            ) : isQaTrigger ? (
+                              <span
+                                className={`rounded-md px-2 py-0.5 text-[9px] font-black tracking-wider text-white uppercase flex items-center gap-1 ${
+                                  isBlocking ? 'bg-rose-600' : 'bg-amber-600'
+                                }`}
+                              >
+                                <AlertTriangle className="h-3 w-3" /> QA TRIGGER {isBlocking ? '· BLOQUEANTE' : ''}
+                              </span>
+                            ) : (
+                              <span className="rounded-md bg-theme-primary/20 px-2 py-0.5 text-[9px] font-black tracking-wider text-theme-primary uppercase">
+                                PRODUCCIÓN
+                              </span>
+                            )}
+                            <b className="text-theme-main text-xs">{event.event}</b>
+                          </div>
+                          <span className="font-mono text-theme-muted">{event.timestamp}</span>
+                        </div>
+                        <p className="mt-1.5 text-theme-muted text-[11px]">
+                          Responsable: <b className="text-theme-main">{event.user}</b> · Estación: <i>{event.station}</i>
                         </p>
-                      )}
+                        {event.notes && (
+                          <p
+                            className={`mt-1.5 text-[11px] font-medium ${
+                              isQuality
+                                ? 'text-emerald-700 dark:text-emerald-300'
+                                : isQaTrigger
+                                ? isBlocking
+                                  ? 'text-rose-700 dark:text-rose-300'
+                                  : 'text-amber-700 dark:text-amber-300'
+                                : 'text-theme-primary'
+                            }`}
+                          >
+                            {event.notes}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
@@ -950,6 +1399,19 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
                 </div>
               </div>
             </ModalPortal>
+          )}
+
+          {/* Modal Ficha de Lote PT */}
+          {localPtModal && (
+            <FichaLotePtModal
+              release={localPtModal}
+              onClose={() => setLocalPtModal(null)}
+              onNavigateToEmbarques={() => {
+                setLocalPtModal(null);
+                onClose();
+                onNavigateToEmbarques?.();
+              }}
+            />
           )}
         </div>
       </div>

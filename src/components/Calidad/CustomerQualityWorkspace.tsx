@@ -41,11 +41,13 @@ import { NuevaQuejaModal } from './NuevaQuejaModal';
 interface Props {
   onToast: (msg: string) => void;
   activeRole: string;
+  onNavigateToTraceability?: (query: string) => void;
 }
 
 export const CustomerQualityWorkspace: React.FC<Props> = ({
   onToast,
   activeRole,
+  onNavigateToTraceability,
 }) => {
   // Master complaints state initialized from INITIAL_CUSTOMER_COMPLAINTS
   const [complaints, setComplaints] = useState<CustomerComplaint[]>(INITIAL_CUSTOMER_COMPLAINTS);
@@ -591,10 +593,16 @@ export const CustomerQualityWorkspace: React.FC<Props> = ({
 
                       {/* Trazabilidad */}
                       <td className="p-3 font-mono" onClick={(e) => e.stopPropagation()}>
-                        <div className="space-y-0.5">
-                          <span className="rounded bg-blue-500/10 text-blue-700 dark:text-blue-300 px-1.5 py-0.2 text-[9px] font-black block w-fit">
-                            {c.traceability.opFolio}
-                          </span>
+                        <div className="space-y-1">
+                          <button
+                            type="button"
+                            onClick={() => onNavigateToTraceability?.(c.traceability.opFolio)}
+                            className="rounded bg-blue-500/10 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 text-[9px] font-black flex items-center gap-1 hover:bg-blue-500/20 transition-colors cursor-pointer"
+                            title="Ver Trazabilidad 360°"
+                          >
+                            <span>{c.traceability.opFolio}</span>
+                            <FileSearch className="h-2.5 w-2.5" />
+                          </button>
                           <small className="text-theme-muted block text-[9px]">
                             Lote: {c.traceability.lotNumber}
                           </small>
@@ -627,6 +635,16 @@ export const CustomerQualityWorkspace: React.FC<Props> = ({
                       {/* Acciones */}
                       <td className="p-3 text-right" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-end gap-1">
+                          {/* Ver Trazabilidad 360 */}
+                          <button
+                            type="button"
+                            onClick={() => onNavigateToTraceability?.(c.traceability.opFolio)}
+                            className="rounded-lg p-1.5 text-indigo-600 hover:bg-indigo-500/10 transition-colors cursor-pointer"
+                            title="Ver Trazabilidad 360°"
+                          >
+                            <FileSearch className="h-4 w-4" />
+                          </button>
+
                           {/* Ver Expediente */}
                           <button
                             type="button"
@@ -797,6 +815,7 @@ export const CustomerQualityWorkspace: React.FC<Props> = ({
           onUpdateComplaint={handleUpdateComplaint}
           onToast={onToast}
           activeRole={activeRole}
+          onNavigateToTraceability={onNavigateToTraceability}
         />
       )}
 

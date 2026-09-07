@@ -22,10 +22,13 @@ import { MantenimientoPage } from './Mantenimiento/MantenimientoPage';
 import { ProduccionPage } from './Produccion/ProduccionPage';
 import { PisoOperadorWorkspace } from './Produccion/PisoOperadorWorkspace';
 import { CalidadPage } from './Calidad/CalidadPage';
+import { FichaLotePtModal } from './Produccion/FichaLotePtModal';
 import { CentroAlertasPage } from './CentroAlertasPage';
 import { CrmPage } from './Comercial/CrmPage';
+import { SystemAuditTrailPage } from './System/SystemAuditTrailPage';
 import { DemoAlert } from '../data/mockAlertasData';
 import { PRODUCTION_ORDERS, ProductionOrder } from '../data/mockProduccionData';
+import { FinishedGoodsRelease, INITIAL_FINISHED_GOODS } from '../data/mockFinishedGoodsData';
 import {
   SalesInvoice,
   AccountReceivable,
@@ -37,6 +40,12 @@ import {
 import { Requisition, INITIAL_MOCK_REQUISITIONS } from '../data/mockRequisitionsData';
 import { SupplierMaster, INITIAL_MOCK_SUPPLIERS } from '../data/mockSuppliersData';
 import { PurchaseOrder, INITIAL_MOCK_PURCHASE_ORDERS } from '../data/mockPurchasesOrdersData';
+import {
+  INITIAL_INCOMING_INSPECTIONS,
+  INITIAL_SUPPLIER_CORRECTIVE_ACTIONS,
+  SupplierCorrectiveAction
+} from '../data/mockSupplierQualityData';
+import { IncomingInspection } from '../data/mockCalidadData';
 import {
  SalesQuote,
  SalesOrder,
@@ -99,6 +108,48 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
 
   // Shared Production & Quality State (Sincronización Operativa en Vivo)
   const [productionOrders, setProductionOrders] = useState<ProductionOrder[]>(PRODUCTION_ORDERS);
+
+  // Shared Finished Goods (Cierre PT → Disponible para Embarques)
+  const [finishedGoods, setFinishedGoods] = useState<FinishedGoodsRelease[]>(INITIAL_FINISHED_GOODS);
+  const [selectedPtForModal, setSelectedPtForModal] = useState<FinishedGoodsRelease | null>(null);
+
+  const handleReleaseToFinishedGoods = (newPt: FinishedGoodsRelease) => {
+    setFinishedGoods((prev) => [newPt, ...prev.filter((p) => p.opFolio !== newPt.opFolio)]);
+  };
+
+  // Shared Supplier Quality & Incoming State (Single Source of Truth)
+  const [incomingInspections, setIncomingInspections] = useState<IncomingInspection[]>(INITIAL_INCOMING_INSPECTIONS);
+  const [supplierCorrectiveActions, setSupplierCorrectiveActions] = useState<SupplierCorrectiveAction[]>(INITIAL_SUPPLIER_CORRECTIVE_ACTIONS);
+  const [targetSupplierForQuality, setTargetSupplierForQuality] = useState<string | null>(null);
+
+  const handleUpdateIncoming = (updated: IncomingInspection) => {
+    setIncomingInspections((prev) =>
+      prev.map((i) => (i.id === updated.id ? updated : i))
+    );
+  };
+
+  const handleAddSupplierCorrectiveAction = (action: Omit<SupplierCorrectiveAction, 'id'>) => {
+    const newAction: SupplierCorrectiveAction = {
+      ...action,
+      id: `ACP-2026-000${supplierCorrectiveActions.length + 9}`,
+    };
+    setSupplierCorrectiveActions((prev) => [newAction, ...prev]);
+  };
+
+  const handleUpdateSupplierCorrectiveAction = (action: SupplierCorrectiveAction) => {
+    setSupplierCorrectiveActions((prev) =>
+      prev.map((a) => (a.id === action.id ? action : a))
+    );
+  };
+
+  const handleNavigateToSupplierQuality = (supplierName: string) => {
+    setTargetSupplierForQuality(supplierName);
+    setActiveTab('proveedores');
+  };
+
+  const handleNavigateToIncoming = (_folio?: string) => {
+    setActiveTab('calidad');
+  };
 
   const handleUpdateProductionOrder = (id: string, patch: Partial<ProductionOrder>) => {
     setProductionOrders((prev) => prev.map((o) => (o.id === id ? { ...o, ...patch } : o)));
@@ -392,8 +443,13 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  onNavigateToPurchaseOrder={handleNavigateToPurchaseOrder}
  />
  );
- case 'logistica':
- return <EmbarquesPage />;
+      case 'logistica':
+        return (
+          <EmbarquesPage
+            releasedFinishedGoods={finishedGoods}
+            onOpenPtDetail={(pt) => setSelectedPtForModal(pt)}
+          />
+        );
  case 'requisiciones':
  return (
  <div className="space-y-6 animate-in fade-in duration-200">
@@ -446,27 +502,37 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  />
  </div>
  );
- case 'proveedores':
- return (
- <div className="space-y-6 animate-in fade-in duration-200">
- <div className="space-y-1">
- <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-theme-primary shadow-2xs">
- Cadena de Suministro & Abastecimiento
- </span>
- <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-theme-main">
- Proveedores
- </h1>
- <p className="text-xs sm:text-sm text-theme-muted">
- Directorio maestro de proveedores, condiciones comerciales y expediente digital.
- </p>
- </div>
+      case 'proveedores':
+        return (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            <div className="space-y-1">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-theme-primary shadow-2xs">
+                Cadena de Suministro & Abastecimiento
+              </span>
+              <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-theme-main">
+                Proveedores
+              </h1>
+              <p className="text-xs sm:text-sm text-theme-muted">
+                Directorio maestro de proveedores, condiciones comerciales, evaluación y scorecard de calidad.
+              </p>
+            </div>
 
- <ProveedoresTab
- suppliers={suppliers}
- onSetSuppliers={setSuppliers}
- />
- </div>
- );
+            <ProveedoresTab
+              suppliers={suppliers}
+              onSetSuppliers={setSuppliers}
+              incomings={incomingInspections}
+              correctiveActions={supplierCorrectiveActions}
+              onAddCorrectiveAction={handleAddSupplierCorrectiveAction}
+              onUpdateCorrectiveAction={handleUpdateSupplierCorrectiveAction}
+              onNavigateToPurchases={() => {
+                setActiveTab('compras');
+              }}
+              onNavigateToIncoming={handleNavigateToIncoming}
+              targetSupplierForQuality={targetSupplierForQuality}
+              onClearTargetSupplierForQuality={() => setTargetSupplierForQuality(null)}
+            />
+          </div>
+        );
   case 'cotizaciones':
   return (
   <CotizacionesPage
@@ -606,6 +672,22 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
             onUpdateOrder={handleUpdateProductionOrder}
             onAddOrder={handleAddProductionOrder}
             onNavigateToCalidad={() => setActiveTab('calidad')}
+            salesOrders={salesOrders}
+            onNavigateToSalesOrder={(folio) => {
+              setTargetOrderFolio(folio);
+              setActiveTab('pedidos');
+            }}
+            finishedGoods={finishedGoods}
+            onNavigateToEmbarques={() => setActiveTab('logistica')}
+            onOpenPtDetail={(pt) => setSelectedPtForModal(pt)}
+            onNavigateToRequisitions={(prefill) => {
+              setTargetRequisitionPrefilledItem(prefill || null);
+              setActiveTab('requisiciones');
+            }}
+            onNavigateToPurchaseOrder={(poFolio) => {
+              setTargetPurchaseOrderFolio(poFolio);
+              setActiveTab('compras');
+            }}
           />
         );
       case 'piso-produccion':
@@ -623,6 +705,12 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
             productionOrders={productionOrders}
             onUpdateProductionOrder={handleUpdateProductionOrder}
             onNavigateToProduccion={() => setActiveTab('produccion')}
+            incomings={incomingInspections}
+            onUpdateIncoming={handleUpdateIncoming}
+            onNavigateToSupplierQuality={handleNavigateToSupplierQuality}
+            onReleaseToFinishedGoods={handleReleaseToFinishedGoods}
+            onNavigateToEmbarques={() => setActiveTab('logistica')}
+            onOpenPtDetail={(pt) => setSelectedPtForModal(pt)}
           />
         );
       case 'mantenimiento':
@@ -636,6 +724,34 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
         );
       case 'centro-alertas':
         return <CentroAlertasPage onNavigateAlert={handleNavigateAlert} />;
+      case 'bitacora':
+        return (
+          <SystemAuditTrailPage
+            onNavigateToOrigin={(module, query) => {
+              if (module === 'produccion') {
+                setActiveTab('produccion');
+              } else if (module === 'calidad') {
+                setActiveTab('calidad');
+              } else if (module === 'nomina') {
+                setActiveTab('nomina');
+              } else if (module === 'requisiciones') {
+                setActiveTab('requisiciones');
+              } else if (module === 'compras') {
+                setActiveTab('compras');
+              } else if (module === 'inventario') {
+                setActiveTab('inventario');
+              } else if (module === 'crm') {
+                setActiveTab('crm');
+              } else if (module === 'facturacion') {
+                setActiveTab('facturacion');
+              } else if (module === 'mantenimiento') {
+                setActiveTab('mantenimiento');
+              } else {
+                setActiveTab((module as any) || 'inicio');
+              }
+            }}
+          />
+        );
       case 'configuracion':
         return <ConfiguracionView />;
       default:
@@ -675,6 +791,18 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  {renderContent()}
  </main>
  </div>
+
+  {/* Modal Ficha de Lote PT Global */}
+  {selectedPtForModal && (
+    <FichaLotePtModal
+      release={selectedPtForModal}
+      onClose={() => setSelectedPtForModal(null)}
+      onNavigateToEmbarques={() => {
+        setSelectedPtForModal(null);
+        setActiveTab('logistica');
+      }}
+    />
+  )}
  </div>
  );
 };

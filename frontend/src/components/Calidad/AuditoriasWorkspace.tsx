@@ -26,6 +26,7 @@ import {
   QualityStatus,
   RemnantValidation,
 } from '../../data/mockCalidadData';
+import { INITIAL_INCOMING_INSPECTIONS } from '../../data/mockSupplierQualityData';
 
 interface Props {
   audits: QualityAuditItem[];
@@ -33,6 +34,9 @@ interface Props {
   onStartNewAudit: () => void;
   onOpenLabelPreview?: (opFolio: string, client: string, part: string, lot: string) => void;
   onToast?: (msg: string) => void;
+  incomings?: IncomingInspection[];
+  onUpdateIncoming?: (updated: IncomingInspection) => void;
+  onNavigateToSupplierQuality?: (supplierName: string) => void;
 }
 
 export const AuditoriasWorkspace: React.FC<Props> = ({
@@ -41,12 +45,24 @@ export const AuditoriasWorkspace: React.FC<Props> = ({
   onStartNewAudit,
   onOpenLabelPreview,
   onToast = () => {},
+  incomings: externalIncomings,
+  onUpdateIncoming,
+  onNavigateToSupplierQuality,
 }) => {
   const [viewMode, setViewMode] = useState<'auditorias' | 'baches' | 'incoming' | 'remanentes'>('auditorias');
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'Todas' | QualityStatus>('Todas');
   const [typeFilter, setTypeFilter] = useState<string>('Todas');
-  const [incomings, setIncomings] = useState<IncomingInspection[]>(INCOMING_INSPECTIONS);
+  const [localIncomings, setLocalIncomings] = useState<IncomingInspection[]>(INITIAL_INCOMING_INSPECTIONS);
+  const incomings = externalIncomings || localIncomings;
+
+  const handleUpdateIncomingItem = (updated: IncomingInspection) => {
+    if (onUpdateIncoming) {
+      onUpdateIncoming(updated);
+    }
+    setLocalIncomings((prev) => prev.map((i) => (i.id === updated.id ? updated : i)));
+  };
+
   const [remnants, setRemnants] = useState<RemnantValidation[]>(REMNANT_VALIDATIONS);
 
   // Baches y muestras (Sección 11)
@@ -441,60 +457,67 @@ export const AuditoriasWorkspace: React.FC<Props> = ({
                     </td>
 
                     <td className="p-3 text-right">
-                      {inc.status === 'Pendiente' ? (
-                        <div className="flex flex-wrap items-center justify-end gap-1.5">
+                      <div className="flex flex-wrap items-center justify-end gap-1.5">
+                        {onNavigateToSupplierQuality && (
                           <button
                             type="button"
-                            onClick={() => {
-                              setIncomings((prev) =>
-                                prev.map((i) => (i.id === inc.id ? { ...i, coaAttached: true } : i))
-                              );
-                              onToast && onToast(`✓ Certificado de Calidad (CoA) validado para lote ${inc.rtmLot}.`);
-                            }}
-                            className="rounded-xl border border-blue-400 bg-blue-50 dark:bg-blue-950/40 px-2 py-1.5 text-[11px] font-bold text-blue-800 dark:text-blue-300 hover:bg-blue-100 flex items-center gap-1"
-                            title="Adjuntar y verificar certificado del proveedor"
+                            onClick={() => onNavigateToSupplierQuality(inc.supplier)}
+                            className="rounded-xl border border-indigo-300 dark:border-indigo-700 bg-indigo-50/70 dark:bg-indigo-950/40 px-2 py-1.5 text-[11px] font-bold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 flex items-center gap-1 cursor-pointer transition-colors"
+                            title={`Ver Scorecard y Calidad de ${inc.supplier}`}
                           >
-                            <Paperclip className="h-3 w-3" />
-                            CoA
+                            <ShieldCheck className="h-3 w-3" />
+                            <span>Scorecard</span>
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setIncomings((prev) =>
-                                prev.map((i) => (i.id === inc.id ? { ...i, status: 'Liberado' } : i))
-                              );
-                              onToast && onToast(`✓ Lote ${inc.rtmLot} (${inc.material}) liberado para producción.`);
-                            }}
-                            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 text-xs font-bold text-white shadow-xs"
-                          >
-                            Liberar material
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setIncomings((prev) =>
-                                prev.map((i) => (i.id === inc.id ? { ...i, status: 'HOLD / Rechazado' } : i))
-                              );
-                              onToast && onToast(`⚠️ Lote ${inc.rtmLot} enviado a HOLD / Cuarentena.`);
-                            }}
-                            className="rounded-xl border border-rose-400 px-2.5 py-1.5 text-xs font-bold text-rose-700 dark:text-rose-300 hover:bg-rose-50"
-                          >
-                            Rechazar / HOLD
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              onToast && onToast(`📋 Se generó la No Conformidad NC-PROV-${inc.supplier.substring(0, 3).toUpperCase()}-01 para ${inc.supplier}.`);
-                            }}
-                            className="rounded-xl border border-amber-400 px-2 py-1.5 text-[11px] font-bold text-amber-800 dark:text-amber-300 hover:bg-amber-50"
-                            title="Generar no conformidad formal al proveedor"
-                          >
-                            NC Prov
-                          </button>
-                        </div>
-                      ) : (
-                        <span className="text-theme-muted font-bold text-[11px]">Dictamen emitido</span>
-                      )}
+                        )}
+                        {inc.status === 'Pendiente' ? (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                handleUpdateIncomingItem({ ...inc, coaAttached: true });
+                                onToast && onToast(`✓ Certificado de Calidad (CoA) validado para lote ${inc.rtmLot}.`);
+                              }}
+                              className="rounded-xl border border-blue-400 bg-blue-50 dark:bg-blue-950/40 px-2 py-1.5 text-[11px] font-bold text-blue-800 dark:text-blue-300 hover:bg-blue-100 flex items-center gap-1 cursor-pointer"
+                              title="Adjuntar y verificar certificado del proveedor"
+                            >
+                              <Paperclip className="h-3 w-3" />
+                              CoA
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                handleUpdateIncomingItem({ ...inc, status: 'Liberado' });
+                                onToast && onToast(`✓ Lote ${inc.rtmLot} (${inc.material}) liberado para producción.`);
+                              }}
+                              className="rounded-xl bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 text-xs font-bold text-white shadow-xs cursor-pointer"
+                            >
+                              Liberar material
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                handleUpdateIncomingItem({ ...inc, status: 'HOLD / Rechazado' });
+                                onToast && onToast(`⚠️ Lote ${inc.rtmLot} enviado a HOLD / Cuarentena.`);
+                              }}
+                              className="rounded-xl border border-rose-400 px-2.5 py-1.5 text-xs font-bold text-rose-700 dark:text-rose-300 hover:bg-rose-50 cursor-pointer"
+                            >
+                              Rechazar / HOLD
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                onToast && onToast(`📋 Se generó la No Conformidad NC-PROV-${inc.supplier.substring(0, 3).toUpperCase()}-01 para ${inc.supplier}.`);
+                              }}
+                              className="rounded-xl border border-amber-400 px-2 py-1.5 text-[11px] font-bold text-amber-800 dark:text-amber-300 hover:bg-amber-50 cursor-pointer"
+                              title="Generar no conformidad formal al proveedor"
+                            >
+                              NC Prov
+                            </button>
+                          </>
+                        ) : (
+                          <span className="text-theme-muted font-bold text-[11px] px-1">Dictamen emitido</span>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
