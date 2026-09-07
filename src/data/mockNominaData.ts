@@ -1138,7 +1138,7 @@ export const INITIAL_MOCK_RECONCILIATIONS: ProductionReconciliation[] = [
     horasReloj: 8.00,
     horasProduccion: 7.75,
     diferencia: 0.25,
-    maquina: 'Guillotina Polar 115',
+    maquina: 'Guillotina Recta',
     ordenProduccion: 'OP-95846',
     actividad: 'Corte a pliego final 70x100 cm',
     estado: 'dentro_tolerancia',
