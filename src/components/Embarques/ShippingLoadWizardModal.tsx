@@ -283,7 +283,7 @@ export const ShippingLoadWizardModal: React.FC<ShippingLoadWizardModalProps> = (
         {/* Modal Top Bar */}
         <div className="px-6 py-4 border-b border-theme-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-theme-surface">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white border border-rose-500/30 text-rose-600 flex items-center justify-center shadow-xs">
+            <div className="w-10 h-10 rounded-2xl bg-white border border-theme-primary/30 text-theme-primary flex items-center justify-center shadow-xs">
               <Truck className="w-5 h-5" />
             </div>
             <div>
@@ -291,7 +291,7 @@ export const ShippingLoadWizardModal: React.FC<ShippingLoadWizardModalProps> = (
                 <h3 className="text-sm font-black text-theme-main">
                   Planificación de Carga & Ruta de Despacho
                 </h3>
-                <span className="font-mono text-xs font-bold text-rose-600 px-2 py-0.5 rounded-full bg-white border border-rose-500 shadow-2xs">
+                <span className="font-mono text-xs font-bold text-rose-600 px-2 py-0.5 rounded-full bg-white border border-theme-primary shadow-2xs">
                   {order.folio}
                 </span>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border shadow-2xs bg-white text-zinc-900 ${
@@ -397,7 +397,7 @@ export const ShippingLoadWizardModal: React.FC<ShippingLoadWizardModalProps> = (
                   <div key={stop.id} className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-3">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-100 pb-2.5">
                       <div className="flex items-center gap-2.5">
-                        <span className="w-6 h-6 rounded-full bg-rose-600 text-white font-black text-xs flex items-center justify-center shrink-0">
+                        <span className="w-6 h-6 rounded-full bg-theme-primary text-white font-black text-xs flex items-center justify-center shrink-0">
                           {idx + 1}
                         </span>
                         <div>
@@ -625,7 +625,7 @@ export const ShippingLoadWizardModal: React.FC<ShippingLoadWizardModalProps> = (
                             {alt.title}
                           </span>
                           {alt.badge && (
-                            <span className="px-2 py-0.2 rounded-full text-[9px] font-bold bg-white text-zinc-900 border border-rose-500 shadow-2xs">
+                            <span className="px-2 py-0.2 rounded-full text-[9px] font-bold bg-white text-zinc-900 border border-theme-primary shadow-2xs">
                               {alt.badge}
                             </span>
                           )}
@@ -648,7 +648,7 @@ export const ShippingLoadWizardModal: React.FC<ShippingLoadWizardModalProps> = (
                   })}
                 </div>
               ) : (
-                <div className="p-3.5 rounded-2xl bg-white border border-rose-500 shadow-2xs flex items-center justify-between">
+                <div className="p-3.5 rounded-2xl bg-white border border-theme-primary shadow-2xs flex items-center justify-between">
                   <div className="space-y-0.5">
                     <span className="font-black text-xs text-zinc-950 block">Ruta directa</span>
                     <p className="text-[11px] text-zinc-600">Esta salida tiene un único destino.</p>
@@ -691,11 +691,11 @@ export const ShippingLoadWizardModal: React.FC<ShippingLoadWizardModalProps> = (
                         key={stop.id}
                         onClick={() => setSelectedStopId(stop.id)}
                         className={`p-3 rounded-2xl bg-white border transition-all flex items-center justify-between gap-3 cursor-pointer shadow-2xs ${
-                          isSelected ? 'border-rose-600 shadow-xs' : 'border-zinc-200 hover:border-zinc-300'
+                          isSelected ? 'border-theme-primary shadow-xs' : 'border-zinc-200 hover:border-zinc-300'
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <span className="w-6 h-6 rounded-full bg-rose-600 text-white font-black text-xs flex items-center justify-center shrink-0">
+                          <span className="w-6 h-6 rounded-full bg-theme-primary text-white font-black text-xs flex items-center justify-center shrink-0">
                             {index + 1}
                           </span>
                           <div>
@@ -793,7 +793,7 @@ export const ShippingLoadWizardModal: React.FC<ShippingLoadWizardModalProps> = (
               
               {/* Validation Error Banner if any */}
               {validationError && (
-                <div className="p-3.5 rounded-2xl bg-white border border-rose-500 shadow-2xs flex items-center gap-2 text-rose-800 text-xs font-semibold">
+                <div className="p-3.5 rounded-2xl bg-white border border-theme-primary shadow-2xs flex items-center gap-2 text-rose-800 text-xs font-semibold">
                   <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
                   <span>{validationError}</span>
                 </div>
@@ -805,7 +805,7 @@ export const ShippingLoadWizardModal: React.FC<ShippingLoadWizardModalProps> = (
                   <span className="font-black text-xs uppercase text-zinc-900">
                     Resumen Ejecutivo de Despacho & Carga
                   </span>
-                  <span className="font-mono text-xs font-bold text-rose-600 px-2.5 py-0.5 rounded-full bg-white border border-rose-500 shadow-2xs">
+                  <span className="font-mono text-xs font-bold text-theme-primary px-2.5 py-0.5 rounded-full bg-white border border-theme-primary shadow-2xs">
                     {order.folio}
                   </span>
                 </div>
@@ -821,7 +821,7 @@ export const ShippingLoadWizardModal: React.FC<ShippingLoadWizardModalProps> = (
                   </div>
                   <div>
                     <span className="text-[10px] text-zinc-500 font-bold uppercase block">Estrategia de Ruta:</span>
-                    <strong className="text-rose-600">{activeAlternative.title}</strong>
+                    <strong className="text-theme-primary">{activeAlternative.title}</strong>
                   </div>
                   <div>
                     <span className="text-[10px] text-zinc-500 font-bold uppercase block">Tipo de Carga:</span>
@@ -922,7 +922,7 @@ export const ShippingLoadWizardModal: React.FC<ShippingLoadWizardModalProps> = (
             <button
               type="button"
               onClick={handleNextStep}
-              className="px-6 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md cursor-pointer flex items-center gap-2"
+              className="px-6 py-2.5 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-md cursor-pointer flex items-center gap-2"
             >
               <span>
                 {currentStep === 4 
@@ -955,7 +955,7 @@ export const ShippingLoadWizardModal: React.FC<ShippingLoadWizardModalProps> = (
                   La orden <strong>{order.folio}</strong> ha sido despachada en la unidad <strong>{createdRoute.vehicleName}</strong> con el chofer <strong>{createdRoute.driverName}</strong> amparando <strong>{createdRoute.totalUnits} unidades</strong> en <strong>{createdRoute.stops.length} paradas</strong>.
                 </p>
                 <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 text-[11px] font-mono text-zinc-700 space-y-0.5">
-                  <div>Ruta: <strong className="text-rose-600">{createdRoute.folio}</strong></div>
+                  <div>Ruta: <strong className="text-theme-primary">{createdRoute.folio}</strong></div>
                   <div>Tiempo estimado: <strong>{Math.floor(createdRoute.estimatedDurationMinutes / 60)} h {createdRoute.estimatedDurationMinutes % 60} min</strong></div>
                   <div>Distancia: <strong>{createdRoute.totalDistanceKm} km</strong></div>
                 </div>
@@ -970,7 +970,7 @@ export const ShippingLoadWizardModal: React.FC<ShippingLoadWizardModalProps> = (
                       onNavigateToInRoute();
                     }
                   }}
-                  className="px-5 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md cursor-pointer flex items-center gap-1.5"
+                  className="px-5 py-2.5 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-md cursor-pointer flex items-center gap-1.5"
                 >
                   <Navigation className="w-3.5 h-3.5" />
                   <span>Ver ruta en curso</span>

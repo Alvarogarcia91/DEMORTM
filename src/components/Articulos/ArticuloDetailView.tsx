@@ -1012,7 +1012,7 @@ export const ArticuloDetailView: React.FC<ArticuloDetailViewProps> = ({
  {article.documents?.map((doc) => (
  <tr key={doc.id} className="hover:bg-theme-muted/40 transition-colors">
  <td className="py-3 px-4 font-bold text-theme-main flex items-center gap-2">
- <FileText className="w-4 h-4 text-rose-600 shrink-0" />
+ <FileText className="w-4 h-4 text-theme-primary shrink-0" />
  <span>{doc.title}</span>
  </td>
  <td className="py-3 px-4 text-theme-main font-medium">

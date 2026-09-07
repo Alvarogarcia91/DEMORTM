@@ -128,7 +128,7 @@ export const PutawayOrderCreateModal: React.FC<PutawayOrderCreateModalProps> = (
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <ArrowRightLeft className="w-5 h-5" />
  </div>
  <div>
@@ -160,7 +160,7 @@ export const PutawayOrderCreateModal: React.FC<PutawayOrderCreateModalProps> = (
  </div>
  <div className="text-right">
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Total a Acomodar:</span>
- <strong className="text-sm font-mono font-black text-rose-600">
+ <strong className="text-sm font-mono font-black text-theme-primary">
  {selectedUnits.length} piezas
  </strong>
  </div>
@@ -190,7 +190,7 @@ export const PutawayOrderCreateModal: React.FC<PutawayOrderCreateModalProps> = (
  <div className="flex items-center justify-between flex-wrap gap-2">
  <div className="space-y-0.5">
  <div className="flex items-center gap-2">
- <span className="font-mono text-xs font-black text-rose-600">{unit.uid}</span>
+ <span className="font-mono text-xs font-black text-theme-primary">{unit.uid}</span>
  <span className="font-mono text-[10px] text-theme-muted font-bold">{unit.sku}</span>
  </div>
  <h4 className="text-xs font-bold text-theme-main truncate">{unit.productName}</h4>
@@ -218,7 +218,7 @@ export const PutawayOrderCreateModal: React.FC<PutawayOrderCreateModalProps> = (
  value={currentDest}
  onChange={(e) => handleLocationChange(unit.uid, e.target.value)}
  className={`bg-theme-muted border rounded-xl py-1 px-2.5 text-xs font-mono font-bold focus:outline-none cursor-pointer ${
- isCustom ? 'border-rose-500 text-rose-600' : 'border-theme-subtle text-theme-main'
+ isCustom ? 'border-theme-primary text-theme-primary' : 'border-theme-subtle text-theme-main'
  }`}
  >
  {VALID_RACK_LOCATIONS.map((loc) => (
@@ -279,7 +279,7 @@ export const PutawayOrderCreateModal: React.FC<PutawayOrderCreateModalProps> = (
 
  <button
  onClick={handleGenerate}
- className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+ className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
  >
  <Check className="w-4 h-4" />
  <span>Generar orden de acomodo ({selectedUnits.length} unidades)</span>

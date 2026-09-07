@@ -66,7 +66,7 @@ export const RouteStopDetailModal: React.FC<RouteStopDetailModalProps> = ({
         {/* Modal Header */}
         <div className="px-6 py-4 border-b border-theme-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-theme-surface">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white border border-rose-500/30 text-rose-600 flex items-center justify-center shadow-xs">
+            <div className="w-10 h-10 rounded-2xl bg-white border border-theme-primary/30 text-theme-primary flex items-center justify-center shadow-xs">
               <MapPin className="w-5 h-5" />
             </div>
             <div>
@@ -74,7 +74,7 @@ export const RouteStopDetailModal: React.FC<RouteStopDetailModalProps> = ({
                 <h3 className="text-sm font-black text-theme-main">
                   {route.type === 'Venta' ? `Entrega ${currentStop.sequenceNumber} de ${totalStops}` : `Parada de Traspaso ${currentStop.sequenceNumber} de ${totalStops}`}
                 </h3>
-                <span className="font-mono text-xs font-bold text-rose-600 px-2 py-0.5 rounded-full bg-white border border-rose-500 shadow-2xs">
+                <span className="font-mono text-xs font-bold text-theme-primary px-2 py-0.5 rounded-full bg-white border border-theme-primary shadow-2xs">
                   {route.folio}
                 </span>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border shadow-2xs bg-white ${
@@ -131,7 +131,7 @@ export const RouteStopDetailModal: React.FC<RouteStopDetailModalProps> = ({
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1 text-[11px]">
               <div>
                 <span className="text-[10px] text-zinc-500 font-bold uppercase block">Remisión:</span>
-                <strong className="text-rose-600 font-mono">{currentStop.remisionFolio}</strong>
+                <strong className="text-theme-primary font-mono">{currentStop.remisionFolio}</strong>
               </div>
               <div>
                 <span className="text-[10px] text-zinc-500 font-bold uppercase block">Documento Base:</span>
@@ -173,7 +173,7 @@ export const RouteStopDetailModal: React.FC<RouteStopDetailModalProps> = ({
               className="p-3 rounded-2xl bg-white hover:bg-zinc-50 border border-zinc-300 text-zinc-900 font-bold text-xs shadow-2xs flex items-center justify-between transition-all cursor-pointer"
             >
               <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-200">
+                <div className="w-7 h-7 rounded-xl bg-theme-primary-light text-theme-primary flex items-center justify-center border border-theme-primary/20">
                   <FileText className="w-4 h-4" />
                 </div>
                 <div className="text-left">
@@ -189,7 +189,7 @@ export const RouteStopDetailModal: React.FC<RouteStopDetailModalProps> = ({
           <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-black uppercase text-zinc-950 tracking-wider flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-rose-600" />
+                <MapPin className="w-4 h-4 text-theme-primary" />
                 <span>Registro de Arribo en Destino</span>
               </span>
 
@@ -209,7 +209,7 @@ export const RouteStopDetailModal: React.FC<RouteStopDetailModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowConfirmArrivalDialog(true)}
-                  className="w-full py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <MapPin className="w-4 h-4" />
                   <span>Confirmar llegada a destino</span>
@@ -239,8 +239,8 @@ export const RouteStopDetailModal: React.FC<RouteStopDetailModalProps> = ({
 
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="relative">
-                        <span className="w-8 h-8 rounded-full bg-rose-500/30 animate-ping absolute -inset-1" />
-                        <div className="w-6 h-6 rounded-full bg-rose-600 border-2 border-white flex items-center justify-center text-white shadow-lg">
+                        <span className="w-8 h-8 rounded-full bg-theme-primary/30 animate-ping absolute -inset-1" />
+                        <div className="w-6 h-6 rounded-full bg-theme-primary border-2 border-white flex items-center justify-center text-white shadow-lg">
                           <MapPin className="w-3.5 h-3.5" />
                         </div>
                       </div>
@@ -296,7 +296,7 @@ export const RouteStopDetailModal: React.FC<RouteStopDetailModalProps> = ({
                       <button
                         type="button"
                         onClick={() => setShowScanStationModal(true)}
-                        className="w-full py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                        className="w-full py-3 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
                       >
                         <ScanLine className="w-4 h-4" />
                         <span>Iniciar Escaneo & Validación de Entrega</span>
@@ -308,7 +308,7 @@ export const RouteStopDetailModal: React.FC<RouteStopDetailModalProps> = ({
                           onClick={() => setShowScanStationModal(true)}
                           className="p-2 rounded-xl bg-zinc-50 hover:bg-zinc-100 border border-zinc-300 text-zinc-800 font-bold text-[11px] flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
                         >
-                          <FileText className="w-3.5 h-3.5 text-rose-600" />
+                          <FileText className="w-3.5 h-3.5 text-theme-primary" />
                           <span>Escanear remisión</span>
                         </button>
 
@@ -317,7 +317,7 @@ export const RouteStopDetailModal: React.FC<RouteStopDetailModalProps> = ({
                           onClick={() => setShowScanStationModal(true)}
                           className="p-2 rounded-xl bg-zinc-50 hover:bg-zinc-100 border border-zinc-300 text-zinc-800 font-bold text-[11px] flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
                         >
-                          <PackageCheck className="w-3.5 h-3.5 text-rose-600" />
+                          <PackageCheck className="w-3.5 h-3.5 text-theme-primary" />
                           <span>Escanear unidades</span>
                         </button>
                       </div>
@@ -385,7 +385,7 @@ export const RouteStopDetailModal: React.FC<RouteStopDetailModalProps> = ({
         {showConfirmArrivalDialog && (
           <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
             <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl border border-zinc-200 space-y-4 text-xs animate-in zoom-in-95">
-              <div className="w-10 h-10 rounded-2xl bg-white border border-rose-500/30 text-rose-600 flex items-center justify-center shadow-xs">
+              <div className="w-10 h-10 rounded-2xl bg-white border border-theme-primary/30 text-theme-primary flex items-center justify-center shadow-xs">
                 <MapPin className="w-5 h-5" />
               </div>
 
@@ -409,7 +409,7 @@ export const RouteStopDetailModal: React.FC<RouteStopDetailModalProps> = ({
                 <button
                   type="button"
                   onClick={handleExecuteConfirmArrival}
-                  className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md cursor-pointer"
+                  className="px-5 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-md cursor-pointer"
                 >
                   Confirmar llegada
                 </button>

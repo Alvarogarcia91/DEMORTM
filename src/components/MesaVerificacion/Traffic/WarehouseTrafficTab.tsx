@@ -59,7 +59,7 @@ export const WarehouseTrafficTab: React.FC<WarehouseTrafficTabProps> = ({
  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
  <div>
  <h2 className="text-base font-extrabold text-theme-main tracking-tight flex items-center gap-2">
- <Activity className="w-5 h-5 text-rose-600" />
+ <Activity className="w-5 h-5 text-theme-primary" />
  <span>Tráfico Operativo</span>
  </h2>
  <p className="text-xs text-theme-muted mt-0.5">
@@ -81,7 +81,7 @@ export const WarehouseTrafficTab: React.FC<WarehouseTrafficTabProps> = ({
  onClick={() => setPeriod(p.id)}
  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
  period === p.id
- ? 'bg-rose-600 text-white shadow-xs'
+ ? 'bg-theme-primary text-white shadow-xs'
  : 'text-theme-muted hover:text-theme-main'
  }`}
  >
@@ -92,7 +92,7 @@ export const WarehouseTrafficTab: React.FC<WarehouseTrafficTabProps> = ({
 
  {/* Active CEDIS Display */}
  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-theme-muted/60 border border-theme-subtle text-xs font-bold text-theme-main">
- <Building2 className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+ <Building2 className="w-3.5 h-3.5 text-theme-primary shrink-0" />
  <span>{selectedCedis.name}</span>
  </div>
 
@@ -139,8 +139,8 @@ export const WarehouseTrafficTab: React.FC<WarehouseTrafficTabProps> = ({
  <span className="text-[9px] uppercase font-extrabold tracking-wider text-theme-muted block">
  Ritmo promedio
  </span>
- <strong className="text-2xl font-mono font-black text-rose-600 block">
- {traffic.pacePerHour} <span className="text-xs text-theme-muted font-sans font-bold">u/h</span>
+ <strong className="text-2xl font-mono font-black text-theme-primary block">
+              {traffic.pacePerHour} <span className="text-xs text-theme-muted font-sans font-bold">u/h</span>
  </strong>
  <span className="text-[10px] text-theme-muted block">
  Cadencia en piso
@@ -214,7 +214,7 @@ export const WarehouseTrafficTab: React.FC<WarehouseTrafficTabProps> = ({
  Volumen horario de unidades procesadas por etapa física de almacén.
  </p>
  </div>
- <span className="font-mono text-xs font-bold text-rose-600">
+ <span className="font-mono text-xs font-bold text-theme-primary">
  Pico: {traffic.peakHour}
  </span>
  </div>
@@ -245,7 +245,7 @@ export const WarehouseTrafficTab: React.FC<WarehouseTrafficTabProps> = ({
  <button
  type="button"
  onClick={() => onNavigate('putaway')}
- className="text-[11px] font-bold text-theme-main hover:text-rose-600 flex items-center gap-1 cursor-pointer pt-1"
+ className="text-[11px] font-bold text-theme-main hover:text-theme-primary flex items-center gap-1 cursor-pointer pt-1"
  >
  <span>Ver acomodo</span>
  <ArrowRight className="w-3 h-3" />
@@ -262,7 +262,7 @@ export const WarehouseTrafficTab: React.FC<WarehouseTrafficTabProps> = ({
  <button
  type="button"
  onClick={() => onNavigate('picking')}
- className="text-[11px] font-bold text-theme-main hover:text-rose-600 flex items-center gap-1 cursor-pointer pt-1"
+ className="text-[11px] font-bold text-theme-main hover:text-theme-primary flex items-center gap-1 cursor-pointer pt-1"
  >
  <span>Ver recolección</span>
  <ArrowRight className="w-3 h-3" />
@@ -279,7 +279,7 @@ export const WarehouseTrafficTab: React.FC<WarehouseTrafficTabProps> = ({
  <button
  type="button"
  onClick={() => onNavigate('outbound')}
- className="text-[11px] font-bold text-theme-main hover:text-rose-600 flex items-center gap-1 cursor-pointer pt-1"
+ className="text-[11px] font-bold text-theme-main hover:text-theme-primary flex items-center gap-1 cursor-pointer pt-1"
  >
  <span>Ver salida</span>
  <ArrowRight className="w-3 h-3" />
@@ -320,7 +320,7 @@ export const WarehouseTrafficTab: React.FC<WarehouseTrafficTabProps> = ({
  <div className="bg-theme-surface p-6 border border-theme-subtle rounded-3xl shadow-xs space-y-3">
  <div className="flex items-center justify-between">
  <h3 className="text-sm font-extrabold text-theme-main flex items-center gap-2">
- <Boxes className="w-4 h-4 text-rose-600" />
+ <Boxes className="w-4 h-4 text-theme-primary" />
  <span>Zonas con Mayor Actividad de Piso</span>
  </h3>
  <span className="text-[10px] text-theme-muted font-mono">Toques físicos</span>
@@ -333,7 +333,7 @@ export const WarehouseTrafficTab: React.FC<WarehouseTrafficTabProps> = ({
  className="p-3 rounded-2xl bg-theme-muted/30 border border-theme-subtle flex items-center justify-between text-xs"
  >
  <div>
- <strong className="font-mono text-rose-600 block text-xs">{z.zone}</strong>
+ <strong className="font-mono text-theme-primary block text-xs">{z.zone}</strong>
  <span className="text-[10px] text-theme-muted">{z.label}</span>
  </div>
  <div className="text-right font-mono">
@@ -392,7 +392,7 @@ export const WarehouseTrafficTab: React.FC<WarehouseTrafficTabProps> = ({
  <strong className="text-theme-main block text-xs">{art.name}</strong>
  <span className="text-[10px] font-mono text-theme-muted">{art.sku}</span>
  </td>
- <td className="py-2.5 px-2 text-center font-mono text-rose-600 font-bold">{art.inbound}</td>
+ <td className="py-2.5 px-2 text-center font-mono text-theme-primary font-bold">{art.inbound}</td>
  <td className="py-2.5 px-2 text-center font-mono text-blue-600 font-bold">{art.putaway}</td>
  <td className="py-2.5 px-2 text-center font-mono text-purple-600 font-bold">{art.picking}</td>
  <td className="py-2.5 px-2 text-center font-mono text-amber-600 font-bold">{art.outbound}</td>
@@ -416,7 +416,7 @@ export const WarehouseTrafficTab: React.FC<WarehouseTrafficTabProps> = ({
  <div key={op.name} className="p-3 rounded-2xl bg-theme-muted/30 border border-theme-subtle space-y-1">
  <div className="flex items-center justify-between font-sans">
  <strong className="text-theme-main text-xs">{op.name}</strong>
- <span className="font-mono font-black text-rose-600">{op.total} movs</span>
+ <span className="font-mono font-black text-theme-primary">{op.total} movs</span>
  </div>
  <div className="grid grid-cols-4 gap-1 text-[9px] text-theme-muted">
  <span>Ent: {op.inbound}</span>
@@ -447,7 +447,7 @@ export const WarehouseTrafficTab: React.FC<WarehouseTrafficTabProps> = ({
  >
  <div>
  <div className="flex items-center gap-2">
- <strong className="font-mono text-rose-600">{ord.folio}</strong>
+ <strong className="font-mono text-theme-primary">{ord.folio}</strong>
  <span className="px-2 py-0.2 rounded text-[9px] font-bold bg-theme-muted text-theme-main border border-theme-subtle">
  {ord.stage}
  </span>
@@ -460,7 +460,7 @@ export const WarehouseTrafficTab: React.FC<WarehouseTrafficTabProps> = ({
  <button
  type="button"
  onClick={() => onNavigate(ord.tabTarget)}
- className="px-2.5 py-1 rounded-xl bg-theme-surface hover:bg-rose-600 hover:text-white text-theme-main font-bold text-[11px] border border-theme-subtle transition-all cursor-pointer"
+ className="px-2.5 py-1 rounded-xl bg-theme-surface hover:bg-theme-primary hover:text-white text-theme-main font-bold text-[11px] border border-theme-subtle transition-all cursor-pointer"
  >
  Ver
  </button>

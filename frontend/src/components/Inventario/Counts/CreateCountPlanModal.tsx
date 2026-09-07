@@ -155,7 +155,7 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <ClipboardCheck className="w-5 h-5" />
  </div>
  <div>
@@ -186,11 +186,11 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  <div
  key={label}
  className={`flex items-center gap-1.5 whitespace-nowrap ${
- isActive ? 'text-rose-600 font-black' : isPassed ? 'text-emerald-600' : 'text-theme-muted'
+ isActive ? 'text-theme-primary font-black' : isPassed ? 'text-emerald-600' : 'text-theme-muted'
  }`}
  >
  <div className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-mono ${
- isActive ? 'bg-rose-600 text-white' : isPassed ? 'bg-emerald-500 text-white' : 'bg-theme-muted text-theme-muted'
+ isActive ? 'bg-theme-primary text-white' : isPassed ? 'bg-emerald-500 text-white' : 'bg-theme-muted text-theme-muted'
  }`}>
  {stepNum}
  </div>
@@ -224,12 +224,12 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  onClick={() => setSelectedWarehouseId(wh.id)}
  className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2 ${
  isSelected
- ? 'bg-rose-500/10 border-rose-500 ring-2 ring-rose-300 shadow-sm'
+ ? 'bg-theme-primary-light border-theme-primary ring-2 ring-theme-primary/30 shadow-sm'
  : 'bg-theme-surface border-theme-subtle hover:bg-theme-muted/40'
  }`}
  >
  <div className="flex items-center justify-between">
- <span className="font-mono text-xs font-black text-rose-600">{wh.code}</span>
+ <span className="font-mono text-xs font-black text-theme-primary">{wh.code}</span>
  <span className="px-2 py-0.2 rounded text-[9px] font-bold bg-theme-muted text-theme-main border border-theme-subtle">
  {isCedis ? 'CEDIS' : 'SUCURSAL'}
  </span>
@@ -285,14 +285,14 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  onClick={() => setCountType(t.id as any)}
  className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2 flex flex-col justify-between ${
  countType === t.id
- ? 'bg-rose-500/10 border-rose-500 ring-2 ring-rose-300 shadow-sm'
+ ? 'bg-theme-primary-light border-theme-primary ring-2 ring-theme-primary/30 shadow-sm'
  : 'bg-theme-surface border-theme-subtle hover:bg-theme-muted/40'
  }`}
  >
  <div className="space-y-1">
  <div className="flex items-center justify-between">
  <strong className="text-xs font-bold text-theme-main">{t.title}</strong>
- <span className="px-2 py-0.2 rounded text-[9px] font-bold bg-rose-500/10 text-rose-700">
+ <span className="px-2 py-0.2 rounded text-[9px] font-bold bg-theme-primary-light text-theme-primary">
  {t.badge}
  </span>
  </div>
@@ -329,7 +329,7 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  onClick={() => setSelectedAisle(aisle)}
  className={`py-3 rounded-2xl font-mono text-sm font-black border transition-all cursor-pointer ${
  selectedAisle === aisle
- ? 'bg-rose-600 text-white border-rose-600 shadow-md'
+ ? 'bg-theme-primary text-white border-theme-primary shadow-md'
  : 'bg-theme-surface border-theme-subtle text-theme-main hover:bg-theme-muted'
  }`}
  >
@@ -345,7 +345,7 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
  {['Recepción', 'Retrabajo', 'Embarques', 'Showroom'].map((z) => (
  <label key={z} className="p-2.5 rounded-xl border border-theme-subtle bg-theme-surface flex items-center gap-2 cursor-pointer text-xs font-semibold">
- <input type="checkbox" defaultChecked className="rounded text-rose-600" />
+ <input type="checkbox" defaultChecked className="rounded text-theme-primary" />
  <span>{z}</span>
  </label>
  ))}
@@ -411,16 +411,16 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  onClick={() => setMethod('QR_UID')}
  className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2 ${
  method === 'QR_UID'
- ? 'bg-rose-500/10 border-rose-500 ring-2 ring-rose-300 shadow-sm'
+ ? 'bg-theme-primary-light border-theme-primary ring-2 ring-theme-primary/30 shadow-sm'
  : 'bg-theme-surface border-theme-subtle hover:bg-theme-muted/40'
  }`}
  >
  <div className="flex items-center justify-between">
  <strong className="text-xs font-bold text-theme-main flex items-center gap-1.5">
- <QrCode className="w-4 h-4 text-rose-600" />
+ <QrCode className="w-4 h-4 text-theme-primary" />
  <span>Escaneo por UID / QR</span>
  </strong>
- <span className="px-2 py-0.2 rounded text-[9px] font-bold bg-rose-600 text-white">
+ <span className="px-2 py-0.2 rounded text-[9px] font-bold bg-theme-primary text-white">
  Recomendado
  </span>
  </div>
@@ -433,7 +433,7 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  onClick={() => setMethod('MANUAL')}
  className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2 ${
  method === 'MANUAL'
- ? 'bg-rose-500/10 border-rose-500 ring-2 ring-rose-300 shadow-sm'
+ ? 'bg-theme-primary-light border-theme-primary ring-2 ring-theme-primary/30 shadow-sm'
  : 'bg-theme-surface border-theme-subtle hover:bg-theme-muted/40'
  }`}
  >
@@ -455,7 +455,7 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  <div className="flex items-center justify-between">
  <div className="space-y-0.5">
  <strong className="text-sm font-extrabold text-theme-main flex items-center gap-2">
- <EyeOff className="w-4 h-4 text-rose-600" />
+ <EyeOff className="w-4 h-4 text-theme-primary" />
  <span>Conteo Ciego (Blind Count)</span>
  </strong>
  <p className="text-xs text-theme-muted">
@@ -467,7 +467,7 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  type="checkbox"
  checked={isBlindCount}
  onChange={(e) => setIsBlindCount(e.target.checked)}
- className="w-5 h-5 rounded text-rose-600 focus:ring-rose-500 cursor-pointer"
+ className="w-5 h-5 rounded text-theme-primary focus:ring-theme-primary cursor-pointer"
  />
  </div>
 
@@ -489,7 +489,7 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  <span className="text-[10px] font-bold uppercase text-theme-muted tracking-wider">
  Resumen del Plan de Conteo
  </span>
- <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-700">
+ <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-theme-primary-light text-theme-primary">
  {method === 'QR_UID' ? 'Escaneo UID' : 'Manual'}
  </span>
  </div>
@@ -548,7 +548,7 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  {step < 6 ? (
  <button
  onClick={() => setStep((s) => (s + 1) as any)}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer"
  >
  <span>Siguiente</span>
  <ChevronRight className="w-4 h-4" />
@@ -556,7 +556,7 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  ) : (
  <button
  onClick={handleGeneratePlan}
- className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black transition-all shadow-md flex items-center gap-2 cursor-pointer"
+ className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md flex items-center gap-2 cursor-pointer"
  >
  <ClipboardCheck className="w-4 h-4" />
  <span>Generar tareas de conteo</span>

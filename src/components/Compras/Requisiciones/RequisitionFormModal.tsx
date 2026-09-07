@@ -337,7 +337,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <PackagePlus className="w-5 h-5" />
  </div>
  <div>
@@ -345,7 +345,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  <h2 className="text-base font-black text-theme-main">
  {initialRequisition ? `Editar Requisición ${initialRequisition.folio}` : 'Nueva Requisición de Compra'}
  </h2>
- <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-500/25">
+ <span className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-theme-primary/25">
  Reabasto Interno
  </span>
  </div>
@@ -367,7 +367,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  <div className="p-6 overflow-y-auto space-y-6 flex-1">
  
  {errorMessage && (
- <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center gap-2 text-rose-700 dark:text-rose-300 text-xs font-bold animate-in fade-in duration-150">
+ <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-theme-primary/30 flex items-center gap-2 text-rose-700 dark:text-rose-300 text-xs font-bold animate-in fade-in duration-150">
  <AlertCircle className="w-4 h-4 shrink-0" />
  <span>{errorMessage}</span>
  </div>
@@ -405,7 +405,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  <select
  value={targetWarehouseId}
  onChange={(e) => setTargetWarehouseId(e.target.value)}
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30 cursor-pointer"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30 cursor-pointer"
  >
  {DESTINATION_WAREHOUSES.map((wh) => (
  <option key={wh.id} value={wh.id}>
@@ -426,7 +426,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  value={requiredDate}
  onChange={(e) => setRequiredDate(e.target.value)}
  placeholder="Ej. 30 Ago 2026"
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-mono font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-mono font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
 
@@ -439,7 +439,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  <select
  value={priority}
  onChange={(e) => setPriority(e.target.value as RequisitionPriority)}
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30 cursor-pointer"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30 cursor-pointer"
  >
  <option value="Normal">Normal</option>
  <option value="Alta">Alta</option>
@@ -461,7 +461,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  value={suggestedSupplier}
  onChange={(e) => setSuggestedSupplier(e.target.value)}
  placeholder="Selecciona o escribe el proveedor sugerido..."
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  <datalist id="suppliers-datalist">
  {SUPPLIERS_LIST.map((sup, idx) => (
@@ -479,7 +479,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  value={notes}
  onChange={(e) => setNotes(e.target.value)}
  placeholder="Ej. Reabasto para cubrir demanda proyectada..."
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
  </div>
@@ -548,7 +548,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Escribe 'Flow', 'Record', 'SC-NAYT' o nombre del artículo..."
- className="w-full bg-theme-muted/40 border border-theme-subtle rounded-2xl pl-10 pr-4 py-2.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-muted/40 border border-theme-subtle rounded-2xl pl-10 pr-4 py-2.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
 
@@ -589,11 +589,11 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
 
  {/* Selected Article Preview & Assisted Capture */}
  {selectedArticle && currentArticleMetrics && (
- <div className="p-4 rounded-2xl bg-rose-500/5 border border-rose-500/20 space-y-3 animate-in fade-in duration-150">
+ <div className="p-4 rounded-2xl bg-rose-500/5 border border-theme-primary/20 space-y-3 animate-in fade-in duration-150">
  <div className="flex items-center justify-between flex-wrap gap-2">
  <div>
  <div className="flex items-center gap-2">
- <span className="font-mono font-black text-xs text-rose-600">{selectedArticle.sku}</span>
+ <span className="font-mono font-black text-xs text-theme-primary">{selectedArticle.sku}</span>
  <span className="font-bold text-theme-main text-xs">{selectedArticle.name}</span>
  </div>
  <span className="text-[11px] text-theme-muted">
@@ -646,7 +646,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  min="1"
  value={catalogQty}
  onChange={(e) => setCatalogQty(Math.max(1, parseInt(e.target.value) || 1))}
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-mono font-black text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-mono font-black text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
 
@@ -659,14 +659,14 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  value={catalogComments}
  onChange={(e) => setCatalogComments(e.target.value)}
  placeholder="Ej. Resurtido de fin de mes..."
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
 
  <button
  type="button"
  onClick={handleAddCatalogItem}
- className="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
+ className="w-full py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
  >
  <Plus className="w-4 h-4" />
  <span>Agregar partida</span>
@@ -903,7 +903,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  <button
  type="button"
  onClick={() => handleRemoveItem(item.id)}
- className="p-1.5 rounded-lg text-theme-muted hover:text-rose-600 hover:bg-rose-500/10 transition-colors cursor-pointer"
+ className="p-1.5 rounded-lg text-theme-muted hover:text-theme-primary hover:bg-rose-500/10 transition-colors cursor-pointer"
  title="Eliminar partida"
  >
  <Trash2 className="w-3.5 h-3.5" />
@@ -941,7 +941,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  <button
  type="button"
  onClick={() => setConfirmSendOpen(true)}
- className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+ className="px-5 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
  >
  <CheckCircle2 className="w-4 h-4" />
  <span>Enviar a autorización</span>
@@ -975,7 +975,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  </button>
  <button
  onClick={handleMergeDuplicate}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer"
  >
  Sumar a partida (+{duplicateWarning.incomingQty})
  </button>
@@ -988,7 +988,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  {confirmSendOpen && (
  <ModalPortal onClose={() => setConfirmSendOpen(false)}>
  <div className="w-full max-w-md bg-theme-surface rounded-3xl p-6 shadow-2xl border border-theme-subtle space-y-4">
- <div className="flex items-center gap-2 text-rose-600">
+ <div className="flex items-center gap-2 text-theme-primary">
  <CheckCircle2 className="w-5 h-5" />
  <h3 className="text-sm font-black text-theme-main">Confirmar Envío</h3>
  </div>
@@ -1007,7 +1007,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  setConfirmSendOpen(false);
  handleSave('Pendiente de autorización');
  }}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer"
  >
  Confirmar y enviar
  </button>

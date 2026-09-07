@@ -80,7 +80,7 @@ export const PutawayOrderDetailView: React.FC<PutawayOrderDetailViewProps> = ({
 
  <div>
  <div className="flex items-center gap-2 flex-wrap">
- <span className="font-mono text-base font-black text-rose-600">
+ <span className="font-mono text-base font-black text-theme-primary">
  {order.folio}
  </span>
  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border shadow-2xs bg-white text-zinc-900 ${
@@ -178,7 +178,7 @@ export const PutawayOrderDetailView: React.FC<PutawayOrderDetailViewProps> = ({
 
  return (
  <tr key={it.id} className="hover:bg-theme-muted/30 transition-colors">
- <td className="py-3.5 px-4 font-mono font-black text-rose-600 whitespace-nowrap">
+ <td className="py-3.5 px-4 font-mono font-black text-theme-primary whitespace-nowrap">
  {it.uid}
  </td>
  <td className="py-3.5 px-3 whitespace-nowrap">
@@ -189,7 +189,7 @@ export const PutawayOrderDetailView: React.FC<PutawayOrderDetailViewProps> = ({
  {it.lotNumber}
  </td>
  <td className="py-3.5 px-3 text-center whitespace-nowrap">
- <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-theme-muted text-rose-600 border border-theme-subtle">
+ <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-theme-muted text-theme-primary border border-theme-subtle">
  {it.sourceLocation}
  </span>
  </td>
@@ -216,7 +216,7 @@ export const PutawayOrderDetailView: React.FC<PutawayOrderDetailViewProps> = ({
  ) : (
  <button
  onClick={() => setActiveItemForScanning(it)}
- className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-all shadow-md flex items-center gap-1.5 ml-auto cursor-pointer"
+ className="px-3.5 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs transition-all shadow-md flex items-center gap-1.5 ml-auto cursor-pointer"
  >
  <Scan className="w-3.5 h-3.5" />
  <span>Ejecutar acomodo</span>

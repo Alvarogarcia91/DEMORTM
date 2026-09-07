@@ -43,7 +43,7 @@ export const ReceiptStickerModal: React.FC<ReceiptStickerModalProps> = ({
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-2.5">
- <div className="w-9 h-9 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-9 h-9 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <Tag className="w-5 h-5" />
  </div>
  <div>
@@ -73,7 +73,7 @@ export const ReceiptStickerModal: React.FC<ReceiptStickerModalProps> = ({
  {/* Header Impresos RTM */}
  <div className="flex items-center justify-between border-b-2 border-zinc-900 pb-2.5">
  <div>
- <span className="text-[10px] font-black tracking-widest uppercase text-rose-600 block">
+ <span className="text-[10px] font-black tracking-widest uppercase text-theme-primary block">
  IMPRESOS RTM
  </span>
  <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">
@@ -100,7 +100,7 @@ export const ReceiptStickerModal: React.FC<ReceiptStickerModalProps> = ({
 
  {/* Primary Specs */}
  <div className="space-y-1 min-w-0">
- <span className="font-mono text-xs font-black text-rose-600 block truncate">
+ <span className="font-mono text-xs font-black text-theme-primary block truncate">
  {unit.uid}
  </span>
  <span className="font-mono text-[10px] font-bold text-zinc-500 block">
@@ -157,7 +157,7 @@ export const ReceiptStickerModal: React.FC<ReceiptStickerModalProps> = ({
 
  <button
  onClick={handlePrint}
- className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+ className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
  >
  <Printer className="w-4 h-4" />
  <span>Imprimir sticker</span>

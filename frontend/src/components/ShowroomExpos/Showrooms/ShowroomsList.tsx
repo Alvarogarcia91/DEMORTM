@@ -158,7 +158,7 @@ export const ShowroomsList: React.FC<ShowroomsListProps> = ({
                 {bay.currentArticle ? (
                   <div className="p-3.5 rounded-2xl bg-white border border-zinc-200 space-y-2 shadow-2xs">
                     <div className="space-y-0.5">
-                      <span className="text-[9px] font-mono font-bold text-rose-600 block">
+                      <span className="text-[9px] font-mono font-bold text-theme-primary block">
                         {bay.currentArticle.sku}
                       </span>
                       <strong className="text-xs font-bold text-zinc-900 block line-clamp-1">

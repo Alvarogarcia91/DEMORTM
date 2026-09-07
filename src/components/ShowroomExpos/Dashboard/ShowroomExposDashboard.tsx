@@ -113,7 +113,7 @@ export const ShowroomExposDashboard: React.FC<ShowroomExposDashboardProps> = ({
 
         <div className="p-4 rounded-3xl bg-theme-surface border border-theme-subtle shadow-xs space-y-1">
           <span className="text-[10px] uppercase font-bold text-theme-muted">Apartadas Expo</span>
-          <strong className="text-2xl font-mono font-black text-rose-600 block">{reservedForExpoUnits}</strong>
+          <strong className="text-2xl font-mono font-black text-theme-primary block">{reservedForExpoUnits}</strong>
           <span className="text-[10px] text-theme-muted">Bloqueadas para venta</span>
         </div>
 
@@ -158,7 +158,7 @@ export const ShowroomExposDashboard: React.FC<ShowroomExposDashboardProps> = ({
               <div className="pt-2 border-t border-zinc-100 flex justify-end">
                 <button
                   onClick={() => onNavigateTab(alt.tab as any)}
-                  className="text-xs font-bold text-rose-600 hover:underline flex items-center gap-1 cursor-pointer"
+                  className="text-xs font-bold text-theme-primary hover:underline flex items-center gap-1 cursor-pointer"
                 >
                   <span>{alt.actionLabel}</span>
                   <ChevronRight className="w-3.5 h-3.5" />
@@ -189,7 +189,7 @@ export const ShowroomExposDashboard: React.FC<ShowroomExposDashboardProps> = ({
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono font-bold text-rose-600">
+                  <span className="text-[10px] font-mono font-bold text-theme-primary">
                     {sug.sku}
                   </span>
                   <StatusBadge variant="smart" label={`Score ${sug.score}`} size="sm" />

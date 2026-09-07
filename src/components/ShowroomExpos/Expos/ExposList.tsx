@@ -153,7 +153,7 @@ export const ExposList: React.FC<ExposListProps> = ({
 
               <div className="space-y-1 text-xs text-theme-muted">
                 <div className="flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                  <MapPin className="w-3.5 h-3.5 text-theme-primary shrink-0" />
                   <span className="line-clamp-1">{expo.venue}</span>
                 </div>
                 <div className="flex items-center gap-1.5 font-mono">
@@ -166,7 +166,7 @@ export const ExposList: React.FC<ExposListProps> = ({
             <div className="p-3 rounded-2xl bg-white border border-zinc-200 flex items-center justify-between text-xs shadow-2xs">
               <div>
                 <span className="text-[10px] text-zinc-500 uppercase font-bold block">Unidades asignadas</span>
-                <strong className="font-mono font-black text-rose-600 text-sm">
+                <strong className="font-mono font-black text-theme-primary text-sm">
                   {expo.totalUnits} colchones
                 </strong>
               </div>

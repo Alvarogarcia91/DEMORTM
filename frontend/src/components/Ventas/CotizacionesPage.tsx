@@ -108,7 +108,7 @@ export const CotizacionesPage: React.FC<CotizacionesPageProps> = ({
  <button
  type="button"
  onClick={() => handleOpenWizardWithCustomer()}
- className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs shadow-sm transition-all cursor-pointer flex items-center gap-2"
+ className="px-4 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs shadow-sm transition-all cursor-pointer flex items-center gap-2"
  >
  <Plus className="w-4 h-4" />
  <span>Nueva cotización</span>
@@ -123,11 +123,11 @@ export const CotizacionesPage: React.FC<CotizacionesPageProps> = ({
  onClick={() => setActiveSubTab('dashboard')}
  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
  activeSubTab === 'dashboard'
- ? 'bg-white text-rose-600 border-2 border-rose-600 shadow-xs'
+ ? 'bg-white text-theme-primary border-2 border-theme-primary shadow-xs'
  : 'bg-white border border-theme-subtle text-theme-muted hover:text-theme-main hover:bg-zinc-50 shadow-2xs'
  }`}
  >
- <LayoutDashboard className="w-4 h-4 text-rose-600" />
+ <LayoutDashboard className="w-4 h-4 text-theme-primary" />
  <span>Dashboard</span>
  </button>
 
@@ -136,11 +136,11 @@ export const CotizacionesPage: React.FC<CotizacionesPageProps> = ({
  onClick={() => setActiveSubTab('list')}
  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
  activeSubTab === 'list'
- ? 'bg-white text-rose-600 border-2 border-rose-600 shadow-xs'
+ ? 'bg-white text-theme-primary border-2 border-theme-primary shadow-xs'
  : 'bg-white border border-theme-subtle text-theme-muted hover:text-theme-main hover:bg-zinc-50 shadow-2xs'
  }`}
  >
- <List className="w-4 h-4 text-rose-600" />
+ <List className="w-4 h-4 text-theme-primary" />
  <span>Cotizaciones</span>
  <span className="px-2 py-0.2 rounded-full text-[10px] font-mono font-bold bg-zinc-100 text-zinc-900 border border-zinc-200">
  {quotes.length}

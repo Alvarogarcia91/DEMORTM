@@ -127,7 +127,7 @@ export const UnitReprintSection: React.FC<UnitReprintSectionProps> = ({
  {/* Header & Subtitle */}
  <div className="bg-theme-surface p-5 border border-theme-subtle rounded-3xl shadow-xs space-y-1">
  <div className="flex items-center gap-2">
- <QrCode className="w-5 h-5 text-rose-600" />
+ <QrCode className="w-5 h-5 text-theme-primary" />
  <h2 className="text-sm font-extrabold text-theme-main">
  Reimpresión de Etiquetas de Unidad
  </h2>
@@ -165,7 +165,7 @@ export const UnitReprintSection: React.FC<UnitReprintSectionProps> = ({
  setShowAutocomplete(true);
  }}
  placeholder="Buscar UID (SC-UID-...), SKU, artículo, lote o ubicación..."
- className="w-full bg-theme-surface border border-theme-subtle rounded-2xl pl-10 pr-9 py-3 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30 shadow-xs"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-2xl pl-10 pr-9 py-3 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30 shadow-xs"
  />
  {searchQuery && (
  <button
@@ -190,7 +190,7 @@ export const UnitReprintSection: React.FC<UnitReprintSectionProps> = ({
  className="p-2.5 rounded-xl hover:bg-theme-muted transition-colors cursor-pointer text-xs space-y-0.5"
  >
  <div className="flex items-center justify-between">
- <strong className="font-mono text-rose-600">{cand.uid}</strong>
+ <strong className="font-mono text-theme-primary">{cand.uid}</strong>
  <span className="text-[10px] text-theme-muted font-mono">{cand.locationCode} &bull; {cand.warehouseName}</span>
  </div>
  <div className="flex items-center justify-between text-[11px] text-theme-main">
@@ -213,7 +213,7 @@ export const UnitReprintSection: React.FC<UnitReprintSectionProps> = ({
  <div className="md:col-span-2 space-y-4">
  <div>
  <div className="flex items-center gap-2 flex-wrap mb-1">
- <span className="font-mono text-base font-black text-rose-600">
+ <span className="font-mono text-base font-black text-theme-primary">
  {selectedUnit.uid}
  </span>
  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
@@ -241,7 +241,7 @@ export const UnitReprintSection: React.FC<UnitReprintSectionProps> = ({
 
  <div className="p-3 rounded-2xl bg-theme-muted/30 border border-theme-subtle space-y-0.5">
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Ubicación Actual:</span>
- <strong className="font-mono text-rose-600 text-xs">{selectedUnit.locationCode}</strong>
+ <strong className="font-mono text-theme-primary text-xs">{selectedUnit.locationCode}</strong>
  </div>
  </div>
 
@@ -312,7 +312,7 @@ export const UnitReprintSection: React.FC<UnitReprintSectionProps> = ({
  <button
  type="button"
  onClick={handleExecuteReprint}
- className="px-5 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+ className="px-5 py-2.5 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
  >
  <Printer className="w-4 h-4" />
  <span>Reimprimir etiqueta</span>

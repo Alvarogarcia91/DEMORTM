@@ -204,8 +204,7 @@ export const CountsTab: React.FC<CountsTabProps> = ({ onShowToast }) => {
  key={tab.id}
  onClick={() => setSubTab(tab.id as any)}
  className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
- isActive
- ? 'bg-rose-600 text-white shadow-md'
+ isActive ? 'bg-theme-primary text-white shadow-md'
  : 'bg-theme-muted hover:bg-theme-subtle text-theme-main border border-theme-subtle'
  }`}
  >
@@ -224,7 +223,7 @@ export const CountsTab: React.FC<CountsTabProps> = ({ onShowToast }) => {
  {/* Global Action: New Count Plan */}
  <button
  onClick={() => setIsCreatePlanOpen(true)}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
  >
  <Plus className="w-4 h-4" />
  <span>Nuevo plan de conteo</span>
@@ -254,8 +253,7 @@ export const CountsTab: React.FC<CountsTabProps> = ({ onShowToast }) => {
  key={wh.id}
  onClick={() => setSelectedWarehouseId(wh.id)}
  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
- selectedWarehouseId === wh.id
- ? 'bg-rose-600 text-white shadow-xs'
+ selectedWarehouseId === wh.id ? 'bg-theme-primary text-white shadow-xs'
  : 'bg-theme-muted hover:bg-theme-subtle text-theme-main border border-theme-subtle'
  }`}
  >
@@ -599,7 +597,7 @@ export const CountsTab: React.FC<CountsTabProps> = ({ onShowToast }) => {
  {t.status === 'Pendiente' ? (
  <button
  onClick={() => setActiveTaskToExecute(t)}
- className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 ml-auto cursor-pointer"
+ className="px-3.5 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 ml-auto cursor-pointer"
  >
  <Play className="w-3.5 h-3.5" />
  <span>Ejecutar</span>

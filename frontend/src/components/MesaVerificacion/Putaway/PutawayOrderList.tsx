@@ -46,7 +46,7 @@ export const PutawayOrderList: React.FC<PutawayOrderListProps> = ({
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar por folio de acomodo, CEDIS o UID..."
- className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  {searchQuery && (
  <button
@@ -86,7 +86,7 @@ export const PutawayOrderList: React.FC<PutawayOrderListProps> = ({
  filteredOrders.map((order) => {
  return (
  <tr key={order.id} className="hover:bg-theme-muted/30 transition-colors">
- <td className="py-3.5 px-4 font-mono font-black text-rose-600 whitespace-nowrap">
+ <td className="py-3.5 px-4 font-mono font-black text-theme-primary whitespace-nowrap">
  {order.folio}
  </td>
  <td className="py-3.5 px-3 whitespace-nowrap">

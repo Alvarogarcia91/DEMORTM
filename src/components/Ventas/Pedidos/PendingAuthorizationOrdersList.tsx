@@ -56,7 +56,7 @@ export const PendingAuthorizationOrdersList: React.FC<PendingAuthorizationOrders
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
  placeholder="Buscar por pedido, cotización origen o cliente..."
- className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs focus:outline-none focus:border-rose-500 shadow-2xs"
+ className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs focus:outline-none focus:border-theme-primary shadow-2xs"
  />
  </div>
 
@@ -110,7 +110,7 @@ export const PendingAuthorizationOrdersList: React.FC<PendingAuthorizationOrders
 
  return (
  <tr key={ord.id} className="hover:bg-zinc-50/60 transition-colors">
- <td className="py-3 px-4 font-mono font-bold text-rose-600 whitespace-nowrap">
+ <td className="py-3 px-4 font-mono font-bold text-theme-primary whitespace-nowrap">
  {ord.folio}
  </td>
  <td className="py-3 px-3 font-mono font-semibold text-purple-700 whitespace-nowrap">
@@ -165,7 +165,7 @@ export const PendingAuthorizationOrdersList: React.FC<PendingAuthorizationOrders
  <button
  type="button"
  onClick={() => onOpenAuthorizationModal(ord)}
- className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-bold text-[11px] shadow-xs cursor-pointer inline-flex items-center gap-1"
+ className="px-2.5 py-1 rounded-lg bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-[11px] shadow-xs cursor-pointer inline-flex items-center gap-1"
  >
  <UserCheck className="w-3.5 h-3.5" />
  <span>Autorizar</span>

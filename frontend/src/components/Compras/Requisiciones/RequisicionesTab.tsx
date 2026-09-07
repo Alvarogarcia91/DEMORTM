@@ -133,11 +133,11 @@ export const RequisicionesTab: React.FC<RequisicionesTabProps> = ({
  : 'text-theme-muted hover:text-theme-main hover:bg-theme-muted'
  }`}
  >
- <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-rose-600' : 'text-theme-muted'}`} />
+ <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-theme-primary' : 'text-theme-muted'}`} />
  <span>{tab.label}</span>
  {tab.count !== undefined && (
  <span className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded ${
- isActive ? 'bg-rose-500/10 text-rose-600' : 'bg-theme-muted text-theme-muted'
+ isActive ? 'bg-theme-primary-light text-theme-primary' : 'bg-theme-muted text-theme-muted'
  }`}>
  {tab.count}
  </span>
@@ -151,7 +151,7 @@ export const RequisicionesTab: React.FC<RequisicionesTabProps> = ({
  <button
  type="button"
  onClick={handleOpenCreateNew}
- className="px-4 py-2 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer ml-auto"
+ className="px-4 py-2 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer ml-auto"
  >
  <Plus className="w-4 h-4" />
  <span>Nueva requisición</span>

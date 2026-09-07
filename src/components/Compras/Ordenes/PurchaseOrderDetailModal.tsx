@@ -144,7 +144,7 @@ export const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> =
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <FileText className="w-5 h-5" />
  </div>
  <div>
@@ -308,7 +308,7 @@ export const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> =
  </div>
  <div className="flex justify-between text-sm font-black text-theme-main pt-1.5 border-t border-theme-subtle">
  <span>Total:</span>
- <strong className="text-rose-600 font-extrabold text-base">${order.total.toLocaleString('es-MX')} MXN</strong>
+ <strong className="text-theme-primary font-extrabold text-base">${order.total.toLocaleString('es-MX')} MXN</strong>
  </div>
  </div>
  </div>
@@ -556,7 +556,7 @@ export const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> =
  setNewStatus(order.status);
  setStatusUpdateOpen(true);
  }}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
  >
  <Clock className="w-3.5 h-3.5" />
  <span>Actualizar seguimiento</span>
@@ -616,7 +616,7 @@ export const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> =
  </button>
  <button
  onClick={handleConfirmStatusUpdate}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer"
  >
  Guardar actualización
  </button>
@@ -653,7 +653,7 @@ export const PurchaseOrderDetailModal: React.FC<PurchaseOrderDetailModalProps> =
  <button
  onClick={handleConfirmCancellation}
  disabled={!cancellationReason.trim()}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold cursor-pointer disabled:opacity-50"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer disabled:opacity-50"
  >
  Confirmar cancelación
  </button>

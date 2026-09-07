@@ -328,7 +328,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
               key={item.s}
               className={`flex items-center gap-1.5 font-bold px-3 py-1.5 rounded-full transition-all whitespace-nowrap ${
                 step === item.s
-                  ? 'bg-rose-600 text-white shadow-xs'
+                  ? 'bg-theme-primary text-white shadow-xs'
                   : step > item.s
                   ? 'bg-white text-zinc-900 border border-emerald-600 shadow-2xs'
                   : 'bg-white text-zinc-500 border border-zinc-200'
@@ -354,7 +354,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                     value={clientSearch}
                     onChange={(e) => setClientSearch(e.target.value)}
                     placeholder="Buscar por nombre, código o RFC..."
-                    className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 focus:outline-none focus:border-rose-500 text-xs shadow-2xs"
+                    className="w-full pl-9 pr-4 py-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 focus:outline-none focus:border-theme-primary text-xs shadow-2xs"
                   />
                 </div>
 
@@ -364,7 +364,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                     onClick={onOpenQuickClientModal}
                     className="px-3.5 py-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 font-bold text-xs shadow-2xs hover:bg-zinc-50 transition-colors cursor-pointer flex items-center gap-1.5 shrink-0"
                   >
-                    <Plus className="w-4 h-4 text-rose-600" />
+                    <Plus className="w-4 h-4 text-theme-primary" />
                     <span>Alta Rápida de Cliente</span>
                   </button>
                 )}
@@ -379,12 +379,12 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                       onClick={() => handleSelectCustomer(cust)}
                       className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2 ${
                         isSelected
-                          ? 'bg-white border-2 border-rose-600 shadow-md'
+                          ? 'bg-white border-2 border-theme-primary shadow-md'
                           : 'bg-white border-zinc-200 hover:border-zinc-400 shadow-2xs'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-mono font-bold text-rose-600 text-xs">{cust.code}</span>
+                        <span className="font-mono font-bold text-theme-primary text-xs">{cust.code}</span>
                         <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-white border border-zinc-300 text-zinc-900">
                           {cust.type}
                         </span>
@@ -423,13 +423,13 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                         onClick={() => setSelectedBranchId(branch.id)}
                         className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2 ${
                           isSelected
-                            ? 'bg-white border-2 border-rose-600 shadow-md'
+                            ? 'bg-white border-2 border-theme-primary shadow-md'
                             : 'bg-white border-zinc-200 hover:border-zinc-400 shadow-2xs'
                         }`}
                       >
                         <div className="flex items-center justify-between">
-                          <Building2 className="w-5 h-5 text-rose-600" />
-                          {isSelected && <Check className="w-4 h-4 text-rose-600" />}
+                          <Building2 className="w-5 h-5 text-theme-primary" />
+                          {isSelected && <Check className="w-4 h-4 text-theme-primary" />}
                         </div>
                         <h4 className="font-bold text-zinc-900 text-sm">{branch.name}</h4>
                         <p className="text-zinc-500 text-[11px]">{branch.desc}</p>
@@ -452,12 +452,12 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                         onClick={() => setSelectedPriceListId(plist.id)}
                         className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2 ${
                           isSelected
-                            ? 'bg-white border-2 border-rose-600 shadow-md'
+                            ? 'bg-white border-2 border-theme-primary shadow-md'
                             : 'bg-white border-zinc-200 hover:border-zinc-400 shadow-2xs'
                         }`}
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-mono font-bold text-rose-600 text-xs">{plist.code}</span>
+                          <span className="font-mono font-bold text-theme-primary text-xs">{plist.code}</span>
                           <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-white border border-zinc-300 text-zinc-900">
                             {plist.targetType}
                           </span>
@@ -488,7 +488,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                     <select
                       value={selectedArticleSku}
                       onChange={(e) => setSelectedArticleSku(e.target.value)}
-                      className="w-full p-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs focus:outline-none focus:border-rose-500 shadow-2xs"
+                      className="w-full p-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs focus:outline-none focus:border-theme-primary shadow-2xs"
                     >
                       <option value="">-- Selecciona un colchón / artículo --</option>
                       {MOCK_MASTER_ARTICLES.filter((a) => a.isActive).map((art) => (
@@ -519,7 +519,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                       const art = MOCK_MASTER_ARTICLES.find((a) => a.sku === selectedArticleSku);
                       if (art) handleAddItem(art);
                     }}
-                    className="p-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-40 text-white font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                    className="p-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover disabled:opacity-40 text-white font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1.5"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Agregar Partida</span>
@@ -554,7 +554,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                         <tr key={item.id} className="hover:bg-zinc-50/60">
                           <td className="py-3 px-3">
                             <strong className="text-zinc-900 block">{item.productName}</strong>
-                            <span className="font-mono text-[10px] text-rose-600">{item.sku}</span>
+                            <span className="font-mono text-[10px] text-theme-primary">{item.sku}</span>
                             {item.hasVolumeTierApplied && (
                               <span className="inline-block px-1.5 py-0.2 rounded text-[9px] font-bold bg-white border border-purple-500 text-zinc-900 ml-1">
                                 Escala volumen aplicada
@@ -582,7 +582,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                                 step={0.5}
                                 value={item.discountPct}
                                 onChange={(e) => handleUpdateItemDiscount(item.id, parseFloat(e.target.value) || 0)}
-                                className="w-12 p-1 rounded-lg border border-zinc-300 bg-white text-center font-mono font-bold text-rose-600 text-xs"
+                                className="w-12 p-1 rounded-lg border border-zinc-300 bg-white text-center font-mono font-bold text-theme-primary text-xs"
                               />
                               <span className="font-bold text-zinc-400">%</span>
                             </div>
@@ -606,7 +606,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                             <button
                               type="button"
                               onClick={() => handleRemoveItem(item.id)}
-                              className="p-1 text-zinc-400 hover:text-rose-600 transition-colors cursor-pointer"
+                              className="p-1 text-zinc-400 hover:text-theme-primary transition-colors cursor-pointer"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -804,7 +804,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                 <button
                   type="button"
                   onClick={() => handleCreateQuote(false)}
-                  className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
+                  className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
                 >
                   <Check className="w-4 h-4" />
                   <span>Emitir Cotización</span>
@@ -815,7 +815,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                 type="button"
                 disabled={step === 3 && items.length === 0}
                 onClick={() => setStep((s) => (s < 5 ? ((s + 1) as any) : s))}
-                className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-40 text-white font-bold text-xs shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
+                className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover disabled:opacity-40 text-white font-bold text-xs shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
               >
                 <span>Siguiente</span>
                 <ChevronRight className="w-4 h-4" />

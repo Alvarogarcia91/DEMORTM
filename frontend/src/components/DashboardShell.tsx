@@ -279,7 +279,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  return (
  <div className="space-y-6 animate-in fade-in duration-200">
  <div className="space-y-1">
- <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-rose-500 shadow-2xs">
+ <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-theme-primary shadow-2xs">
  Cadena de Suministro & Abastecimiento
  </span>
  <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-theme-main">
@@ -304,7 +304,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  return (
  <div className="space-y-6 animate-in fade-in duration-200">
  <div className="space-y-1">
- <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-rose-500 shadow-2xs">
+ <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-theme-primary shadow-2xs">
  Cadena de Suministro & Abastecimiento
  </span>
  <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-theme-main">
@@ -330,7 +330,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  return (
  <div className="space-y-6 animate-in fade-in duration-200">
  <div className="space-y-1">
- <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-rose-500 shadow-2xs">
+ <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-theme-primary shadow-2xs">
  Cadena de Suministro & Abastecimiento
  </span>
  <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-theme-main">

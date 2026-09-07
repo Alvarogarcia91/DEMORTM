@@ -167,7 +167,7 @@ export const HistorialTab: React.FC = () => {
       <div className="p-4 rounded-3xl bg-white border border-zinc-200 shadow-2xs space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-white border border-rose-500/30 text-rose-600 flex items-center justify-center shadow-2xs">
+            <div className="w-8 h-8 rounded-xl bg-white border border-theme-primary/30 text-theme-primary flex items-center justify-center shadow-2xs">
               <History className="w-4 h-4" />
             </div>
             <div>
@@ -225,7 +225,7 @@ export const HistorialTab: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar ruta, orden, pedido, traspaso, remisión, cliente..."
-              className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-zinc-300 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white placeholder:text-zinc-400"
+              className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-zinc-300 text-xs focus:outline-none focus:ring-2 focus:ring-theme-primary bg-white placeholder:text-zinc-400"
             />
           </div>
 
@@ -234,7 +234,7 @@ export const HistorialTab: React.FC = () => {
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value as any)}
-              className="w-full px-3 py-2 rounded-xl border border-zinc-300 bg-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-rose-500 text-zinc-800"
+              className="w-full px-3 py-2 rounded-xl border border-zinc-300 bg-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-theme-primary text-zinc-800"
             >
               <option value="ALL">Tipo: Todos</option>
               <option value="Venta">Venta</option>
@@ -247,7 +247,7 @@ export const HistorialTab: React.FC = () => {
             <select
               value={resultFilter}
               onChange={(e) => setResultFilter(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-zinc-300 bg-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-rose-500 text-zinc-800"
+              className="w-full px-3 py-2 rounded-xl border border-zinc-300 bg-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-theme-primary text-zinc-800"
             >
               <option value="ALL">Resultado: Todos</option>
               <option value="Entrega completa">Entrega completa</option>
@@ -264,7 +264,7 @@ export const HistorialTab: React.FC = () => {
             <select
               value={driverFilter}
               onChange={(e) => setDriverFilter(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-zinc-300 bg-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-rose-500 text-zinc-800"
+              className="w-full px-3 py-2 rounded-xl border border-zinc-300 bg-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-theme-primary text-zinc-800"
             >
               <option value="ALL">Chofer: Todos</option>
               <option value="Roberto Garza">Roberto Garza</option>
@@ -280,7 +280,7 @@ export const HistorialTab: React.FC = () => {
             <select
               value={originFilter}
               onChange={(e) => setOriginFilter(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl border border-zinc-300 bg-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-rose-500 text-zinc-800"
+              className="w-full px-3 py-2 rounded-xl border border-zinc-300 bg-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-theme-primary text-zinc-800"
             >
               <option value="ALL">Origen: Todos</option>
               <option value="CEDIS Monterrey Norte">CEDIS Norte</option>

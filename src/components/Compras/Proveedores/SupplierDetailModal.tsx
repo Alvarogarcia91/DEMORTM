@@ -302,7 +302,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <Building2 className="w-5 h-5" />
  </div>
  <div>
@@ -437,7 +437,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  <button
  type="button"
  onClick={() => setActiveTab('contactos')}
- className="text-xs font-bold text-rose-600 underline block mt-1 cursor-pointer"
+ className="text-xs font-bold text-theme-primary underline block mt-1 cursor-pointer"
  >
  + Agregar contacto ahora
  </button>
@@ -500,7 +500,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  <button
  type="button"
  onClick={() => setContactModalOpen(true)}
- className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+ className="px-3.5 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
  >
  <Plus className="w-3.5 h-3.5" />
  <span>Agregar contacto</span>
@@ -573,7 +573,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  <button
  type="button"
  onClick={() => setAddressModalOpen(true)}
- className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+ className="px-3.5 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
  >
  <Plus className="w-3.5 h-3.5" />
  <span>Agregar dirección</span>
@@ -619,7 +619,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  <button
  type="button"
  onClick={() => setArticleModalOpen(true)}
- className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer shrink-0"
+ className="px-3.5 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer shrink-0"
  >
  <Plus className="w-3.5 h-3.5" />
  <span>Relacionar artículo</span>
@@ -716,7 +716,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  const updated = supplier.articles.filter((a) => a.id !== art.id);
  onUpdateSupplier({ ...supplier, articles: updated });
  }}
- className="p-1 rounded-lg text-theme-muted hover:text-rose-600 hover:bg-rose-500/10 cursor-pointer"
+ className="p-1 rounded-lg text-theme-muted hover:text-theme-primary hover:bg-theme-primary-light cursor-pointer"
  title="Eliminar relación"
  >
  <Trash2 className="w-3.5 h-3.5" />
@@ -789,7 +789,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  <button
  type="button"
  onClick={() => setDocModalOpen(true)}
- className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+ className="px-3.5 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
  >
  <Plus className="w-3.5 h-3.5" />
  <span>Agregar documento</span>
@@ -894,7 +894,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  onClick={() => setStatusConfirmOpen(true)}
  className={`px-4 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs ${
  supplier.status === 'Activo'
- ? 'bg-white hover:bg-theme-muted text-zinc-900 border border-rose-500'
+ ? 'bg-white hover:bg-theme-muted text-zinc-900 border border-theme-primary'
  : 'bg-emerald-600 hover:bg-emerald-700 text-white'
  }`}
  >
@@ -966,7 +966,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  type="checkbox"
  checked={newContactIsPrimary}
  onChange={(e) => setNewContactIsPrimary(e.target.checked)}
- className="rounded text-rose-600 focus:ring-rose-500 cursor-pointer"
+ className="rounded text-theme-primary focus:ring-theme-primary cursor-pointer"
  />
  <span className="font-bold text-theme-main">Definir como contacto principal de compras</span>
  </label>
@@ -981,7 +981,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  </button>
  <button
  onClick={handleSaveContact}
- className="px-4 py-2 rounded-xl bg-rose-600 text-white font-bold cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer"
  >
  Guardar contacto
  </button>
@@ -1081,7 +1081,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  </button>
  <button
  onClick={handleSaveAddress}
- className="px-4 py-2 rounded-xl bg-rose-600 text-white font-bold cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer"
  >
  Guardar dirección
  </button>
@@ -1139,7 +1139,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  </div>
 
  {selectedCatalogArticle && (
- <div className="p-3 bg-white border border-rose-500/40 rounded-xl space-y-2 shadow-2xs">
+ <div className="p-3 bg-white border border-theme-primary/40 rounded-xl space-y-2 shadow-2xs">
  <div>
  <span className="text-[10px] font-mono text-theme-primary font-bold">{selectedCatalogArticle.sku}</span>
  <strong className="text-xs font-bold text-theme-main block">{selectedCatalogArticle.name}</strong>
@@ -1172,7 +1172,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  type="checkbox"
  checked={newRelIsPreferred}
  onChange={(e) => setNewRelIsPreferred(e.target.checked)}
- className="rounded text-rose-600 focus:ring-rose-500 cursor-pointer"
+ className="rounded text-theme-primary focus:ring-theme-primary cursor-pointer"
  />
  <span className="font-bold text-theme-main">Marcar como proveedor preferido para este SKU</span>
  </label>
@@ -1190,7 +1190,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  <button
  disabled={!selectedCatalogArticle}
  onClick={handleSaveArticleRelation}
- className="px-4 py-2 rounded-xl bg-rose-600 text-white font-bold cursor-pointer disabled:opacity-50"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer disabled:opacity-50"
  >
  Relacionar
  </button>
@@ -1257,7 +1257,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  </button>
  <button
  onClick={handleSaveDocument}
- className="px-4 py-2 rounded-xl bg-rose-600 text-white font-bold cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer"
  >
  Registrar documento
  </button>
@@ -1291,7 +1291,7 @@ export const SupplierDetailModal: React.FC<SupplierDetailModalProps> = ({
  <button
  onClick={handleToggleSupplierStatus}
  className={`px-4 py-2 rounded-xl font-bold cursor-pointer text-white ${
- supplier.status === 'Activo' ? 'bg-rose-600' : 'bg-emerald-600'
+ supplier.status === 'Activo' ? 'bg-emerald-600' : 'bg-theme-muted'
  }`}
  >
  Confirmar

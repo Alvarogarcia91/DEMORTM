@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Sparkles, Check } from 'lucide-react';
 
 export interface StrategyMetric {
@@ -53,7 +53,7 @@ export const StrategyCard: React.FC<StrategyCardProps> = ({
  </div>
 
  {isRecommended ? (
- <Sparkles className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+ <Sparkles className="w-3.5 h-3.5 text-theme-primary shrink-0" />
  ) : badge ? (
  <span
  className={`text-[9px] px-1.5 py-0.2 rounded font-bold uppercase ${
@@ -82,7 +82,7 @@ export const StrategyCard: React.FC<StrategyCardProps> = ({
 
  {/* Rating stars if provided */}
  {ratingStars !== undefined && (
- <div className="flex items-center text-rose-600 text-[10px]">
+ <div className="flex items-center text-theme-primary text-[10px]">
  {Array.from({ length: 5 }, (_, i) => (
  <span key={i} className={i < ratingStars ? 'opacity-100' : 'opacity-25'}>
  ★

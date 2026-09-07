@@ -74,7 +74,7 @@ export const AssignTransportModal: React.FC<AssignTransportModalProps> = ({
         {/* Header */}
         <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white border border-rose-500/30 text-rose-600 flex items-center justify-center shadow-xs">
+            <div className="w-10 h-10 rounded-2xl bg-white border border-theme-primary/30 text-theme-primary flex items-center justify-center shadow-xs">
               <Truck className="w-5 h-5" />
             </div>
             <div>
@@ -82,7 +82,7 @@ export const AssignTransportModal: React.FC<AssignTransportModalProps> = ({
                 <h3 className="text-sm font-black text-theme-main">
                   Asignar Transporte
                 </h3>
-                <span className="font-mono text-xs font-bold text-rose-600 px-2 py-0.5 rounded-full bg-white border border-rose-500 shadow-2xs">
+                <span className="font-mono text-xs font-bold text-theme-primary px-2 py-0.5 rounded-full bg-white border border-theme-primary shadow-2xs">
                   {order.folio}
                 </span>
               </div>
@@ -111,7 +111,7 @@ export const AssignTransportModal: React.FC<AssignTransportModalProps> = ({
             </div>
             <div className="flex items-center justify-between text-[11px]">
               <span className="font-bold text-zinc-500 uppercase">Remisión Amparada</span>
-              <span className="font-mono font-bold text-rose-600">{order.remisionFolio}</span>
+              <span className="font-mono font-bold text-theme-primary">{order.remisionFolio}</span>
             </div>
             <div className="flex items-center justify-between text-[11px]">
               <span className="font-bold text-zinc-500 uppercase">Carga Total Requerida</span>
@@ -127,7 +127,7 @@ export const AssignTransportModal: React.FC<AssignTransportModalProps> = ({
             <select
               value={selectedVehicleId}
               onChange={(e) => setSelectedVehicleId(e.target.value)}
-              className="w-full bg-theme-surface border border-theme-subtle rounded-2xl px-3 py-2.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+              className="w-full bg-theme-surface border border-theme-subtle rounded-2xl px-3 py-2.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
               required
             >
               <option value="">-- Seleccionar unidad vehicular --</option>
@@ -189,7 +189,7 @@ export const AssignTransportModal: React.FC<AssignTransportModalProps> = ({
             <select
               value={selectedDriverId}
               onChange={(e) => setSelectedDriverId(e.target.value)}
-              className="w-full bg-theme-surface border border-theme-subtle rounded-2xl px-3 py-2.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+              className="w-full bg-theme-surface border border-theme-subtle rounded-2xl px-3 py-2.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
               required
             >
               <option value="">-- Seleccionar chofer --</option>
@@ -214,7 +214,7 @@ export const AssignTransportModal: React.FC<AssignTransportModalProps> = ({
                   value={plannedDate}
                   onChange={(e) => setPlannedDate(e.target.value)}
                   placeholder="ej. 28 Ago 2026"
-                  className="w-full bg-theme-surface border border-theme-subtle rounded-2xl pl-9 pr-3 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+                  className="w-full bg-theme-surface border border-theme-subtle rounded-2xl pl-9 pr-3 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
                   required
                 />
               </div>
@@ -231,7 +231,7 @@ export const AssignTransportModal: React.FC<AssignTransportModalProps> = ({
                   value={plannedTime}
                   onChange={(e) => setPlannedTime(e.target.value)}
                   placeholder="ej. 09:30"
-                  className="w-full bg-theme-surface border border-theme-subtle rounded-2xl pl-9 pr-3 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+                  className="w-full bg-theme-surface border border-theme-subtle rounded-2xl pl-9 pr-3 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
                   required
                 />
               </div>
@@ -248,7 +248,7 @@ export const AssignTransportModal: React.FC<AssignTransportModalProps> = ({
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Instrucciones para el chofer, maniobras o referencias de entrega..."
               rows={2}
-              className="w-full bg-theme-surface border border-theme-subtle rounded-2xl p-3 text-xs text-theme-main font-medium focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+              className="w-full bg-theme-surface border border-theme-subtle rounded-2xl p-3 text-xs text-theme-main font-medium focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
             />
           </div>
 
@@ -266,7 +266,7 @@ export const AssignTransportModal: React.FC<AssignTransportModalProps> = ({
               disabled={!selectedVehicleId || !selectedDriverId}
               className={`px-5 py-2 rounded-2xl font-black text-xs transition-all shadow-xs flex items-center gap-2 cursor-pointer ${
                 selectedVehicleId && selectedDriverId
-                  ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-md'
+                  ? 'bg-theme-primary hover:bg-theme-primary-hover text-white shadow-md'
                   : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed border border-zinc-300 dark:border-zinc-700'
               }`}
             >

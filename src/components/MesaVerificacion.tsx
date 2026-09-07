@@ -128,7 +128,7 @@ const MesaVerificacionInner: React.FC<MesaVerificacionProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-600 border border-rose-500/20">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-theme-primary-light text-theme-primary border border-theme-primary/20">
               Módulo Operativo
             </span>
             <span className="text-xs text-theme-muted font-mono">
@@ -146,7 +146,7 @@ const MesaVerificacionInner: React.FC<MesaVerificacionProps> = ({
         {/* Global Facility Selector */}
         <div className="flex items-center gap-2.5 bg-theme-surface p-2 rounded-2xl border border-theme-subtle shadow-xs self-start sm:self-auto">
           <div className="flex items-center gap-1.5 pl-1.5">
-            <Building2 className="w-4 h-4 text-rose-600 shrink-0" />
+            <Building2 className="w-4 h-4 text-theme-primary shrink-0" />
             <span className="text-[10px] font-black uppercase tracking-wider text-theme-muted whitespace-nowrap">
               NAVE OPERATIVA
             </span>
@@ -154,7 +154,7 @@ const MesaVerificacionInner: React.FC<MesaVerificacionProps> = ({
           <select
             value={selectedFacilityId}
             onChange={(e) => setSelectedFacilityId(e.target.value)}
-            className="bg-theme-muted hover:bg-theme-subtle text-theme-main font-extrabold text-xs px-3 py-1.5 rounded-xl border border-theme-subtle focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer transition-all"
+            className="bg-theme-muted hover:bg-theme-subtle text-theme-main font-extrabold text-xs px-3 py-1.5 rounded-xl border border-theme-subtle focus:outline-none focus:ring-2 focus:ring-theme-primary cursor-pointer transition-all"
           >
             <optgroup label="ALMACENES PRINCIPALES">
               {facilityOptions.map((opt) => (
@@ -194,11 +194,11 @@ const MesaVerificacionInner: React.FC<MesaVerificacionProps> = ({
                         }}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                           isActive
-                            ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20 border border-rose-500'
+                            ? 'bg-theme-primary text-white shadow-md border border-theme-primary'
                             : 'bg-theme-muted/40 hover:bg-theme-muted text-theme-main border border-theme-subtle'
                         }`}
                       >
-                        <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-rose-600'}`} />
+                        <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-theme-primary'}`} />
                         <span>{item.label}</span>
                         {!item.isReady && (
                           <span className={`text-[8px] px-1.5 py-0.2 rounded font-mono uppercase ${
@@ -255,7 +255,7 @@ const MesaVerificacionInner: React.FC<MesaVerificacionProps> = ({
       ) : (
         /* Fallback */
         <div className="bg-theme-surface border border-theme-subtle rounded-3xl p-12 text-center space-y-4 shadow-xs">
-          <div className="w-14 h-14 rounded-3xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center mx-auto">
+          <div className="w-14 h-14 rounded-3xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center mx-auto">
             <Clock className="w-7 h-7" />
           </div>
           <div className="space-y-1 max-w-md mx-auto">
@@ -265,7 +265,7 @@ const MesaVerificacionInner: React.FC<MesaVerificacionProps> = ({
           </div>
           <button
             onClick={() => setActiveTab('inbound')}
-            className="px-5 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md cursor-pointer inline-flex items-center gap-1.5"
+            className="px-5 py-2.5 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-md cursor-pointer inline-flex items-center gap-1.5"
           >
             <ArrowDownLeft className="w-4 h-4" />
             <span>Ir a Entradas</span>

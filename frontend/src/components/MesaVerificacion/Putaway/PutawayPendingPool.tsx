@@ -99,7 +99,7 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar UID, SKU, artículo o lote..."
- className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  {searchQuery && (
  <button
@@ -162,9 +162,9 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
 
  {/* Selected Floating Action Bar */}
  {selectedUids.length > 0 && (
- <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-2xl flex items-center justify-between gap-3 text-xs animate-in fade-in duration-150">
+ <div className="p-3 bg-theme-primary-light border border-theme-primary/30 rounded-2xl flex items-center justify-between gap-3 text-xs animate-in fade-in duration-150">
  <div className="flex items-center gap-2">
- <CheckCircle2 className="w-4 h-4 text-rose-600" />
+ <CheckCircle2 className="w-4 h-4 text-theme-primary" />
  <span className="font-bold text-theme-main">
  {selectedUids.length} {selectedUids.length === 1 ? 'unidad seleccionada' : 'unidades seleccionadas'}
  </span>
@@ -172,7 +172,7 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
 
  <button
  onClick={() => setIsCreateModalOpen(true)}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
  >
  <ArrowRightLeft className="w-3.5 h-3.5" />
  <span>Generar orden de acomodo</span>
@@ -193,7 +193,7 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  className="p-1 rounded text-theme-muted hover:text-theme-main cursor-pointer"
  >
  {selectedUids.length === filteredUnits.length && filteredUnits.length > 0 ? (
- <CheckSquare className="w-4 h-4 text-rose-600" />
+ <CheckSquare className="w-4 h-4 text-theme-primary" />
  ) : (
  <Square className="w-4 h-4" />
  )}
@@ -226,7 +226,7 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  <tr
  key={unit.uid}
  className={`hover:bg-theme-muted/30 transition-colors ${
- isSelected ? 'bg-rose-500/5' : ''
+ isSelected ? 'bg-theme-primary-light/50' : ''
  }`}
  >
  <td className="py-3.5 px-3 text-center">
@@ -235,13 +235,13 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  className="p-1 rounded text-theme-muted hover:text-theme-main cursor-pointer"
  >
  {isSelected ? (
- <CheckSquare className="w-4 h-4 text-rose-600" />
+ <CheckSquare className="w-4 h-4 text-theme-primary" />
  ) : (
  <Square className="w-4 h-4" />
  )}
  </button>
  </td>
- <td className="py-3.5 px-3 font-mono font-black text-rose-600 whitespace-nowrap">
+ <td className="py-3.5 px-3 font-mono font-black text-theme-primary whitespace-nowrap">
  {unit.uid}
  </td>
  <td className="py-3.5 px-3 whitespace-nowrap">
@@ -255,7 +255,7 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  {unit.lotNumber}
  </td>
  <td className="py-3.5 px-3 whitespace-nowrap">
- <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-theme-muted text-rose-600 border border-theme-subtle">
+ <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-theme-muted text-theme-primary border border-theme-subtle">
  {unit.sourceLocation}
  </span>
  <span className="text-[9px] text-theme-muted block truncate mt-0.5">{unit.warehouseName}</span>

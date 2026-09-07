@@ -121,7 +121,7 @@ export const ClientesDashboard: React.FC<ClientesDashboardProps> = ({
               <div
                 key={cust.id}
                 onClick={() => onOpenDetail(cust)}
-                className="p-3 rounded-xl bg-white border border-zinc-200 hover:border-rose-500 shadow-2xs flex items-center justify-between cursor-pointer transition-all"
+                className="p-3 rounded-xl bg-white border border-zinc-200 hover:border-theme-primary shadow-2xs flex items-center justify-between cursor-pointer transition-all"
               >
                 <div className="flex items-center gap-3">
                   <span className="w-6 h-6 rounded-full bg-zinc-100 font-black text-[11px] text-zinc-800 flex items-center justify-center">
@@ -133,7 +133,7 @@ export const ClientesDashboard: React.FC<ClientesDashboardProps> = ({
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="font-mono font-black text-rose-600 block">
+                  <span className="font-mono font-black text-theme-primary block">
                     {formatCurrencyMXN(cust.totalSpent, false)}
                   </span>
                   <span className="text-[10px] text-zinc-500">{cust.totalOrdersCount} pedidos</span>
@@ -157,7 +157,7 @@ export const ClientesDashboard: React.FC<ClientesDashboardProps> = ({
               </div>
               <div className="w-full bg-zinc-200 rounded-full h-2 overflow-hidden">
                 <div
-                  className="bg-rose-600 h-2 rounded-full"
+                  className="bg-theme-primary h-2 rounded-full"
                   style={{ width: `${(voCustomers.length / totalActiveCustomers) * 100}%` }}
                 />
               </div>

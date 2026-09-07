@@ -118,7 +118,7 @@ export const ShowroomPickingExecutionModal: React.FC<ShowroomPickingExecutionMod
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-zinc-500 font-semibold uppercase text-[10px]">Destino final</span>
-                <strong className="text-rose-600 font-bold">{order.destinationLocation}</strong>
+                <strong className="text-theme-primary font-bold">{order.destinationLocation}</strong>
               </div>
             </div>
 
@@ -191,7 +191,7 @@ export const ShowroomPickingExecutionModal: React.FC<ShowroomPickingExecutionMod
                 <Scan className="w-8 h-8 text-theme-primary mx-auto animate-pulse" />
                 <div className="space-y-0.5">
                   <strong className="text-xs font-bold text-zinc-900 block">
-                    Escanear UID: <span className="font-mono text-rose-600">{currentItem.suggestedUid}</span>
+                    Escanear UID: <span className="font-mono text-theme-primary">{currentItem.suggestedUid}</span>
                   </strong>
                   <span className="text-[11px] text-zinc-500 block">
                     Ubicación en rack: {currentItem.fromLocation}

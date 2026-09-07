@@ -142,12 +142,12 @@ export const ReturnScanStationModal: React.FC<ReturnScanStationModalProps> = ({
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <RotateCcw className="w-5 h-5" />
  </div>
  <div>
  <div className="flex items-center gap-2">
- <span className="font-mono text-xs font-black text-rose-600">{order.folio}</span>
+ <span className="font-mono text-xs font-black text-theme-primary">{order.folio}</span>
  <span className="text-[10px] text-theme-muted font-mono">&bull; {order.reference}</span>
  </div>
  <h2 className="text-sm font-extrabold text-theme-main">
@@ -176,7 +176,7 @@ export const ReturnScanStationModal: React.FC<ReturnScanStationModalProps> = ({
  key={s.step}
  className={`flex items-center gap-1.5 font-bold ${
  currentStep === s.step
- ? 'text-rose-600'
+ ? 'text-theme-primary'
  : currentStep > s.step
  ? 'text-emerald-600'
  : 'text-theme-muted'
@@ -184,7 +184,7 @@ export const ReturnScanStationModal: React.FC<ReturnScanStationModalProps> = ({
  >
  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${
  currentStep === s.step
- ? 'bg-rose-600 text-white shadow-xs'
+ ? 'bg-theme-primary text-white shadow-xs'
  : currentStep > s.step
  ? 'bg-emerald-500/20 text-emerald-600 border border-emerald-500/30'
  : 'bg-theme-muted text-theme-muted'
@@ -203,7 +203,7 @@ export const ReturnScanStationModal: React.FC<ReturnScanStationModalProps> = ({
  <div className="p-3.5 rounded-2xl bg-theme-muted/30 border border-theme-subtle flex items-center justify-between">
  <div className="space-y-0.5">
  <div className="flex items-center gap-2">
- <span className="font-mono text-rose-600 font-black text-xs">{item.uid}</span>
+ <span className="font-mono text-theme-primary font-black text-xs">{item.uid}</span>
  <span className="text-[10px] font-mono text-theme-muted">Lote: {item.lotNumber}</span>
  </div>
  <p className="text-[11px] text-theme-main font-bold truncate">{item.productName}</p>
@@ -226,13 +226,13 @@ export const ReturnScanStationModal: React.FC<ReturnScanStationModalProps> = ({
  </div>
 
  {/* Laser HUD Frame */}
- <div className="relative w-48 h-48 mx-auto rounded-3xl bg-zinc-950 border-2 border-rose-500/40 flex flex-col items-center justify-center p-4 shadow-xl overflow-hidden">
- <div className="absolute inset-0 bg-gradient-to-b from-rose-500/10 via-transparent to-rose-500/10 animate-pulse" />
- <QrCode className="w-16 h-16 text-rose-500 animate-pulse" />
- <span className="mt-2 text-[10px] font-mono text-rose-400 font-bold tracking-wider uppercase">
+ <div className="relative w-48 h-48 mx-auto rounded-3xl bg-zinc-950 border-2 border-theme-primary/40 flex flex-col items-center justify-center p-4 shadow-xl overflow-hidden">
+ <div className="absolute inset-0 bg-gradient-to-b from-theme-primary/10 via-transparent to-theme-primary/10 animate-pulse" />
+ <QrCode className="w-16 h-16 text-theme-primary animate-pulse" />
+ <span className="mt-2 text-[10px] font-mono text-theme-primary font-bold tracking-wider uppercase">
  Lector Activo
  </span>
- <div className="absolute top-0 left-0 w-full h-0.5 bg-rose-500 shadow-[0_0_8px_#f43f5e] animate-bounce" />
+ <div className="absolute top-0 left-0 w-full h-0.5 bg-theme-primary shadow-[0_0_8px_var(--color-primary)] animate-bounce" />
  </div>
 
  {unitScanError && (
@@ -373,7 +373,7 @@ export const ReturnScanStationModal: React.FC<ReturnScanStationModalProps> = ({
  <button
  type="button"
  onClick={handleConfirmLocationChoice}
- className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black transition-all shadow-md cursor-pointer flex items-center gap-1.5"
+ className="px-5 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md cursor-pointer flex items-center gap-1.5"
  >
  <span>Continuar a escaneo de ubicación</span>
  <ArrowRight className="w-4 h-4" />
@@ -390,14 +390,14 @@ export const ReturnScanStationModal: React.FC<ReturnScanStationModalProps> = ({
  Paso 4 — Doble Confirmación: Escaneo de Ubicación Destino
  </h3>
  <p className="text-xs text-theme-muted">
- Escanea el código QR físico de la bahía <strong className="font-mono text-rose-600">{targetLocation}</strong> para asentar físicamente la pieza.
+ Escanea el código QR físico de la bahía <strong className="font-mono text-theme-primary">{targetLocation}</strong> para asentar físicamente la pieza.
  </p>
  </div>
 
  <div className="p-4 rounded-2xl bg-theme-muted/30 border border-theme-subtle flex items-center justify-between">
  <div className="space-y-0.5">
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Ubicación Requerida:</span>
- <strong className="font-mono text-lg font-black text-rose-600">{targetLocation}</strong>
+ <strong className="font-mono text-lg font-black text-theme-primary">{targetLocation}</strong>
  </div>
 
  <div className="text-right">
@@ -463,7 +463,7 @@ export const ReturnScanStationModal: React.FC<ReturnScanStationModalProps> = ({
  <button
  type="button"
  onClick={handleFinalSubmit}
- className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+ className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
  >
  <Check className="w-4 h-4" />
  <span>Confirmar devolución</span>

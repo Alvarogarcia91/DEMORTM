@@ -103,7 +103,7 @@ export const SuppliersList: React.FC<SuppliersListProps> = ({
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar proveedor, contacto, artículo o RFC..."
- className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  {searchQuery && (
  <button
@@ -162,7 +162,7 @@ export const SuppliersList: React.FC<SuppliersListProps> = ({
  type="checkbox"
  checked={showInactive}
  onChange={(e) => setShowInactive(e.target.checked)}
- className="rounded text-rose-600 focus:ring-rose-500 cursor-pointer"
+ className="rounded text-theme-primary focus:ring-theme-primary cursor-pointer"
  />
  <span>Mostrar proveedores inactivos</span>
  </label>

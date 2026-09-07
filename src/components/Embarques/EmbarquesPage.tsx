@@ -27,7 +27,7 @@ export const EmbarquesPage: React.FC = () => {
       {/* Header */}
       <div className="space-y-1">
         <div className="flex items-center gap-2">
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-rose-500 shadow-2xs">
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-theme-primary shadow-2xs">
             Despacho B2B & Logística Industrial
           </span>
         </div>
@@ -49,7 +49,7 @@ export const EmbarquesPage: React.FC = () => {
             onClick={() => setActiveTab('dashboard')}
             className={`flex items-center gap-1.5 border-b-2 px-1 pb-2.5 text-xs font-bold transition-colors cursor-pointer ${
               activeTab === 'dashboard'
-                ? 'border-rose-600 text-rose-600'
+                ? 'border-theme-primary text-theme-primary'
                 : 'border-transparent text-theme-muted hover:text-theme-main'
             }`}
           >
@@ -63,7 +63,7 @@ export const EmbarquesPage: React.FC = () => {
             onClick={() => setActiveTab('orders')}
             className={`flex items-center gap-1.5 border-b-2 px-1 pb-2.5 text-xs font-bold transition-colors cursor-pointer ${
               activeTab === 'orders'
-                ? 'border-rose-600 text-rose-600'
+                ? 'border-theme-primary text-theme-primary'
                 : 'border-transparent text-theme-muted hover:text-theme-main'
             }`}
           >
@@ -80,7 +80,7 @@ export const EmbarquesPage: React.FC = () => {
             onClick={() => setActiveTab('in_route')}
             className={`flex items-center gap-1.5 border-b-2 px-1 pb-2.5 text-xs font-bold transition-colors cursor-pointer ${
               activeTab === 'in_route'
-                ? 'border-rose-600 text-rose-600'
+                ? 'border-theme-primary text-theme-primary'
                 : 'border-transparent text-theme-muted hover:text-theme-main'
             }`}
           >
@@ -97,7 +97,7 @@ export const EmbarquesPage: React.FC = () => {
             onClick={() => setActiveTab('history')}
             className={`flex items-center gap-1.5 border-b-2 px-1 pb-2.5 text-xs font-bold transition-colors cursor-pointer ${
               activeTab === 'history'
-                ? 'border-rose-600 text-rose-600'
+                ? 'border-theme-primary text-theme-primary'
                 : 'border-transparent text-theme-muted hover:text-theme-main'
             }`}
           >

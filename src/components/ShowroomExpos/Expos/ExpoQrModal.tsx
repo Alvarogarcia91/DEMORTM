@@ -52,7 +52,7 @@ export const ExpoQrModal: React.FC<ExpoQrModalProps> = ({
           <div className="p-6 space-y-4">
             <div className="p-5 rounded-2xl bg-white border-2 border-dashed border-zinc-300 text-zinc-900 shadow-sm flex flex-col items-center text-center space-y-4">
               <div className="flex items-center justify-between w-full border-b border-zinc-200 pb-2">
-                <span className="text-[10px] font-black uppercase text-rose-600">
+                <span className="text-[10px] font-black uppercase text-theme-primary">
                   IMPRESOS RTM &bull; LOGÍSTICA
                 </span>
                 <span className="text-[10px] font-bold text-zinc-500 uppercase">

@@ -123,7 +123,7 @@ export const PendingReturnsList: React.FC<PendingReturnsListProps> = ({
  <button
  type="button"
  onClick={onOpenCreateModal}
- className="px-4 py-2 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer ml-auto"
+ className="px-4 py-2 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer ml-auto"
  >
  <Plus className="w-4 h-4" />
  <span>Nueva devolución</span>
@@ -148,7 +148,7 @@ export const PendingReturnsList: React.FC<PendingReturnsListProps> = ({
 
  {filteredOrders.length === 0 ? (
  <div className="p-12 text-center text-xs text-theme-muted space-y-1">
- <RotateCcw className="w-8 h-8 mx-auto opacity-30 text-rose-600 mb-2" />
+ <RotateCcw className="w-8 h-8 mx-auto opacity-30 text-theme-primary mb-2" />
  <p className="font-bold text-theme-main">No hay devoluciones pendientes con los filtros aplicados</p>
  <p>Puedes registrar una nueva solicitud con el botón superior.</p>
  </div>
@@ -179,7 +179,7 @@ export const PendingReturnsList: React.FC<PendingReturnsListProps> = ({
  >
  {/* Folio */}
  <td className="py-3.5 px-4">
- <strong className="font-mono text-rose-600 block text-xs font-bold">
+ <strong className="font-mono text-theme-primary block text-xs font-bold">
  {order.folio}
  </strong>
  <span className="text-[10px] text-theme-muted truncate block max-w-xs">
@@ -211,7 +211,7 @@ export const PendingReturnsList: React.FC<PendingReturnsListProps> = ({
 
  {/* Motivo */}
  <td className="py-3.5 px-3">
- <span className="text-xs font-semibold text-rose-600">
+ <span className="text-xs font-semibold text-theme-primary">
  {order.reason}
  </span>
  </td>
@@ -233,7 +233,7 @@ export const PendingReturnsList: React.FC<PendingReturnsListProps> = ({
  <button
  type="button"
  onClick={() => onOpenReceiveStation(order)}
- className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-xs cursor-pointer inline-flex items-center gap-1"
+ className="px-3.5 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-xs cursor-pointer inline-flex items-center gap-1"
  >
  <PackageCheck className="w-3.5 h-3.5" />
  <span>Recibir</span>

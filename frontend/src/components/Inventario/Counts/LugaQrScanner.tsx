@@ -138,7 +138,7 @@ export const LugaQrScanner: React.FC<LugaQrScannerProps> = ({
  <div 
  className="absolute inset-0 opacity-15 pointer-events-none"
  style={{
- backgroundImage: `radial-gradient(circle, #ef4444 1px, transparent 1px)`,
+ backgroundImage: `radial-gradient(circle, var(--color-primary) 1px, transparent 1px)`,
  backgroundSize: '16px 16px',
  }}
  />
@@ -150,7 +150,7 @@ export const LugaQrScanner: React.FC<LugaQrScannerProps> = ({
  ? 'bg-rose-500 shadow-[0_0_15px_#f43f5e]'
  : scanStatus === 'success'
  ? 'bg-emerald-400 shadow-[0_0_15px_#34d399]'
- : 'bg-rose-500 shadow-[0_0_15px_#ef4444]'
+ : 'bg-theme-primary shadow-[0_0_15px_var(--color-primary)]'
  }`}
  style={{
  animation: isScanning ? 'scanSweep 0.8s ease-in-out infinite alternate' : 'scanSweep 2.2s ease-in-out infinite alternate',
@@ -158,24 +158,24 @@ export const LugaQrScanner: React.FC<LugaQrScannerProps> = ({
  />
 
  {/* 4 Corner Reticles / HUD Brackets */}
- <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-rose-500 rounded-tl-lg" />
- <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-rose-500 rounded-tr-lg" />
- <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-rose-500 rounded-bl-lg" />
- <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-rose-500 rounded-br-lg" />
+ <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-theme-primary rounded-tl-lg" />
+ <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-theme-primary rounded-tr-lg" />
+ <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-theme-primary rounded-bl-lg" />
+ <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-theme-primary rounded-br-lg" />
 
  {/* Center Target Crosshairs */}
- <div className="w-20 h-20 rounded-2xl border border-dashed border-rose-500/40 flex items-center justify-center relative">
+ <div className="w-20 h-20 rounded-2xl border border-dashed border-theme-primary/40 flex items-center justify-center relative">
  <Scan className={`w-8 h-8 transition-all ${
  scanStatus === 'success'
  ? 'text-emerald-400 scale-110'
  : scanStatus === 'error'
  ? 'text-rose-500 animate-bounce'
  : isScanning
- ? 'text-rose-400 scale-105'
+ ? 'text-theme-primary scale-105'
  : 'text-zinc-500'
  }`} />
  {isScanning && (
- <div className="absolute inset-0 rounded-2xl bg-rose-500/10 animate-ping" />
+ <div className="absolute inset-0 rounded-2xl bg-theme-primary-light animate-ping" />
  )}
  </div>
 
@@ -183,7 +183,7 @@ export const LugaQrScanner: React.FC<LugaQrScannerProps> = ({
  <div className="absolute top-3 left-4 right-4 flex items-center justify-between text-[10px] text-zinc-400 font-mono">
  <div className="flex items-center gap-1.5">
  <span className={`w-2 h-2 rounded-full ${
- scanStatus === 'success' ? 'bg-emerald-400 animate-pulse' : scanStatus === 'error' ? 'bg-rose-500' : 'bg-rose-500 animate-ping'
+ scanStatus === 'success' ? 'bg-emerald-400 animate-pulse' : scanStatus === 'error' ? 'bg-rose-500' : 'bg-theme-primary animate-ping'
  }`} />
  <span className="font-bold text-zinc-300">
  {mode === 'LOCATION' ? 'ESCANEO DE UBICACIÓN' : 'ESCANEO DE UNIDADES (UID)'}
@@ -202,7 +202,7 @@ export const LugaQrScanner: React.FC<LugaQrScannerProps> = ({
  <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-xs">
  <div className="text-[11px] font-mono text-zinc-300 truncate">
  {mode === 'LOCATION' ? (
- <span>Apuntar al QR del espacio: <strong className="text-rose-400 font-bold">{expectedLocation}</strong></span>
+ <span>Apuntar al QR del espacio: <strong className="text-theme-primary font-bold">{expectedLocation}</strong></span>
  ) : (
  <span>Apuntar al QR cosido del colchón / insumo</span>
  )}
@@ -247,7 +247,7 @@ export const LugaQrScanner: React.FC<LugaQrScannerProps> = ({
  type="button"
  disabled={disabled || isScanning}
  onClick={handleSimulateValidLocation}
- className="py-2.5 px-3.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-black transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+ className="py-2.5 px-3.5 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-black transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
  >
  <QrCode className="w-4 h-4" />
  <span>Simular escaneo correcto ({expectedLocation})</span>
@@ -270,7 +270,7 @@ export const LugaQrScanner: React.FC<LugaQrScannerProps> = ({
  type="button"
  disabled={disabled || isScanning}
  onClick={handleSimulateNextUnit}
- className="py-2.5 px-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-black transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+ className="py-2.5 px-3 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-black transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
  >
  <QrCode className="w-4 h-4" />
  <span>Simular escaneo UID</span>

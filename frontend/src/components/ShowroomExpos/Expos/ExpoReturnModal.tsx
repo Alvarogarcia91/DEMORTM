@@ -78,7 +78,7 @@ export const ExpoReturnModal: React.FC<ExpoReturnModalProps> = ({
             <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs flex items-center justify-between">
               <div>
                 <span className="text-[10px] text-zinc-500 font-bold uppercase block">Orden de Retorno Generada</span>
-                <strong className="text-sm font-mono font-black text-rose-600">{returnFolio}</strong>
+                <strong className="text-sm font-mono font-black text-theme-primary">{returnFolio}</strong>
               </div>
               <span className="text-xs text-zinc-700 font-bold">{expo.totalUnits} unidades de retorno</span>
             </div>
@@ -106,7 +106,7 @@ export const ExpoReturnModal: React.FC<ExpoReturnModalProps> = ({
                           className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all cursor-pointer ${
                             unitsCondition[u.uid] === cond
                               ? cond.includes('dañado')
-                                ? 'bg-rose-500 text-white border-rose-600 shadow-xs'
+                                ? 'bg-theme-primary text-white border-theme-primary shadow-xs'
                                 : 'bg-zinc-900 text-white border-zinc-900 shadow-xs'
                               : 'bg-theme-muted hover:bg-theme-subtle text-theme-main border-theme-subtle'
                           }`}

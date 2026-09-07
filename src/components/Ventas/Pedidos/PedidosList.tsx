@@ -78,7 +78,7 @@ export const PedidosList: React.FC<PedidosListProps> = ({
  value={searchTerm}
  onChange={(e) => setSearchTerm(e.target.value)}
  placeholder="Buscar por folio de pedido, cotización o cliente..."
- className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs focus:outline-none focus:border-rose-500 shadow-2xs"
+ className="w-full pl-9 pr-4 py-2 rounded-xl bg-white border border-zinc-300 text-zinc-900 text-xs focus:outline-none focus:border-theme-primary shadow-2xs"
  />
  </div>
 
@@ -143,7 +143,7 @@ export const PedidosList: React.FC<PedidosListProps> = ({
 
  return (
  <tr key={ord.id} className="hover:bg-zinc-50/60 transition-colors">
- <td className="py-3 px-4 font-mono font-bold text-rose-600 whitespace-nowrap">
+ <td className="py-3 px-4 font-mono font-bold text-theme-primary whitespace-nowrap">
  {ord.folio}
  </td>
  <td className="py-3 px-3 font-mono font-semibold text-zinc-500 whitespace-nowrap">

@@ -86,7 +86,7 @@ export const ActiveRouteDetailModal: React.FC<ActiveRouteDetailModalProps> = ({
         {/* Modal Header */}
         <div className="px-6 py-4 border-b border-theme-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-theme-surface">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white border border-rose-500/30 text-rose-600 flex items-center justify-center shadow-xs">
+            <div className="w-10 h-10 rounded-2xl bg-white border border-theme-primary/30 text-theme-primary flex items-center justify-center shadow-xs">
               <Navigation className="w-5 h-5" />
             </div>
             <div>
@@ -94,7 +94,7 @@ export const ActiveRouteDetailModal: React.FC<ActiveRouteDetailModalProps> = ({
                 <h3 className="text-sm font-black text-theme-main">
                   Monitoreo de Ruta de Despacho
                 </h3>
-                <span className="font-mono text-xs font-bold text-rose-600 px-2 py-0.5 rounded-full bg-white border border-rose-500 shadow-2xs">
+                <span className="font-mono text-xs font-bold text-theme-primary px-2 py-0.5 rounded-full bg-white border border-theme-primary shadow-2xs">
                   {currentRoute.folio}
                 </span>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border shadow-2xs bg-white ${
@@ -215,7 +215,7 @@ export const ActiveRouteDetailModal: React.FC<ActiveRouteDetailModalProps> = ({
                     key={stop.id}
                     onClick={() => setSelectedStopId(stop.id)}
                     className={`p-4 rounded-2xl bg-white border transition-all cursor-pointer shadow-2xs space-y-3 ${
-                      isSelected ? 'border-2 border-rose-600 shadow-xs' : 'border-zinc-200 hover:border-zinc-300'
+                      isSelected ? 'border-2 border-theme-primary shadow-xs' : 'border-zinc-200 hover:border-zinc-300'
                     }`}
                   >
                     {/* Top Row: Stop info & Status */}
@@ -226,7 +226,7 @@ export const ActiveRouteDetailModal: React.FC<ActiveRouteDetailModalProps> = ({
                             ? 'bg-emerald-600' 
                             : stop.status === 'En atención'
                             ? 'bg-purple-600 animate-pulse'
-                            : 'bg-rose-600'
+                            : 'bg-theme-primary'
                         }`}>
                           {idx + 1}
                         </span>
@@ -280,7 +280,7 @@ export const ActiveRouteDetailModal: React.FC<ActiveRouteDetailModalProps> = ({
                             e.stopPropagation();
                             setSelectedStopForDetail(stop);
                           }}
-                          className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs flex items-center gap-1.5 cursor-pointer transition-all"
+                          className="px-3 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs shadow-xs flex items-center gap-1.5 cursor-pointer transition-all"
                           title="Abrir vista operativa de parada para chofer"
                         >
                           <MapPin className="w-3.5 h-3.5" />
@@ -295,7 +295,7 @@ export const ActiveRouteDetailModal: React.FC<ActiveRouteDetailModalProps> = ({
                           }}
                           className="px-2.5 py-1.5 rounded-xl bg-white hover:bg-zinc-50 text-zinc-900 font-bold text-xs border border-zinc-300 transition-all shadow-2xs flex items-center gap-1 cursor-pointer"
                         >
-                          <FileText className="w-3.5 h-3.5 text-rose-600" />
+                          <FileText className="w-3.5 h-3.5 text-theme-primary" />
                           <span>Remisión {stop.remisionFolio}</span>
                         </button>
 

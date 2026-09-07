@@ -181,13 +181,13 @@ export const InboundReceiptsTab: React.FC<InboundReceiptsTabProps> = ({
  onClick={() => setActiveSubtab('pending')}
  className={`flex items-center gap-1.5 border-b-2 px-1 pb-2.5 text-xs font-bold transition-colors cursor-pointer ${
  activeSubtab === 'pending'
- ? 'border-rose-600 text-rose-600'
+ ? 'border-theme-primary text-theme-primary'
  : 'border-transparent text-theme-muted hover:text-theme-main'
  }`}
  >
  <FileInput className="h-4 w-4" />
  <span>Compras por recibir</span>
- <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-rose-500/10 text-rose-700 border border-rose-500/20 font-bold">
+ <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-theme-primary-light text-theme-primary border border-theme-primary/20 font-bold">
  {pendingOrders.length}
  </span>
  </button>
@@ -197,7 +197,7 @@ export const InboundReceiptsTab: React.FC<InboundReceiptsTabProps> = ({
  onClick={() => setActiveSubtab('orders')}
  className={`flex items-center gap-1.5 border-b-2 px-1 pb-2.5 text-xs font-bold transition-colors cursor-pointer ${
  activeSubtab === 'orders'
- ? 'border-rose-600 text-rose-600'
+ ? 'border-theme-primary text-theme-primary'
  : 'border-transparent text-theme-muted hover:text-theme-main'
  }`}
  >

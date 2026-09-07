@@ -56,7 +56,7 @@ export const ReturnOrderDetailView: React.FC<ReturnOrderDetailViewProps> = ({
 
  <div>
  <div className="flex items-center gap-2">
- <span className="font-mono text-base font-black text-rose-600">{order.folio}</span>
+ <span className="font-mono text-base font-black text-theme-primary">{order.folio}</span>
  <StatusBadge
  variant={
  order.status === 'Completa'
@@ -84,7 +84,7 @@ export const ReturnOrderDetailView: React.FC<ReturnOrderDetailViewProps> = ({
  <button
  type="button"
  onClick={onOpenCancelModal}
- className="px-3.5 py-2 rounded-2xl bg-theme-muted hover:bg-rose-50 hover:text-rose-600 text-theme-main font-bold text-xs border border-theme-subtle transition-all cursor-pointer flex items-center gap-1.5"
+ className="px-3.5 py-2 rounded-2xl bg-theme-muted hover:bg-theme-primary-light hover:text-theme-primary text-theme-main font-bold text-xs border border-theme-subtle transition-all cursor-pointer flex items-center gap-1.5"
  >
  <XOctagon className="w-4 h-4" />
  <span>Cancelar orden</span>
@@ -167,7 +167,7 @@ export const ReturnOrderDetailView: React.FC<ReturnOrderDetailViewProps> = ({
  
  {/* UID */}
  <td className="py-3.5 px-3">
- <strong className="font-mono text-rose-600 block text-xs">{item.uid}</strong>
+ <strong className="font-mono text-theme-primary block text-xs">{item.uid}</strong>
  <span className="text-[10px] font-mono text-theme-muted">Lote: {item.lotNumber}</span>
  </td>
 
@@ -223,7 +223,7 @@ export const ReturnOrderDetailView: React.FC<ReturnOrderDetailViewProps> = ({
  <button
  type="button"
  onClick={() => onOpenReceiveStation(item)}
- className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-xs cursor-pointer inline-flex items-center gap-1"
+ className="px-3.5 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-xs cursor-pointer inline-flex items-center gap-1"
  >
  <PackageCheck className="w-3.5 h-3.5" />
  <span>Recibir</span>

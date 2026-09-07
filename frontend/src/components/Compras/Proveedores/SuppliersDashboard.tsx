@@ -314,7 +314,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  <button
  type="button"
  onClick={() => onNavigateSubTab('proveedores')}
- className="text-xs font-bold text-rose-600 hover:underline flex items-center gap-1 cursor-pointer"
+ className="text-xs font-bold text-theme-primary hover:underline flex items-center gap-1 cursor-pointer"
  >
  <span>Ver todos los proveedores ({suppliers.length})</span>
  <ArrowRight className="w-3 h-3" />
@@ -339,7 +339,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  </span>
  </div>
 
- <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-main group-hover:text-rose-600 transition-colors">
+ <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-main group-hover:text-theme-primary transition-colors">
  <span>Ver expediente</span>
  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
  </div>
@@ -363,7 +363,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  </span>
  </div>
 
- <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-main group-hover:text-rose-600 transition-colors">
+ <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-main group-hover:text-theme-primary transition-colors">
  <span>Ver condiciones</span>
  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
  </div>
@@ -387,7 +387,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  </span>
  </div>
 
- <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-main group-hover:text-rose-600 transition-colors">
+ <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-main group-hover:text-theme-primary transition-colors">
  <span>Completar contacto</span>
  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
  </div>
@@ -411,7 +411,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  </span>
  </div>
 
- <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-main group-hover:text-rose-600 transition-colors">
+ <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-main group-hover:text-theme-primary transition-colors">
  <span>Ver historial</span>
  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
  </div>
@@ -467,7 +467,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  #{idx + 1}
  </span>
  <div className="min-w-0">
- <strong className="text-xs font-bold text-theme-main block truncate group-hover:text-rose-600 transition-colors">
+ <strong className="text-xs font-bold text-theme-main block truncate group-hover:text-theme-primary transition-colors">
  {p.supplierTradeName}
  </strong>
  <div className="text-[10px] text-theme-muted flex items-center gap-2 mt-0.5">
@@ -522,7 +522,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  !
  </span>
  <div className="min-w-0">
- <strong className="text-xs font-bold text-theme-main block truncate group-hover:text-rose-600 transition-colors">
+ <strong className="text-xs font-bold text-theme-main block truncate group-hover:text-theme-primary transition-colors">
  {p.supplierTradeName}
  </strong>
  <div className="text-[10px] text-theme-muted flex items-center gap-2 mt-0.5">
@@ -582,7 +582,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  className="space-y-1 cursor-pointer group"
  >
  <div className="flex items-center justify-between text-xs">
- <span className="text-theme-main group-hover:text-rose-600 transition-colors">
+ <span className="text-theme-main group-hover:text-theme-primary transition-colors">
  {item.name}
  </span>
  <span className="font-mono font-black text-theme-main">{item.pct}%</span>
@@ -621,7 +621,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  onClick={() => handleOpenSupplierByName(lead.name, 'condiciones')}
  className="p-3 rounded-2xl bg-theme-muted/30 hover:bg-theme-muted/70 border border-theme-subtle cursor-pointer transition-all space-y-1 group"
  >
- <span className="text-[11px] font-bold text-theme-main block truncate group-hover:text-rose-600 transition-colors">
+ <span className="text-[11px] font-bold text-theme-main block truncate group-hover:text-theme-primary transition-colors">
  {lead.name}
  </span>
  <div className="flex items-baseline justify-between">
@@ -687,7 +687,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  <button
  type="button"
  onClick={() => handleOpenSupplierByName(row.sup, 'resumen')}
- className="font-bold text-theme-main hover:text-rose-600 transition-colors cursor-pointer text-left"
+ className="font-bold text-theme-main hover:text-theme-primary transition-colors cursor-pointer text-left"
  >
  {row.sup}
  </button>
@@ -759,7 +759,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  <button
  type="button"
  onClick={() => handleOpenSupplierByName(row.name, 'condiciones')}
- className="hover:text-rose-600 transition-colors cursor-pointer text-left"
+ className="hover:text-theme-primary transition-colors cursor-pointer text-left"
  >
  {row.name}
  </button>
@@ -813,7 +813,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  className="space-y-1 cursor-pointer group"
  >
  <div className="flex justify-between text-xs">
- <span className="font-semibold text-theme-main group-hover:text-rose-600 transition-colors">
+ <span className="font-semibold text-theme-main group-hover:text-theme-primary transition-colors">
  {co.name}
  </span>
  <span className="font-mono font-bold text-theme-main">{co.orders} órdenes</span>
@@ -848,7 +848,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  className="p-3 rounded-2xl bg-theme-muted/30 hover:bg-theme-muted/60 border border-theme-subtle cursor-pointer transition-all space-y-1 group"
  >
  <div className="flex items-center justify-between">
- <span className="text-[11px] font-bold text-theme-main truncate group-hover:text-rose-600 transition-colors">
+ <span className="text-[11px] font-bold text-theme-main truncate group-hover:text-theme-primary transition-colors">
  {inc.name}
  </span>
  <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white text-zinc-900 border shadow-2xs ${
@@ -976,7 +976,7 @@ export const SuppliersDashboard: React.FC<SuppliersDashboardProps> = ({
  setSelectedPerformanceSupplier(null);
  handleOpenSupplierByName(sName, 'resumen');
  }}
- className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold cursor-pointer flex items-center gap-1.5 shadow-md"
+ className="px-5 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold cursor-pointer flex items-center gap-1.5 shadow-md"
  >
  <span>Ver expediente de proveedor</span>
  <ArrowRight className="w-3.5 h-3.5" />

@@ -136,13 +136,13 @@ export const PutawayScanStationModal: React.FC<PutawayScanStationModalProps> = (
  {/* Header Terminal Style */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <Radio className="w-5 h-5 animate-pulse" />
  </div>
  <div>
  <div className="flex items-center gap-2 flex-wrap">
- <span className="font-mono text-xs font-black text-rose-600">{order.folio}</span>
- <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-700 border border-rose-500/20">
+ <span className="font-mono text-xs font-black text-theme-primary">{order.folio}</span>
+ <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-theme-primary-light text-theme-primary border border-theme-primary/20">
  Estación de Acomodo
  </span>
  <span className="text-[10px] font-mono text-theme-muted font-bold">
@@ -183,13 +183,13 @@ export const PutawayScanStationModal: React.FC<PutawayScanStationModalProps> = (
  isDone
  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-950 dark:text-emerald-300'
  : isCurrent
- ? 'bg-rose-500/10 border-rose-500 text-rose-950 dark:text-rose-300 ring-1 ring-rose-300'
+ ? 'bg-theme-primary-light border-theme-primary text-theme-primary ring-1 ring-theme-primary/30'
  : 'bg-theme-muted/30 border-theme-subtle text-theme-muted'
  }`}
  >
  <div className="flex items-center gap-1.5 font-bold">
  <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-mono ${
- isDone ? 'bg-emerald-600 text-white' : isCurrent ? 'bg-rose-600 text-white' : 'bg-theme-muted text-theme-muted'
+ isDone ? 'bg-emerald-600 text-white' : isCurrent ? 'bg-theme-primary text-white' : 'bg-theme-muted text-theme-muted'
  }`}>
  {isDone ? '✓' : s.num}
  </span>
@@ -205,7 +205,7 @@ export const PutawayScanStationModal: React.FC<PutawayScanStationModalProps> = (
  <div className="p-4 rounded-2xl bg-theme-muted/40 border border-theme-subtle space-y-2.5">
  <div className="flex items-center justify-between flex-wrap gap-2">
  <div className="space-y-0.5">
- <span className="font-mono text-xs font-black text-rose-600 block">{item.uid}</span>
+ <span className="font-mono text-xs font-black text-theme-primary block">{item.uid}</span>
  <h4 className="text-xs font-bold text-theme-main">{item.productName}</h4>
  <span className="text-[10px] text-theme-muted font-mono">{item.sku} &bull; Lote: {item.lotNumber}</span>
  </div>
@@ -213,7 +213,7 @@ export const PutawayScanStationModal: React.FC<PutawayScanStationModalProps> = (
  <div className="flex items-center gap-2 text-xs font-mono">
  <div className="p-2 rounded-xl bg-theme-surface border border-theme-subtle text-center min-w-[70px]">
  <span className="text-[9px] uppercase font-bold text-theme-muted block">Origen</span>
- <strong className="text-rose-600">{item.sourceLocation}</strong>
+ <strong className="text-theme-primary">{item.sourceLocation}</strong>
  </div>
 
  <ArrowRight className="w-4 h-4 text-theme-muted" />
@@ -236,7 +236,7 @@ export const PutawayScanStationModal: React.FC<PutawayScanStationModalProps> = (
  PASO 1 — VALIDACIÓN DE ARTÍCULO
  </span>
  <p className="text-xs text-theme-main font-semibold">
- Escanea el código QR del sticker físico pegado en el colchón (Esperado: <strong className="font-mono text-rose-600">{item.uid}</strong>).
+ Escanea el código QR del sticker físico pegado en el colchón (Esperado: <strong className="font-mono text-theme-primary">{item.uid}</strong>).
  </p>
  </div>
 
@@ -245,7 +245,7 @@ export const PutawayScanStationModal: React.FC<PutawayScanStationModalProps> = (
  <div 
  className="absolute inset-0 opacity-15 pointer-events-none"
  style={{
- backgroundImage: `radial-gradient(circle, #ef4444 1px, transparent 1px)`,
+ backgroundImage: `radial-gradient(circle, var(--color-primary) 1px, transparent 1px)`,
  backgroundSize: '16px 16px',
  }}
  />
@@ -256,14 +256,14 @@ export const PutawayScanStationModal: React.FC<PutawayScanStationModalProps> = (
  ? 'bg-rose-500 shadow-[0_0_15px_#f43f5e]'
  : scanStatus === 'success'
  ? 'bg-emerald-400 shadow-[0_0_15px_#34d399]'
- : 'bg-rose-500 shadow-[0_0_15px_#ef4444]'
+ : 'bg-theme-primary shadow-[0_0_15px_var(--color-primary)]'
  }`}
  style={{
  animation: isScanning ? 'scanSweep 0.7s ease-in-out infinite alternate' : 'scanSweep 2s ease-in-out infinite alternate',
  }}
  />
 
- <div className="w-16 h-16 rounded-2xl border border-dashed border-rose-500/40 flex items-center justify-center">
+ <div className="w-16 h-16 rounded-2xl border border-dashed border-theme-primary/40 flex items-center justify-center">
  <QrCode className={`w-8 h-8 transition-all ${
  scanStatus === 'success' ? 'text-emerald-400 scale-110' : scanStatus === 'error' ? 'text-rose-500 animate-bounce' : 'text-zinc-500'
  }`} />
@@ -288,7 +288,7 @@ export const PutawayScanStationModal: React.FC<PutawayScanStationModalProps> = (
  type="button"
  disabled={isScanning}
  onClick={handleSimulateValidArticleScan}
- className="w-full py-3.5 px-4 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+ className="w-full py-3.5 px-4 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
  >
  <Scan className="w-4 h-4" />
  <span>Simular escaneo de artículo ({item.uid})</span>
@@ -407,7 +407,7 @@ export const PutawayScanStationModal: React.FC<PutawayScanStationModalProps> = (
  <div className="grid grid-cols-2 gap-3">
  <div>
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Unidad Serializada:</span>
- <strong className="font-mono text-rose-600 text-xs">{item.uid}</strong>
+ <strong className="font-mono text-theme-primary text-xs">{item.uid}</strong>
  </div>
  <div>
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Artículo:</span>

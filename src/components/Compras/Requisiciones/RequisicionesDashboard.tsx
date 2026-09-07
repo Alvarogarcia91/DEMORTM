@@ -297,7 +297,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  <div className="bg-theme-surface p-5 md:p-6 border border-theme-subtle rounded-3xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
  <div className="space-y-1">
  <div className="flex items-center gap-2.5 flex-wrap">
- <div className="w-8 h-8 rounded-xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold">
+ <div className="w-8 h-8 rounded-xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold">
  <Activity className="w-4 h-4" />
  </div>
  <h2 className="text-base md:text-lg font-black text-theme-main">
@@ -506,7 +506,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  <div className="flex items-center justify-between">
  <div className="space-y-0.5">
  <div className="flex items-center gap-2">
- <BarChart3 className="w-4 h-4 text-rose-600" />
+ <BarChart3 className="w-4 h-4 text-theme-primary" />
  <h3 className="text-xs font-black uppercase tracking-wider text-theme-main">
  Tendencia de Solicitudes
  </h3>
@@ -525,7 +525,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  <div className="grid grid-cols-4 gap-3 pt-3 items-end h-32 border-b border-theme-subtle pb-2">
  {weeklyTrends.map((t, idx) => (
  <div key={idx} className="flex flex-col items-center gap-1 h-full justify-end group">
- <span className="text-[10px] font-mono font-bold text-theme-main group-hover:text-rose-600 transition-colors">
+ <span className="text-[10px] font-mono font-bold text-theme-main group-hover:text-theme-primary transition-colors">
  {t.units} u
  </span>
  <div className="w-full max-w-[42px] bg-theme-muted rounded-t-xl overflow-hidden flex flex-col justify-end h-20">
@@ -533,12 +533,12 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  style={{ height: `${t.percentHeight}%` }}
  className={`w-full rounded-t-lg transition-all ${
  t.isCurrent
- ? 'bg-rose-600 group-hover:bg-rose-700 shadow-sm'
- : 'bg-rose-500/40 group-hover:bg-rose-500/60'
+ ? 'bg-theme-primary group-hover:bg-theme-primary-hover shadow-sm'
+ : 'bg-theme-primary/40 group-hover:bg-theme-primary/60'
  }`}
  />
  </div>
- <span className={`text-[10px] font-semibold ${t.isCurrent ? 'font-black text-rose-600' : 'text-theme-muted'}`}>
+ <span className={`text-[10px] font-semibold ${t.isCurrent ? 'font-black text-theme-primary' : 'text-theme-muted'}`}>
  {t.label}
  </span>
  </div>
@@ -626,7 +626,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  {/* Urgente */}
  <div className="space-y-1">
  <div className="flex items-center justify-between text-xs font-bold">
- <span className="text-rose-600 flex items-center gap-1.5">
+ <span className="text-theme-primary flex items-center gap-1.5">
  <span className="w-2 h-2 rounded-full bg-rose-600" />
  Urgente (Atención &lt; 24h)
  </span>
@@ -733,7 +733,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  <div className="flex items-center justify-between">
  <div className="space-y-0.5">
  <div className="flex items-center gap-2">
- <Flame className="w-4 h-4 text-rose-600" />
+ <Flame className="w-4 h-4 text-theme-primary" />
  <h3 className="text-xs font-black uppercase tracking-wider text-theme-main">
  Top Artículos Más Solicitados
  </h3>
@@ -752,7 +752,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  >
  <div className="space-y-1 min-w-0 flex-1">
  <div className="flex items-center gap-2 flex-wrap">
- <span className="font-mono font-black text-[11px] text-rose-600 bg-rose-500/10 px-1.5 py-0.2 rounded border border-rose-500/20">
+ <span className="font-mono font-black text-[11px] text-theme-primary bg-rose-500/10 px-1.5 py-0.2 rounded border border-rose-500/20">
  {art.sku}
  </span>
  <span className={`px-2 py-0.2 rounded-md text-[10px] font-bold border ${art.tagColor}`}>
@@ -840,7 +840,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  <div className="bg-theme-surface p-5 border border-theme-subtle rounded-3xl shadow-xs space-y-4">
  <div className="space-y-0.5">
  <div className="flex items-center gap-2">
- <Building2 className="w-4 h-4 text-rose-600" />
+ <Building2 className="w-4 h-4 text-theme-primary" />
  <h3 className="text-xs font-black uppercase tracking-wider text-theme-main">
  Destinos con Mayor Demanda
  </h3>
@@ -909,7 +909,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  }`}
  >
  <div className="flex items-center justify-between gap-2 flex-wrap">
- <strong className={`font-bold ${sup.isHero ? 'text-rose-600 text-sm' : 'text-theme-main'}`}>
+ <strong className={`font-bold ${sup.isHero ? 'text-theme-primary text-sm' : 'text-theme-main'}`}>
  {sup.name}
  </strong>
  <div className="flex items-center gap-2">
@@ -962,7 +962,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  <button
  type="button"
  onClick={() => onNavigateSubTab('requisiciones')}
- className="text-xs font-bold text-rose-600 hover:underline flex items-center gap-1 cursor-pointer"
+ className="text-xs font-bold text-theme-primary hover:underline flex items-center gap-1 cursor-pointer"
  >
  <span>Ver todas las requisiciones ({requisitions.length})</span>
  <ArrowRight className="w-3 h-3" />
@@ -981,7 +981,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  >
  <div className="space-y-2.5">
  <div className="flex items-center justify-between gap-2 flex-wrap">
- <span className="font-mono font-black text-xs text-rose-600 bg-rose-500/10 px-2 py-0.5 rounded-lg border border-rose-500/20">
+ <span className="font-mono font-black text-xs text-theme-primary bg-rose-500/10 px-2 py-0.5 rounded-lg border border-rose-500/20">
  {req.folio}
  </span>
  <RequisitionStatusBadge status={req.status} size="sm" />
@@ -1009,7 +1009,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  )}
  </div>
 
- <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-rose-600 group-hover:text-rose-700 transition-colors">
+ <div className="pt-2 border-t border-theme-subtle flex items-center justify-between text-xs font-bold text-theme-primary group-hover:text-rose-700 transition-colors">
  <span>Ver detalle</span>
  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
  </div>
@@ -1033,7 +1033,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  <button
  type="button"
  onClick={() => onNavigateSubTab('sugerencias')}
- className="text-xs font-bold text-rose-600 hover:underline flex items-center gap-1 cursor-pointer"
+ className="text-xs font-bold text-theme-primary hover:underline flex items-center gap-1 cursor-pointer"
  >
  <span>Ver todas las sugerencias ({suggestions.length})</span>
  <ArrowRight className="w-3 h-3" />
@@ -1069,7 +1069,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  {/* ========================================================================= */}
  <div className="p-4 rounded-3xl bg-theme-surface border border-theme-subtle flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shadow-2xs">
  <div className="flex items-center gap-2 text-theme-muted">
- <Zap className="w-4 h-4 text-rose-600 shrink-0" />
+ <Zap className="w-4 h-4 text-theme-primary shrink-0" />
  <span className="font-semibold">Atajos Rápidos de Operación:</span>
  </div>
 

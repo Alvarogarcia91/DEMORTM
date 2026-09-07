@@ -132,7 +132,7 @@ export const ClasificacionTab: React.FC<ClasificacionTabProps> = ({ onShowToast 
  }`}
  >
  <div className="flex items-center justify-between">
- <span className="font-mono text-xs font-bold text-zinc-900 bg-white px-2 py-0.5 rounded-full border border-rose-600 shadow-2xs">
+ <span className="font-mono text-xs font-bold text-zinc-900 bg-white px-2 py-0.5 rounded-full border border-theme-primary shadow-2xs">
  {cls.code}
  </span>
  <span className="text-[10px] text-theme-muted font-medium">

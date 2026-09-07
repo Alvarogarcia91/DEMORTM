@@ -121,7 +121,7 @@ export const ReturnCreateModal: React.FC<ReturnCreateModalProps> = ({
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <RotateCcw className="w-5 h-5" />
  </div>
  <div>
@@ -266,7 +266,7 @@ export const ReturnCreateModal: React.FC<ReturnCreateModalProps> = ({
  className="p-2 rounded-xl hover:bg-theme-muted transition-colors cursor-pointer text-xs space-y-0.5"
  >
  <div className="flex items-center justify-between">
- <strong className="font-mono text-rose-600">{u.uid}</strong>
+ <strong className="font-mono text-theme-primary">{u.uid}</strong>
  <span className="text-[10px] text-theme-muted font-mono">{u.lastKnownDestination}</span>
  </div>
  <p className="text-[10px] text-theme-main truncate">{u.productName}</p>
@@ -285,7 +285,7 @@ export const ReturnCreateModal: React.FC<ReturnCreateModalProps> = ({
  >
  <div className="space-y-0.5">
  <div className="flex items-center gap-2">
- <span className="font-mono font-bold text-rose-600 text-xs">{u.uid}</span>
+ <span className="font-mono font-bold text-theme-primary text-xs">{u.uid}</span>
  <span className="text-[10px] text-theme-muted font-mono">Ingreso original: {u.originalEntryDate}</span>
  </div>
  <p className="text-[11px] text-theme-main font-medium truncate max-w-sm">
@@ -296,7 +296,7 @@ export const ReturnCreateModal: React.FC<ReturnCreateModalProps> = ({
  <button
  type="button"
  onClick={() => handleRemoveUnit(u.uid)}
- className="p-1.5 rounded-lg text-theme-muted hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer shrink-0"
+ className="p-1.5 rounded-lg text-theme-muted hover:text-theme-primary hover:bg-theme-primary-light transition-colors cursor-pointer shrink-0"
  title="Quitar unidad"
  >
  <Trash2 className="w-3.5 h-3.5" />
@@ -333,7 +333,7 @@ export const ReturnCreateModal: React.FC<ReturnCreateModalProps> = ({
  <button
  type="submit"
  disabled={selectedUnits.length === 0}
- className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+ className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
  >
  <Check className="w-4 h-4" />
  <span>Generar solicitud de devolución</span>

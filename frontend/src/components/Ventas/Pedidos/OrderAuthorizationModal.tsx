@@ -67,7 +67,7 @@ export const OrderAuthorizationModal: React.FC<OrderAuthorizationModalProps> = (
  </div>
  <div>
  <span className="text-zinc-500 block">Total Venta:</span>
- <span className="font-mono font-bold text-rose-600">{formatCurrencyMXN(order.financials.total)}</span>
+ <span className="font-mono font-bold text-theme-primary">{formatCurrencyMXN(order.financials.total)}</span>
  </div>
  <div>
  <span className="text-zinc-500 block">Margen Estimado:</span>
@@ -85,7 +85,7 @@ export const OrderAuthorizationModal: React.FC<OrderAuthorizationModalProps> = (
  value={notes}
  onChange={(e) => setNotes(e.target.value)}
  placeholder="Instrucciones para surtido, confirmación de stock, etc..."
- className="w-full p-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 focus:outline-none focus:border-rose-500 text-xs resize-none shadow-2xs"
+ className="w-full p-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 focus:outline-none focus:border-theme-primary text-xs resize-none shadow-2xs"
  />
  </div>
  </div>
@@ -123,7 +123,7 @@ export const OrderAuthorizationModal: React.FC<OrderAuthorizationModalProps> = (
  onAuthorize(order.id, notes);
  onClose();
  }}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-sm cursor-pointer flex items-center gap-1.5"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs shadow-sm cursor-pointer flex items-center gap-1.5"
  >
  <CheckCircle2 className="w-4 h-4" />
  <span>Autorizar Pedido</span>

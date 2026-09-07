@@ -223,7 +223,7 @@ export const MountShowroomWizardModal: React.FC<MountShowroomWizardModalProps> =
               >
                 <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] border ${
                   step === st.num
-                    ? 'border-rose-500 bg-rose-50 text-rose-700'
+                    ? 'border-theme-primary bg-theme-primary-light text-theme-primary'
                     : step > st.num
                     ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
                     : 'border-theme-subtle text-theme-muted'
@@ -427,7 +427,7 @@ export const MountShowroomWizardModal: React.FC<MountShowroomWizardModalProps> =
               <div className="space-y-4 animate-in fade-in duration-150">
                 <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-3">
                   <div className="flex items-center justify-between border-b border-zinc-200 pb-2">
-                    <span className="text-[10px] font-mono font-bold text-rose-600 uppercase">
+                    <span className="text-[10px] font-mono font-bold text-theme-primary uppercase">
                       ORDEN DE RECOLECCIÓN DE SHOWROOM
                     </span>
                     <strong className="text-xs font-mono font-black text-zinc-900">
@@ -450,7 +450,7 @@ export const MountShowroomWizardModal: React.FC<MountShowroomWizardModalProps> =
                     </div>
                     <div>
                       <span className="text-[10px] text-zinc-500 block uppercase font-semibold">Unidad asignada</span>
-                      <strong className="font-mono text-rose-600 font-bold">{selectedUid}</strong>
+                      <strong className="font-mono text-theme-primary font-bold">{selectedUid}</strong>
                     </div>
                   </div>
                 </div>
@@ -533,7 +533,7 @@ export const MountShowroomWizardModal: React.FC<MountShowroomWizardModalProps> =
                         <button
                           type="button"
                           onClick={handleSimulateWrongUidScan}
-                          className="w-full py-1 text-[10px] text-zinc-500 hover:text-rose-600 font-semibold cursor-pointer"
+                          className="w-full py-1 text-[10px] text-zinc-500 hover:text-theme-primary font-semibold cursor-pointer"
                         >
                           Simular UID incorrecto
                         </button>
@@ -578,7 +578,7 @@ export const MountShowroomWizardModal: React.FC<MountShowroomWizardModalProps> =
                         <button
                           type="button"
                           onClick={handleSimulateWrongBayScan}
-                          className="w-full py-1 text-[10px] text-zinc-500 hover:text-rose-600 font-semibold cursor-pointer"
+                          className="w-full py-1 text-[10px] text-zinc-500 hover:text-theme-primary font-semibold cursor-pointer"
                         >
                           Simular showroom incorrecto
                         </button>

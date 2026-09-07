@@ -325,7 +325,7 @@ export const CreateExpoWizardModal: React.FC<CreateExpoWizardModalProps> = ({
                           <strong className="text-zinc-900 font-bold block">{art.name}</strong>
                           <span className="font-mono text-[10px] text-zinc-500">{sa.sku}</span>
                         </div>
-                        <span className="font-mono font-black text-rose-600">{sa.qty} unidades apartadas</span>
+                        <span className="font-mono font-black text-theme-primary">{sa.qty} unidades apartadas</span>
                       </div>
                     );
                   })}
@@ -372,7 +372,7 @@ export const CreateExpoWizardModal: React.FC<CreateExpoWizardModalProps> = ({
                   </div>
                   <div className="flex justify-between py-1">
                     <span className="text-theme-muted">Unidades Apartadas:</span>
-                    <strong className="text-rose-600 font-mono font-black">{totalUnitsCount} unidades</strong>
+                    <strong className="text-theme-primary font-mono font-black">{totalUnitsCount} unidades</strong>
                   </div>
                 </div>
               </div>

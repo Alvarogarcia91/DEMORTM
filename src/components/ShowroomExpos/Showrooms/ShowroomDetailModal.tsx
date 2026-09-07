@@ -101,7 +101,7 @@ export const ShowroomDetailModal: React.FC<ShowroomDetailModalProps> = ({
             {bay.currentArticle ? (
               <div className="p-5 rounded-2xl bg-white border border-zinc-200 space-y-3 shadow-2xs">
                 <div className="flex items-center justify-between border-b border-zinc-200 pb-2">
-                  <span className="text-[10px] font-mono font-bold text-rose-600 uppercase tracking-wider">
+                  <span className="text-[10px] font-mono font-bold text-theme-primary uppercase tracking-wider">
                     ARTÍCULO EN EXHIBICIÓN ACTIVA
                   </span>
                   <span className="text-[10px] font-bold text-zinc-500">
@@ -126,7 +126,7 @@ export const ShowroomDetailModal: React.FC<ShowroomDetailModalProps> = ({
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-zinc-100 text-xs">
                     <div className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-200 space-y-0.5">
                       <span className="text-[10px] text-zinc-500 uppercase font-semibold">UID Serializado</span>
-                      <strong className="text-xs font-mono font-black text-rose-600 block">
+                      <strong className="text-xs font-mono font-black text-theme-primary block">
                         {bay.currentUnit.uid}
                       </strong>
                     </div>

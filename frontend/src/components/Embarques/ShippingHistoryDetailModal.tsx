@@ -102,7 +102,7 @@ export const ShippingHistoryDetailModal: React.FC<ShippingHistoryDetailModalProp
         {/* Modal Header */}
         <div className="px-6 py-4 border-b border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white border border-rose-500/30 text-rose-600 flex items-center justify-center shadow-xs">
+            <div className="w-10 h-10 rounded-2xl bg-white border border-theme-primary/30 text-theme-primary flex items-center justify-center shadow-xs">
               <History className="w-5 h-5" />
             </div>
             <div>
@@ -110,7 +110,7 @@ export const ShippingHistoryDetailModal: React.FC<ShippingHistoryDetailModalProp
                 <h3 className="text-sm font-black text-zinc-950">
                   Trazabilidad & Cierre de Ruta
                 </h3>
-                <span className="font-mono text-xs font-bold text-rose-600 px-2 py-0.5 rounded-full bg-white border border-rose-500 shadow-2xs">
+                <span className="font-mono text-xs font-bold text-theme-primary px-2 py-0.5 rounded-full bg-white border border-theme-primary shadow-2xs">
                   {record.routeFolio}
                 </span>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border shadow-2xs bg-white ${
@@ -143,7 +143,7 @@ export const ShippingHistoryDetailModal: React.FC<ShippingHistoryDetailModalProp
             onClick={() => setActiveDetailSection('stops')}
             className={`py-3 text-xs font-bold border-b-2 flex items-center gap-1.5 transition-colors cursor-pointer ${
               activeDetailSection === 'stops'
-                ? 'border-rose-600 text-rose-600'
+                ? 'border-theme-primary text-theme-primary'
                 : 'border-transparent text-zinc-500 hover:text-zinc-900'
             }`}
           >
@@ -156,7 +156,7 @@ export const ShippingHistoryDetailModal: React.FC<ShippingHistoryDetailModalProp
             onClick={() => setActiveDetailSection('timeline')}
             className={`py-3 text-xs font-bold border-b-2 flex items-center gap-1.5 transition-colors cursor-pointer ${
               activeDetailSection === 'timeline'
-                ? 'border-rose-600 text-rose-600'
+                ? 'border-theme-primary text-theme-primary'
                 : 'border-transparent text-zinc-500 hover:text-zinc-900'
             }`}
           >
@@ -169,7 +169,7 @@ export const ShippingHistoryDetailModal: React.FC<ShippingHistoryDetailModalProp
             onClick={() => setActiveDetailSection('map')}
             className={`py-3 text-xs font-bold border-b-2 flex items-center gap-1.5 transition-colors cursor-pointer ${
               activeDetailSection === 'map'
-                ? 'border-rose-600 text-rose-600'
+                ? 'border-theme-primary text-theme-primary'
                 : 'border-transparent text-zinc-500 hover:text-zinc-900'
             }`}
           >
@@ -282,7 +282,7 @@ export const ShippingHistoryDetailModal: React.FC<ShippingHistoryDetailModalProp
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-[11px] bg-zinc-50 p-3 rounded-xl border border-zinc-200">
                         <div>
                           <span className="text-[9px] text-zinc-500 font-bold uppercase block">Remisión:</span>
-                          <strong className="text-rose-600 font-mono">{stop.remisionFolio}</strong>
+                          <strong className="text-theme-primary font-mono">{stop.remisionFolio}</strong>
                         </div>
                         <div>
                           <span className="text-[9px] text-zinc-500 font-bold uppercase block">Llegada en Sitio:</span>
@@ -346,7 +346,7 @@ export const ShippingHistoryDetailModal: React.FC<ShippingHistoryDetailModalProp
                             onClick={() => setSelectedRemisionFolio(stop.remisionFolio)}
                             className="px-3 py-1.5 rounded-xl bg-white hover:bg-zinc-50 text-zinc-900 font-bold text-xs border border-zinc-300 shadow-2xs flex items-center gap-1.5 cursor-pointer"
                           >
-                            <FileText className="w-3.5 h-3.5 text-rose-600" />
+                            <FileText className="w-3.5 h-3.5 text-theme-primary" />
                             <span>Ver remisión</span>
                           </button>
 
@@ -425,8 +425,8 @@ export const ShippingHistoryDetailModal: React.FC<ShippingHistoryDetailModalProp
                 {record.timeline.map((ev, idx) => (
                   <div key={idx} className="relative space-y-1">
                     {/* Timeline Node Dot */}
-                    <div className="absolute -left-6 top-1 w-5 h-5 rounded-full bg-white border-2 border-rose-600 flex items-center justify-center shadow-xs">
-                      <span className="w-1.5 h-1.5 rounded-full bg-rose-600" />
+                    <div className="absolute -left-6 top-1 w-5 h-5 rounded-full bg-white border-2 border-theme-primary flex items-center justify-center shadow-xs">
+                      <span className="w-1.5 h-1.5 rounded-full bg-theme-primary" />
                     </div>
 
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">

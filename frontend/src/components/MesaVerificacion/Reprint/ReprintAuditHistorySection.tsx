@@ -44,7 +44,7 @@ export const ReprintAuditHistorySection: React.FC<ReprintAuditHistorySectionProp
  {/* Header & Subtitle */}
  <div className="bg-theme-surface p-5 border border-theme-subtle rounded-3xl shadow-xs space-y-1">
  <div className="flex items-center gap-2">
- <History className="w-5 h-5 text-rose-600" />
+ <History className="w-5 h-5 text-theme-primary" />
  <h2 className="text-sm font-extrabold text-theme-main">
  Bitácora de Auditoría de Reimpresiones
  </h2>
@@ -73,7 +73,7 @@ export const ReprintAuditHistorySection: React.FC<ReprintAuditHistorySectionProp
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar por código, artículo, motivo, usuario o referencia..."
- className="w-full bg-theme-surface border border-theme-subtle rounded-2xl pl-10 pr-4 py-3 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30 shadow-xs"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-2xl pl-10 pr-4 py-3 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30 shadow-xs"
  />
  </div>
 
@@ -109,7 +109,7 @@ export const ReprintAuditHistorySection: React.FC<ReprintAuditHistorySectionProp
  <td className="py-3.5 px-3 whitespace-nowrap">
  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border shadow-2xs bg-white text-zinc-900 ${
  log.type === 'Unidad'
- ? 'border-rose-500'
+ ? 'border-theme-primary'
  : 'border-blue-500'
  }`}>
  {log.type}
@@ -130,7 +130,7 @@ export const ReprintAuditHistorySection: React.FC<ReprintAuditHistorySectionProp
  <td className="py-3.5 px-3 text-theme-muted whitespace-nowrap">
  {log.requestedBy}
  </td>
- <td className="py-3.5 px-3 font-mono font-bold text-rose-600 whitespace-nowrap">
+ <td className="py-3.5 px-3 font-mono font-bold text-theme-primary whitespace-nowrap">
  {log.sourceReference || '—'}
  </td>
  <td className="py-3.5 px-4 text-right whitespace-nowrap">
@@ -158,7 +158,7 @@ export const ReprintAuditHistorySection: React.FC<ReprintAuditHistorySectionProp
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-2.5">
- <div className="w-9 h-9 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-9 h-9 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <Printer className="w-5 h-5" />
  </div>
  <div>
@@ -191,7 +191,7 @@ export const ReprintAuditHistorySection: React.FC<ReprintAuditHistorySectionProp
 
  <div>
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Código / Identificador:</span>
- <strong className="font-mono text-rose-600 text-sm block">{selectedRecord.code}</strong>
+ <strong className="font-mono text-theme-primary text-sm block">{selectedRecord.code}</strong>
  <span className="text-[11px] text-theme-main font-semibold">{selectedRecord.title}</span>
  </div>
 
@@ -202,7 +202,7 @@ export const ReprintAuditHistorySection: React.FC<ReprintAuditHistorySectionProp
  </div>
  <div>
  <span className="text-[9px] uppercase font-bold text-theme-muted block">Referencia:</span>
- <strong className="font-mono text-rose-600">{selectedRecord.sourceReference || 'Directa'}</strong>
+ <strong className="font-mono text-theme-primary">{selectedRecord.sourceReference || 'Directa'}</strong>
  </div>
  </div>
 

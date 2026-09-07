@@ -67,7 +67,7 @@ export const PendingPickDemandsList: React.FC<PendingPickDemandsListProps> = ({
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar folio, artículo, SKU o destino..."
- className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  {searchQuery && (
  <button
@@ -145,7 +145,7 @@ export const PendingPickDemandsList: React.FC<PendingPickDemandsListProps> = ({
  filteredDemands.map((demand) => {
  return (
  <tr key={demand.id} className="hover:bg-theme-muted/30 transition-colors">
- <td className="py-3.5 px-4 font-mono font-black text-rose-600 whitespace-nowrap">
+ <td className="py-3.5 px-4 font-mono font-black text-theme-primary whitespace-nowrap">
  {demand.referenceFolio}
  </td>
  <td className="py-3.5 px-3 whitespace-nowrap">
@@ -177,7 +177,7 @@ export const PendingPickDemandsList: React.FC<PendingPickDemandsListProps> = ({
  <td className="py-3.5 px-4 text-right whitespace-nowrap">
  <button
  onClick={() => setPlanningDemand(demand)}
- className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-all shadow-md flex items-center gap-1.5 ml-auto cursor-pointer"
+ className="px-3.5 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs transition-all shadow-md flex items-center gap-1.5 ml-auto cursor-pointer"
  >
  <Compass className="w-3.5 h-3.5" />
  <span>Planear recolección</span>

@@ -129,12 +129,12 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
           {/* Header */}
           <div className="p-6 border-b border-zinc-200 flex items-center justify-between bg-white">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 shadow-2xs text-rose-600 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 shadow-2xs text-theme-primary flex items-center justify-center">
                 <ShoppingBag className="w-6 h-6" />
               </div>
               <div>
                 <div className="flex items-center gap-2.5 flex-wrap">
-                  <span className="font-mono text-base font-black text-rose-600">
+                  <span className="font-mono text-base font-black text-theme-primary">
                     {order.folio}
                   </span>
                   <SemanticBadge
@@ -280,7 +280,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                   )}
                   {order.operationalLinks.routeFolio && (
                     <div className="px-3 py-1.5 rounded-xl bg-rose-50 border border-rose-300 text-rose-900 font-medium flex items-center gap-1.5">
-                      <Truck className="w-3.5 h-3.5 text-rose-600" />
+                      <Truck className="w-3.5 h-3.5 text-theme-primary" />
                       <span>Ruta Despacho: <strong>{order.operationalLinks.routeFolio}</strong></span>
                     </div>
                   )}
@@ -424,7 +424,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                 </div>
                 <div className="flex justify-between text-zinc-900 font-black text-base border-t border-zinc-200 pt-2">
                   <span>Total Pedido:</span>
-                  <span className="font-mono text-rose-600">{formatCurrencyMXN(order.financials.total)}</span>
+                  <span className="font-mono text-theme-primary">{formatCurrencyMXN(order.financials.total)}</span>
                 </div>
               </div>
             </div>

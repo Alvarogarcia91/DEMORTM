@@ -77,7 +77,7 @@ export const ReprintDeskTab: React.FC<ReprintDeskTabProps> = ({
  onClick={() => setActiveSubTab('units')}
  className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
  activeSubTab === 'units'
- ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20'
+ ? 'bg-theme-primary text-white shadow-md'
  : 'bg-theme-muted/40 hover:bg-theme-muted text-theme-main border border-theme-subtle'
  }`}
  >
@@ -90,7 +90,7 @@ export const ReprintDeskTab: React.FC<ReprintDeskTabProps> = ({
  onClick={() => setActiveSubTab('locations')}
  className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
  activeSubTab === 'locations'
- ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20'
+ ? 'bg-theme-primary text-white shadow-md'
  : 'bg-theme-muted/40 hover:bg-theme-muted text-theme-main border border-theme-subtle'
  }`}
  >
@@ -103,7 +103,7 @@ export const ReprintDeskTab: React.FC<ReprintDeskTabProps> = ({
  onClick={() => setActiveSubTab('history')}
  className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
  activeSubTab === 'history'
- ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20'
+ ? 'bg-theme-primary text-white shadow-md'
  : 'bg-theme-muted/40 hover:bg-theme-muted text-theme-main border border-theme-subtle'
  }`}
  >

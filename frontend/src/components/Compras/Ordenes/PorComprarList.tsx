@@ -103,7 +103,7 @@ export const PorComprarList: React.FC<PorComprarListProps> = ({
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar por folio, solicitante, artículo, SKU, proveedor sugerido..."
- className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  {searchQuery && (
  <button
@@ -167,7 +167,7 @@ export const PorComprarList: React.FC<PorComprarListProps> = ({
  <button
  type="button"
  onClick={() => setDetailedRequisition(req)}
- className="hover:underline text-rose-600 font-mono text-left cursor-pointer"
+ className="hover:underline text-theme-primary font-mono text-left cursor-pointer"
  >
  {req.folio}
  </button>
@@ -195,7 +195,7 @@ export const PorComprarList: React.FC<PorComprarListProps> = ({
  </td>
 
  {/* Unidades */}
- <td className="py-3 px-3 text-center whitespace-nowrap font-mono font-black text-rose-600">
+ <td className="py-3 px-3 text-center whitespace-nowrap font-mono font-black text-theme-primary">
  {totalUnits}
  </td>
 
@@ -229,7 +229,7 @@ export const PorComprarList: React.FC<PorComprarListProps> = ({
  <button
  type="button"
  onClick={() => setDetailedRequisition(req)}
- className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+ className="px-3.5 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
  >
  <ShoppingBag className="w-3.5 h-3.5" />
  <span>Atender requisición</span>

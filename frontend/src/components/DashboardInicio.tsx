@@ -51,7 +51,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
       activeRoutes: 2,
       pendingOrders: 4,
       openIncidents: 1,
-      accentColor: 'border-rose-500',
+      accentColor: 'border-theme-primary',
     },
     {
       id: 'wh-mty-sur',
@@ -66,7 +66,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
       activeRoutes: 4,
       pendingOrders: 6,
       openIncidents: 0,
-      accentColor: 'border-rose-500',
+      accentColor: 'border-theme-primary',
     },
     {
       id: 'area-prod',
@@ -161,7 +161,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
     { time: '13:05', title: 'Remanente devuelto de prensa', ref: 'REM-2026-0041 · 680 m BOPP Transparente', user: 'Flexo 1 (Operador Héctor Garza)', icon: Layers, iconColor: 'text-purple-600' },
     { time: '12:40', title: 'Acomodo en rack completado', ref: 'TAR-RTM-0004 · Posición MP-A01-N2', user: 'Carlos Medina (Montacargas 01)', icon: Boxes, iconColor: 'text-blue-600' },
     { time: '12:15', title: 'Recepción validada en andén', ref: 'OC-2026-0081 · Bio-Pappel (14 tarimas Couché)', user: 'Brenda Cavazos (Mesa 01 Nave 1)', icon: CheckCircle2, iconColor: 'text-emerald-600' },
-    { time: '11:50', title: 'Despacho de unidad a ruta', ref: 'RT-2026-0014 · Freightliner #03 a Parque Del Norte', user: 'Roberto Garza (Chofer)', icon: Truck, iconColor: 'text-rose-600' },
+    { time: '11:50', title: 'Despacho de unidad a ruta', ref: 'RT-2026-0014 · Freightliner #03 a Parque Del Norte', user: 'Roberto Garza (Chofer)', icon: Truck, iconColor: 'text-theme-primary' },
     { time: '11:20', title: 'Muestra QA tomada en andén', ref: 'OC-2026-0082 · Sun Chemical (Viscosidad Tintas)', user: 'Laboratorio de Tintas & Sustratos', icon: ShieldCheck, iconColor: 'text-emerald-600' },
     { time: '10:55', title: 'OP programada para surtido', ref: 'OP-2026-0891 · Folletos Offset Speedmaster', user: 'Planeación de Producción RTM', icon: ClipboardList, iconColor: 'text-blue-600' },
     { time: '10:30', title: 'Salida a troquelado entregada', ref: 'OP-2026-0904 · 8,200 pliegos Caple SBS', user: 'Juan Pablo Rangel', icon: Boxes, iconColor: 'text-purple-600' },
@@ -169,7 +169,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
     { time: '09:45', title: 'Reingreso de tinta especial', ref: 'REM-2026-0045 · Pantone 186 C (3.5 kg)', user: 'Prensa Offset Heidelberg', icon: Layers, iconColor: 'text-purple-600' },
     { time: '09:15', title: 'Requisición de materia prima autorizada', ref: 'REQ-2026-0052 · Fasson Autoadherible', user: 'Compras Industriales RTM', icon: FileText, iconColor: 'text-zinc-700' },
     { time: '08:50', title: 'Tarima de PT ingresada a staging', ref: 'TAR-PT-0088 · 450 millares etiquetas pharma', user: 'Línea de Inspección y Empaque', icon: Package, iconColor: 'text-emerald-600' },
-    { time: '08:20', title: 'Carga en andén 02 completada', ref: 'RT-2026-0015 · 3 tarimas cajas corrugadas', user: 'Patio Nave 2 Embarques', icon: Truck, iconColor: 'text-rose-600' },
+    { time: '08:20', title: 'Carga en andén 02 completada', ref: 'RT-2026-0015 · 3 tarimas cajas corrugadas', user: 'Patio Nave 2 Embarques', icon: Truck, iconColor: 'text-theme-primary' },
     { time: '07:55', title: 'Apertura de turno operativo', ref: 'Nave 1 (ALM-MP) y Nave 2 (ALM-PT) activas', user: 'Supervisión de Planta Reynosa', icon: ShieldCheck, iconColor: 'text-emerald-600' },
     { time: '07:40', title: 'Calibración de báscula de andén', ref: 'Báscula Toledo Andén MP verificada', user: 'Mantenimiento RTM', icon: Activity, iconColor: 'text-blue-600' },
     { time: '07:15', title: 'Asignación de montacargas', ref: 'Baterías y check-list unidades #01, #02, #03 OK', user: 'Turno Matutino Almacén', icon: Factory, iconColor: 'text-zinc-600' },
@@ -183,7 +183,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-white text-zinc-900 border border-rose-500 shadow-2xs">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-white text-zinc-900 border border-theme-primary shadow-2xs">
                 IMPRESOS RTM · PLANTA REYNOSA
               </span>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white border border-emerald-500 text-[10px] font-bold text-emerald-800 shadow-2xs">
@@ -207,7 +207,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               <select
                 value={selectedFacility}
                 onChange={(e) => setSelectedFacility(e.target.value)}
-                className="px-3 py-1.5 rounded-xl border border-zinc-300 bg-white text-xs font-semibold text-zinc-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                className="px-3 py-1.5 rounded-xl border border-zinc-300 bg-white text-xs font-semibold text-zinc-800 focus:outline-none focus:ring-2 focus:ring-theme-primary"
               >
                 <option value="ALL">Todas las áreas de planta</option>
                 <option value="wh-mty-norte">Nave 1 — ALM-MP (Materias Primas)</option>
@@ -252,7 +252,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               onClick={() => onNavigate('inventario')}
               className="px-3 py-1.5 rounded-xl bg-white hover:bg-zinc-50 text-zinc-900 font-bold text-xs border border-zinc-300 shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer"
             >
-              <Boxes className="w-3.5 h-3.5 text-rose-600" />
+              <Boxes className="w-3.5 h-3.5 text-theme-primary" />
               <span>Inventario & Ubicaciones</span>
             </button>
 
@@ -277,7 +277,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
             <button
               type="button"
               onClick={() => onNavigate('logistica')}
-              className="px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs flex items-center gap-1.5 transition-all cursor-pointer"
+              className="px-4 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs shadow-xs flex items-center gap-1.5 transition-all cursor-pointer"
             >
               <Truck className="w-3.5 h-3.5" />
               <span>Producto Terminado & Embarques</span>
@@ -389,7 +389,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
           <div className="flex items-center justify-between border-b border-zinc-100 pb-2">
             <div>
               <div className="flex items-center gap-2">
-                <Navigation className="w-4 h-4 text-rose-600" />
+                <Navigation className="w-4 h-4 text-theme-primary" />
                 <h3 className="font-black text-zinc-950 text-sm">
                   Complejo Industrial Impresos RTM — Reynosa
                 </h3>
@@ -402,7 +402,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
             <button
               type="button"
               onClick={() => onNavigate('logistica')}
-              className="text-rose-600 font-bold text-xs hover:underline cursor-pointer"
+              className="text-theme-primary font-bold text-xs hover:underline cursor-pointer"
             >
               Ver rutas y andenes &rarr;
             </button>
@@ -434,8 +434,8 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               <path d="M 190 140 L 510 140" fill="none" stroke="#E2E8F0" strokeWidth="2" strokeDasharray="3,3" />
 
               {/* Animated Flow Markers */}
-              <circle cx="270" cy="225" r="4" fill="#E11D48" className="animate-ping opacity-60" />
-              <circle cx="270" cy="225" r="3" fill="#E11D48" />
+              <circle cx="270" cy="225" r="4" fill="var(--color-primary)" className="animate-ping opacity-60" />
+              <circle cx="270" cy="225" r="3" fill="var(--color-primary)" />
 
               <circle cx="430" cy="225" r="4" fill="#256B3A" className="animate-ping opacity-60" />
               <circle cx="430" cy="225" r="3" fill="#256B3A" />
@@ -445,7 +445,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
                 const isSelected = selectedMapFacility === fac.id;
                 const isMP = fac.id === 'wh-mty-norte';
                 const isPT = fac.id === 'wh-mty-sur';
-                const colorHex = isMP ? '#E11D48' : isPT ? '#059669' : '#2563EB';
+                const colorHex = isMP ? 'var(--color-primary)' : isPT ? '#059669' : '#2563EB';
 
                 return (
                   <g 
@@ -516,7 +516,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
           <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-3">
               <div className={`w-9 h-9 rounded-xl bg-white border flex items-center justify-center shrink-0 shadow-2xs ${
-                activeSelectedFacility.id === 'wh-mty-norte' ? 'border-rose-500 text-rose-600' :
+                activeSelectedFacility.id === 'wh-mty-norte' ? 'border-theme-primary text-theme-primary' :
                 activeSelectedFacility.id === 'wh-mty-sur' ? 'border-emerald-500 text-emerald-600' :
                 'border-blue-500 text-blue-600'
               }`}>
@@ -611,7 +611,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
             <button
               type="button"
               onClick={() => onNavigate('mesa-verificacion')}
-              className="text-rose-600 font-bold hover:underline"
+              className="text-theme-primary font-bold hover:underline"
             >
               Operaciones de almacén &rarr;
             </button>
@@ -716,7 +716,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               <button
                 type="button"
                 onClick={() => onNavigate('inventario')}
-                className="text-rose-600 font-bold text-xs hover:underline cursor-pointer"
+                className="text-theme-primary font-bold text-xs hover:underline cursor-pointer"
               >
                 Ver inventario &rarr;
               </button>
@@ -742,7 +742,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
                   <button
                     type="button"
                     onClick={() => onNavigate('inventario')}
-                    className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-bold text-[10px] shadow-2xs"
+                    className="px-2.5 py-1 rounded-lg bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-[10px] shadow-2xs"
                   >
                     Ajustar conteo
                   </button>
@@ -888,7 +888,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               <button
                 type="button"
                 onClick={() => onNavigate('mesa-verificacion')}
-                className="text-rose-600 font-bold text-xs hover:underline cursor-pointer"
+                className="text-theme-primary font-bold text-xs hover:underline cursor-pointer"
               >
                 Ver andenes &rarr;
               </button>
@@ -952,7 +952,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
             <button
               type="button"
               onClick={() => onNavigate('mesa-verificacion')}
-              className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-bold text-[10px] shadow-2xs cursor-pointer"
+              className="px-2.5 py-1 rounded-lg bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-[10px] shadow-2xs cursor-pointer"
             >
               Ir a recepción
             </button>
@@ -975,7 +975,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
               <button
                 type="button"
                 onClick={() => onNavigate('logistica')}
-                className="text-rose-600 font-bold text-xs hover:underline cursor-pointer"
+                className="text-theme-primary font-bold text-xs hover:underline cursor-pointer"
               >
                 Ver remisiones &rarr;
               </button>
@@ -1049,7 +1049,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
           <button
             type="button"
             onClick={() => onNavigate('logistica')}
-            className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-zinc-50 text-rose-600 font-bold text-xs border border-rose-500/40 shadow-2xs flex items-center gap-1.5 cursor-pointer"
+            className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-zinc-50 text-theme-primary font-bold text-xs border border-theme-primary/40 shadow-2xs flex items-center gap-1.5 cursor-pointer"
           >
             <span>Abrir Producto Terminado & Embarques</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -1143,7 +1143,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
           <button
             type="button"
             onClick={() => onNavigate('inventario')}
-            className="text-rose-600 font-bold text-xs hover:underline cursor-pointer"
+            className="text-theme-primary font-bold text-xs hover:underline cursor-pointer"
           >
             Ver áreas de almacén &rarr;
           </button>
@@ -1158,7 +1158,7 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
             >
               <div className="flex items-center justify-between">
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border shadow-2xs bg-white ${
-                  fac.id === 'wh-mty-norte' ? 'border-rose-500 text-rose-800' :
+                  fac.id === 'wh-mty-norte' ? 'border-theme-primary text-theme-primary' :
                   fac.id === 'wh-mty-sur' ? 'border-emerald-500 text-emerald-800' :
                   'border-blue-500 text-blue-800'
                 }`}>

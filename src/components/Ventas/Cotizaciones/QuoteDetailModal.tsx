@@ -92,12 +92,12 @@ export const QuoteDetailModal: React.FC<QuoteDetailModalProps> = ({
         {/* Header */}
         <div className="p-6 border-b border-zinc-200 flex items-center justify-between bg-white shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 shadow-2xs text-rose-600 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 shadow-2xs text-theme-primary flex items-center justify-center">
               <FileText className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center gap-2.5 flex-wrap">
-                <span className="font-mono text-base font-black text-rose-600">
+                <span className="font-mono text-base font-black text-theme-primary">
                   {quote.folio}
                 </span>
                 <SemanticBadge
@@ -357,7 +357,7 @@ export const QuoteDetailModal: React.FC<QuoteDetailModalProps> = ({
               </div>
               <div className="flex justify-between font-black text-zinc-900 text-sm pt-1 border-t border-zinc-200">
                 <span>Total cotización:</span>
-                <span className="font-mono text-base text-rose-600">{formatCurrencyMXN(quote.financials.total)}</span>
+                <span className="font-mono text-base text-theme-primary">{formatCurrencyMXN(quote.financials.total)}</span>
               </div>
             </div>
           </div>
@@ -421,7 +421,7 @@ export const QuoteDetailModal: React.FC<QuoteDetailModalProps> = ({
               <button
                 type="button"
                 onClick={handleGenerateOrderClick}
-                className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center gap-2"
+                className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center gap-2"
               >
                 <ShoppingBag className="w-4 h-4" />
                 <span>Generar pedido</span>

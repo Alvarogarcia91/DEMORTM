@@ -202,7 +202,7 @@ export const SupplierFormModal: React.FC<SupplierFormModalProps> = ({
  value={tradeName}
  onChange={(e) => setTradeName(e.target.value)}
  placeholder="Ej. Nayt México"
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
 
@@ -213,7 +213,7 @@ export const SupplierFormModal: React.FC<SupplierFormModalProps> = ({
  value={legalName}
  onChange={(e) => setLegalName(e.target.value)}
  placeholder="Ej. Distribuidora Nayt S.A. de C.V."
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
 
@@ -224,7 +224,7 @@ export const SupplierFormModal: React.FC<SupplierFormModalProps> = ({
  value={rfc}
  onChange={(e) => setRfc(e.target.value)}
  placeholder="Ej. DEMO-NAYT-001"
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-mono font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-mono font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
 
@@ -336,7 +336,7 @@ export const SupplierFormModal: React.FC<SupplierFormModalProps> = ({
  value={commercialNotes}
  onChange={(e) => setCommercialNotes(e.target.value)}
  placeholder="Ej. Descuento del 3% por pronto pago o entrega consolidada en CEDIS..."
- className="w-full bg-theme-surface border border-theme-subtle rounded-xl p-3 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-rose-500/30 resize-none"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-xl p-3 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30 resize-none"
  />
  </div>
  </div>
@@ -407,7 +407,7 @@ export const SupplierFormModal: React.FC<SupplierFormModalProps> = ({
 
  <button
  type="submit"
- className="px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black transition-all shadow-md flex items-center gap-2 cursor-pointer"
+ className="px-6 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md flex items-center gap-2 cursor-pointer"
  >
  <CheckCircle2 className="w-4 h-4" />
  <span>{initialSupplier ? 'Guardar Cambios' : 'Guardar Proveedor'}</span>

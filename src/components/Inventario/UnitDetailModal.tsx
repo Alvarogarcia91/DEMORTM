@@ -64,7 +64,7 @@ export const UnitDetailModal: React.FC<UnitDetailModalProps> = ({
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-xl bg-white text-rose-600 flex items-center justify-center border border-rose-500 shadow-2xs shrink-0">
+ <div className="w-10 h-10 rounded-xl bg-white text-theme-primary flex items-center justify-center border border-theme-primary shadow-2xs shrink-0">
  <QrCode className="w-5 h-5" />
  </div>
  <div>

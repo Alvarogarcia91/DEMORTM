@@ -57,7 +57,7 @@ export const ShippingTruckLoadingVisual: React.FC<ShippingTruckLoadingVisualProp
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-white border border-zinc-300 text-zinc-800 flex items-center justify-center shadow-2xs">
-              <Truck className="w-4 h-4 text-rose-600" />
+              <Truck className="w-4 h-4 text-theme-primary" />
             </div>
             <div>
               <span className="text-[10px] uppercase font-bold text-zinc-500 block">Unidad de Carga Asignada</span>
@@ -91,7 +91,7 @@ export const ShippingTruckLoadingVisual: React.FC<ShippingTruckLoadingVisualProp
                 occupancyPercentage > 90 
                   ? 'bg-amber-500' 
                   : occupancyPercentage > 100 
-                  ? 'bg-rose-600' 
+                  ? 'bg-theme-primary' 
                   : 'bg-emerald-500'
               }`}
               style={{ width: `${occupancyPercentage}%` }}
@@ -112,7 +112,7 @@ export const ShippingTruckLoadingVisual: React.FC<ShippingTruckLoadingVisualProp
               </h4>
               {isMultiStop && (
                 <span className={`px-2 py-0.2 rounded-full text-[9px] font-bold border shadow-2xs bg-white ${
-                  isManualMode ? 'border-purple-500 text-purple-700' : 'border-rose-500 text-rose-700'
+                  isManualMode ? 'border-purple-500 text-purple-700' : 'border-theme-primary text-theme-primary'
                 }`}>
                   {isManualMode ? 'Secuencia personalizada' : 'Secuencia recomendada'}
                 </span>
@@ -148,7 +148,7 @@ export const ShippingTruckLoadingVisual: React.FC<ShippingTruckLoadingVisualProp
                     : 'bg-white hover:bg-zinc-50 text-zinc-800 border-zinc-300'
                 }`}
               >
-                <Layers className="w-3.5 h-3.5 text-rose-600" />
+                <Layers className="w-3.5 h-3.5 text-theme-primary" />
                 <span>{isManualMode ? 'Modo manual activo' : 'Cambiar a carga manual'}</span>
               </button>
             </div>
@@ -186,7 +186,7 @@ export const ShippingTruckLoadingVisual: React.FC<ShippingTruckLoadingVisualProp
                       zone.zonePosition === 'Fondo'
                         ? 'border-indigo-500/80'
                         : zone.zonePosition === 'Puertas'
-                        ? 'border-rose-500/80'
+                        ? 'border-theme-primary/80'
                         : 'border-zinc-300'
                     }`}
                   >
@@ -217,7 +217,7 @@ export const ShippingTruckLoadingVisual: React.FC<ShippingTruckLoadingVisualProp
                       </div>
                       <div className="flex items-center justify-between text-[10px]">
                         <span className="text-zinc-500">Remisión:</span>
-                        <span className="font-mono font-bold text-rose-600">{zone.remisionFolio}</span>
+                        <span className="font-mono font-bold text-theme-primary">{zone.remisionFolio}</span>
                       </div>
                     </div>
 
@@ -229,7 +229,7 @@ export const ShippingTruckLoadingVisual: React.FC<ShippingTruckLoadingVisualProp
                         className="w-full flex items-center justify-between text-[10px] font-bold text-zinc-700 hover:text-zinc-950 cursor-pointer"
                       >
                         <span className="flex items-center gap-1">
-                          <QrCode className="w-3 h-3 text-rose-600" />
+                          <QrCode className="w-3 h-3 text-theme-primary" />
                           <span>{zone.uids.length} UIDs asociados</span>
                         </span>
                         {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -282,11 +282,11 @@ export const ShippingTruckLoadingVisual: React.FC<ShippingTruckLoadingVisualProp
             </div>
 
             {/* 3. REAR DISCHARGE DOORS (Right) */}
-            <div className="w-24 bg-white border-2 border-rose-500 rounded-xl p-3 flex flex-col items-center justify-center text-center space-y-1.5 shrink-0 shadow-2xs">
-              <div className="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600 border border-rose-200">
+            <div className="w-24 bg-white border-2 border-theme-primary rounded-xl p-3 flex flex-col items-center justify-center text-center space-y-1.5 shrink-0 shadow-2xs">
+              <div className="w-8 h-8 rounded-lg bg-theme-primary-light flex items-center justify-center text-theme-primary border border-theme-primary/20">
                 <PackageCheck className="w-4 h-4" />
               </div>
-              <span className="text-[9px] font-black uppercase tracking-wider text-rose-700 block leading-tight">
+              <span className="text-[9px] font-black uppercase tracking-wider text-theme-primary block leading-tight">
                 Puertas de Descarga
               </span>
               <span className="text-[8px] font-mono text-zinc-500">
@@ -351,7 +351,7 @@ export const ShippingTruckLoadingVisual: React.FC<ShippingTruckLoadingVisualProp
             {/* Panel 2: Descarga Esperada */}
             <div className="p-3.5 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-2">
               <div className="flex items-center gap-1.5 text-zinc-900 font-black text-xs uppercase">
-                <PackageCheck className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                <PackageCheck className="w-3.5 h-3.5 text-theme-primary shrink-0" />
                 <span>2. Descarga Esperada en Ruta</span>
               </div>
               <p className="text-[10px] text-zinc-500 leading-tight">
@@ -361,7 +361,7 @@ export const ShippingTruckLoadingVisual: React.FC<ShippingTruckLoadingVisualProp
                 {[...loadingZones].reverse().map((zone, idx) => (
                   <div key={zone.id} className="p-2 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-between text-[11px]">
                     <div className="flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-rose-600 text-white font-black text-[10px] flex items-center justify-center shrink-0">
+                      <span className="w-5 h-5 rounded-full bg-theme-primary text-white font-black text-[10px] flex items-center justify-center shrink-0">
                         {idx + 1}
                       </span>
                       <div>

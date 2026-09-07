@@ -564,7 +564,7 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ onShowToast }) => {
  const intensity = slot.activityLevel;
  const bgClass =
  intensity > 90
- ? 'bg-rose-600 text-white font-black'
+ ? 'bg-theme-primary text-white font-black'
  : intensity > 75
  ? 'bg-amber-500 text-white font-bold'
  : intensity > 50
@@ -626,7 +626,7 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ onShowToast }) => {
  {data.topLocations.leastUsed.slice(0, 3).map((loc) => (
  <div key={loc.code} className="p-2 rounded-xl bg-theme-muted/40 border border-theme-subtle flex items-center justify-between text-[11px]">
  <div>
- <span className="font-mono font-black text-rose-600">{loc.code}</span>
+ <span className="font-mono font-black text-theme-primary">{loc.code}</span>
  <span className="text-theme-main font-semibold ml-2">{loc.name}</span>
  </div>
  <span className="font-mono text-theme-muted">{loc.opsCount} ops</span>

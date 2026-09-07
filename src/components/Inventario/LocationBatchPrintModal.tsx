@@ -1134,7 +1134,7 @@ export const LocationBatchPrintModal: React.FC<LocationBatchPrintModalProps> = (
  <button
  type="button"
  onClick={() => setBlocks([])}
- className="text-[10px] text-rose-600 hover:underline font-bold cursor-pointer"
+ className="text-[10px] text-theme-primary hover:underline font-bold cursor-pointer"
  >
  Vaciar paquete
  </button>
@@ -1197,7 +1197,7 @@ export const LocationBatchPrintModal: React.FC<LocationBatchPrintModalProps> = (
  <button
  type="button"
  onClick={() => handleRemoveBlock(block.id)}
- className="p-1.5 text-theme-muted hover:text-rose-600 hover:bg-rose-500/10 rounded-xl transition-colors cursor-pointer"
+ className="p-1.5 text-theme-muted hover:text-theme-primary hover:bg-theme-primary-light rounded-xl transition-colors cursor-pointer"
  title="Quitar este bloque"
  >
  <Trash2 className="w-4 h-4" />

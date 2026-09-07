@@ -102,7 +102,7 @@ export const ExpoDetailModal: React.FC<ExpoDetailModalProps> = ({
             <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-2xs grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-zinc-500 font-semibold uppercase text-[10px]">
-                  <MapPin className="w-3.5 h-3.5 text-rose-600" />
+                  <MapPin className="w-3.5 h-3.5 text-theme-primary" />
                   <span>Sede & Recinto</span>
                 </div>
                 <strong className="text-zinc-900 font-bold block">{expo.venue}</strong>

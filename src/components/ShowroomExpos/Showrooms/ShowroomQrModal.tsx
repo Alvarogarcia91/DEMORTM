@@ -57,7 +57,7 @@ export const ShowroomQrModal: React.FC<ShowroomQrModalProps> = ({
             {/* Label Card Preview */}
             <div className="p-5 rounded-2xl bg-white border-2 border-dashed border-zinc-300 text-zinc-900 shadow-sm flex flex-col items-center text-center space-y-4">
               <div className="flex items-center justify-between w-full border-b border-zinc-200 pb-2">
-                <span className="text-[10px] font-black uppercase tracking-wider text-rose-600">
+                <span className="text-[10px] font-black uppercase tracking-wider text-theme-primary">
                   IMPRESOS RTM
                 </span>
                 <span className="text-[10px] font-bold text-zinc-600 uppercase">

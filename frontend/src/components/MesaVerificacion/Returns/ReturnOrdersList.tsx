@@ -139,7 +139,7 @@ export const ReturnOrdersList: React.FC<ReturnOrdersListProps> = ({
  onClick={() => onSelectOrder(order)}
  >
  <td className="py-3.5 px-4">
- <strong className="font-mono text-rose-600 block text-xs font-bold">
+ <strong className="font-mono text-theme-primary block text-xs font-bold">
  {order.folio}
  </strong>
  <span className="text-[10px] text-theme-muted truncate block max-w-xs">

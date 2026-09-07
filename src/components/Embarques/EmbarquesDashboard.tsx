@@ -121,7 +121,7 @@ export const EmbarquesDashboard: React.FC<EmbarquesDashboardProps> = ({ onNaviga
       {/* Top Filter Controls & Discrete Header Action */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-4 rounded-3xl bg-white border border-zinc-200 shadow-2xs">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-white border border-rose-500/30 text-rose-600 flex items-center justify-center shadow-xs">
+          <div className="w-10 h-10 rounded-2xl bg-white border border-theme-primary/30 text-theme-primary flex items-center justify-center shadow-xs">
             <Truck className="w-5 h-5" />
           </div>
           <div>
@@ -142,7 +142,7 @@ export const EmbarquesDashboard: React.FC<EmbarquesDashboardProps> = ({ onNaviga
             <select
               value={selectedFacility}
               onChange={(e) => setSelectedFacility(e.target.value)}
-              className="px-3 py-1.5 rounded-xl border border-zinc-300 bg-white text-xs font-semibold text-zinc-800 focus:outline-none focus:ring-2 focus:ring-rose-500"
+              className="px-3 py-1.5 rounded-xl border border-zinc-300 bg-white text-xs font-semibold text-zinc-800 focus:outline-none focus:ring-2 focus:ring-theme-primary"
             >
               <option value="ALL">Todas las áreas de planta</option>
               <option value="wh-mty-norte">Nave 1 — ALM-MP (Materias Primas)</option>
@@ -172,7 +172,7 @@ export const EmbarquesDashboard: React.FC<EmbarquesDashboardProps> = ({ onNaviga
           <button
             type="button"
             onClick={() => onNavigateTab('orders')}
-            className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-zinc-50 text-rose-600 font-bold text-xs border border-rose-500/40 shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer"
+            className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-zinc-50 text-theme-primary font-bold text-xs border border-theme-primary/40 shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer"
           >
             <span>Ver órdenes de salida</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -190,7 +190,7 @@ export const EmbarquesDashboard: React.FC<EmbarquesDashboardProps> = ({ onNaviga
         >
           <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-zinc-500">
             <span>Listas para carga</span>
-            <div className="w-6 h-6 rounded-lg bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-600 group-hover:text-rose-600 group-hover:border-rose-500/40 transition-colors">
+            <div className="w-6 h-6 rounded-lg bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-600 group-hover:text-theme-primary group-hover:border-theme-primary/40 transition-colors">
               <Truck className="w-3.5 h-3.5" />
             </div>
           </div>
@@ -273,7 +273,7 @@ export const EmbarquesDashboard: React.FC<EmbarquesDashboardProps> = ({ onNaviga
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2">
-                <Navigation className="w-4 h-4 text-rose-600" />
+                <Navigation className="w-4 h-4 text-theme-primary" />
                 <h3 className="font-black text-zinc-950 text-sm">
                   Rutas Activas
                 </h3>
@@ -313,7 +313,7 @@ export const EmbarquesDashboard: React.FC<EmbarquesDashboardProps> = ({ onNaviga
           <div className="flex items-center justify-between text-[11px] text-zinc-600 border-t border-zinc-100 pt-2 flex-wrap gap-2">
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-1.5 font-bold">
-                <span className="w-2.5 h-2.5 rounded-full bg-rose-600" />
+                <span className="w-2.5 h-2.5 rounded-full bg-theme-primary" />
                 <span>Origen CEDIS</span>
               </span>
               <span className="flex items-center gap-1.5">
@@ -419,7 +419,7 @@ export const EmbarquesDashboard: React.FC<EmbarquesDashboardProps> = ({ onNaviga
             <button
               type="button"
               onClick={() => onNavigateTab('in_route')}
-              className="text-rose-600 font-bold hover:underline"
+              className="text-theme-primary font-bold hover:underline"
             >
               Ver todas las rutas en curso &rarr;
             </button>
@@ -552,7 +552,7 @@ export const EmbarquesDashboard: React.FC<EmbarquesDashboardProps> = ({ onNaviga
             <button
               type="button"
               onClick={() => onNavigateTab('in_route')}
-              className="text-rose-600 font-bold text-xs hover:underline cursor-pointer"
+              className="text-theme-primary font-bold text-xs hover:underline cursor-pointer"
             >
               Ver todas las rutas &rarr;
             </button>

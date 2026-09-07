@@ -105,7 +105,7 @@ export const QuickClientFormModal: React.FC<QuickClientFormModalProps> = ({
  {/* Header */}
  <div className="p-5 border-b border-zinc-200 flex items-center justify-between bg-white">
  <div className="flex items-center gap-2.5">
- <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200 shadow-2xs text-rose-600 flex items-center justify-center">
+ <div className="w-10 h-10 rounded-xl bg-white border border-zinc-200 shadow-2xs text-theme-primary flex items-center justify-center">
  <User className="w-5 h-5" />
  </div>
  <div>
@@ -137,7 +137,7 @@ export const QuickClientFormModal: React.FC<QuickClientFormModalProps> = ({
  onClick={() => setType(t)}
  className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
  type === t
- ? 'bg-rose-600 text-white shadow-xs'
+ ? 'bg-theme-primary text-white shadow-xs'
  : 'bg-white border-zinc-200 text-zinc-900 hover:bg-zinc-50 shadow-2xs'
  }`}
  >
@@ -157,7 +157,7 @@ export const QuickClientFormModal: React.FC<QuickClientFormModalProps> = ({
  value={name}
  onChange={(e) => setName(e.target.value)}
  placeholder="Ej. Juan Pérez Garza / Desarrolladora Real S.A."
- className="w-full p-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 focus:outline-none focus:border-rose-500 text-xs shadow-2xs"
+ className="w-full p-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 focus:outline-none focus:border-theme-primary text-xs shadow-2xs"
  />
  </div>
 
@@ -288,7 +288,7 @@ export const QuickClientFormModal: React.FC<QuickClientFormModalProps> = ({
  </button>
  <button
  type="submit"
- className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-sm cursor-pointer flex items-center gap-1.5"
+ className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs shadow-sm cursor-pointer flex items-center gap-1.5"
  >
  <Check className="w-4 h-4" />
  <span>Guardar Cliente</span>

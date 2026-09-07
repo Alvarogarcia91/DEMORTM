@@ -71,7 +71,7 @@ export const ShippingRouteInteractiveMap: React.FC<ShippingRouteInteractiveMapPr
         
         {/* Left Badge: Strategy & Trajectory */}
         <div className="bg-zinc-950/85 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-zinc-700/80 shadow-lg pointer-events-auto flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-rose-600/20 text-rose-500 flex items-center justify-center border border-rose-500/30 shrink-0">
+          <div className="w-8 h-8 rounded-xl bg-theme-primary-light text-theme-primary flex items-center justify-center border border-theme-primary/30 shrink-0">
             <Navigation className="w-4 h-4" />
           </div>
           <div>
@@ -353,7 +353,7 @@ export const ShippingRouteInteractiveMap: React.FC<ShippingRouteInteractiveMapPr
               return (
                 <>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono text-rose-500 font-bold">
+                    <span className="font-mono text-theme-primary font-bold">
                       Parada #{current.sequenceNumber}
                     </span>
                     <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
@@ -380,7 +380,7 @@ export const ShippingRouteInteractiveMap: React.FC<ShippingRouteInteractiveMapPr
         {/* Map Legend */}
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-600 border border-white" />
+            <span className="w-2.5 h-2.5 rounded-full bg-theme-primary border border-white" />
             <span className="text-zinc-300 font-medium">CEDIS Origen</span>
           </div>
 

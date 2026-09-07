@@ -57,7 +57,7 @@ export const CompletedReceiptOrdersList: React.FC<CompletedReceiptOrdersListProp
  value={searchQuery}
  onChange={(e) => setSearchQuery(e.target.value)}
  placeholder="Buscar en historial de órdenes de entrada por folio, proveedor o artículo..."
- className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+ className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-9 pr-8 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  {searchQuery && (
  <button
@@ -100,7 +100,7 @@ export const CompletedReceiptOrdersList: React.FC<CompletedReceiptOrdersListProp
 
  return (
  <tr key={order.id} className="hover:bg-theme-muted/30 transition-colors">
- <td className="py-3.5 px-4 font-mono font-black text-rose-600 whitespace-nowrap">
+ <td className="py-3.5 px-4 font-mono font-black text-theme-primary whitespace-nowrap">
  {order.folio}
  </td>
  <td className="py-3.5 px-3 whitespace-nowrap">
@@ -109,7 +109,7 @@ export const CompletedReceiptOrdersList: React.FC<CompletedReceiptOrdersListProp
  </td>
  <td className="py-3.5 px-3 whitespace-nowrap">
  <span className="font-bold text-theme-main block">{order.destinationWarehouseName}</span>
- <span className="text-[10px] text-rose-600 font-mono font-bold">{order.receivingAreaCode}</span>
+ <span className="text-[10px] text-theme-primary font-mono font-bold">{order.receivingAreaCode}</span>
  </td>
  <td className="py-3.5 px-3 text-center font-mono font-bold text-theme-main whitespace-nowrap">
  {totalExpected} u.
@@ -161,12 +161,12 @@ export const CompletedReceiptOrdersList: React.FC<CompletedReceiptOrdersListProp
  {/* Header */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <FileText className="w-5 h-5" />
  </div>
  <div>
  <div className="flex items-center gap-2">
- <span className="font-mono text-base font-black text-rose-600">
+ <span className="font-mono text-base font-black text-theme-primary">
  {selectedOrderDetail.folio}
  </span>
  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border shadow-2xs bg-white text-zinc-900 ${
@@ -201,7 +201,7 @@ export const CompletedReceiptOrdersList: React.FC<CompletedReceiptOrdersListProp
  <strong className="text-xs font-bold text-theme-main block truncate">
  {selectedOrderDetail.destinationWarehouseName}
  </strong>
- <span className="text-[10px] text-rose-600 font-mono font-bold">
+ <span className="text-[10px] text-theme-primary font-mono font-bold">
  {selectedOrderDetail.receivingAreaCode}
  </span>
  </div>
@@ -266,7 +266,7 @@ export const CompletedReceiptOrdersList: React.FC<CompletedReceiptOrdersListProp
  className="p-2.5 rounded-xl bg-theme-surface hover:bg-theme-subtle border border-theme-subtle flex items-center justify-between text-left transition-all cursor-pointer shadow-2xs group"
  >
  <div className="min-w-0 space-y-0.5">
- <span className="font-mono font-black text-xs text-rose-600 group-hover:underline block truncate">
+ <span className="font-mono font-black text-xs text-theme-primary group-hover:underline block truncate">
  {unit.uid}
  </span>
  <span className="text-[10px] text-theme-muted font-mono block">
@@ -304,7 +304,7 @@ export const CompletedReceiptOrdersList: React.FC<CompletedReceiptOrdersListProp
  setSelectedOrderDetail(null);
  onOpenOrderReceiving(ord);
  }}
- className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black transition-all shadow-md cursor-pointer"
+ className="px-4 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md cursor-pointer"
  >
  Continuar recepción
  </button>

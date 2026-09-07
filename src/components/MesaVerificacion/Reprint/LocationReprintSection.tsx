@@ -132,7 +132,7 @@ export const LocationReprintSection: React.FC<LocationReprintSectionProps> = ({
  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
  <div className="space-y-1">
  <div className="flex items-center gap-2">
- <MapPin className="w-5 h-5 text-rose-600" />
+ <MapPin className="w-5 h-5 text-theme-primary" />
  <h2 className="text-sm font-extrabold text-theme-main">
  Reimpresión de Etiquetas de Ubicación
  </h2>
@@ -166,7 +166,7 @@ export const LocationReprintSection: React.FC<LocationReprintSectionProps> = ({
  setShowAutocomplete(true);
  }}
  placeholder="Buscar código de ubicación (A-B-03, REC-01, EMB-03, SHOW-02, RET-NORTE)..."
- className="w-full bg-theme-surface border border-theme-subtle rounded-2xl pl-10 pr-9 py-3 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500/30 shadow-xs"
+ className="w-full bg-theme-surface border border-theme-subtle rounded-2xl pl-10 pr-9 py-3 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30 shadow-xs"
  />
  {searchQuery && (
  <button
@@ -191,7 +191,7 @@ export const LocationReprintSection: React.FC<LocationReprintSectionProps> = ({
  className="p-2.5 rounded-xl hover:bg-theme-muted transition-colors cursor-pointer text-xs flex items-center justify-between"
  >
  <div>
- <strong className="font-mono text-rose-600 block">{loc.code}</strong>
+ <strong className="font-mono text-theme-primary block">{loc.code}</strong>
  <span className="text-[10px] text-theme-muted">{loc.name}</span>
  </div>
  <span className="px-2 py-0.5 rounded text-[10px] bg-theme-muted text-theme-main border border-theme-subtle font-mono">
@@ -213,7 +213,7 @@ export const LocationReprintSection: React.FC<LocationReprintSectionProps> = ({
  <div className="md:col-span-2 space-y-4">
  <div>
  <div className="flex items-center gap-2 flex-wrap mb-1">
- <span className="font-mono text-xl font-black text-rose-600">
+ <span className="font-mono text-xl font-black text-theme-primary">
  {selectedLoc.code}
  </span>
  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
@@ -241,7 +241,7 @@ export const LocationReprintSection: React.FC<LocationReprintSectionProps> = ({
 
  <div className="p-3 rounded-2xl bg-theme-muted/30 border border-theme-subtle space-y-0.5">
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Posición / Nivel:</span>
- <strong className="font-mono text-rose-600 text-xs">
+ <strong className="font-mono text-theme-primary text-xs">
  {selectedLoc.rackPosition ? `Pos ${selectedLoc.rackPosition} · ${selectedLoc.level}` : 'Área General'}
  </strong>
  </div>
@@ -294,7 +294,7 @@ export const LocationReprintSection: React.FC<LocationReprintSectionProps> = ({
  <button
  type="button"
  onClick={() => handleExecuteReprint()}
- className="px-5 py-2.5 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer ml-auto"
+ className="px-5 py-2.5 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black text-xs transition-all shadow-md flex items-center gap-1.5 cursor-pointer ml-auto"
  >
  <Printer className="w-4 h-4" />
  <span>Reimprimir etiqueta de ubicación</span>
@@ -350,7 +350,7 @@ export const LocationReprintSection: React.FC<LocationReprintSectionProps> = ({
  onClick={() => setMassiveMode(m.id as any)}
  className={`p-3 rounded-2xl border transition-all cursor-pointer space-y-1 ${
  massiveMode === m.id
- ? 'bg-rose-500/10 border-rose-500 text-rose-950 dark:text-rose-300 ring-1 ring-rose-500'
+ ? 'bg-theme-primary-light border-theme-primary text-theme-primary ring-1 ring-theme-primary'
  : 'bg-theme-muted/30 border-theme-subtle hover:bg-theme-muted text-theme-main'
  }`}
  >
@@ -438,7 +438,7 @@ export const LocationReprintSection: React.FC<LocationReprintSectionProps> = ({
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Zonas Seleccionadas:</span>
  <div className="flex flex-wrap gap-1.5 font-mono text-[10px]">
  {['REC-01', 'EMB-01', 'EMB-02', 'EMB-03', 'SHOW-01', 'RET-NORTE'].map((z) => (
- <span key={z} className="px-2 py-0.5 rounded bg-theme-surface border border-theme-subtle font-bold text-rose-600">
+ <span key={z} className="px-2 py-0.5 rounded bg-theme-surface border border-theme-subtle font-bold text-theme-primary">
  {z}
  </span>
  ))}
@@ -458,7 +458,7 @@ export const LocationReprintSection: React.FC<LocationReprintSectionProps> = ({
 
  <button
  onClick={handleExecuteMassive}
- className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+ className="px-5 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-black transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
  >
  <Printer className="w-4 h-4" />
  <span>Imprimir lote</span>
