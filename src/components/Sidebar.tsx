@@ -40,6 +40,7 @@ export type NavItemKey =
  | 'cxp'
  | 'nomina'
  | 'mantenimiento'
+ | 'centro-alertas'
  | 'configuracion';
 
 interface SidebarProps {

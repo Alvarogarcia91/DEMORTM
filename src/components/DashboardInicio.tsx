@@ -24,7 +24,8 @@ import {
   Search,
   Factory,
   Activity,
-  Wrench
+  Wrench,
+  Bell
 } from 'lucide-react';
 import { NavItemKey } from './Sidebar';
 
@@ -276,6 +277,15 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
             >
               <Wrench className="w-3.5 h-3.5 text-amber-600" />
               <span>Mantenimiento & Equipos</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onNavigate('centro-alertas')}
+              className="px-3 py-1.5 rounded-xl bg-white hover:bg-zinc-50 text-zinc-900 font-bold text-xs border border-rose-200 text-rose-700 shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer"
+            >
+              <Bell className="w-3.5 h-3.5 text-rose-600" />
+              <span>Centro de Alertas</span>
             </button>
 
             <button
@@ -609,11 +619,17 @@ export const DashboardInicio: React.FC<DashboardInicioProps> = ({ onNavigate }) 
           </div>
 
           <div className="pt-2 border-t border-zinc-100 text-[11px] text-zinc-500 flex items-center justify-between">
-            <span>Resolución en módulo operativo</span>
+            <button
+              type="button"
+              onClick={() => onNavigate('centro-alertas')}
+              className="text-theme-primary font-bold hover:underline flex items-center gap-1 cursor-pointer"
+            >
+              <span>Ver todas las alertas &rarr;</span>
+            </button>
             <button
               type="button"
               onClick={() => onNavigate('mesa-verificacion')}
-              className="text-theme-primary font-bold hover:underline"
+              className="text-zinc-500 hover:text-zinc-800 font-medium hover:underline"
             >
               Operaciones de almacén &rarr;
             </button>

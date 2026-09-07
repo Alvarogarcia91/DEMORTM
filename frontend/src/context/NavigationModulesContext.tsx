@@ -153,6 +153,7 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'cxp': true,
   'nomina': true,
   'mantenimiento': true,
+  'centro-alertas': true,
   'configuracion': true,
 };
 
@@ -185,6 +186,7 @@ export const NavigationModulesProvider: React.FC<{ children: React.ReactNode }> 
             ...parsed,
             'mantenimiento': parsed.mantenimiento !== undefined ? parsed.mantenimiento : true,
             'nomina': parsed.nomina !== undefined ? parsed.nomina : true,
+            'centro-alertas': true,
           };
         } catch {
           return DEFAULT_VISIBILITY;
@@ -200,7 +202,7 @@ export const NavigationModulesProvider: React.FC<{ children: React.ReactNode }> 
 
   const isModuleVisible = (key: NavItemKey): boolean => {
     // Locked items are always visible
-    if (key === 'inicio' || key === 'configuracion') return true;
+    if (key === 'inicio' || key === 'configuracion' || key === 'centro-alertas') return true;
     if (visibleModules[key] === undefined) {
       return DEFAULT_VISIBILITY[key] ?? true;
     }

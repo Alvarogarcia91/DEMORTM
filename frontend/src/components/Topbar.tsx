@@ -1,21 +1,34 @@
 import React, { useState } from 'react';
 import { 
- Calendar, 
- LogOut, 
- Menu, 
- ChevronDown
+  Calendar, 
+  LogOut, 
+  Menu, 
+  ChevronDown,
+  Bell
 } from 'lucide-react';
 import { NavItemKey } from './Sidebar';
+import { useAlertas } from '../context/AlertasContext';
+import { AlertasQuickPanel } from './AlertasQuickPanel';
+import { DemoAlert } from '../data/mockAlertasData';
 
 interface TopbarProps {
- onOpenMobileMenu: () => void;
- onLogout: () => void;
- activeTab?: NavItemKey;
- onSelectTab?: (tab: NavItemKey) => void;
+  onOpenMobileMenu: () => void;
+  onLogout: () => void;
+  activeTab?: NavItemKey;
+  onSelectTab?: (tab: NavItemKey) => void;
+  onNavigateAlert?: (alert: DemoAlert) => void;
 }
 
-export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileMenu, onLogout, activeTab, onSelectTab }) => {
- const [showUserMenu, setShowUserMenu] = useState(false);
+export const Topbar: React.FC<TopbarProps> = ({ 
+  onOpenMobileMenu, 
+  onLogout, 
+  activeTab, 
+  onSelectTab,
+  onNavigateAlert
+}) => {
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showAlertsPanel, setShowAlertsPanel] = useState(false);
+  const { pendingCount } = useAlertas();
 
  return (
  <header className="sticky top-0 z-20 h-16 bg-theme-surface/95 backdrop-blur-md border-b border-theme-subtle px-4 sm:px-6 flex items-center justify-between gap-4 transition-colors">
@@ -76,6 +89,52 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileMenu, onLogout, acti
  </div>
 
  <div className="h-5 w-px bg-theme-subtle hidden sm:block" />
+
+ {/* Transversal Alerts Bell */}
+ <div className="relative">
+   <button
+     onClick={() => {
+       setShowAlertsPanel(!showAlertsPanel);
+       setShowUserMenu(false);
+     }}
+     className={`relative p-2 rounded-xl transition-all cursor-pointer flex items-center justify-center ${
+       showAlertsPanel
+         ? 'bg-theme-primary text-white shadow-xs'
+         : pendingCount > 0
+         ? 'bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 border border-rose-500/20 dark:text-rose-400'
+         : 'text-theme-muted hover:bg-theme-muted hover:text-theme-main'
+     }`}
+     title="Centro de Alertas del ERP"
+     aria-label="Alertas"
+   >
+     <Bell className="w-5 h-5" />
+     {pendingCount > 0 && (
+       <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-600 px-1 text-[10px] font-black text-white shadow-xs ring-2 ring-white dark:ring-zinc-900 animate-in zoom-in">
+         {pendingCount}
+       </span>
+     )}
+   </button>
+
+   {/* Quick Alerts Dropdown Panel */}
+   <AlertasQuickPanel
+     isOpen={showAlertsPanel}
+     onClose={() => setShowAlertsPanel(false)}
+     onOpenFullCenter={() => {
+       setShowAlertsPanel(false);
+       onSelectTab?.('centro-alertas');
+     }}
+     onNavigateAlert={(alert) => {
+       setShowAlertsPanel(false);
+       if (onNavigateAlert) {
+         onNavigateAlert(alert);
+       } else {
+         onSelectTab?.(alert.destino.tab);
+       }
+     }}
+   />
+ </div>
+
+ <div className="h-5 w-px bg-theme-subtle" />
 
  {/* User Profile & Menu */}
  <div className="relative">

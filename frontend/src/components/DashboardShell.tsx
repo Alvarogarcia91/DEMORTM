@@ -18,6 +18,8 @@ import { CxcPage } from './Finanzas/CxcPage';
 import { CxpPage } from './Finanzas/CxpPage';
 import { NominaPage } from './Nomina/NominaPage';
 import { MantenimientoPage } from './Mantenimiento/MantenimientoPage';
+import { CentroAlertasPage } from './CentroAlertasPage';
+import { DemoAlert } from '../data/mockAlertasData';
 import {
   SalesInvoice,
   AccountReceivable,
@@ -328,6 +330,25 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  setActiveTab('compras');
  };
 
+  // Cross Navigation: From Transversal Alerts to Origin Modules
+  const handleNavigateAlert = (alert: DemoAlert) => {
+    const { tab, targetId, targetFolio, secondaryPrefilledItem } = alert.destino;
+
+    if (tab === 'cxc' && targetId) {
+      setTargetCxcId(targetId);
+    } else if (tab === 'pedidos' && targetFolio) {
+      setTargetOrderFolio(targetFolio);
+    } else if (tab === 'compras' && targetFolio) {
+      setTargetPurchaseOrderFolio(targetFolio);
+    } else if (tab === 'requisiciones') {
+      if (secondaryPrefilledItem) {
+        setTargetRequisitionPrefilledItem(secondaryPrefilledItem);
+      }
+    }
+
+    setActiveTab(tab);
+  };
+
  const renderContent = () => {
  switch (activeTab) {
  case 'inicio':
@@ -509,12 +530,14 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
             }}
           />
         );
+      case 'centro-alertas':
+        return <CentroAlertasPage onNavigateAlert={handleNavigateAlert} />;
       case 'configuracion':
         return <ConfiguracionView />;
- default:
- return <DashboardInicio onNavigate={(tab) => setActiveTab(tab)} />;
- }
- };
+      default:
+        return <DashboardInicio onNavigate={(tab) => setActiveTab(tab)} />;
+    }
+  };
 
  return (
  <div className="min-h-screen bg-theme-base text-theme-main flex flex-col lg:flex-row font-sans transition-colors duration-200">
@@ -541,6 +564,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  onLogout={onLogout}
  activeTab={activeTab}
  onSelectTab={(tab) => setActiveTab(tab)}
+ onNavigateAlert={handleNavigateAlert}
  />
 
  <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1520px] w-full mx-auto">
