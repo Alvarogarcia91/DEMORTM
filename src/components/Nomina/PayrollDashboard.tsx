@@ -77,6 +77,83 @@ export const PayrollDashboard: React.FC<PayrollDashboardProps> = ({
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
+      {/* 0. Tarjeta Principal del Ciclo de Nómina (Requisito Doc V2 Sección 14) */}
+      <div className="p-5 rounded-2xl bg-white border border-zinc-200 shadow-2xs space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-zinc-100 pb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-theme-primary/10 border border-theme-primary/20 flex items-center justify-center text-theme-primary shrink-0">
+              <Calendar className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-base font-black text-zinc-950">{period.nombre}</h2>
+                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                  period.estado === 'timbrada'
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-300'
+                    : period.estado === 'cerrada'
+                    ? 'bg-blue-50 text-blue-700 border border-blue-300'
+                    : 'bg-amber-50 text-amber-700 border border-amber-300'
+                }`}>
+                  {period.estado === 'timbrada' ? 'Timbrada CFDI 4.0' : period.estado === 'cerrada' ? 'Cerrada' : 'En Revisión'}
+                </span>
+              </div>
+              <p className="text-xs text-zinc-500">
+                Periodo: <strong className="text-zinc-700 font-mono">{period.fechaInicio} al {period.fechaFin}</strong> · Fecha de pago: <strong className="text-zinc-700 font-mono">{period.fechaPago}</strong>
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => onSelectTab('asistencia')}
+              className="px-3 py-1.5 rounded-xl border border-zinc-200 hover:bg-zinc-50 text-xs font-semibold text-zinc-700 transition-colors cursor-pointer"
+            >
+              Revisar asistencia
+            </button>
+            <button
+              onClick={() => onSelectTab('prenomina')}
+              className="px-3 py-1.5 rounded-xl border border-zinc-200 hover:bg-zinc-50 text-xs font-semibold text-zinc-700 transition-colors cursor-pointer"
+            >
+              Recalcular pre-nómina
+            </button>
+            <button
+              onClick={() => onSelectTab('prenomina')}
+              className="px-3 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
+            >
+              Enviar a autorización
+            </button>
+          </div>
+        </div>
+
+        {/* Resumen numérico del ciclo */}
+        <div className="grid grid-cols-2 sm:grid-cols-6 gap-2 text-xs">
+          <div className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-100">
+            <span className="text-[10px] uppercase font-bold text-zinc-400 block">Colaboradores</span>
+            <span className="font-mono font-bold text-zinc-900 text-sm">{employees.length} activos</span>
+          </div>
+          <div className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-100">
+            <span className="text-[10px] uppercase font-bold text-zinc-400 block">Horas Ordinarias</span>
+            <span className="font-mono font-bold text-zinc-900 text-sm">1,153.3 h</span>
+          </div>
+          <div className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-100">
+            <span className="text-[10px] uppercase font-bold text-zinc-400 block">Horas Extra</span>
+            <span className="font-mono font-bold text-amber-700 text-sm">33.8 h</span>
+          </div>
+          <div className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-100">
+            <span className="text-[10px] uppercase font-bold text-zinc-400 block">Horas Ausentes</span>
+            <span className="font-mono font-bold text-rose-700 text-sm">6.7 h</span>
+          </div>
+          <div className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-100">
+            <span className="text-[10px] uppercase font-bold text-zinc-400 block">Incidencias</span>
+            <span className="font-mono font-bold text-zinc-900 text-sm">{incidents.length} registradas</span>
+          </div>
+          <div className="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-200">
+            <span className="text-[10px] uppercase font-bold text-emerald-800 block">Neto Estimado</span>
+            <span className="font-mono font-black text-emerald-700 text-sm">{formatCurrency(netoTotal)}</span>
+          </div>
+        </div>
+      </div>
+
       {/* 1. KPIs Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
         {/* Empleados en periodo */}

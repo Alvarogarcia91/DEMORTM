@@ -12,6 +12,7 @@ import {
   X,
   AlertCircle,
   Info,
+  Calendar,
 } from 'lucide-react';
 
 import {
@@ -41,8 +42,12 @@ import { PayrollReviewTable } from './PayrollReviewTable';
 import { StampCenter } from './StampCenter';
 import { PayrollHistory } from './PayrollHistory';
 import { PayrollAuditDrawer } from './PayrollAuditDrawer';
+import { CiclosNominaTab } from './CiclosNominaTab';
+import { NuevoCicloWizardModal } from './NuevoCicloWizardModal';
+import { ChevronDown, Plus } from 'lucide-react';
 
 export type NominaSubTab =
+  | 'ciclos'
   | 'resumen'
   | 'personal'
   | 'asistencia'
@@ -60,8 +65,10 @@ interface ToastNotification {
 
 export const NominaPage: React.FC = () => {
   // Navigation State
-  const [activeTab, setActiveTab] = useState<NominaSubTab>('resumen');
+  const [activeTab, setActiveTab] = useState<NominaSubTab>('ciclos');
   const [isAuditDrawerOpen, setIsAuditDrawerOpen] = useState<boolean>(false);
+  const [isNewCycleWizardOpen, setIsNewCycleWizardOpen] = useState<boolean>(false);
+  const [wizardInitialValues, setWizardInitialValues] = useState<Partial<PayrollPeriod> | undefined>(undefined);
 
   // Core Data State
   const [employees, setEmployees] = useState<Employee[]>(INITIAL_MOCK_EMPLOYEES);
@@ -70,6 +77,7 @@ export const NominaPage: React.FC = () => {
   const [reconciliations] = useState<ProductionReconciliation[]>(INITIAL_MOCK_RECONCILIATIONS);
   const [calculations, setCalculations] = useState<EmployeePayroll[]>(INITIAL_MOCK_PAYROLL_CALCULATIONS);
   const [periods, setPeriods] = useState<PayrollPeriod[]>(INITIAL_MOCK_PAYROLL_PERIODS);
+  const [currentPeriodId, setCurrentPeriodId] = useState<string>('per-2026-36');
   const [auditLog, setAuditLog] = useState<PayrollAuditEntry[]>(INITIAL_MOCK_AUDIT_LOG);
 
   // Period Closing State
@@ -236,9 +244,10 @@ export const NominaPage: React.FC = () => {
 
   const isAllStamped = calculations.every((c) => c.cfdiStatus === 'timbrado');
   const timbradosCount = calculations.filter((c) => c.cfdiStatus === 'timbrado').length;
-  const currentPeriod = periods[0] || INITIAL_MOCK_PAYROLL_PERIODS[0];
+  const currentPeriod = periods.find((p) => p.id === currentPeriodId) || periods[0] || INITIAL_MOCK_PAYROLL_PERIODS[0];
 
   const tabsConfig: { id: NominaSubTab; label: string; icon: React.ReactNode; badgeCount?: number }[] = [
+    { id: 'ciclos', label: 'Ciclos', icon: <Calendar className="w-4 h-4" />, badgeCount: periods.length },
     { id: 'resumen', label: 'Resumen', icon: <LayoutDashboard className="w-4 h-4" /> },
     { id: 'personal', label: 'Personal', icon: <Users className="w-4 h-4" />, badgeCount: employees.length },
     {
@@ -263,10 +272,35 @@ export const NominaPage: React.FC = () => {
     { id: 'historial', label: 'Historial', icon: <History className="w-4 h-4" /> },
   ];
 
+  const handleCreateNewCycle = (newPeriod: PayrollPeriod) => {
+    setPeriods((prev) => [newPeriod, ...prev]);
+    setCurrentPeriodId(newPeriod.id);
+    recordAuditAction(
+      'Creación de Ciclo',
+      `Ciclo ${newPeriod.codigo} (${newPeriod.nombre}) creado con éxito en estado Borrador.`
+    );
+    addToast(
+      'Ciclo Creado',
+      `Ciclo ${newPeriod.tipo.toLowerCase()} ${newPeriod.fechaInicio} al ${newPeriod.fechaFin} creado correctamente.`,
+      'success'
+    );
+  };
+
+  const handleDuplicateCycle = (sourcePeriod: PayrollPeriod) => {
+    setWizardInitialValues({
+      tipo: sourcePeriod.tipo,
+      nombre: `${sourcePeriod.tipo} · Copia de ${sourcePeriod.codigo}`,
+      fechaInicio: '2026-09-07',
+      fechaFin: '2026-09-13',
+      fechaPago: '2026-09-14',
+    });
+    setIsNewCycleWizardOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-zinc-50/50 pb-16">
-      {/* Top Sticky Header */}
-      <div className="sticky top-0 z-30 bg-white border-b border-zinc-200 shadow-sm">
+      {/* Non-sticky Normal Header in page flow (Doc V2 Sección 2) */}
+      <div className="bg-white border-b border-zinc-200 shadow-2xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Main Title Row */}
           <div className="py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-100">
@@ -283,17 +317,52 @@ export const NominaPage: React.FC = () => {
                     </span>
                   </div>
                   <p className="text-xs text-zinc-500">
-                    Control de checadas biométricas, incidencias de piso, cálculo fiscal y dispersión de nómina RTM
+                    Control de ciclos de nómina, checadas biométricas, incidencias de piso, cálculo fiscal y timbrado
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Quick Actions Bar */}
-            <div className="flex items-center gap-2">
+            {/* Cycle Selector & Quick Actions Bar (Doc V2 Sección 17) */}
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Selector de Ciclo Activo */}
+              <div className="flex items-center gap-1.5 bg-zinc-100/90 border border-zinc-300 rounded-xl px-2.5 py-1.5 text-xs">
+                <span className="text-zinc-500 font-semibold">Ciclo:</span>
+                <select
+                  value={currentPeriodId}
+                  onChange={(e) => {
+                    setCurrentPeriodId(e.target.value);
+                    const sel = periods.find((p) => p.id === e.target.value);
+                    if (sel) {
+                      addToast('Ciclo Activo', `Se cambió al ciclo ${sel.codigo} (${sel.nombre})`, 'info');
+                    }
+                  }}
+                  className="bg-transparent font-bold text-zinc-900 focus:outline-none cursor-pointer pr-1"
+                >
+                  {periods.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.codigo} · {p.tipo} ({p.estado})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Botón + Nuevo ciclo */}
+              <button
+                onClick={() => {
+                  setWizardInitialValues(undefined);
+                  setIsNewCycleWizardOpen(true);
+                }}
+                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-white bg-theme-primary hover:bg-theme-primary-hover rounded-xl transition-all shadow-xs cursor-pointer"
+                title="Crear un nuevo ciclo de nómina mediante el asistente guiado"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>+ Nuevo ciclo</span>
+              </button>
+
               <button
                 onClick={() => setIsAuditDrawerOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-zinc-700 bg-white border border-zinc-300 rounded-lg hover:bg-zinc-50 transition-colors shadow-sm"
+                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-zinc-700 bg-white border border-zinc-300 rounded-xl hover:bg-zinc-50 transition-colors shadow-2xs cursor-pointer"
                 title="Ver registro de auditoría e historial"
               >
                 <History className="w-4 h-4 text-zinc-500" />
@@ -302,10 +371,11 @@ export const NominaPage: React.FC = () => {
 
               <button
                 onClick={() => {
-                  addToast('Recálculo Completo', 'Semana 36 recalculada con éxito desde registros de asistencia.', 'info');
-                  recordAuditAction('Recálculo de Semana', 'Recálculo masivo de 30 colaboradores.');
+                  addToast('Recálculo Completo', `Pre-nómina recalculada con éxito para ${currentPeriod.codigo}.`, 'info');
+                  recordAuditAction('Recálculo de Nómina', `Recálculo masivo de colaboradores del ciclo ${currentPeriod.codigo}.`);
                 }}
-                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-zinc-700 bg-white border border-zinc-300 rounded-lg hover:bg-zinc-50 transition-colors shadow-sm"
+                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-zinc-700 bg-white border border-zinc-300 rounded-xl hover:bg-zinc-50 transition-colors shadow-2xs cursor-pointer"
+                title="Recalcular importes a partir de incidencias y checadas"
               >
                 <RefreshCw className="w-3.5 h-3.5 text-zinc-500" />
                 <span>Recalcular</span>
@@ -313,7 +383,7 @@ export const NominaPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Subtabs Navigation (Navegación principal) */}
+          {/* Subtabs Navigation (Navegación en flujo normal) */}
           <div className="flex items-center gap-1 overflow-x-auto no-scrollbar pt-1">
             {tabsConfig.map((tab) => {
               const isActive = activeTab === tab.id;
@@ -321,7 +391,7 @@ export const NominaPage: React.FC = () => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`inline-flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium border-b-2 whitespace-nowrap transition-colors ${
+                  className={`inline-flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium border-b-2 whitespace-nowrap transition-colors cursor-pointer ${
                     isActive
                       ? 'border-zinc-900 text-zinc-900 font-semibold'
                       : 'border-transparent text-zinc-500 hover:text-zinc-800 hover:border-zinc-300'
@@ -349,16 +419,37 @@ export const NominaPage: React.FC = () => {
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
-        {/* Tarjeta compacta no-sticky de resumen de progreso de flujo */}
-        <PayrollCloseStepper
-          period={currentPeriod}
-          activeTab={activeTab}
-          onSelectTab={(tabKey) => setActiveTab(tabKey as NominaSubTab)}
-          incidenciasPendientesCount={incidents.filter((i) => i.estado === 'pendiente_revision' || i.estado === 'detectada').length}
-          empleadosRequierenRevisionCount={calculations.filter((c) => c.estadoValidacion === 'requiere_revision').length}
-          isTimbrada={isAllStamped}
-          isCerrada={isPayrollClosed}
-        />
+        {/* Tarjeta compacta no-sticky de resumen de progreso de flujo (visible en pestañas operativas) */}
+        {activeTab !== 'ciclos' && activeTab !== 'historial' && (
+          <PayrollCloseStepper
+            period={currentPeriod}
+            activeTab={activeTab}
+            onSelectTab={(tabKey) => setActiveTab(tabKey as NominaSubTab)}
+            incidenciasPendientesCount={incidents.filter((i) => i.estado === 'pendiente_revision' || i.estado === 'detectada').length}
+            empleadosRequierenRevisionCount={calculations.filter((c) => c.estadoValidacion === 'requiere_revision').length}
+            isTimbrada={isAllStamped}
+            isCerrada={isPayrollClosed}
+          />
+        )}
+
+        {/* Tab 1: Ciclos de Nómina (Puerta de entrada V2) */}
+        {activeTab === 'ciclos' && (
+          <CiclosNominaTab
+            periods={periods}
+            currentPeriodId={currentPeriodId}
+            onSelectPeriod={(pId) => {
+              setCurrentPeriodId(pId);
+              setActiveTab('resumen');
+            }}
+            onOpenNewCycleWizard={() => {
+              setWizardInitialValues(undefined);
+              setIsNewCycleWizardOpen(true);
+            }}
+            onDuplicateCycle={handleDuplicateCycle}
+            onTriggerToast={handleToast}
+          />
+        )}
+
         {activeTab === 'resumen' && (
           <PayrollDashboard
             period={currentPeriod}
@@ -386,6 +477,7 @@ export const NominaPage: React.FC = () => {
             attendanceWeeks={attendance}
             reconciliations={reconciliations}
             onTriggerToast={handleToast}
+            onUpdateAttendance={(updated) => setAttendance(updated)}
           />
         )}
 
@@ -432,12 +524,22 @@ export const NominaPage: React.FC = () => {
           <PayrollHistory
             periods={periods}
             onTriggerToast={addToast}
-            onSelectPeriodForReview={() => {
+            onSelectPeriodForReview={(pId) => {
+              setCurrentPeriodId(pId);
               setActiveTab('prenomina');
             }}
           />
         )}
       </main>
+
+      {/* Wizard Modal: Nuevo Ciclo de Nómina (4 pasos) */}
+      <NuevoCicloWizardModal
+        isOpen={isNewCycleWizardOpen}
+        onClose={() => setIsNewCycleWizardOpen(false)}
+        employees={employees}
+        onCreateCycle={handleCreateNewCycle}
+        initialValues={wizardInitialValues}
+      />
 
       {/* Audit & Traceability Drawer */}
       <PayrollAuditDrawer
