@@ -12,6 +12,20 @@ export interface ModuleDefinition {
 
 export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
+    key: 'presupuestos',
+    label: 'Presupuestos',
+    category: 'finanzas',
+    categoryLabel: 'Finanzas & Facturación',
+    description: 'Planeación, consumo y desviaciones presupuestales por centro de costo.',
+  },
+  {
+    key: 'activos-fijos',
+    label: 'Activos Fijos',
+    category: 'finanzas',
+    categoryLabel: 'Finanzas & Facturación',
+    description: 'Control demo de activos, depreciación y movimientos financieros.',
+  },
+  {
     key: 'crm',
     label: 'CRM',
     category: 'comercial',
@@ -163,6 +177,8 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'tesoreria': true,
   'contabilidad': true,
   'reportes-financieros': true,
+  'presupuestos': true,
+  'activos-fijos': true,
   'nomina': true,
   'mantenimiento': true,
   'centro-alertas': true,

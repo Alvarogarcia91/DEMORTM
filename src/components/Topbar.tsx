@@ -55,6 +55,8 @@ export const Topbar: React.FC<TopbarProps> = ({
  activeTab === 'tesoreria' ? 'Finanzas · Tesorería' :
  activeTab === 'contabilidad' ? 'Finanzas · Contabilidad' :
  activeTab === 'reportes-financieros' ? 'Finanzas · Reportes' :
+ activeTab === 'presupuestos' ? 'Finanzas · Presupuestos' :
+ activeTab === 'activos-fijos' ? 'Finanzas · Activos Fijos' :
  activeTab === 'facturacion' ? 'Facturación' :
  activeTab === 'cxc' ? 'Cuentas por Cobrar' :
  activeTab === 'cxp' ? 'Cuentas por Pagar' :

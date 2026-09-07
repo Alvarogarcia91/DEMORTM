@@ -16,7 +16,7 @@ import { EmbarquesPage } from './Embarques/EmbarquesPage';
 import { FacturacionPage } from './Finanzas/FacturacionPage';
 import { CxcPage } from './Finanzas/CxcPage';
 import { CxpPage } from './Finanzas/CxpPage';
-import { FinanceHub } from './Finanzas/FinanceHub';
+import { FinanceWorkspace } from './Finanzas/FinanceWorkspace';
 import { NominaPage } from './Nomina/NominaPage';
 import { MantenimientoPage } from './Mantenimiento/MantenimientoPage';
 import { CentroAlertasPage } from './CentroAlertasPage';
@@ -524,10 +524,17 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
           />
         );
       case 'finanzas':
+        return <FinanceWorkspace area="dashboard" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
       case 'tesoreria':
+        return <FinanceWorkspace area="treasury" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
       case 'contabilidad':
+        return <FinanceWorkspace area="accounting" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
+      case 'presupuestos':
+        return <FinanceWorkspace area="budgets" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
+      case 'activos-fijos':
+        return <FinanceWorkspace area="assets" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
       case 'reportes-financieros':
-        return <FinanceHub salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
+        return <FinanceWorkspace area="reports" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
       case 'nomina':
         return <NominaPage />;
       case 'mantenimiento':
