@@ -12,8 +12,8 @@ export type PickingStrategyType =
 
 export interface PendingPickingDemand {
   id: string;
-  referenceFolio: string; // ej. 'OTP-2026-0044' o 'PED-2026-0184'
-  type: 'Orden de Traspaso' | 'Pedido de Cliente' | 'Surtido Interno';
+  referenceFolio: string; // ej. 'OP-2026-0882', 'OP-2026-0891', 'PED-2026-0410'
+  type: 'Orden de Traspaso' | 'Pedido de Cliente' | 'Surtido Interno' | 'Surtido a Producción';
   warehouseId: string;
   warehouseName: string;
   destinationName: string;
@@ -40,14 +40,14 @@ export interface PickPlanStop {
   aisle: string; // ej. 'Pasillo A'
   rackPosition: string; // ej. 'Posición 03'
   level: string; // ej. 'Nivel B'
-  uid: string; // ej. 'SC-UID-2026-000184'
+  uid: string; // ej. 'BOB-RTM-2026-00041'
   sku: string;
   productName: string;
   brand: string;
   size: string;
   lotNumber: string;
   ageDays: number;
-  strategyReason: string; // ej. 'Unidad más antigua del SKU y de fácil acceso en piso.'
+  strategyReason: string; // ej. 'Bobina con mayor tiempo FIFO para corrida flexográfica.'
   strategyBadge: string;
   status: 'Pendiente' | 'Recolectando' | 'Recolectada';
   pickedAt?: string;
@@ -75,14 +75,14 @@ export interface StrategyMetricComparison {
 export interface PickOrder {
   id: string;
   folio: string; // ej. 'OR-2026-0118'
-  referenceFolio: string; // ej. 'OTP-2026-0044'
-  type: 'Orden de Traspaso' | 'Pedido de Cliente' | 'Surtido Interno';
+  referenceFolio: string; // ej. 'OP-2026-0882'
+  type: 'Orden de Traspaso' | 'Pedido de Cliente' | 'Surtido Interno' | 'Surtido a Producción';
   strategyType: PickingStrategyType;
   strategyName: string;
   warehouseId: string;
   warehouseName: string;
   destinationName: string;
-  tempStagingLocation: string; // ej. 'STG-OUT-01'
+  tempStagingLocation: string; // ej. 'STG-OP-01'
   priority: 'Alta' | 'Urgente' | 'Normal';
   createdAt: string;
   completedAt?: string;
@@ -101,121 +101,121 @@ export const STRATEGY_COMPARISONS: Record<PickingStrategyType, StrategyMetricCom
     type: 'RECOMMENDED',
     label: 'Recomendada',
     badge: 'Recomendada',
-    stopsCount: 9,
-    estimatedDistanceMeters: 238,
-    fifoCompliancePercentage: 82,
+    stopsCount: 6,
+    estimatedDistanceMeters: 145,
+    fifoCompliancePercentage: 88,
     locationsFreedCount: 1,
-    fefoCriticalCount: 2,
+    fefoCriticalCount: 1,
     ratingStars: 5,
     reasonTag: 'Recomendada',
-    description: 'Combina antigüedad, prioridad de salida, distancia y aprovechamiento de ubicaciones para generar una propuesta equilibrada.',
-    panelTitle: 'Recomendada — Análisis de recorrido',
-    panelSubtitle: 'Combina antigüedad FIFO, cercanía de recorrido y disponibilidad inmediata para reducir tiempo operativo sin perder rotación.',
+    description: 'Combina antigüedad FIFO, cercanía entre bahías y accesibilidad en racks para acelerar el suministro a prensas.',
+    panelTitle: 'Recomendada — Optimización de Surtido a Línea',
+    panelSubtitle: 'Prioriza bobinas y tarimas contiguas para reducir tiempos de traslado a piso de producción sin comprometer rotación.',
   },
   SUGGESTED: {
     type: 'RECOMMENDED',
     label: 'Recomendada',
     badge: 'Recomendada',
-    stopsCount: 9,
-    estimatedDistanceMeters: 238,
-    fifoCompliancePercentage: 82,
+    stopsCount: 6,
+    estimatedDistanceMeters: 145,
+    fifoCompliancePercentage: 88,
     locationsFreedCount: 1,
-    fefoCriticalCount: 2,
+    fefoCriticalCount: 1,
     ratingStars: 5,
     reasonTag: 'Recomendada',
-    description: 'Combina antigüedad, prioridad de salida, distancia y aprovechamiento de ubicaciones para generar una propuesta equilibrada.',
-    panelTitle: 'Recomendada — Análisis de recorrido',
-    panelSubtitle: 'Combina antigüedad FIFO, cercanía de recorrido y disponibilidad inmediata para reducir tiempo operativo sin perder rotación.',
+    description: 'Combina antigüedad FIFO, cercanía entre bahías y accesibilidad en racks para acelerar el suministro a prensas.',
+    panelTitle: 'Recomendada — Optimización de Surtido a Línea',
+    panelSubtitle: 'Prioriza bobinas y tarimas contiguas para reducir tiempos de traslado a piso de producción sin comprometer rotación.',
   },
   FIFO: {
     type: 'FIFO',
     label: 'FIFO Estricto',
     badge: 'Rotación',
-    stopsCount: 12,
-    estimatedDistanceMeters: 312,
+    stopsCount: 8,
+    estimatedDistanceMeters: 210,
     fifoCompliancePercentage: 100,
     locationsFreedCount: 0,
     fefoCriticalCount: 0,
     ratingStars: 4,
     reasonTag: 'FIFO Estricto',
-    description: 'Primero en entrar, primero en salir. Se priorizan estrictamente los colchones con mayor tiempo en almacén para asegurar la rotación natural del inventario.',
-    panelTitle: 'FIFO Estricto — Rotación por Antigüedad',
-    panelSubtitle: 'Prioriza estrictamente los colchones con mayor tiempo en almacén para asegurar la rotación natural.',
+    description: 'Primero en entrar, primero en salir. Prioriza sustratos e insumos con mayor tiempo de almacenamiento para evitar envejecimiento de materia prima.',
+    panelTitle: 'FIFO Estricto — Rotación de Materia Prima',
+    panelSubtitle: 'Prioriza estrictamente las bobinas y tarimas de mayor antigüedad en almacén.',
   },
   FEFO: {
     type: 'FEFO',
     label: 'FEFO / Vigencia',
     badge: 'Vigencia',
-    stopsCount: 10,
-    estimatedDistanceMeters: 256,
-    fifoCompliancePercentage: 65,
+    stopsCount: 7,
+    estimatedDistanceMeters: 175,
+    fifoCompliancePercentage: 70,
     locationsFreedCount: 1,
     fefoCriticalCount: 3,
     ratingStars: 4,
     reasonTag: 'FEFO / Vigencia',
-    description: 'Prioriza unidades con fecha objetivo de rotación más próxima o modelos de cambio de catálogo para acelerar su salida comercial.',
-    panelTitle: 'FEFO / Vigencia — Prioridad de Catálogo',
-    panelSubtitle: 'Prioriza fechas, lotes con vencimiento objetivo o modelos próximos a cambio de catálogo.',
+    description: 'Prioriza tintas, adhesivos y sustratos especiales con fecha de caducidad o tiempo de cura objetivo más próximo.',
+    panelTitle: 'FEFO / Vigencia — Químicos y Tintas',
+    panelSubtitle: 'Prioriza lotes de tintas Pantone, barnices UV y solventes próximos a vencimiento técnico.',
   },
   SHORTEST_PATH: {
     type: 'SHORTEST_PATH',
     label: 'Menor Recorrido',
     badge: 'Velocidad',
-    stopsCount: 7,
-    estimatedDistanceMeters: 184,
-    fifoCompliancePercentage: 45,
+    stopsCount: 5,
+    estimatedDistanceMeters: 98,
+    fifoCompliancePercentage: 55,
     locationsFreedCount: 0,
     fefoCriticalCount: 0,
     ratingStars: 4,
     reasonTag: 'Menor Recorrido',
-    description: 'Minimiza la distancia recorrida en pasillos agrupando las posiciones contiguas y niveles ergonómicos sin priorizar antigüedad.',
-    panelTitle: 'Menor Recorrido — Optimización de Pasillos',
-    panelSubtitle: 'Minimiza la distancia recorrida en pasillos agrupando posiciones contiguas.',
+    description: 'Minimiza la distancia de montacargas agrupando posiciones contiguas en Pasillos A y B de ALM-MP.',
+    panelTitle: 'Menor Recorrido — Despacho Urgente a Prensa',
+    panelSubtitle: 'Minimiza la distancia recorrida agrupando posiciones adyacentes en racks de acceso rápido.',
   },
   EMPTY_LOCATION: {
     type: 'EMPTY_LOCATION',
     label: 'Vaciar Ubicación',
     badge: 'Liberación',
-    stopsCount: 8,
-    estimatedDistanceMeters: 274,
-    fifoCompliancePercentage: 76,
+    stopsCount: 6,
+    estimatedDistanceMeters: 165,
+    fifoCompliancePercentage: 78,
     locationsFreedCount: 2,
     fefoCriticalCount: 1,
     ratingStars: 5,
     reasonTag: 'Vacía Ubicación',
-    description: 'Prioriza posiciones donde la selección puede retirar todas las unidades disponibles del artículo, liberando espacio y reduciendo inventario fragmentado.',
+    description: 'Prioriza tarimas donde el retiro complete la extracción total de la posición para liberar espacio de recepción en ALM-MP.',
     panelTitle: 'Vaciar Ubicación — Consolidación de Espacio',
-    panelSubtitle: 'La selección prioriza posiciones que pueden quedar sin existencias del artículo al completar esta recolección.',
+    panelSubtitle: 'Prioriza posiciones que quedarán libres tras el surtido para habilitar recepción de nuevas bobinas.',
   },
   SHOWROOM_PRIORITY: {
     type: 'SHOWROOM_PRIORITY',
-    label: 'Prioridad Showroom',
-    badge: 'Exhibición',
-    stopsCount: 8,
-    estimatedDistanceMeters: 210,
-    fifoCompliancePercentage: 70,
+    label: 'Prioridad Muestra / QA',
+    badge: 'Muestreo',
+    stopsCount: 5,
+    estimatedDistanceMeters: 130,
+    fifoCompliancePercentage: 65,
     locationsFreedCount: 1,
     fefoCriticalCount: 1,
     ratingStars: 3,
-    reasonTag: 'Showroom',
-    description: 'Prioriza unidades de reposición para renovar exhibición en piso de venta o transferir piezas para montaje en tienda.',
-    panelTitle: 'Prioridad Showroom — Renovación de Exhibición',
-    panelSubtitle: 'Prioriza unidades destinadas a muestra y rotación en piso de venta.',
+    reasonTag: 'Muestreo QA',
+    description: 'Prioriza retiro de pliegos y bobinas para tiro de prueba, calibración de color espectral o validación de suaje.',
+    panelTitle: 'Prioridad Muestreo — Calibración de Prensa',
+    panelSubtitle: 'Surtido de material para pruebas de tono espectral y aprobación de cliente.',
   },
   MANUAL: {
     type: 'MANUAL',
     label: 'Manual',
     badge: 'Personalizado',
-    stopsCount: 9,
-    estimatedDistanceMeters: 240,
+    stopsCount: 6,
+    estimatedDistanceMeters: 150,
     fifoCompliancePercentage: 70,
     locationsFreedCount: 0,
     fefoCriticalCount: 1,
     ratingStars: 3,
     reasonTag: 'Manual',
-    description: 'Selección libre de unidades físicas por el supervisor o planeador de operaciones sin sugerencia prioritaria.',
-    panelTitle: 'Manual — Selección Libre',
-    panelSubtitle: 'El supervisor o planeador escoge las unidades serializadas libremente sin sugerencia del sistema.',
+    description: 'Selección libre de bobinas y tarimas por el supervisor de almacén o planeador de producción sin sugerencia automática.',
+    panelTitle: 'Manual — Asignación Directa',
+    panelSubtitle: 'El supervisor escoge las unidades serializadas libremente conforme al programa de prensas.',
   },
 };
 
@@ -260,28 +260,20 @@ export function calculateUnitsForStrategy(
       sortedStock.sort((a, b) => (b.ageDays || 0) - (a.ageDays || 0));
       break;
     case 'FEFO':
-      sortedStock.sort((a, b) => {
-        if (a.lotNumber.includes('W31') && !b.lotNumber.includes('W31')) return -1;
-        if (!a.lotNumber.includes('W31') && b.lotNumber.includes('W31')) return 1;
-        return (b.ageDays || 0) - (a.ageDays || 0);
-      });
+      sortedStock.sort((a, b) => (b.ageDays || 0) - (a.ageDays || 0));
       break;
     case 'SHORTEST_PATH':
       sortedStock.sort((a, b) => a.location.localeCompare(b.location));
       break;
     case 'EMPTY_LOCATION':
-      sortedStock.sort((a, b) => {
-        const countA = availableStock.filter((i) => i.location === a.location && i.sku === sku).length;
-        const countB = availableStock.filter((i) => i.location === b.location && i.sku === sku).length;
-        return countA - countB;
-      });
+      sortedStock.sort((a, b) => a.location.localeCompare(b.location));
       break;
     case 'RECOMMENDED':
     case 'SUGGESTED':
     default:
       sortedStock.sort((a, b) => {
-        const scoreA = (a.ageDays || 0) * 1.5 - (a.location.startsWith('A-A') ? 0 : 10);
-        const scoreB = (b.ageDays || 0) * 1.5 - (b.location.startsWith('A-A') ? 0 : 10);
+        const scoreA = (a.ageDays || 0) * 1.5;
+        const scoreB = (b.ageDays || 0) * 1.5;
         return scoreB - scoreA;
       });
       break;
@@ -290,25 +282,25 @@ export function calculateUnitsForStrategy(
   const selected = sortedStock.slice(0, requestedQuantity);
 
   return selected.map((unit, idx) => {
-    let reason = 'Unidad seleccionada por algoritmo de optimización.';
-    let badge = 'Recomendada';
+    let reason = 'Unidad seleccionada según estrategia operativa.';
+    let badge = 'Surtido';
 
     if (strategy === 'FIFO') {
-      reason = `Unidad con ${unit.ageDays} días de antigüedad en almacén. Cumple regla FIFO estricta.`;
+      reason = `Lote ${unit.lotNumber} con ${unit.ageDays} días en almacén. Mayor antigüedad en inventario.`;
       badge = 'FIFO';
     } else if (strategy === 'FEFO') {
-      reason = `Lote ${unit.lotNumber} próximo a cambio de catálogo comercial.`;
+      reason = `Lote ${unit.lotNumber} con prioridad de consumo por estabilidad química/curado.`;
       badge = 'FEFO';
     } else if (strategy === 'SHORTEST_PATH') {
-      reason = `Ubicación ${unit.location} optimiza el trayecto por pasillos contiguos.`;
+      reason = `Ubicación ${unit.location} optimiza el trayecto por pasillos contiguos de ALM-MP.`;
       badge = 'Menor recorrido';
     } else if (strategy === 'EMPTY_LOCATION') {
-      reason = `Al retirar esta unidad se libera la posición ${unit.location}.`;
+      reason = `Al retirar esta tarima/bobina se libera la posición ${unit.location}.`;
       badge = 'Vacía Ubicación';
     } else if (strategy === 'RECOMMENDED' || strategy === 'SUGGESTED') {
       reason = idx === 0 
-        ? 'Unidad más antigua del SKU y de fácil acceso en nivel ergonómico.'
-        : 'Posición contigua en pasillo para reducir tiempo de recorrido.';
+        ? 'Bobina/tarima con mayor antigüedad FIFO y acceso ergonómico en rack.'
+        : 'Posición contigua en pasillo para reducir tiempo de maniobra con montacargas.';
       badge = idx === 0 ? 'FIFO' : 'Recomendada';
     }
 
@@ -329,225 +321,121 @@ export function calculateUnitsForStrategy(
 }
 
 export const INITIAL_PENDING_PICKING_DEMANDS: PendingPickingDemand[] = [
-  // 1. CEDIS Norte - Traspaso Sucursal Valle Oriente
+  // 1. OP-2026-0882: Surtido a Prensa Flexo 1 (Nilpeter FB-3300)
   {
     id: 'dem-1',
-    referenceFolio: 'OTP-2026-0044',
-    type: 'Orden de Traspaso',
+    referenceFolio: 'OP-2026-0882',
+    type: 'Surtido a Producción',
     warehouseId: 'wh-mty-norte',
-    warehouseName: 'CEDIS Monterrey Norte',
-    destinationName: 'Sucursal Valle Oriente',
-    articlesCount: 3,
-    totalUnits: 6,
-    priority: 'Alta',
-    requiredDate: '27 Ago 2026',
-    status: 'Pendiente de planeación',
-    itemsSummary: [
-      { sku: 'SC-NAYT-FLOW-IND', productName: 'Nayt Colchón Flow Basic White Individual', brand: 'Nayt', size: 'Individual', quantity: 2 },
-      { sku: 'SC-NAYT-FLOW-MAT', productName: 'Nayt Colchón Flow Basic White Matrimonial', brand: 'Nayt', size: 'Matrimonial', quantity: 2 },
-      { sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', brand: 'Spring Air', size: 'Individual', quantity: 2 },
-    ],
-  },
-  // 2. CEDIS Norte - Pedido Hotel Boutique Las Lomas
-  {
-    id: 'dem-2',
-    referenceFolio: 'PED-2026-0184',
-    type: 'Pedido de Cliente',
-    warehouseId: 'wh-mty-norte',
-    warehouseName: 'CEDIS Monterrey Norte',
-    destinationName: 'Hotel Boutique Las Lomas S.A. de C.V.',
+    warehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
+    destinationName: 'Línea Flexo 1 (Prensa Nilpeter FB-3300)',
     articlesCount: 2,
-    totalUnits: 14,
-    priority: 'Urgente',
-    requiredDate: '28 Ago 2026',
-    status: 'Pendiente de planeación',
-    itemsSummary: [
-      { sku: 'SC-REST-ORTO-MAT', productName: 'Restonic Ortopédico Extra Firme Matrimonial', brand: 'Restonic', size: 'Matrimonial', quantity: 10 },
-      { sku: 'SC-REST-ORTO-KS', productName: 'Restonic Ortopédico Extra Firme King Size', brand: 'Restonic', size: 'King Size', quantity: 4 },
-    ],
-  },
-  // 3. CEDIS Norte - Pedido Corporativo Desarrollos Residenciales
-  {
-    id: 'dem-3',
-    referenceFolio: 'PED-2026-0185',
-    type: 'Pedido de Cliente',
-    warehouseId: 'wh-mty-norte',
-    warehouseName: 'CEDIS Monterrey Norte',
-    destinationName: 'Desarrollos Residenciales del Norte S.A.',
-    articlesCount: 2,
-    totalUnits: 8,
-    priority: 'Normal',
-    requiredDate: '29 Ago 2026',
-    status: 'Pendiente de planeación',
-    itemsSummary: [
-      { sku: 'SC-SEAL-POST-QS', productName: 'Sealy Posturepedic Crown Jewel Queen Size', brand: 'Sealy', size: 'Queen Size', quantity: 4 },
-      { sku: 'SC-NAYT-FLOW-MAT', productName: 'Nayt Colchón Flow Basic White Matrimonial', brand: 'Nayt', size: 'Matrimonial', quantity: 4 },
-    ],
-  },
-  // 4. CEDIS Sur - Reabastecimiento Sucursal Cumbres
-  {
-    id: 'dem-4',
-    referenceFolio: 'OTP-2026-0045',
-    type: 'Orden de Traspaso',
-    warehouseId: 'wh-mty-sur',
-    warehouseName: 'CEDIS Monterrey Sur',
-    destinationName: 'Sucursal Cumbres',
-    articlesCount: 2,
-    totalUnits: 8,
-    priority: 'Alta',
-    requiredDate: '27 Ago 2026',
-    status: 'Pendiente de planeación',
-    itemsSummary: [
-      { sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', brand: 'Spring Air', size: 'Individual', quantity: 5 },
-      { sku: 'SC-REST-ORTO-MAT', productName: 'Restonic Ortopédico Extra Firme Matrimonial', brand: 'Restonic', size: 'Matrimonial', quantity: 3 },
-    ],
-  },
-  // 5. CEDIS Sur - Pedido Cliente Particular Carretera Nacional
-  {
-    id: 'dem-5',
-    referenceFolio: 'PED-2026-0186',
-    type: 'Pedido de Cliente',
-    warehouseId: 'wh-mty-sur',
-    warehouseName: 'CEDIS Monterrey Sur',
-    destinationName: 'Roberto Cantú Garza (Ruta Carretera Nacional)',
-    articlesCount: 2,
-    totalUnits: 3,
-    priority: 'Urgente',
-    requiredDate: '27 Ago 2026',
-    status: 'Pendiente de planeación',
-    itemsSummary: [
-      { sku: 'SC-SPA-REC-KS', productName: 'Spring Air Colchón Record King Size', brand: 'Spring Air', size: 'King Size', quantity: 1 },
-      { sku: 'SC-REST-ORTO-MAT', productName: 'Restonic Ortopédico Extra Firme Matrimonial', brand: 'Restonic', size: 'Matrimonial', quantity: 2 },
-    ],
-  },
-  // 6. Sucursal Valle Oriente - Surtido Entrega Domicilio
-  {
-    id: 'dem-6',
-    referenceFolio: 'PED-2026-0187',
-    type: 'Pedido de Cliente',
-    warehouseId: 'wh-suc-valle-oriente',
-    warehouseName: 'Sucursal Valle Oriente',
-    destinationName: 'Dra. Gabriela Morales (Entrega San Pedro)',
-    articlesCount: 1,
-    totalUnits: 2,
-    priority: 'Normal',
-    requiredDate: '28 Ago 2026',
-    status: 'Pendiente de planeación',
-    itemsSummary: [
-      { sku: 'SC-NAYT-FLOW-IND', productName: 'Nayt Colchón Flow Basic White Individual', brand: 'Nayt', size: 'Individual', quantity: 2 },
-    ],
-  },
-  // 7. Sucursal Cumbres - Surtido Cliente Local
-  {
-    id: 'dem-7',
-    referenceFolio: 'PED-2026-0188',
-    type: 'Pedido de Cliente',
-    warehouseId: 'wh-suc-cumbres',
-    warehouseName: 'Sucursal Cumbres',
-    destinationName: 'Inmobiliaria & Rentas Cumbres S.A.',
-    articlesCount: 1,
-    totalUnits: 2,
-    priority: 'Normal',
-    requiredDate: '28 Ago 2026',
-    status: 'Pendiente de planeación',
-    itemsSummary: [
-      { sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', brand: 'Spring Air', size: 'Individual', quantity: 2 },
-    ],
-  },
-  // 8. CEDIS Norte - Pedido Inmobiliaria & Rentas Cumbres
-  {
-    id: 'dem-8',
-    referenceFolio: 'PED-2026-0101',
-    type: 'Pedido de Cliente',
-    warehouseId: 'wh-mty-norte',
-    warehouseName: 'CEDIS Monterrey Norte',
-    destinationName: 'Inmobiliaria & Rentas Cumbres S.A.',
-    articlesCount: 1,
     totalUnits: 4,
     priority: 'Alta',
-    requiredDate: '29 Ago 2026',
+    requiredDate: '07 Sep 2026',
     status: 'Pendiente de planeación',
     itemsSummary: [
-      { sku: 'SC-REST-ORTO-MAT', productName: 'Restonic Ortopédico Extra Firme Matrimonial', brand: 'Restonic', size: 'Matrimonial', quantity: 4 },
+      { sku: 'PEL-BOPP-BLA', productName: 'Película BOPP Blanco Brillante 60 mic', brand: 'Fasson Avery', size: 'Bobina 330mm x 2500m', quantity: 2 },
+      { sku: 'TIN-PAN-186C', productName: 'Tinta Gráfica Pantone Red 186 C', brand: 'Sun Chemical', size: 'Cubeta 5 kg', quantity: 2 },
     ],
   },
-  // 9. CEDIS Norte - Pedido Hotel Boutique Las Lomas
+  // 2. OP-2026-0891: Surtido a Prensa Offset Heidelberg Speedmaster CX 102
   {
-    id: 'dem-9',
-    referenceFolio: 'PED-2026-0107',
-    type: 'Pedido de Cliente',
+    id: 'dem-2',
+    referenceFolio: 'OP-2026-0891',
+    type: 'Surtido a Producción',
     warehouseId: 'wh-mty-norte',
-    warehouseName: 'CEDIS Monterrey Norte',
-    destinationName: 'Hotel Boutique Las Lomas',
+    warehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
+    destinationName: 'Línea Offset (Heidelberg CX 102 - 6 Colores)',
     articlesCount: 2,
-    totalUnits: 8,
-    priority: 'Alta',
-    requiredDate: '30 Ago 2026',
-    status: 'Pendiente de planeación',
-    itemsSummary: [
-      { sku: 'SC-REST-ORTO-KS', productName: 'Restonic Ortopédico Extra Firme King Size', brand: 'Restonic', size: 'King Size', quantity: 4 },
-      { sku: 'SC-SPA-REC-MAT', productName: 'Spring Air Colchón Record Matrimonial', brand: 'Spring Air', size: 'Matrimonial', quantity: 4 },
-    ],
-  },
-  // 10. CEDIS Norte - Pedido Residencial Roberto Cantú
-  {
-    id: 'dem-10',
-    referenceFolio: 'PED-2026-0124',
-    type: 'Pedido de Cliente',
-    warehouseId: 'wh-mty-norte',
-    warehouseName: 'CEDIS Monterrey Norte',
-    destinationName: 'Roberto Cantú Garza (San Pedro)',
-    articlesCount: 1,
-    totalUnits: 1,
-    priority: 'Normal',
-    requiredDate: '29 Ago 2026',
-    status: 'Pendiente de planeación',
-    itemsSummary: [
-      { sku: 'SC-SPA-REC-KS', productName: 'Spring Air Colchón Record King Size', brand: 'Spring Air', size: 'King Size', quantity: 1 },
-    ],
-  },
-  // 11. CEDIS Norte - Pedido Corporativo Valle Real
-  {
-    id: 'dem-11',
-    referenceFolio: 'PED-2026-0125',
-    type: 'Pedido de Cliente',
-    warehouseId: 'wh-mty-norte',
-    warehouseName: 'CEDIS Monterrey Norte',
-    destinationName: 'Corporativo Valle Real S.A.',
-    articlesCount: 1,
-    totalUnits: 20,
+    totalUnits: 6,
     priority: 'Urgente',
-    requiredDate: '01 Sep 2026',
+    requiredDate: '07 Sep 2026',
     status: 'Pendiente de planeación',
     itemsSummary: [
-      { sku: 'SC-NAYT-FLOW-MAT', productName: 'Nayt Colchón Flow Basic White Matrimonial', brand: 'Nayt', size: 'Matrimonial', quantity: 20 },
+      { sku: 'PAP-COU-090', productName: 'Papel Couché Brillante 90g - 70x100 cm', brand: 'Bio-Pappel', size: 'Tarima 10,000 pliegos', quantity: 4 },
+      { sku: 'TIN-PROC-BLK', productName: 'Tinta Process Black Flexo/Offset', brand: 'Sun Chemical', size: 'Cubeta 5 kg', quantity: 2 },
+    ],
+  },
+  // 3. OP-2026-0904: Surtido a Línea Barniz UV & Troquelado Bobst
+  {
+    id: 'dem-3',
+    referenceFolio: 'OP-2026-0904',
+    type: 'Surtido a Producción',
+    warehouseId: 'wh-mty-norte',
+    warehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
+    destinationName: 'Línea Troquel & Barniz (Bobst Novacut 106)',
+    articlesCount: 2,
+    totalUnits: 5,
+    priority: 'Normal',
+    requiredDate: '08 Sep 2026',
+    status: 'Pendiente de planeación',
+    itemsSummary: [
+      { sku: 'CAR-SBS-14P', productName: 'Cartulina SBS Calibre 14 pts - 70x95 cm', brand: 'Bio-Pappel', size: 'Tarima 5,000 hojas', quantity: 3 },
+      { sku: 'BAR-UV-GLOSS', productName: 'Barniz UV Alto Brillo Gráfico', brand: 'Siegwerk', size: 'Tambo 200 kg', quantity: 2 },
+    ],
+  },
+  // 4. OP-2026-0912: Surtido a Línea Flexo 2 (Mark Andy 2200)
+  {
+    id: 'dem-4',
+    referenceFolio: 'OP-2026-0912',
+    type: 'Surtido a Producción',
+    warehouseId: 'wh-mty-norte',
+    warehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
+    destinationName: 'Línea Flexo 2 (Mark Andy 2200)',
+    articlesCount: 2,
+    totalUnits: 4,
+    priority: 'Alta',
+    requiredDate: '08 Sep 2026',
+    status: 'Pendiente de planeación',
+    itemsSummary: [
+      { sku: 'PAP-TERM-DIR', productName: 'Papel Térmico Directo Autoadhesivo', brand: 'Fasson Avery', size: 'Bobina 250mm x 2000m', quantity: 2 },
+      { sku: 'TIN-PROC-BLK', productName: 'Tinta Process Black Flexo/Offset', brand: 'Sun Chemical', size: 'Cubeta 5 kg', quantity: 2 },
+    ],
+  },
+  // 5. PED-2026-0410: Despacho PT a Laboratorios Medifarma
+  {
+    id: 'dem-5',
+    referenceFolio: 'PED-2026-0410',
+    type: 'Pedido de Cliente',
+    warehouseId: 'wh-mty-sur',
+    warehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
+    destinationName: 'Laboratorios Medifarma S.A. de C.V. (Parque Industrial Reynosa)',
+    articlesCount: 2,
+    totalUnits: 5,
+    priority: 'Urgente',
+    requiredDate: '07 Sep 2026',
+    status: 'Pendiente de planeación',
+    itemsSummary: [
+      { sku: 'ETQ-FAR-VIL', productName: 'Etiqueta Farmacéutica Vial 10ml - PT', brand: 'RTM Packaging', size: 'Rollo 5,000 pzas', quantity: 3 },
+      { sku: 'FOL-MED-PLE', productName: 'Folleto Médico Farmacéutico Plegado 4 Cuerpos', brand: 'RTM Packaging', size: 'Caja 1,000 pzas', quantity: 2 },
     ],
   },
 ];
 
 export const INITIAL_PICK_ORDERS: PickOrder[] = [
   // ==========================================
-  // CEDIS MONTERREY NORTE
+  // ALMACÉN MATERIA PRIMA (ALM-MP) - NAVE 1
   // ==========================================
-  // 1. En proceso · Estrategia Recomendada
+  // 1. En proceso · Surtido OP-2026-0882 (Flexo 1)
   {
     id: 'or-1',
     folio: 'OR-2026-0118',
-    referenceFolio: 'OTP-2026-0044',
-    type: 'Orden de Traspaso',
+    referenceFolio: 'OP-2026-0882',
+    type: 'Surtido a Producción',
     strategyType: 'RECOMMENDED',
     strategyName: 'Recomendada',
     warehouseId: 'wh-mty-norte',
-    warehouseName: 'CEDIS Monterrey Norte',
-    destinationName: 'Sucursal Valle Oriente',
-    tempStagingLocation: 'STG-OUT-01',
+    warehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
+    destinationName: 'Línea Flexo 1 (Prensa Nilpeter FB-3300)',
+    tempStagingLocation: 'STG-OP-01',
     priority: 'Alta',
-    createdAt: '27 Ago 2026 11:30',
-    operatorAssigned: 'Carlos Medina (Operador Mesa 01)',
+    createdAt: '06 Sep 2026 11:30',
+    operatorAssigned: 'Carlos Medina (Operador Montacargas MP)',
     status: 'En proceso',
-    totalUnits: 6,
+    totalUnits: 4,
     pickedUnits: 2,
-    pendingUnits: 4,
+    pendingUnits: 2,
     estimatedDistanceMeters: 142,
     traveledDistanceMeters: 48,
     stops: [
@@ -558,17 +446,17 @@ export const INITIAL_PICK_ORDERS: PickOrder[] = [
         aisle: 'Pasillo A',
         rackPosition: 'Posición 01',
         level: 'Nivel A (Piso)',
-        uid: 'SC-UID-2026-000101',
-        sku: 'SC-NAYT-FLOW-IND',
-        productName: 'Nayt Colchón Flow Basic White Individual',
-        brand: 'Nayt',
-        size: 'Individual',
-        lotNumber: 'LOTE-2026-W31',
-        ageDays: 28,
-        strategyReason: 'Unidad más antigua del SKU y de fácil acceso en piso.',
+        uid: 'BOB-RTM-2026-00041',
+        sku: 'PEL-BOPP-BLA',
+        productName: 'Película BOPP Blanco Brillante 60 mic',
+        brand: 'Fasson Avery',
+        size: 'Bobina 330mm x 2500m',
+        lotNumber: 'RTM-MP-260902-011',
+        ageDays: 5,
+        strategyReason: 'Bobina FIFO con liberación de control de calidad lista para tiro.',
         strategyBadge: 'FIFO',
         status: 'Recolectada',
-        pickedAt: '27 Ago 11:42',
+        pickedAt: '06 Sep 11:42',
       },
       {
         id: 'stop-1-2',
@@ -577,278 +465,159 @@ export const INITIAL_PICK_ORDERS: PickOrder[] = [
         aisle: 'Pasillo A',
         rackPosition: 'Posición 02',
         level: 'Nivel A (Piso)',
-        uid: 'SC-UID-2026-000102',
-        sku: 'SC-NAYT-FLOW-IND',
-        productName: 'Nayt Colchón Flow Basic White Individual',
-        brand: 'Nayt',
-        size: 'Individual',
-        lotNumber: 'LOTE-2026-W31',
-        ageDays: 28,
-        strategyReason: 'Posición contigua en Pasillo A para reducir recorrido.',
+        uid: 'BOB-RTM-2026-00042',
+        sku: 'PEL-BOPP-BLA',
+        productName: 'Película BOPP Blanco Brillante 60 mic',
+        brand: 'Fasson Avery',
+        size: 'Bobina 330mm x 2500m',
+        lotNumber: 'RTM-MP-260902-011',
+        ageDays: 5,
+        strategyReason: 'Mismo lote en posición contigua para optimizar recorrido.',
         strategyBadge: 'Menor recorrido',
         status: 'Recolectada',
-        pickedAt: '27 Ago 11:46',
+        pickedAt: '06 Sep 11:46',
       },
       {
         id: 'stop-1-3',
         sequence: 3,
-        locationCode: 'A-B-03',
-        aisle: 'Pasillo A',
-        rackPosition: 'Posición 03',
-        level: 'Nivel B (Medio)',
-        uid: 'SC-UID-2026-000184',
-        sku: 'SC-NAYT-FLOW-MAT',
-        productName: 'Nayt Colchón Flow Basic White Matrimonial',
-        brand: 'Nayt',
-        size: 'Matrimonial',
-        lotNumber: 'LOTE-2026-W34',
-        ageDays: 24,
-        strategyReason: 'Alta demanda y cercanía inmediata a salida de pasillo.',
+        locationCode: 'B-A-01',
+        aisle: 'Pasillo B',
+        rackPosition: 'Posición 01',
+        level: 'Nivel A (Piso)',
+        uid: 'CUB-RTM-2026-00018',
+        sku: 'TIN-PAN-186C',
+        productName: 'Tinta Gráfica Pantone Red 186 C',
+        brand: 'Sun Chemical',
+        size: 'Cubeta 5 kg',
+        lotNumber: 'RTM-MP-260903-008',
+        ageDays: 4,
+        strategyReason: 'Cubeta con viscosidad verificada en laboratorio de tintas.',
         strategyBadge: 'Recomendada',
         status: 'Pendiente',
       },
       {
         id: 'stop-1-4',
         sequence: 4,
-        locationCode: 'A-B-04',
-        aisle: 'Pasillo A',
-        rackPosition: 'Posición 04',
-        level: 'Nivel B (Medio)',
-        uid: 'SC-UID-2026-000185',
-        sku: 'SC-NAYT-FLOW-MAT',
-        productName: 'Nayt Colchón Flow Basic White Matrimonial',
-        brand: 'Nayt',
-        size: 'Matrimonial',
-        lotNumber: 'LOTE-2026-W34',
-        ageDays: 24,
-        strategyReason: 'Mismo lote y bahía contigua.',
-        strategyBadge: 'Recomendada',
-        status: 'Pendiente',
-      },
-      {
-        id: 'stop-1-5',
-        sequence: 5,
-        locationCode: 'B-A-01',
-        aisle: 'Pasillo B',
-        rackPosition: 'Posición 01',
-        level: 'Nivel A (Piso)',
-        uid: 'SC-UID-2026-000121',
-        sku: 'SC-SPA-REC-IND',
-        productName: 'Spring Air Colchón Record Individual',
-        brand: 'Spring Air',
-        size: 'Individual',
-        lotNumber: 'LOTE-2026-W32',
-        ageDays: 22,
-        strategyReason: 'Unidad FIFO en entrada de Pasillo B.',
-        strategyBadge: 'FIFO',
-        status: 'Pendiente',
-      },
-      {
-        id: 'stop-1-6',
-        sequence: 6,
         locationCode: 'B-A-02',
         aisle: 'Pasillo B',
         rackPosition: 'Posición 02',
         level: 'Nivel A (Piso)',
-        uid: 'SC-UID-2026-000122',
-        sku: 'SC-SPA-REC-IND',
-        productName: 'Spring Air Colchón Record Individual',
-        brand: 'Spring Air',
-        size: 'Individual',
-        lotNumber: 'LOTE-2026-W32',
-        ageDays: 22,
-        strategyReason: 'Última parada antes de rampa STG-OUT-01.',
-        strategyBadge: 'Menor recorrido',
+        uid: 'CUB-RTM-2026-00019',
+        sku: 'TIN-PAN-186C',
+        productName: 'Tinta Gráfica Pantone Red 186 C',
+        brand: 'Sun Chemical',
+        size: 'Cubeta 5 kg',
+        lotNumber: 'RTM-MP-260903-008',
+        ageDays: 4,
+        strategyReason: 'Posición contigua en Pasillo B (Racks de Tintas).',
+        strategyBadge: 'Recomendada',
         status: 'Pendiente',
       },
     ],
   },
-  // 2. Parcial · Estrategia FIFO Estricto con Sustitución
+  // 2. Parcial · Surtido OP-2026-0891 (Offset Heidelberg)
   {
     id: 'or-4',
     folio: 'OR-2026-0120',
-    referenceFolio: 'PED-2026-0180',
-    type: 'Pedido de Cliente',
+    referenceFolio: 'OP-2026-0891',
+    type: 'Surtido a Producción',
     strategyType: 'FIFO',
     strategyName: 'FIFO Estricto',
     warehouseId: 'wh-mty-norte',
-    warehouseName: 'CEDIS Monterrey Norte',
-    destinationName: 'Grupo Hotelero Sierra Madre S.A.',
-    tempStagingLocation: 'STG-OUT-01',
+    warehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
+    destinationName: 'Línea Offset (Heidelberg CX 102 - 6 Colores)',
+    tempStagingLocation: 'STG-OP-02',
     priority: 'Urgente',
-    createdAt: '27 Ago 2026 09:00',
-    operatorAssigned: 'Carlos Medina (Operador Mesa 01)',
+    createdAt: '06 Sep 2026 09:00',
+    operatorAssigned: 'Carlos Medina (Operador Montacargas MP)',
     status: 'Parcial',
-    totalUnits: 5,
-    pickedUnits: 3,
+    totalUnits: 4,
+    pickedUnits: 2,
     pendingUnits: 2,
     estimatedDistanceMeters: 160,
     traveledDistanceMeters: 95,
     stops: [
-      { id: 'stop-4-1', sequence: 1, locationCode: 'A-A-03', aisle: 'Pasillo A', rackPosition: 'Posición 03', level: 'Nivel A', uid: 'SC-UID-2026-000103', sku: 'SC-NAYT-FLOW-IND', productName: 'Nayt Colchón Flow Basic White Individual', brand: 'Nayt', size: 'Individual', lotNumber: 'LOTE-2026-W31', ageDays: 28, strategyReason: 'Mayor antigüedad FIFO.', strategyBadge: 'FIFO', status: 'Recolectada', pickedAt: '27 Ago 09:18' },
-      { id: 'stop-4-2', sequence: 2, locationCode: 'A-A-04', aisle: 'Pasillo A', rackPosition: 'Posición 04', level: 'Nivel A', uid: 'SC-UID-2026-000104', sku: 'SC-NAYT-FLOW-IND', productName: 'Nayt Colchón Flow Basic White Individual', brand: 'Nayt', size: 'Individual', lotNumber: 'LOTE-2026-W31', ageDays: 28, strategyReason: 'Mayor antigüedad FIFO.', strategyBadge: 'FIFO', status: 'Recolectada', pickedAt: '27 Ago 09:25' },
-      { id: 'stop-4-3', sequence: 3, locationCode: 'A-B-05', aisle: 'Pasillo A', rackPosition: 'Posición 05', level: 'Nivel B', uid: 'SC-UID-2026-000105', sku: 'SC-NAYT-FLOW-IND', productName: 'Nayt Colchón Flow Basic White Individual', brand: 'Nayt', size: 'Individual', lotNumber: 'LOTE-2026-W32', ageDays: 25, strategyReason: 'Sustitución aprobada por empaque dañado en posición original.', strategyBadge: 'Sustitución', status: 'Recolectada', pickedAt: '27 Ago 09:40', substitutedFromUid: 'SC-UID-2026-000106', substitutionReason: 'Empaque dañado en posición previa.' },
-      { id: 'stop-4-4', sequence: 4, locationCode: 'B-A-03', aisle: 'Pasillo B', rackPosition: 'Posición 03', level: 'Nivel A', uid: 'SC-UID-2026-000123', sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', brand: 'Spring Air', size: 'Individual', lotNumber: 'LOTE-2026-W32', ageDays: 22, strategyReason: 'FIFO en Pasillo B.', strategyBadge: 'FIFO', status: 'Pendiente' },
-      { id: 'stop-4-5', sequence: 5, locationCode: 'B-A-04', aisle: 'Pasillo B', rackPosition: 'Posición 04', level: 'Nivel A', uid: 'SC-UID-2026-000124', sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', brand: 'Spring Air', size: 'Individual', lotNumber: 'LOTE-2026-W32', ageDays: 22, strategyReason: 'FIFO en Pasillo B.', strategyBadge: 'FIFO', status: 'Pendiente' },
+      { id: 'stop-4-1', sequence: 1, locationCode: 'A-B-01', aisle: 'Pasillo A', rackPosition: 'Posición 01', level: 'Nivel B', uid: 'TAR-RTM-2026-00101', sku: 'PAP-COU-090', productName: 'Papel Couché Brillante 90g - 70x100 cm', brand: 'Bio-Pappel', size: 'Tarima 10,000 pliegos', lotNumber: 'RTM-MP-260901-004', ageDays: 6, strategyReason: 'Tarima FIFO de mayor antigüedad.', strategyBadge: 'FIFO', status: 'Recolectada', pickedAt: '06 Sep 09:18' },
+      { id: 'stop-4-2', sequence: 2, locationCode: 'A-B-02', aisle: 'Pasillo A', rackPosition: 'Posición 02', level: 'Nivel B', uid: 'TAR-RTM-2026-00102', sku: 'PAP-COU-090', productName: 'Papel Couché Brillante 90g - 70x100 cm', brand: 'Bio-Pappel', size: 'Tarima 10,000 pliegos', lotNumber: 'RTM-MP-260901-004', ageDays: 6, strategyReason: 'Tarima FIFO en misma columna.', strategyBadge: 'FIFO', status: 'Recolectada', pickedAt: '06 Sep 09:25' },
+      { id: 'stop-4-3', sequence: 3, locationCode: 'B-B-01', aisle: 'Pasillo B', rackPosition: 'Posición 01', level: 'Nivel B', uid: 'CUB-RTM-2026-00051', sku: 'TIN-PROC-BLK', productName: 'Tinta Process Black Flexo/Offset', brand: 'Sun Chemical', size: 'Cubeta 5 kg', lotNumber: 'RTM-MP-260902-005', ageDays: 5, strategyReason: 'Tinta Process Black para 1er cuerpo impresor.', strategyBadge: 'FIFO', status: 'Pendiente' },
+      { id: 'stop-4-4', sequence: 4, locationCode: 'B-B-02', aisle: 'Pasillo B', rackPosition: 'Posición 02', level: 'Nivel B', uid: 'CUB-RTM-2026-00052', sku: 'TIN-PROC-BLK', productName: 'Tinta Process Black Flexo/Offset', brand: 'Sun Chemical', size: 'Cubeta 5 kg', lotNumber: 'RTM-MP-260902-005', ageDays: 5, strategyReason: 'Posición contigua en Pasillo B.', strategyBadge: 'FIFO', status: 'Pendiente' },
     ],
   },
-  // 3. Completa · Estrategia Menor Recorrido
+  // 3. Completa · Surtido OP-2026-0904 (Troquel & Barniz)
   {
     id: 'or-5',
     folio: 'OR-2026-0115',
-    referenceFolio: 'OTP-2026-0040',
-    type: 'Orden de Traspaso',
+    referenceFolio: 'OP-2026-0904',
+    type: 'Surtido a Producción',
     strategyType: 'SHORTEST_PATH',
     strategyName: 'Menor Recorrido',
     warehouseId: 'wh-mty-norte',
-    warehouseName: 'CEDIS Monterrey Norte',
-    destinationName: 'Sucursal Valle Oriente',
-    tempStagingLocation: 'STG-OUT-01',
+    warehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
+    destinationName: 'Línea Troquel & Barniz (Bobst Novacut 106)',
+    tempStagingLocation: 'STG-OP-03',
     priority: 'Normal',
-    createdAt: '26 Ago 2026 15:00',
-    completedAt: '26 Ago 2026 15:50',
-    operatorAssigned: 'Carlos Medina (Operador Mesa 01)',
+    createdAt: '05 Sep 2026 15:00',
+    completedAt: '05 Sep 2026 15:50',
+    operatorAssigned: 'Carlos Medina (Operador Montacargas MP)',
     status: 'Completa',
-    totalUnits: 4,
-    pickedUnits: 4,
+    totalUnits: 3,
+    pickedUnits: 3,
     pendingUnits: 0,
     estimatedDistanceMeters: 75,
     traveledDistanceMeters: 75,
     stops: [
-      { id: 'stop-5-1', sequence: 1, locationCode: 'A-A-01', aisle: 'Pasillo A', rackPosition: 'Posición 01', level: 'Nivel A', uid: 'SC-UID-2026-000151', sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', brand: 'Spring Air', size: 'Individual', lotNumber: 'LOTE-2026-W33', ageDays: 14, strategyReason: 'Posición contigua.', strategyBadge: 'Menor recorrido', status: 'Recolectada', pickedAt: '26 Ago 15:15' },
-      { id: 'stop-5-2', sequence: 2, locationCode: 'A-A-02', aisle: 'Pasillo A', rackPosition: 'Posición 02', level: 'Nivel A', uid: 'SC-UID-2026-000152', sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', brand: 'Spring Air', size: 'Individual', lotNumber: 'LOTE-2026-W33', ageDays: 14, strategyReason: 'Posición contigua.', strategyBadge: 'Menor recorrido', status: 'Recolectada', pickedAt: '26 Ago 15:25' },
-      { id: 'stop-5-3', sequence: 3, locationCode: 'A-A-03', aisle: 'Pasillo A', rackPosition: 'Posición 03', level: 'Nivel A', uid: 'SC-UID-2026-000153', sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', brand: 'Spring Air', size: 'Individual', lotNumber: 'LOTE-2026-W33', ageDays: 14, strategyReason: 'Posición contigua.', strategyBadge: 'Menor recorrido', status: 'Recolectada', pickedAt: '26 Ago 15:35' },
-      { id: 'stop-5-4', sequence: 4, locationCode: 'A-A-04', aisle: 'Pasillo A', rackPosition: 'Posición 04', level: 'Nivel A', uid: 'SC-UID-2026-000154', sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', brand: 'Spring Air', size: 'Individual', lotNumber: 'LOTE-2026-W33', ageDays: 14, strategyReason: 'Posición contigua.', strategyBadge: 'Menor recorrido', status: 'Recolectada', pickedAt: '26 Ago 15:45' },
-    ],
-  },
-  // 4. Pendiente · Estrategia Vaciar Ubicación
-  {
-    id: 'or-6',
-    folio: 'OR-2026-0122',
-    referenceFolio: 'PED-2026-0181',
-    type: 'Pedido de Cliente',
-    strategyType: 'EMPTY_LOCATION',
-    strategyName: 'Vaciar Ubicación',
-    warehouseId: 'wh-mty-norte',
-    warehouseName: 'CEDIS Monterrey Norte',
-    destinationName: 'Inmobiliaria & Rentas Cumbres S.A.',
-    tempStagingLocation: 'STG-OUT-01',
-    priority: 'Normal',
-    createdAt: '27 Ago 2026 12:30',
-    operatorAssigned: 'Roberto Garza (Operador Picking)',
-    status: 'Pendiente',
-    totalUnits: 3,
-    pickedUnits: 0,
-    pendingUnits: 3,
-    estimatedDistanceMeters: 120,
-    traveledDistanceMeters: 0,
-    stops: [
-      { id: 'stop-6-1', sequence: 1, locationCode: 'B-C-01', aisle: 'Pasillo B', rackPosition: 'Posición 01', level: 'Nivel C', uid: 'SC-UID-2026-000161', sku: 'SC-REST-ORTO-MAT', productName: 'Restonic Ortopédico Extra Firme Matrimonial', brand: 'Restonic', size: 'Matrimonial', lotNumber: 'LOTE-2026-W33', ageDays: 20, strategyReason: 'Al retirar esta unidad se vacía la posición B-C-01.', strategyBadge: 'Vacía Ubicación', status: 'Pendiente', isLocationFreed: true },
-      { id: 'stop-6-2', sequence: 2, locationCode: 'B-C-02', aisle: 'Pasillo B', rackPosition: 'Posición 02', level: 'Nivel C', uid: 'SC-UID-2026-000162', sku: 'SC-REST-ORTO-MAT', productName: 'Restonic Ortopédico Extra Firme Matrimonial', brand: 'Restonic', size: 'Matrimonial', lotNumber: 'LOTE-2026-W33', ageDays: 20, strategyReason: 'Al retirar esta unidad se vacía la posición B-C-02.', strategyBadge: 'Vacía Ubicación', status: 'Pendiente', isLocationFreed: true },
-      { id: 'stop-6-3', sequence: 3, locationCode: 'B-C-03', aisle: 'Pasillo B', rackPosition: 'Posición 03', level: 'Nivel C', uid: 'SC-UID-2026-000163', sku: 'SC-REST-ORTO-MAT', productName: 'Restonic Ortopédico Extra Firme Matrimonial', brand: 'Restonic', size: 'Matrimonial', lotNumber: 'LOTE-2026-W33', ageDays: 20, strategyReason: 'Posición contigua.', strategyBadge: 'Menor recorrido', status: 'Pendiente' },
-    ],
-  },
-  // 5. Pendiente · Estrategia FEFO / Vigencia
-  {
-    id: 'or-7',
-    folio: 'OR-2026-0123',
-    referenceFolio: 'PED-2026-0182',
-    type: 'Pedido de Cliente',
-    strategyType: 'FEFO',
-    strategyName: 'FEFO / Vigencia',
-    warehouseId: 'wh-mty-norte',
-    warehouseName: 'CEDIS Monterrey Norte',
-    destinationName: 'Desarrollos Residenciales del Norte S.A.',
-    tempStagingLocation: 'STG-OUT-01',
-    priority: 'Alta',
-    createdAt: '27 Ago 2026 13:00',
-    operatorAssigned: 'Carlos Medina (Operador Mesa 01)',
-    status: 'Pendiente',
-    totalUnits: 2,
-    pickedUnits: 0,
-    pendingUnits: 2,
-    estimatedDistanceMeters: 90,
-    traveledDistanceMeters: 0,
-    stops: [
-      { id: 'stop-7-1', sequence: 1, locationCode: 'A-B-01', aisle: 'Pasillo A', rackPosition: 'Posición 01', level: 'Nivel B', uid: 'SC-UID-2026-000164', sku: 'SC-SEAL-POST-QS', productName: 'Sealy Posturepedic Crown Jewel Queen Size', brand: 'Sealy', size: 'Queen Size', lotNumber: 'LOTE-2026-W31', ageDays: 32, strategyReason: 'Lote de edición previa próximo a cambio de catálogo comercial.', strategyBadge: 'FEFO', status: 'Pendiente' },
-      { id: 'stop-7-2', sequence: 2, locationCode: 'A-B-02', aisle: 'Pasillo A', rackPosition: 'Posición 02', level: 'Nivel B', uid: 'SC-UID-2026-000165', sku: 'SC-SEAL-POST-QS', productName: 'Sealy Posturepedic Crown Jewel Queen Size', brand: 'Sealy', size: 'Queen Size', lotNumber: 'LOTE-2026-W31', ageDays: 32, strategyReason: 'Mismo lote FEFO.', strategyBadge: 'FEFO', status: 'Pendiente' },
-    ],
-  },
-  // 6. Completa · Estrategia Manual
-  {
-    id: 'or-8',
-    folio: 'OR-2026-0114',
-    referenceFolio: 'PED-2026-0178',
-    type: 'Pedido de Cliente',
-    strategyType: 'MANUAL',
-    strategyName: 'Manual',
-    warehouseId: 'wh-mty-norte',
-    warehouseName: 'CEDIS Monterrey Norte',
-    destinationName: 'Cliente Particular Zona Cumbres',
-    tempStagingLocation: 'STG-OUT-01',
-    priority: 'Normal',
-    createdAt: '26 Ago 2026 10:00',
-    completedAt: '26 Ago 2026 10:45',
-    operatorAssigned: 'Carlos Medina (Operador Mesa 01)',
-    status: 'Completa',
-    totalUnits: 2,
-    pickedUnits: 2,
-    pendingUnits: 0,
-    estimatedDistanceMeters: 60,
-    traveledDistanceMeters: 60,
-    stops: [
-      { id: 'stop-8-1', sequence: 1, locationCode: 'A-A-05', aisle: 'Pasillo A', rackPosition: 'Posición 05', level: 'Nivel A', uid: 'SC-UID-2026-000141', sku: 'SC-NAYT-FLOW-MAT', productName: 'Nayt Colchón Flow Basic White Matrimonial', brand: 'Nayt', size: 'Matrimonial', lotNumber: 'LOTE-2026-W33', ageDays: 16, strategyReason: 'Selección manual por supervisor.', strategyBadge: 'Manual', status: 'Recolectada', pickedAt: '26 Ago 10:20' },
-      { id: 'stop-8-2', sequence: 2, locationCode: 'A-A-06', aisle: 'Pasillo A', rackPosition: 'Posición 06', level: 'Nivel A', uid: 'SC-UID-2026-000142', sku: 'SC-NAYT-FLOW-MAT', productName: 'Nayt Colchón Flow Basic White Matrimonial', brand: 'Nayt', size: 'Matrimonial', lotNumber: 'LOTE-2026-W33', ageDays: 16, strategyReason: 'Selección manual por supervisor.', strategyBadge: 'Manual', status: 'Recolectada', pickedAt: '26 Ago 10:35' },
+      { id: 'stop-5-1', sequence: 1, locationCode: 'C-A-01', aisle: 'Pasillo C', rackPosition: 'Posición 01', level: 'Nivel A', uid: 'TAR-RTM-2026-00151', sku: 'CAR-SBS-14P', productName: 'Cartulina SBS Calibre 14 pts - 70x95 cm', brand: 'Bio-Pappel', size: 'Tarima 5,000 hojas', lotNumber: 'RTM-MP-260904-002', ageDays: 3, strategyReason: 'Posición frontal a rampa de troquelado.', strategyBadge: 'Menor recorrido', status: 'Recolectada', pickedAt: '05 Sep 15:15' },
+      { id: 'stop-5-2', sequence: 2, locationCode: 'C-A-02', aisle: 'Pasillo C', rackPosition: 'Posición 02', level: 'Nivel A', uid: 'TAR-RTM-2026-00152', sku: 'CAR-SBS-14P', productName: 'Cartulina SBS Calibre 14 pts - 70x95 cm', brand: 'Bio-Pappel', size: 'Tarima 5,000 hojas', lotNumber: 'RTM-MP-260904-002', ageDays: 3, strategyReason: 'Posición contigua en Pasillo C.', strategyBadge: 'Menor recorrido', status: 'Recolectada', pickedAt: '05 Sep 15:25' },
+      { id: 'stop-5-3', sequence: 3, locationCode: 'D-A-01', aisle: 'Pasillo D', rackPosition: 'Posición 01', level: 'Nivel A', uid: 'TAM-RTM-2026-00031', sku: 'BAR-UV-GLOSS', productName: 'Barniz UV Alto Brillo Gráfico', brand: 'Siegwerk', size: 'Tambo 200 kg', lotNumber: 'RTM-MP-260903-014', ageDays: 4, strategyReason: 'Tambo UV listo en área de químicos.', strategyBadge: 'Menor recorrido', status: 'Recolectada', pickedAt: '05 Sep 15:40' },
     ],
   },
 
   // ==========================================
-  // CEDIS MONTERREY SUR
+  // ALMACÉN PRODUCTO TERMINADO (ALM-PT) - NAVE 2
   // ==========================================
-  // 7. En proceso · Estrategia Recomendada
+  // 4. En proceso · Pedido Cliente Industrial (Laboratorios Medifarma)
   {
     id: 'or-3',
     folio: 'OR-2026-0125',
-    referenceFolio: 'OTP-2026-0048',
-    type: 'Orden de Traspaso',
+    referenceFolio: 'PED-2026-0410',
+    type: 'Pedido de Cliente',
     strategyType: 'RECOMMENDED',
     strategyName: 'Recomendada',
     warehouseId: 'wh-mty-sur',
-    warehouseName: 'CEDIS Monterrey Sur',
-    destinationName: 'Sucursal Cumbres',
-    tempStagingLocation: 'STG-OUT-02',
+    warehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
+    destinationName: 'Laboratorios Medifarma S.A. de C.V. (Parque Industrial Reynosa)',
+    tempStagingLocation: 'STG-PT-01',
     priority: 'Alta',
-    createdAt: '27 Ago 2026 12:00',
-    operatorAssigned: 'Valeria Torres (Operador Mesa 02)',
+    createdAt: '06 Sep 2026 12:00',
+    operatorAssigned: 'Valeria Torres (Operador PT)',
     status: 'En proceso',
-    totalUnits: 4,
+    totalUnits: 3,
     pickedUnits: 1,
-    pendingUnits: 3,
+    pendingUnits: 2,
     estimatedDistanceMeters: 110,
     traveledDistanceMeters: 35,
     stops: [
-      { id: 'stop-3-1', sequence: 1, locationCode: 'B-A-01', aisle: 'Pasillo B', rackPosition: 'Posición 01', level: 'Nivel A', uid: 'SC-UID-2026-000135', sku: 'SC-REST-ORTO-MAT', productName: 'Restonic Colchón Ortopedic Matrimonial', brand: 'Restonic', size: 'Matrimonial', lotNumber: 'LOTE-2026-W33', ageDays: 15, strategyReason: 'Lote más antiguo disponible en piso.', strategyBadge: 'FIFO', status: 'Recolectada', pickedAt: '27 Ago 12:15' },
-      { id: 'stop-3-2', sequence: 2, locationCode: 'B-A-02', aisle: 'Pasillo B', rackPosition: 'Posición 02', level: 'Nivel A', uid: 'SC-UID-2026-000136', sku: 'SC-REST-ORTO-MAT', productName: 'Restonic Colchón Ortopedic Matrimonial', brand: 'Restonic', size: 'Matrimonial', lotNumber: 'LOTE-2026-W33', ageDays: 15, strategyReason: 'Posición contigua en Pasillo B.', strategyBadge: 'Menor recorrido', status: 'Pendiente' },
-      { id: 'stop-3-3', sequence: 3, locationCode: 'B-B-01', aisle: 'Pasillo B', rackPosition: 'Posición 01', level: 'Nivel B', uid: 'SC-UID-2026-000301', sku: 'SC-SEA-CLB-KS', productName: 'Sealy Colchón Celebration Plus King Size', brand: 'Sealy', size: 'King Size', lotNumber: 'LOTE-2026-W35', ageDays: 2, strategyReason: 'Prioridad de salida King Size.', strategyBadge: 'Recomendada', status: 'Pendiente' },
-      { id: 'stop-3-4', sequence: 4, locationCode: 'B-B-02', aisle: 'Pasillo B', rackPosition: 'Posición 02', level: 'Nivel B', uid: 'SC-UID-2026-000302', sku: 'SC-SEA-CLB-KS', productName: 'Sealy Colchón Celebration Plus King Size', brand: 'Sealy', size: 'King Size', lotNumber: 'LOTE-2026-W35', ageDays: 2, strategyReason: 'Posición contigua.', strategyBadge: 'Menor recorrido', status: 'Pendiente' },
+      { id: 'stop-3-1', sequence: 1, locationCode: 'A-A-01', aisle: 'Pasillo A', rackPosition: 'Posición 01', level: 'Nivel A', uid: 'CJ-RTM-2026-00211', sku: 'ETQ-FAR-VIL', productName: 'Etiqueta Farmacéutica Vial 10ml - PT', brand: 'RTM Packaging', size: 'Rollo 5,000 pzas', lotNumber: 'RTM-PT-260905-001', ageDays: 2, strategyReason: 'Lote PT liberado con certificado de calidad COA.', strategyBadge: 'FIFO', status: 'Recolectada', pickedAt: '06 Sep 12:15' },
+      { id: 'stop-3-2', sequence: 2, locationCode: 'A-A-02', aisle: 'Pasillo A', rackPosition: 'Posición 02', level: 'Nivel A', uid: 'CJ-RTM-2026-00212', sku: 'ETQ-FAR-VIL', productName: 'Etiqueta Farmacéutica Vial 10ml - PT', brand: 'RTM Packaging', size: 'Rollo 5,000 pzas', lotNumber: 'RTM-PT-260905-001', ageDays: 2, strategyReason: 'Posición contigua en Pasillo A de ALM-PT.', strategyBadge: 'Menor recorrido', status: 'Pendiente' },
+      { id: 'stop-3-3', sequence: 3, locationCode: 'B-A-01', aisle: 'Pasillo B', rackPosition: 'Posición 01', level: 'Nivel A', uid: 'CJ-RTM-2026-00301', sku: 'FOL-MED-PLE', productName: 'Folleto Médico Farmacéutico Plegado 4 Cuerpos', brand: 'RTM Packaging', size: 'Caja 1,000 pzas', lotNumber: 'RTM-PT-260904-003', ageDays: 3, strategyReason: 'Folletos plegados complementarios del lote farmacéutico.', strategyBadge: 'Recomendada', status: 'Pendiente' },
     ],
   },
-  // 8. Completa · Estrategia FIFO Estricto
+  // 5. Completa · Despacho Cajas Delphi Technologies
   {
     id: 'or-2',
     folio: 'OR-2026-0117',
-    referenceFolio: 'PED-2026-0179',
+    referenceFolio: 'PED-2026-0398',
     type: 'Pedido de Cliente',
     strategyType: 'FIFO',
     strategyName: 'FIFO Estricto',
     warehouseId: 'wh-mty-sur',
-    warehouseName: 'CEDIS Monterrey Sur',
-    destinationName: 'Ruta Guadalupe #04',
-    tempStagingLocation: 'STG-OUT-02',
+    warehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
+    destinationName: 'Delphi Technologies Reynosa (Planta 2)',
+    tempStagingLocation: 'STG-PT-02',
     priority: 'Normal',
-    createdAt: '26 Ago 2026 14:00',
-    completedAt: '26 Ago 2026 15:10',
-    operatorAssigned: 'Valeria Torres (Operador Mesa 02)',
+    createdAt: '05 Sep 2026 14:00',
+    completedAt: '05 Sep 2026 15:10',
+    operatorAssigned: 'Valeria Torres (Operador PT)',
     status: 'Completa',
     totalUnits: 3,
     pickedUnits: 3,
@@ -856,116 +625,9 @@ export const INITIAL_PICK_ORDERS: PickOrder[] = [
     estimatedDistanceMeters: 96,
     traveledDistanceMeters: 96,
     stops: [
-      { id: 'stop-2-1', sequence: 1, locationCode: 'B-A-01', aisle: 'Pasillo B', rackPosition: 'Posición 01', level: 'Nivel A', uid: 'SC-UID-2026-000131', sku: 'SC-REST-ORTO-MAT', productName: 'Restonic Colchón Ortopedic Matrimonial', brand: 'Restonic', size: 'Matrimonial', lotNumber: 'LOTE-2026-W33', ageDays: 19, strategyReason: 'Lote más antiguo.', strategyBadge: 'FIFO', status: 'Recolectada', pickedAt: '26 Ago 14:20' },
-      { id: 'stop-2-2', sequence: 2, locationCode: 'B-A-02', aisle: 'Pasillo B', rackPosition: 'Posición 02', level: 'Nivel A', uid: 'SC-UID-2026-000132', sku: 'SC-REST-ORTO-MAT', productName: 'Restonic Colchón Ortopedic Matrimonial', brand: 'Restonic', size: 'Matrimonial', lotNumber: 'LOTE-2026-W33', ageDays: 19, strategyReason: 'Lote más antiguo.', strategyBadge: 'FIFO', status: 'Recolectada', pickedAt: '26 Ago 14:35' },
-      { id: 'stop-2-3', sequence: 3, locationCode: 'B-B-01', aisle: 'Pasillo B', rackPosition: 'Posición 01', level: 'Nivel B', uid: 'SC-UID-2026-000133', sku: 'SC-REST-ORTO-MAT', productName: 'Restonic Colchón Ortopedic Matrimonial', brand: 'Restonic', size: 'Matrimonial', lotNumber: 'LOTE-2026-W33', ageDays: 19, strategyReason: 'Posición contigua.', strategyBadge: 'Menor recorrido', status: 'Recolectada', pickedAt: '26 Ago 14:55' },
-    ],
-  },
-  // 9. Pendiente · Estrategia FEFO / Vigencia
-  {
-    id: 'or-9',
-    folio: 'OR-2026-0126',
-    referenceFolio: 'PED-2026-0183',
-    type: 'Pedido de Cliente',
-    strategyType: 'FEFO',
-    strategyName: 'FEFO / Vigencia',
-    warehouseId: 'wh-mty-sur',
-    warehouseName: 'CEDIS Monterrey Sur',
-    destinationName: 'Ruta Santiago #01',
-    tempStagingLocation: 'STG-OUT-02',
-    priority: 'Normal',
-    createdAt: '27 Ago 2026 13:15',
-    operatorAssigned: 'Miguel Ángel Soto (Operador Sur)',
-    status: 'Pendiente',
-    totalUnits: 2,
-    pickedUnits: 0,
-    pendingUnits: 2,
-    estimatedDistanceMeters: 80,
-    traveledDistanceMeters: 0,
-    stops: [
-      { id: 'stop-9-1', sequence: 1, locationCode: 'A-A-01', aisle: 'Pasillo A', rackPosition: 'Posición 01', level: 'Nivel A', uid: 'SC-UID-2026-000191', sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', brand: 'Spring Air', size: 'Individual', lotNumber: 'LOTE-2026-W32', ageDays: 24, strategyReason: 'FEFO catálogo anterior.', strategyBadge: 'FEFO', status: 'Pendiente' },
-      { id: 'stop-9-2', sequence: 2, locationCode: 'A-A-02', aisle: 'Pasillo A', rackPosition: 'Posición 02', level: 'Nivel A', uid: 'SC-UID-2026-000192', sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', brand: 'Spring Air', size: 'Individual', lotNumber: 'LOTE-2026-W32', ageDays: 24, strategyReason: 'FEFO catálogo anterior.', strategyBadge: 'FEFO', status: 'Pendiente' },
-    ],
-  },
-  // 10. Parcial · Estrategia Vaciar Ubicación
-  {
-    id: 'or-10',
-    folio: 'OR-2026-0127',
-    referenceFolio: 'OTP-2026-0049',
-    type: 'Orden de Traspaso',
-    strategyType: 'EMPTY_LOCATION',
-    strategyName: 'Vaciar Ubicación',
-    warehouseId: 'wh-mty-sur',
-    warehouseName: 'CEDIS Monterrey Sur',
-    destinationName: 'CEDIS Monterrey Norte',
-    tempStagingLocation: 'STG-OUT-02',
-    priority: 'Normal',
-    createdAt: '27 Ago 2026 10:45',
-    operatorAssigned: 'Valeria Torres (Operador Mesa 02)',
-    status: 'Parcial',
-    totalUnits: 3,
-    pickedUnits: 1,
-    pendingUnits: 2,
-    estimatedDistanceMeters: 105,
-    traveledDistanceMeters: 30,
-    stops: [
-      { id: 'stop-10-1', sequence: 1, locationCode: 'A-B-01', aisle: 'Pasillo A', rackPosition: 'Posición 01', level: 'Nivel B', uid: 'SC-UID-2026-000193', sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', brand: 'Spring Air', size: 'Individual', lotNumber: 'LOTE-2026-W33', ageDays: 18, strategyReason: 'Ubicación vaciada con éxito.', strategyBadge: 'Vacía Ubicación', status: 'Recolectada', pickedAt: '27 Ago 11:10', isLocationFreed: true },
-      { id: 'stop-10-2', sequence: 2, locationCode: 'A-B-02', aisle: 'Pasillo A', rackPosition: 'Posición 02', level: 'Nivel B', uid: 'SC-UID-2026-000194', sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', brand: 'Spring Air', size: 'Individual', lotNumber: 'LOTE-2026-W33', ageDays: 18, strategyReason: 'Al retirar se liberará A-B-02.', strategyBadge: 'Vacía Ubicación', status: 'Pendiente', isLocationFreed: true },
-      { id: 'stop-10-3', sequence: 3, locationCode: 'A-B-03', aisle: 'Pasillo A', rackPosition: 'Posición 03', level: 'Nivel B', uid: 'SC-UID-2026-000195', sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', brand: 'Spring Air', size: 'Individual', lotNumber: 'LOTE-2026-W33', ageDays: 18, strategyReason: 'Posición contigua.', strategyBadge: 'Menor recorrido', status: 'Pendiente' },
-    ],
-  },
-  // 11. Completa · Estrategia Manual
-  {
-    id: 'or-11',
-    folio: 'OR-2026-0116',
-    referenceFolio: 'PED-2026-0177',
-    type: 'Pedido de Cliente',
-    strategyType: 'MANUAL',
-    strategyName: 'Manual',
-    warehouseId: 'wh-mty-sur',
-    warehouseName: 'CEDIS Monterrey Sur',
-    destinationName: 'Cliente Local Sur',
-    tempStagingLocation: 'STG-OUT-02',
-    priority: 'Normal',
-    createdAt: '25 Ago 2026 16:00',
-    completedAt: '25 Ago 2026 16:40',
-    operatorAssigned: 'Valeria Torres (Operador Mesa 02)',
-    status: 'Completa',
-    totalUnits: 2,
-    pickedUnits: 2,
-    pendingUnits: 0,
-    estimatedDistanceMeters: 55,
-    traveledDistanceMeters: 55,
-    stops: [
-      { id: 'stop-11-1', sequence: 1, locationCode: 'B-A-03', aisle: 'Pasillo B', rackPosition: 'Posición 03', level: 'Nivel A', uid: 'SC-UID-2026-000137', sku: 'SC-REST-ORTO-MAT', productName: 'Restonic Colchón Ortopedic Matrimonial', brand: 'Restonic', size: 'Matrimonial', lotNumber: 'LOTE-2026-W33', ageDays: 14, strategyReason: 'Selección manual.', strategyBadge: 'Manual', status: 'Recolectada', pickedAt: '25 Ago 16:15' },
-      { id: 'stop-11-2', sequence: 2, locationCode: 'B-A-04', aisle: 'Pasillo B', rackPosition: 'Posición 04', level: 'Nivel A', uid: 'SC-UID-2026-000138', sku: 'SC-REST-ORTO-MAT', productName: 'Restonic Colchón Ortopedic Matrimonial', brand: 'Restonic', size: 'Matrimonial', lotNumber: 'LOTE-2026-W33', ageDays: 14, strategyReason: 'Selección manual.', strategyBadge: 'Manual', status: 'Recolectada', pickedAt: '25 Ago 16:30' },
-    ],
-  },
-  // 12. Completa · Estrategia Menor Recorrido
-  {
-    id: 'or-12',
-    folio: 'OR-2026-0113',
-    referenceFolio: 'OTP-2026-0038',
-    type: 'Orden de Traspaso',
-    strategyType: 'SHORTEST_PATH',
-    strategyName: 'Menor Recorrido',
-    warehouseId: 'wh-mty-sur',
-    warehouseName: 'CEDIS Monterrey Sur',
-    destinationName: 'Sucursal Cumbres',
-    tempStagingLocation: 'STG-OUT-02',
-    priority: 'Normal',
-    createdAt: '25 Ago 2026 11:00',
-    completedAt: '25 Ago 2026 11:45',
-    operatorAssigned: 'Valeria Torres (Operador Mesa 02)',
-    status: 'Completa',
-    totalUnits: 2,
-    pickedUnits: 2,
-    pendingUnits: 0,
-    estimatedDistanceMeters: 50,
-    traveledDistanceMeters: 50,
-    stops: [
-      { id: 'stop-12-1', sequence: 1, locationCode: 'A-A-03', aisle: 'Pasillo A', rackPosition: 'Posición 03', level: 'Nivel A', uid: 'SC-UID-2026-000145', sku: 'SC-NAYT-FLOW-IND', productName: 'Nayt Colchón Flow Basic White Individual', brand: 'Nayt', size: 'Individual', lotNumber: 'LOTE-2026-W32', ageDays: 20, strategyReason: 'Recorrido mínimo.', strategyBadge: 'Menor recorrido', status: 'Recolectada', pickedAt: '25 Ago 11:20' },
-      { id: 'stop-12-2', sequence: 2, locationCode: 'A-A-04', aisle: 'Pasillo A', rackPosition: 'Posición 04', level: 'Nivel A', uid: 'SC-UID-2026-000146', sku: 'SC-NAYT-FLOW-IND', productName: 'Nayt Colchón Flow Basic White Individual', brand: 'Nayt', size: 'Individual', lotNumber: 'LOTE-2026-W32', ageDays: 20, strategyReason: 'Recorrido mínimo.', strategyBadge: 'Menor recorrido', status: 'Recolectada', pickedAt: '25 Ago 11:35' },
+      { id: 'stop-2-1', sequence: 1, locationCode: 'C-A-01', aisle: 'Pasillo C', rackPosition: 'Posición 01', level: 'Nivel A', uid: 'TAR-RTM-2026-00401', sku: 'CJ-EMB-MED', productName: 'Cajas Corrugadas Flauta C 40x30x30 cm', brand: 'RTM Packaging', size: 'Tarima 500 pzas', lotNumber: 'RTM-PT-260903-010', ageDays: 4, strategyReason: 'Lote corrugado liberado para empaque automotriz.', strategyBadge: 'FIFO', status: 'Recolectada', pickedAt: '05 Sep 14:20' },
+      { id: 'stop-2-2', sequence: 2, locationCode: 'C-A-02', aisle: 'Pasillo C', rackPosition: 'Posición 02', level: 'Nivel A', uid: 'TAR-RTM-2026-00402', sku: 'CJ-EMB-MED', productName: 'Cajas Corrugadas Flauta C 40x30x30 cm', brand: 'RTM Packaging', size: 'Tarima 500 pzas', lotNumber: 'RTM-PT-260903-010', ageDays: 4, strategyReason: 'Posición contigua.', strategyBadge: 'FIFO', status: 'Recolectada', pickedAt: '05 Sep 14:35' },
+      { id: 'stop-2-3', sequence: 3, locationCode: 'C-B-01', aisle: 'Pasillo C', rackPosition: 'Posición 01', level: 'Nivel B', uid: 'TAR-RTM-2026-00403', sku: 'CJ-EMB-MED', productName: 'Cajas Corrugadas Flauta C 40x30x30 cm', brand: 'RTM Packaging', size: 'Tarima 500 pzas', lotNumber: 'RTM-PT-260903-010', ageDays: 4, strategyReason: 'Posición contigua en Pasillo C.', strategyBadge: 'Menor recorrido', status: 'Recolectada', pickedAt: '05 Sep 14:55' },
     ],
   },
 ];

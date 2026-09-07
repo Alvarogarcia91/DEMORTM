@@ -1,4 +1,3 @@
-import { MOCK_MASTER_ARTICLES, MasterArticle } from './mockArticlesData';
 import { MOCK_STOCK_ITEMS, MOCK_WAREHOUSES_LIST, MOCK_INVENTORY_MOVEMENTS, StockItemRecord } from './mockInventoryData';
 
 export interface NodeDashboardData {
@@ -68,81 +67,72 @@ export interface NodeDashboardData {
   };
 }
 
-// Approximate internal cost per SKU for realistic financial valuation
+// Costos unitarios de materiales e insumos gráficos RTM (MXN)
 export const ARTICLE_UNIT_COST: Record<string, number> = {
-  'SC-NAYT-FLOW-IND': 2850,
-  'SC-NAYT-FLOW-MAT': 3450,
-  'SC-NAYT-PRO-QS': 4900,
-  'SC-NAYT-PRO-KS': 6200,
-  'SC-SPA-REC-IND': 2750,
-  'SC-SPA-REC-MAT': 3300,
-  'SC-SPA-VEN-MAT': 3900,
-  'SC-SPA-PAL-QS': 5100,
-  'SC-RES-ORT-MAT': 3650,
-  'SC-RES-FAN-MAT': 4100,
-  'SC-RES-MNC-QS': 5400,
-  'SC-AME-HAL-QS': 4800,
-  'SC-AME-OXF-MAT': 3550,
-  'SC-SEA-CLB-KS': 7800,
-  'SC-SEA-CRW-KS': 8500,
-  'SC-THE-GEL-KS': 7200,
-  'SC-BAS-SPA-MAT': 1850,
-  'SC-BAS-NYT-IND': 1450,
-  'SC-ALM-SOG-NUO': 390,
-  'SC-ALM-RES-GEL': 480,
-  'SC-PRO-SOG-QS': 450,
-  'SC-PRO-SOG-CUB-MAT': 520,
+  'PAP-COU-090': 18500, // Tarima 10,000 pliegos
+  'PAP-BND-075': 12400, // Bobina 85cm
+  'CAR-SBS-14P': 24500, // Tarima 5,000 hojas
+  'PEL-BOPP-BLA': 8900,  // Bobina 330mm x 2500m
+  'PEL-BOPP-TRA': 7800,  // Bobina 330mm x 2500m
+  'PAP-TERM-DIR': 6400,  // Bobina 250mm
+  'TIN-PAN-186C': 1850,  // Cubeta 5 kg
+  'TIN-PROC-BLK': 950,   // Cubeta 5 kg
+  'BAR-UV-GLOSS': 28500, // Tambo 200 kg
+  'CJ-EMB-MED': 4200,    // Tarima 500 pzas
+  'ETQ-FAR-VIL': 1450,   // Rollo 5,000 pzas PT
+  'FOL-MED-PLE': 850,    // Caja 1,000 pzas PT
+  'CJ-ALM-CAR': 3600,    // Tarima 1,000 cajas plegadizas
 };
 
 export function getArticleUnitCost(sku: string): number {
-  return ARTICLE_UNIT_COST[sku] || 3200;
+  return ARTICLE_UNIT_COST[sku] || 4500;
 }
 
-// Data generator per node for Dashboard
+// Datos de Dashboard por Nave Industrial
 export const NODE_DASHBOARD_DATA: Record<string, NodeDashboardData> = {
   'wh-mty-norte': {
     warehouseId: 'wh-mty-norte',
-    warehouseName: 'CEDIS Monterrey Norte',
-    warehouseCode: 'CEDIS-NORTE',
+    warehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
+    warehouseCode: 'ALM-MP',
     type: 'CEDIS',
     kpis: {
-      totalUnits: 1284,
-      inventoryCostValue: 3824500,
+      totalUnits: 158400,
+      inventoryCostValue: 4850000,
       costBreakdown: {
-        available: 3086000,
-        committed: 440500,
-        inTransit: 298000,
-        rework: 21000,
+        available: 3820000,
+        committed: 740000,
+        inTransit: 210000,
+        rework: 80000,
       },
-      availableUnits: 1036,
-      committedUnits: 148,
-      inTransitUnits: 100,
-      occupancyPercentage: 68.2,
-      reworkUnits: 7,
-      avgAgeDays: 14.2,
+      availableUnits: 124600,
+      committedUnits: 28200,
+      inTransitUnits: 5600,
+      occupancyPercentage: 74.5,
+      reworkUnits: 1,
+      avgAgeDays: 8.4,
     },
     todayOperations: {
-      received: 34,
-      pendingStaging: 21,
-      picked: 46,
-      staged: 29,
-      transfersInTransit: 15,
+      received: 6,
+      pendingStaging: 4,
+      picked: 8,
+      staged: 6,
+      transfersInTransit: 0,
     },
     alerts: [
       {
         id: 'alt-1',
         type: 'critical_age',
-        title: '6 unidades con antigüedad crítica (>30 días)',
-        description: 'Colchones King Size en Pasillo E requieren rotación prioritaria por tiempo en almacén.',
-        ctaLabel: 'Ver unidades',
+        title: 'Diferencia en conteo cíclico A-B-03 (-19,500 pliegos Couché 90g)',
+        description: 'Auditoría interna y supervisión de almacén investigando ajuste de inventario.',
+        ctaLabel: 'Ver conteo',
         ctaAction: 'stocks',
-        severity: 'warning',
+        severity: 'danger',
       },
       {
         id: 'alt-2',
         type: 'rearrangement',
-        title: '4 reacomodos sugeridos de optimización',
-        description: 'Mover SKUs de alta rotación al Pasillo A ahorrará 287 m de recorrido diario.',
+        title: '3 reacomodos de bobinas sugeridos para Línea Flexo 1',
+        description: 'Mover bobinas BOPP blanco al Pasillo A ahorrará 140 m de recorrido de montacargas por tiraje.',
         ctaLabel: 'Ver reacomodos',
         ctaAction: 'rearrangements',
         severity: 'info',
@@ -150,254 +140,109 @@ export const NODE_DASHBOARD_DATA: Record<string, NodeDashboardData> = {
       {
         id: 'alt-3',
         type: 'rework',
-        title: '2 unidades con más de 48 hrs en retrabajo',
-        description: 'Colchones con empaque observado en rampa de recibo pendientes de validación.',
-        ctaLabel: 'Ver retrabajo',
+        title: 'Tarima de cartulina SBS con liberación pendiente QA',
+        description: 'Muestreo de calibre y absorción de tinta en laboratorio de calidad de sustratos.',
+        ctaLabel: 'Ver cuarentena',
         ctaAction: 'rework',
-        severity: 'danger',
+        severity: 'warning',
       },
       {
         id: 'alt-4',
-        type: 'transfer',
-        title: 'Traspaso OTP-2026-0042 en preparación',
-        description: 'Destino Sucursal Valle Oriente (5 unidades Nayt Flow) programado para hoy.',
-        ctaLabel: 'Ver traspaso',
-        ctaAction: 'transfers',
-        severity: 'info',
-      },
-      {
-        id: 'alt-5',
         type: 'high_occupancy',
-        title: 'Pasillo A con ocupación del 92%',
-        description: 'Espacio de alta rotación cerca del límite de capacidad en nivel A y B.',
-        ctaLabel: 'Ver mapa',
+        title: 'Pasillo A (Sustratos y Bobinas) al 88% de capacidad',
+        description: 'Alta ocupación por arribo simultáneo de bobinas BOPP y papel couché.',
+        ctaLabel: 'Ver mapa de calor',
         ctaAction: 'map',
         severity: 'warning',
       },
     ],
     inventoryHealth: [
-      { sku: 'SC-NAYT-FLOW-IND', name: 'Nayt Colchón Flow Basic White Individual', category: 'Colchones', brand: 'Nayt', available: 24, committed: 8, inTransit: 5, avgAge: 6.4, status: 'Alta rotación' },
-      { sku: 'SC-NAYT-FLOW-MAT', name: 'Nayt Colchón Flow Basic White Matrimonial', category: 'Colchones', brand: 'Nayt', available: 19, committed: 4, inTransit: 0, avgAge: 9.1, status: 'Saludable' },
-      { sku: 'SC-SPA-REC-IND', name: 'Spring Air Colchón Record Individual', category: 'Colchones', brand: 'Spring Air', available: 16, committed: 6, inTransit: 3, avgAge: 8.5, status: 'Alta rotación' },
-      { sku: 'SC-RES-ORT-MAT', name: 'Restonic Colchón Ortopédico Matrimonial', category: 'Colchones', brand: 'Restonic', available: 5, committed: 7, inTransit: 0, avgAge: 18.3, status: 'Cobertura baja' },
-      { sku: 'SC-SEA-CLB-KS', name: 'Sealy Colchón Crown Jewel King Size', category: 'Colchones', brand: 'Sealy', available: 12, committed: 1, inTransit: 2, avgAge: 38.6, status: 'Sin movimiento' },
-      { sku: 'SC-BAS-NYT-IND', name: 'Nayt Base Cama Smart Metal Individual', category: 'Bases', brand: 'Nayt', available: 28, committed: 5, inTransit: 8, avgAge: 11.2, status: 'Saludable' },
-      { sku: 'SC-ALM-SOG-NUO', name: 'Sognare Almohada Nuube Estándar', category: 'Almohadas', brand: 'Sognare', available: 65, committed: 14, inTransit: 12, avgAge: 7.8, status: 'Alta rotación' },
+      { sku: 'PAP-COU-090', name: 'Papel Couché Brillante 90g - 70x100 cm', category: 'Papel Couché / Offset', brand: 'Bio-Pappel', available: 2500, committed: 10000, inTransit: 0, avgAge: 6.2, status: 'Alta rotación' },
+      { sku: 'PEL-BOPP-BLA', name: 'Película BOPP Blanco Brillante 60 mic', category: 'Bobinas Flexo', brand: 'Fasson Avery', available: 16, committed: 4, inTransit: 2, avgAge: 5.4, status: 'Alta rotación' },
+      { sku: 'TIN-PAN-186C', name: 'Tinta Gráfica Pantone Red 186 C', category: 'Tintas y Barnices', brand: 'Sun Chemical', available: 24, committed: 6, inTransit: 0, avgAge: 4.8, status: 'Saludable' },
+      { sku: 'TIN-PROC-BLK', name: 'Tinta Process Black Flexo/Offset', category: 'Tintas y Barnices', brand: 'Sun Chemical', available: 32, committed: 8, inTransit: 0, avgAge: 5.1, status: 'Saludable' },
+      { sku: 'CAR-SBS-14P', name: 'Cartulina SBS Calibre 14 pts - 70x95 cm', category: 'Cartulinas y Plegadizos', brand: 'Bio-Pappel', available: 8, committed: 3, inTransit: 2, avgAge: 7.5, status: 'Saludable' },
+      { sku: 'BAR-UV-GLOSS', name: 'Barniz UV Alto Brillo Gráfico', category: 'Tintas y Barnices', brand: 'Siegwerk', available: 6, committed: 2, inTransit: 2, avgAge: 9.2, status: 'Saludable' },
     ],
     layoutSummary: {
-      activeSuggestions: 4,
-      savedMetersPerDay: 287,
+      activeSuggestions: 3,
+      savedMetersPerDay: 195,
       topRecommendations: [
-        { sku: 'SC-NAYT-FLOW-IND', productName: 'Nayt Colchón Flow Individual', fromLocation: 'E-C-10', toLocation: 'A-B-03', reason: 'Acercar artículo A de alta rotación al carril de embarque' },
-        { sku: 'SC-RES-FAN-MAT', productName: 'Restonic Colchón Fantasy Matrimonial', fromLocation: 'D-C-07', toLocation: 'A-A-06', reason: 'Consolidar espacio vacío en nivel piso para picking rápido' },
+        { sku: 'PEL-BOPP-BLA', productName: 'Película BOPP Blanco Brillante', fromLocation: 'D-A-04', toLocation: 'A-A-02', reason: 'Acercar sustrato de alta frecuencia a rampa de prensas flexo' },
+        { sku: 'TIN-PROC-BLK', productName: 'Tinta Process Black 5kg', fromLocation: 'C-B-02', toLocation: 'B-A-01', reason: 'Consolidar en rack frontal de tintas para surtido rápido' },
       ],
     },
     specialZones: {
-      reception: { capacity: 20, occupied: 3, label: 'Rampa de Descarga REC-01 / REC-02' },
-      rework: { capacity: 10, occupied: 7, label: 'Zona de Incidencias & Retrabajo' },
-      shipping: { capacity: 30, occupied: 12, label: '5 Carriles de Embarque EMB-01..05' },
+      reception: { capacity: 10, occupied: 4, label: 'Andenes Descarga REC-01 / REC-02' },
+      rework: { capacity: 6, occupied: 2, label: 'Área de Retención y Muestreo QA' },
+      shipping: { capacity: 8, occupied: 3, label: 'Rampas de Surtido a Planta STG-OP' },
     },
   },
 
   'wh-mty-sur': {
     warehouseId: 'wh-mty-sur',
-    warehouseName: 'CEDIS Monterrey Sur',
-    warehouseCode: 'CEDIS-SUR',
+    warehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
+    warehouseCode: 'ALM-PT',
     type: 'CEDIS',
     kpis: {
-      totalUnits: 980,
-      inventoryCostValue: 2940000,
+      totalUnits: 48600,
+      inventoryCostValue: 2640000,
       costBreakdown: {
-        available: 2410000,
-        committed: 320000,
-        inTransit: 185000,
-        rework: 25000,
+        available: 2180000,
+        committed: 380000,
+        inTransit: 80000,
+        rework: 0,
       },
-      availableUnits: 804,
-      committedUnits: 108,
-      inTransitUnits: 68,
-      occupancyPercentage: 54.8,
-      reworkUnits: 5,
-      avgAgeDays: 16.5,
+      availableUnits: 38200,
+      committedUnits: 9800,
+      inTransitUnits: 600,
+      occupancyPercentage: 62.4,
+      reworkUnits: 0,
+      avgAgeDays: 3.8,
     },
     todayOperations: {
-      received: 22,
-      pendingStaging: 14,
-      picked: 31,
-      staged: 18,
-      transfersInTransit: 10,
+      received: 12,
+      pendingStaging: 3,
+      picked: 8,
+      staged: 6,
+      transfersInTransit: 0,
     },
     alerts: [
       {
         id: 'alt-sur-1',
-        type: 'critical_age',
-        title: '4 unidades con más de 35 días',
-        description: 'Modelos Therapedic King Size en pasillo D.',
-        ctaLabel: 'Ver unidades',
-        ctaAction: 'stocks',
+        type: 'rework',
+        title: 'Tarima de etiquetas farmacéuticas en reempaque secundario',
+        description: 'Retrabajo de caja exterior para Laboratorios Medifarma.',
+        ctaLabel: 'Ver retrabajo',
+        ctaAction: 'rework',
         severity: 'warning',
       },
       {
         id: 'alt-sur-2',
-        type: 'rearrangement',
-        title: '2 reacomodos sugeridos',
-        description: 'Reacomodar bases Spring Air a nivel de piso.',
-        ctaLabel: 'Ver reacomodos',
-        ctaAction: 'rearrangements',
-        severity: 'info',
-      },
-      {
-        id: 'alt-sur-3',
-        type: 'transfer',
-        title: 'Traspaso entrante desde CEDIS Norte',
-        description: '20 piezas programadas para entrega mañana.',
-        ctaLabel: 'Ver traspasos',
-        ctaAction: 'transfers',
-        severity: 'info',
-      },
-    ],
-    inventoryHealth: [
-      { sku: 'SC-NAYT-FLOW-IND', name: 'Nayt Colchón Flow Basic White Individual', category: 'Colchones', brand: 'Nayt', available: 18, committed: 4, inTransit: 0, avgAge: 8.2, status: 'Saludable' },
-      { sku: 'SC-SPA-REC-MAT', name: 'Spring Air Colchón Record Matrimonial', category: 'Colchones', brand: 'Spring Air', available: 14, committed: 5, inTransit: 0, avgAge: 12.0, status: 'Saludable' },
-      { sku: 'SC-THE-GEL-KS', name: 'Therapedic Colchón Memory Gel King Size', category: 'Colchones', brand: 'Therapedic', available: 8, committed: 0, inTransit: 0, avgAge: 36.2, status: 'Sin movimiento' },
-    ],
-    layoutSummary: {
-      activeSuggestions: 2,
-      savedMetersPerDay: 145,
-      topRecommendations: [
-        { sku: 'SC-SPA-REC-MAT', productName: 'Spring Air Record Matrimonial', fromLocation: 'D-B-04', toLocation: 'A-A-02', reason: 'Optimizar ruta hacia rampa sur' },
-      ],
-    },
-    specialZones: {
-      reception: { capacity: 20, occupied: 2, label: 'Rampa de Descarga REC-SUR' },
-      rework: { capacity: 10, occupied: 5, label: 'Bahía de Retrabajo Sur' },
-      shipping: { capacity: 30, occupied: 8, label: '5 Carriles de Embarque EMB-SUR' },
-    },
-  },
-
-  'wh-suc-valle-oriente': {
-    warehouseId: 'wh-suc-valle-oriente',
-    warehouseName: 'Sucursal Valle Oriente',
-    warehouseCode: 'SUC-VALLE',
-    type: 'SUCURSAL',
-    kpis: {
-      totalUnits: 86,
-      inventoryCostValue: 248600,
-      costBreakdown: {
-        available: 182000,
-        committed: 38000,
-        inTransit: 24500,
-        rework: 4100,
-      },
-      availableUnits: 64,
-      committedUnits: 14,
-      inTransitUnits: 8,
-      occupancyPercentage: 71.6,
-      reworkUnits: 1,
-      avgAgeDays: 9.8,
-    },
-    todayOperations: {
-      received: 8,
-      pendingStaging: 2,
-      picked: 9,
-      staged: 6,
-      transfersInTransit: 5,
-    },
-    alerts: [
-      {
-        id: 'alt-valle-1',
-        type: 'transfer',
-        title: 'Traspaso OTP-2026-0044 en camino',
-        description: '5 colchones Nayt Flow Individual resurtidos desde CEDIS Norte.',
-        ctaLabel: 'Ver traspaso',
-        ctaAction: 'transfers',
-        severity: 'info',
-      },
-      {
-        id: 'alt-valle-2',
-        type: 'critical_age',
-        title: 'Showroom: 6 bahías ocupadas al 100%',
-        description: 'Exhibición completa de modelos para prueba de confort.',
-        ctaLabel: 'Ver showroom',
+        type: 'high_occupancy',
+        title: 'Área de producto terminado de alta demanda al 72%',
+        description: 'Lotes de folletos médicos listos para liberación y despacho.',
+        ctaLabel: 'Ver mapa',
         ctaAction: 'map',
         severity: 'info',
       },
     ],
     inventoryHealth: [
-      { sku: 'SC-NAYT-FLOW-IND', name: 'Nayt Colchón Flow Basic White Individual', category: 'Colchones', brand: 'Nayt', available: 2, committed: 4, inTransit: 5, avgAge: 4.1, status: 'Cobertura baja' },
-      { sku: 'SC-SPA-REC-MAT', name: 'Spring Air Colchón Record Matrimonial', category: 'Colchones', brand: 'Spring Air', available: 5, committed: 1, inTransit: 0, avgAge: 7.9, status: 'Saludable' },
-      { sku: 'SC-ALM-SOG-NUO', name: 'Sognare Almohada Nuube Estándar', category: 'Almohadas', brand: 'Sognare', available: 16, committed: 3, inTransit: 6, avgAge: 5.4, status: 'Alta rotación' },
+      { sku: 'ETQ-FAR-VIL', name: 'Etiqueta Farmacéutica Vial 10ml - PT', category: 'Producto Terminado', brand: 'RTM Packaging', available: 18000, committed: 8000, inTransit: 0, avgAge: 2.4, status: 'Alta rotación' },
+      { sku: 'FOL-MED-PLE', name: 'Folleto Médico Farmacéutico Plegado 4 Cuerpos', category: 'Producto Terminado', brand: 'RTM Packaging', available: 12000, committed: 4000, inTransit: 0, avgAge: 3.1, status: 'Alta rotación' },
+      { sku: 'CJ-EMB-MED', name: 'Cajas Corrugadas Flauta C 40x30x30 cm', category: 'Empaque Corrugado', brand: 'RTM Packaging', available: 1500, committed: 500, inTransit: 0, avgAge: 4.2, status: 'Saludable' },
     ],
     layoutSummary: {
-      activeSuggestions: 1,
-      savedMetersPerDay: 48,
+      activeSuggestions: 2,
+      savedMetersPerDay: 110,
       topRecommendations: [
-        { sku: 'SC-NAYT-FLOW-IND', productName: 'Nayt Colchón Flow Individual', fromLocation: 'MINI-RACK-02', toLocation: 'ENTR-01', reason: 'Preparar para entrega local a cliente' },
+        { sku: 'ETQ-FAR-VIL', productName: 'Etiqueta Farmacéutica Vial 10ml', fromLocation: 'B-A-03', toLocation: 'A-A-01', reason: 'Posición contigua a carril de despacho EMB-01' },
       ],
     },
     specialZones: {
-      showroom: { capacity: 6, occupied: 6, label: '6 Bahías SHOW-01..06 de Exhibición' },
-      reception: { capacity: 6, occupied: 1, label: 'Recepción y Andén de Descarga' },
-      rework: { capacity: 3, occupied: 1, label: 'Incidencias Retail' },
-      shipping: { capacity: 4, occupied: 2, label: 'Carriles de Entrega Local' },
-    },
-  },
-
-  'wh-suc-cumbres': {
-    warehouseId: 'wh-suc-cumbres',
-    warehouseName: 'Sucursal Cumbres',
-    warehouseCode: 'SUC-CUMBRES',
-    type: 'SUCURSAL',
-    kpis: {
-      totalUnits: 72,
-      inventoryCostValue: 209500,
-      costBreakdown: {
-        available: 154000,
-        committed: 32000,
-        inTransit: 19500,
-        rework: 4000,
-      },
-      availableUnits: 53,
-      committedUnits: 11,
-      inTransitUnits: 8,
-      occupancyPercentage: 60.0,
-      reworkUnits: 1,
-      avgAgeDays: 11.4,
-    },
-    todayOperations: {
-      received: 6,
-      pendingStaging: 3,
-      picked: 7,
-      staged: 4,
-      transfersInTransit: 6,
-    },
-    alerts: [
-      {
-        id: 'alt-cum-1',
-        type: 'transfer',
-        title: 'Traspaso semanal pendiente de arribo',
-        description: 'Resurtido de almohadas y protectores desde CEDIS Norte.',
-        ctaLabel: 'Ver traspaso',
-        ctaAction: 'transfers',
-        severity: 'info',
-      },
-    ],
-    inventoryHealth: [
-      { sku: 'SC-NAYT-FLOW-IND', name: 'Nayt Colchón Flow Basic White Individual', category: 'Colchones', brand: 'Nayt', available: 4, committed: 2, inTransit: 3, avgAge: 6.2, status: 'Saludable' },
-      { sku: 'SC-RES-FAN-MAT', name: 'Restonic Colchón Fantasy Matrimonial', category: 'Colchones', brand: 'Restonic', available: 3, committed: 1, inTransit: 0, avgAge: 14.5, status: 'Saludable' },
-    ],
-    layoutSummary: {
-      activeSuggestions: 1,
-      savedMetersPerDay: 36,
-      topRecommendations: [
-        { sku: 'SC-RES-FAN-MAT', productName: 'Restonic Fantasy Matrimonial', fromLocation: 'MINI-RACK-01', toLocation: 'SHOW-03', reason: 'Rotar modelo a showroom' },
-      ],
-    },
-    specialZones: {
-      showroom: { capacity: 6, occupied: 5, label: '6 Bahías SHOW-01..06 de Exhibición' },
-      reception: { capacity: 6, occupied: 1, label: 'Recepción y Andén de Descarga' },
-      rework: { capacity: 3, occupied: 1, label: 'Incidencias Retail' },
-      shipping: { capacity: 4, occupied: 1, label: 'Carriles de Entrega Local' },
+      reception: { capacity: 8, occupied: 2, label: 'Recepción de Líneas de Empaque REC-PT' },
+      rework: { capacity: 4, occupied: 1, label: 'Área de Reempaque e Inspección QA' },
+      shipping: { capacity: 6, occupied: 3, label: 'Carriles de Embarque B2B EMB-01..03' },
     },
   },
 };
@@ -410,13 +255,13 @@ export interface AnalyticsDataset {
   warehouseFilter: string;
   kpis: {
     totalMovements: number;
-    avgTurnoverRate: number; // e.g. 8.4x / year
+    avgTurnoverRate: number;
     avgInventoryValue: number; // in MXN
     avgDaysInWarehouse: number;
     avgOccupancyPercentage: number;
   };
   movementTrends: {
-    label: string; // e.g. 'Semana 1', 'Semana 2', or Day
+    label: string;
     entries: number;
     staging: number;
     rearrangements: number;
@@ -476,8 +321,8 @@ export interface AnalyticsDataset {
   weeklyActivityMatrix: {
     day: string;
     hours: {
-      timeSlot: string; // '06-09h', '09-12h', '12-15h', '15-18h', '18-21h'
-      activityLevel: number; // 0 to 100
+      timeSlot: string;
+      activityLevel: number;
       opsCount: number;
     }[];
   }[];
@@ -498,136 +343,116 @@ export const MOCK_ANALYTICS_DATA_30D: AnalyticsDataset = {
   period: '30 días',
   warehouseFilter: 'all',
   kpis: {
-    totalMovements: 1482,
-    avgTurnoverRate: 8.4,
-    avgInventoryValue: 3942000,
-    avgDaysInWarehouse: 14.8,
-    avgOccupancyPercentage: 71.4,
+    totalMovements: 1642,
+    avgTurnoverRate: 11.2,
+    avgInventoryValue: 7490000,
+    avgDaysInWarehouse: 8.6,
+    avgOccupancyPercentage: 71.8,
   },
   movementTrends: [
-    { label: 'Sem 1 (1-7 Ago)', entries: 84, staging: 68, rearrangements: 38, picking: 112, transfers: 42, shipping: 98, total: 442 },
-    { label: 'Sem 2 (8-14 Ago)', entries: 62, staging: 54, rearrangements: 44, picking: 98, transfers: 36, shipping: 86, total: 380 },
-    { label: 'Sem 3 (15-21 Ago)', entries: 78, staging: 72, rearrangements: 51, picking: 124, transfers: 48, shipping: 104, total: 477 },
-    { label: 'Sem 4 (22-28 Ago)', entries: 95, staging: 84, rearrangements: 58, picking: 142, transfers: 56, shipping: 122, total: 557 },
+    { label: 'Sem 1 (1-7 Sep)', entries: 92, staging: 78, rearrangements: 42, picking: 134, transfers: 0, shipping: 118, total: 464 },
+    { label: 'Sem 2 (8-14 Sep)', entries: 85, staging: 68, rearrangements: 38, picking: 122, transfers: 0, shipping: 104, total: 417 },
+    { label: 'Sem 3 (15-21 Sep)', entries: 98, staging: 84, rearrangements: 46, picking: 145, transfers: 0, shipping: 128, total: 501 },
+    { label: 'Sem 4 (22-28 Sep)', entries: 105, staging: 92, rearrangements: 52, picking: 156, transfers: 0, shipping: 136, total: 541 },
   ],
   inventoryByStatus: [
-    { status: 'Disponible', count: 1894, percentage: 78.2, color: 'bg-emerald-500 text-emerald-500 border-emerald-500' },
-    { status: 'Comprometido', count: 267, percentage: 11.0, color: 'bg-amber-500 text-amber-500 border-amber-500' },
-    { status: 'En tránsito', count: 176, percentage: 7.3, color: 'bg-blue-500 text-blue-500 border-blue-500' },
-    { status: 'En retrabajo', count: 14, percentage: 0.6, color: 'bg-rose-500 text-rose-500 border-rose-500' },
-    { status: 'En embarque', count: 52, percentage: 2.1, color: 'bg-indigo-500 text-indigo-500 border-indigo-500' },
-    { status: 'En exhibición', count: 19, percentage: 0.8, color: 'bg-purple-500 text-purple-500 border-purple-500' },
+    { status: 'Disponible', count: 132400, percentage: 80.5, color: 'bg-emerald-500 text-emerald-500 border-emerald-500' },
+    { status: 'Reservado OP', count: 22400, percentage: 13.6, color: 'bg-amber-500 text-amber-500 border-amber-500' },
+    { status: 'En Cuarentena QA', count: 5600, percentage: 3.4, color: 'bg-rose-500 text-rose-500 border-rose-500' },
+    { status: 'En despacho B2B', count: 4100, percentage: 2.5, color: 'bg-blue-500 text-blue-500 border-blue-500' },
   ],
   topMovedArticles: [
-    { sku: 'SC-NAYT-FLOW-IND', name: 'Nayt Colchón Flow Basic White Individual', brand: 'Nayt', category: 'Colchones', movementsCount: 284, percentage: 19.2 },
-    { sku: 'SC-NAYT-FLOW-MAT', name: 'Nayt Colchón Flow Basic White Matrimonial', brand: 'Nayt', category: 'Colchones', movementsCount: 218, percentage: 14.7 },
-    { sku: 'SC-SPA-REC-IND', name: 'Spring Air Colchón Record Individual', brand: 'Spring Air', category: 'Colchones', movementsCount: 176, percentage: 11.9 },
-    { sku: 'SC-ALM-SOG-NUO', name: 'Sognare Almohada Nuube Estándar', brand: 'Sognare', category: 'Almohadas', movementsCount: 162, percentage: 10.9 },
-    { sku: 'SC-BAS-NYT-IND', name: 'Nayt Base Cama Smart Metal Individual', brand: 'Nayt', category: 'Bases', movementsCount: 134, percentage: 9.0 },
-    { sku: 'SC-SPA-REC-MAT', name: 'Spring Air Colchón Record Matrimonial', brand: 'Spring Air', category: 'Colchones', movementsCount: 118, percentage: 8.0 },
-    { sku: 'SC-RES-ORT-MAT', name: 'Restonic Colchón Ortopédico Matrimonial', brand: 'Restonic', category: 'Colchones', movementsCount: 96, percentage: 6.5 },
-    { sku: 'SC-PRO-SOG-QS', name: 'Sognare Protector Colchón Queen Size', brand: 'Sognare', category: 'Protectores', movementsCount: 88, percentage: 5.9 },
-    { sku: 'SC-NAYT-PRO-QS', name: 'Nayt Colchón Flow Pro Queen Size', brand: 'Nayt', category: 'Colchones', movementsCount: 74, percentage: 5.0 },
-    { sku: 'SC-AME-HAL-QS', name: 'América Colchón Hall Queen Size', brand: 'América', category: 'Colchones', movementsCount: 68, percentage: 4.6 },
+    { sku: 'PAP-COU-090', name: 'Papel Couché Brillante 90g - 70x100 cm', brand: 'Bio-Pappel', category: 'Papel Couché / Offset', movementsCount: 342, percentage: 20.8 },
+    { sku: 'PEL-BOPP-BLA', name: 'Película BOPP Blanco Brillante 60 mic', brand: 'Fasson Avery', category: 'Bobinas Flexo', movementsCount: 286, percentage: 17.4 },
+    { sku: 'TIN-PAN-186C', name: 'Tinta Gráfica Pantone Red 186 C', brand: 'Sun Chemical', category: 'Tintas y Barnices', movementsCount: 218, percentage: 13.3 },
+    { sku: 'TIN-PROC-BLK', name: 'Tinta Process Black Flexo/Offset', brand: 'Sun Chemical', category: 'Tintas y Barnices', movementsCount: 194, percentage: 11.8 },
+    { sku: 'ETQ-FAR-VIL', name: 'Etiqueta Farmacéutica Vial 10ml - PT', brand: 'RTM Packaging', category: 'Producto Terminado', movementsCount: 176, percentage: 10.7 },
+    { sku: 'CAR-SBS-14P', name: 'Cartulina SBS Calibre 14 pts - 70x95 cm', brand: 'Bio-Pappel', category: 'Cartulinas y Plegadizos', movementsCount: 148, percentage: 9.0 },
+    { sku: 'BAR-UV-GLOSS', name: 'Barniz UV Alto Brillo Gráfico', brand: 'Siegwerk', category: 'Tintas y Barnices', movementsCount: 124, percentage: 7.6 },
+    { sku: 'CJ-EMB-MED', name: 'Cajas Corrugadas Flauta C 40x30x30 cm', brand: 'RTM Packaging', category: 'Empaque Corrugado', movementsCount: 94, percentage: 5.7 },
   ],
   idleArticles: [
-    { sku: 'SC-SEA-CLB-KS', name: 'Sealy Colchón Crown Jewel King Size', brand: 'Sealy', category: 'Colchones', stockUnits: 18, daysWithoutMovement: 38, tiedCapital: 140400 },
-    { sku: 'SC-THE-GEL-KS', name: 'Therapedic Colchón Memory Gel King Size', brand: 'Therapedic', category: 'Colchones', stockUnits: 12, daysWithoutMovement: 34, tiedCapital: 86400 },
-    { sku: 'SC-SEA-CRW-KS', name: 'Sealy Colchón Crown Prestige King Size', brand: 'Sealy', category: 'Colchones', stockUnits: 8, daysWithoutMovement: 29, tiedCapital: 68000 },
-    { sku: 'SC-SPA-PAL-QS', name: 'Spring Air Colchón Palladium Queen Size', brand: 'Spring Air', category: 'Colchones', stockUnits: 7, daysWithoutMovement: 26, tiedCapital: 35700 },
-    { sku: 'SC-RES-MNC-QS', name: 'Restonic Colchón Mónaco Queen Size', brand: 'Restonic', category: 'Colchones', stockUnits: 5, daysWithoutMovement: 24, tiedCapital: 27000 },
+    { sku: 'PAP-TERM-DIR', name: 'Papel Térmico Directo Autoadhesivo', brand: 'Fasson Avery', category: 'Bobinas Flexo', stockUnits: 4, daysWithoutMovement: 26, tiedCapital: 25600 },
+    { sku: 'PEL-BOPP-TRA', name: 'Película BOPP Transparente 50 mic', brand: 'Fasson Avery', category: 'Bobinas Flexo', stockUnits: 3, daysWithoutMovement: 22, tiedCapital: 23400 },
   ],
   zoneOccupancy: [
-    { zone: 'Pasillo A (Racks de Picking Rápido)', capacity: 70, occupied: 64, percentage: 91.4 },
-    { zone: 'Pasillo B (Racks Selectivos)', capacity: 70, occupied: 52, percentage: 74.3 },
-    { zone: 'Pasillo C (Racks Medios)', capacity: 70, occupied: 46, percentage: 65.7 },
-    { zone: 'Pasillo D (Almacenamiento)', capacity: 70, occupied: 41, percentage: 58.6 },
-    { zone: 'Pasillo E (Alta Densidad)', capacity: 70, occupied: 38, percentage: 54.3 },
-    { zone: 'Recepción & Descarga', capacity: 20, occupied: 4, percentage: 20.0 },
-    { zone: 'Retrabajo & Incidencias', capacity: 10, occupied: 7, percentage: 70.0 },
-    { zone: 'Carriles de Embarque', capacity: 30, occupied: 12, percentage: 40.0 },
-    { zone: 'Showrooms Retail', capacity: 12, occupied: 11, percentage: 91.7 },
+    { zone: 'Pasillo A (Sustratos y Bobinas Flexo)', capacity: 80, occupied: 72, percentage: 90.0 },
+    { zone: 'Pasillo B (Racks de Tintas y Químicos)', capacity: 60, occupied: 44, percentage: 73.3 },
+    { zone: 'Pasillo C (Cartulinas y Plegadizos)', capacity: 60, occupied: 40, percentage: 66.7 },
+    { zone: 'Pasillo D (Almacenamiento y Solventes)', capacity: 50, occupied: 31, percentage: 62.0 },
+    { zone: 'Nave 2 ALM-PT (Producto Terminado)', capacity: 90, occupied: 56, percentage: 62.2 },
+    { zone: 'Recepción MP & Andenes', capacity: 20, occupied: 6, percentage: 30.0 },
+    { zone: 'Área Cuarentena y Retención QA', capacity: 10, occupied: 3, percentage: 30.0 },
+    { zone: 'Rampas de Despacho B2B', capacity: 15, occupied: 6, percentage: 40.0 },
   ],
   brandValueBreakdown: [
-    { brand: 'Nayt', costValue: 1284000, percentage: 32.6, unitsCount: 396 },
-    { brand: 'Spring Air', costValue: 968000, percentage: 24.6, unitsCount: 264 },
-    { brand: 'Restonic', costValue: 642000, percentage: 16.3, unitsCount: 168 },
-    { brand: 'Sealy', costValue: 485000, percentage: 12.3, unitsCount: 62 },
-    { brand: 'Therapedic', costValue: 288000, percentage: 7.3, unitsCount: 40 },
-    { brand: 'Sognare', costValue: 175000, percentage: 4.4, unitsCount: 412 },
-    { brand: 'América', costValue: 100000, percentage: 2.5, unitsCount: 26 },
+    { brand: 'Bio-Pappel', costValue: 2880000, percentage: 38.5, unitsCount: 42 },
+    { brand: 'Fasson Avery', costValue: 2110000, percentage: 28.2, unitsCount: 54 },
+    { brand: 'Sun Chemical', costValue: 1110000, percentage: 14.8, unitsCount: 120 },
+    { brand: 'Siegwerk', costValue: 704000, percentage: 9.4, unitsCount: 18 },
+    { brand: 'RTM Packaging (PT)', costValue: 686000, percentage: 9.1, unitsCount: 84 },
   ],
   ageDistribution: [
-    { range: '0 - 7 días (Ingreso reciente)', units: 824, percentage: 34.0, valueMxn: 1345000 },
-    { range: '8 - 15 días (Rotación normal)', units: 762, percentage: 31.5, valueMxn: 1210000 },
-    { range: '16 - 30 días (Supervisión)', units: 586, percentage: 24.2, valueMxn: 912000 },
-    { range: '31 - 60 días (Baja rotación)', units: 198, percentage: 8.2, valueMxn: 368000 },
-    { range: '60+ días (Crítico / Envejecido)', units: 52, percentage: 2.1, valueMxn: 107000 },
+    { range: '0 - 7 días (Ingreso reciente / En rotación)', units: 98400, percentage: 62.1, valueMxn: 4650000 },
+    { range: '8 - 15 días (Rotación programada OP)', units: 42200, percentage: 26.6, valueMxn: 1980000 },
+    { range: '16 - 30 días (Supervisión técnica)', units: 14600, percentage: 9.2, valueMxn: 690000 },
+    { range: '30+ días (Alerta de envejecimiento de bobina)', units: 3200, percentage: 2.1, valueMxn: 170000 },
   ],
   rotationClassification: [
-    { category: 'Alta rotación', skusCount: 6, unitsCount: 1042, percentage: 43.0, description: 'Rotación menor a 10 días, representa 58% de las órdenes de despacho.' },
-    { category: 'Media rotación', skusCount: 9, unitsCount: 894, percentage: 36.9, description: 'Rotación entre 11 y 25 días, inventario base de amortiguamiento.' },
-    { category: 'Baja rotación', skusCount: 5, unitsCount: 386, percentage: 16.0, description: 'Rotación entre 26 y 45 días, requiere seguimiento de cobertura.' },
-    { category: 'Sin movimiento', skusCount: 2, unitsCount: 100, percentage: 4.1, description: 'Más de 45 días sin salidas, candidato para promociones o reacomodo.' },
+    { category: 'Alta rotación', skusCount: 5, unitsCount: 96400, percentage: 60.9, description: 'Sustratos y tintas con consumo diario continuo en prensas Nilpeter y Heidelberg.' },
+    { category: 'Media rotación', skusCount: 6, unitsCount: 48200, percentage: 30.4, description: 'Materiales de soporte, barnices UV y empaque secundario.' },
+    { category: 'Baja rotación', skusCount: 2, unitsCount: 13800, percentage: 8.7, description: 'Sustratos especiales y papeles térmicos de pedidos esporádicos.' },
+    { category: 'Sin movimiento', skusCount: 0, unitsCount: 0, percentage: 0.0, description: 'Sin existencias obsoletas o sin movimiento registradas este mes.' },
   ],
   weeklyActivityMatrix: [
-    { day: 'Lunes', hours: [{ timeSlot: '06-09h', activityLevel: 65, opsCount: 38 }, { timeSlot: '09-12h', activityLevel: 95, opsCount: 62 }, { timeSlot: '12-15h', activityLevel: 70, opsCount: 44 }, { timeSlot: '15-18h', activityLevel: 88, opsCount: 56 }, { timeSlot: '18-21h', activityLevel: 30, opsCount: 18 }] },
-    { day: 'Martes', hours: [{ timeSlot: '06-09h', activityLevel: 55, opsCount: 32 }, { timeSlot: '09-12h', activityLevel: 88, opsCount: 58 }, { timeSlot: '12-15h', activityLevel: 60, opsCount: 38 }, { timeSlot: '15-18h', activityLevel: 80, opsCount: 52 }, { timeSlot: '18-21h', activityLevel: 25, opsCount: 14 }] },
-    { day: 'Miércoles', hours: [{ timeSlot: '06-09h', activityLevel: 60, opsCount: 35 }, { timeSlot: '09-12h', activityLevel: 92, opsCount: 60 }, { timeSlot: '12-15h', activityLevel: 75, opsCount: 48 }, { timeSlot: '15-18h', activityLevel: 85, opsCount: 54 }, { timeSlot: '18-21h', activityLevel: 35, opsCount: 22 }] },
-    { day: 'Jueves', hours: [{ timeSlot: '06-09h', activityLevel: 70, opsCount: 42 }, { timeSlot: '09-12h', activityLevel: 100, opsCount: 68 }, { timeSlot: '12-15h', activityLevel: 80, opsCount: 52 }, { timeSlot: '15-18h', activityLevel: 90, opsCount: 59 }, { timeSlot: '18-21h', activityLevel: 40, opsCount: 26 }] },
-    { day: 'Viernes', hours: [{ timeSlot: '06-09h', activityLevel: 85, opsCount: 54 }, { timeSlot: '09-12h', activityLevel: 98, opsCount: 65 }, { timeSlot: '12-15h', activityLevel: 85, opsCount: 55 }, { timeSlot: '15-18h', activityLevel: 95, opsCount: 63 }, { timeSlot: '18-21h', activityLevel: 50, opsCount: 32 }] },
-    { day: 'Sábado', hours: [{ timeSlot: '06-09h', activityLevel: 45, opsCount: 26 }, { timeSlot: '09-12h', activityLevel: 75, opsCount: 46 }, { timeSlot: '12-15h', activityLevel: 50, opsCount: 30 }, { timeSlot: '15-18h', activityLevel: 35, opsCount: 20 }, { timeSlot: '18-21h', activityLevel: 15, opsCount: 8 }] },
+    { day: 'Lunes', hours: [{ timeSlot: '06-09h', activityLevel: 75, opsCount: 42 }, { timeSlot: '09-12h', activityLevel: 98, opsCount: 68 }, { timeSlot: '12-15h', activityLevel: 80, opsCount: 52 }, { timeSlot: '15-18h', activityLevel: 90, opsCount: 61 }, { timeSlot: '18-21h', activityLevel: 45, opsCount: 28 }] },
+    { day: 'Martes', hours: [{ timeSlot: '06-09h', activityLevel: 68, opsCount: 38 }, { timeSlot: '09-12h', activityLevel: 92, opsCount: 64 }, { timeSlot: '12-15h', activityLevel: 75, opsCount: 48 }, { timeSlot: '15-18h', activityLevel: 86, opsCount: 56 }, { timeSlot: '18-21h', activityLevel: 40, opsCount: 24 }] },
+    { day: 'Miércoles', hours: [{ timeSlot: '06-09h', activityLevel: 72, opsCount: 40 }, { timeSlot: '09-12h', activityLevel: 95, opsCount: 66 }, { timeSlot: '12-15h', activityLevel: 82, opsCount: 54 }, { timeSlot: '15-18h', activityLevel: 88, opsCount: 58 }, { timeSlot: '18-21h', activityLevel: 42, opsCount: 26 }] },
+    { day: 'Jueves', hours: [{ timeSlot: '06-09h', activityLevel: 80, opsCount: 48 }, { timeSlot: '09-12h', activityLevel: 100, opsCount: 72 }, { timeSlot: '12-15h', activityLevel: 85, opsCount: 58 }, { timeSlot: '15-18h', activityLevel: 94, opsCount: 65 }, { timeSlot: '18-21h', activityLevel: 48, opsCount: 30 }] },
+    { day: 'Viernes', hours: [{ timeSlot: '06-09h', activityLevel: 88, opsCount: 56 }, { timeSlot: '09-12h', activityLevel: 99, opsCount: 70 }, { timeSlot: '12-15h', activityLevel: 88, opsCount: 62 }, { timeSlot: '15-18h', activityLevel: 96, opsCount: 68 }, { timeSlot: '18-21h', activityLevel: 55, opsCount: 36 }] },
+    { day: 'Sábado', hours: [{ timeSlot: '06-09h', activityLevel: 55, opsCount: 32 }, { timeSlot: '09-12h', activityLevel: 82, opsCount: 50 }, { timeSlot: '12-15h', activityLevel: 60, opsCount: 36 }, { timeSlot: '15-18h', activityLevel: 40, opsCount: 22 }, { timeSlot: '18-21h', activityLevel: 20, opsCount: 10 }] },
   ],
   topLocations: {
     mostActive: [
-      { code: 'A-B-04', name: 'Pasillo A · Pos 04 · Nivel B', type: 'Rack Picking', opsCount: 142, status: 'Alta Demanda' },
-      { code: 'A-A-02', name: 'Pasillo A · Pos 02 · Nivel A (Piso)', type: 'Rack Picking', opsCount: 128, status: 'Alta Demanda' },
-      { code: 'B-B-03', name: 'Pasillo B · Pos 03 · Nivel B', type: 'Rack Selectivo', opsCount: 114, status: 'Frecuente' },
-      { code: 'EMB-01', name: 'Carril de Embarque 01', type: 'Despacho', opsCount: 98, status: 'Operativo' },
-      { code: 'SHOW-01', name: 'Showroom Bahía 01 (Valle Ote)', type: 'Exhibición', opsCount: 86, status: 'Prueba Confort' },
+      { code: 'A-A-01', name: 'Pasillo A · Bahía 01 (Bobinas BOPP)', type: 'Rack Bobinas', opsCount: 154, status: 'Alta Demanda' },
+      { code: 'A-B-01', name: 'Pasillo A · Bahía 01 Nivel B (Couché)', type: 'Tarimas Offset', opsCount: 138, status: 'Alta Demanda' },
+      { code: 'B-A-01', name: 'Pasillo B · Bahía 01 (Tintas Pantone)', type: 'Rack Tintas', opsCount: 122, status: 'Frecuente' },
+      { code: 'REC-01', name: 'Andén de Descarga Materia Prima', type: 'Recepción', opsCount: 110, status: 'Operativo' },
+      { code: 'EMB-01', name: 'Carril de Embarque Producto Terminado', type: 'Despacho B2B', opsCount: 96, status: 'Operativo' },
     ],
     leastUsed: [
-      { code: 'E-C-10', name: 'Pasillo E · Pos 10 · Nivel C (Superior)', type: 'Rack Alto', opsCount: 4, status: 'Candidato Reacomodo' },
-      { code: 'E-C-09', name: 'Pasillo E · Pos 09 · Nivel C (Superior)', type: 'Rack Alto', opsCount: 6, status: 'Baja Demanda' },
-      { code: 'D-C-10', name: 'Pasillo D · Pos 10 · Nivel C', type: 'Rack Alto', opsCount: 8, status: 'Baja Demanda' },
-      { code: 'D-C-09', name: 'Pasillo D · Pos 09 · Nivel C', type: 'Rack Alto', opsCount: 9, status: 'Baja Demanda' },
+      { code: 'D-C-05', name: 'Pasillo D · Bahía 05 Nivel C', type: 'Rack Alto', opsCount: 4, status: 'Baja Demanda' },
+      { code: 'D-C-04', name: 'Pasillo D · Bahía 04 Nivel C', type: 'Rack Alto', opsCount: 6, status: 'Baja Demanda' },
     ],
   },
   insights: [
     {
       id: 'ins-1',
-      title: 'Nayt Flow Individual incrementó 28% su actividad',
-      description: 'El modelo estrella de la marca Nayt lideró los movimientos del mes con 284 operaciones y rotación promedio de 6.4 días.',
-      metric: '+28% volumen',
+      title: 'Papel Couché 90g lideró el consumo industrial',
+      description: 'El sustrato principal concentró 342 movimientos en el mes abasteciendo tirajes masivos en la prensa Heidelberg Speedmaster CX 102.',
+      metric: '342 movimientos',
       type: 'positive',
     },
     {
       id: 'ins-2',
-      title: 'Pasillo A concentró 34% de los pickings totales',
-      description: 'La cercanía directa a los carriles de embarque EMB-01..05 optimizó el tiempo de surtido en un 18% para pedidos de alta prioridad.',
-      metric: '34% picking',
+      title: 'Pasillo A concentró 38% del surtido a prensas',
+      description: 'La cercanía directa a las rampas de producción redujo en 22% los tiempos de traslado en montacargas.',
+      metric: '38% del surtido',
       type: 'positive',
     },
     {
       id: 'ins-3',
-      title: '4 oportunidades de consolidación detectadas',
-      description: 'Existen posiciones semi-ocupadas en los pasillos B y D que permitirían liberar 3 columnas completas de almacenamiento.',
-      metric: '3 bahías libres',
-      type: 'opportunity',
+      title: 'Diferencia en conteo cíclico A-B-03 en investigación',
+      description: 'Se detectó discrepancia física (-19,500 pliegos) frente al sistema. Auditoría de planta mantiene congelada la ubicación.',
+      metric: '-19,500 pliegos',
+      type: 'warning',
     },
     {
       id: 'ins-4',
-      title: '6 unidades superan 30 días sin movimiento',
-      description: 'Principalmente modelos King Size de alta gama (Sealy y Therapedic) en el Pasillo E nivel superior.',
-      metric: '6 colchones KS',
-      type: 'warning',
-    },
-    {
-      id: 'ins-5',
-      title: '$248,300 MXN de inventario inmovilizado',
-      description: 'Capital en existencias con más de 30 días de resguardo susceptible de traslado a sucursales retail o estrategia comercial.',
-      metric: '$248.3 K MXN',
-      type: 'warning',
+      title: 'Rotación acelerada en Producto Terminado (3.8 días)',
+      description: 'Los despachos de etiquetas farmacéuticas y empaques hacia parques industriales de Reynosa mantuvieron flujo ágil de salida.',
+      metric: '3.8 días rotación',
+      type: 'positive',
     },
   ],
 };

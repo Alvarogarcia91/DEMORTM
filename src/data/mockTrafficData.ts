@@ -1,4 +1,4 @@
-export interface HourlyTrafficPoint {
+﻿export interface HourlyTrafficPoint {
   hour: string;
   inbound: number;
   putaway: number;
@@ -196,11 +196,11 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
         { day: 'Sáb', hour: '16:00', intensity: 2, count: 20 },
       ],
       topArticles: [
-        { sku: 'SC-NAYT-FLOW-IND', name: 'Nayt Colchón Flow Basic White Individual', brand: 'Nayt', category: 'Colchones', inbound: 18, putaway: 16, picking: 16, outbound: 14, totalMoves: 64, percentage: 35 },
-        { sku: 'SC-NAYT-FLOW-MAT', name: 'Nayt Colchón Flow Basic White Matrimonial', brand: 'Nayt', category: 'Colchones', inbound: 12, putaway: 10, picking: 12, outbound: 8, totalMoves: 42, percentage: 23 },
-        { sku: 'SC-SPA-REC-IND', name: 'Spring Air Colchón Record Individual', brand: 'Spring Air', category: 'Colchones', inbound: 10, putaway: 8, picking: 10, outbound: 8, totalMoves: 36, percentage: 20 },
-        { sku: 'SC-REST-ORTO-MAT', name: 'Restonic Colchón Ortopedic Matrimonial', brand: 'Restonic', category: 'Colchones', inbound: 8, putaway: 6, picking: 6, outbound: 4, totalMoves: 24, percentage: 13 },
-        { sku: 'SC-SEAL-POST-QS', name: 'Sealy Posturepedic Crown Jewel Queen Size', brand: 'Sealy', category: 'Colchones', inbound: 6, putaway: 4, picking: 4, outbound: 4, totalMoves: 18, percentage: 9 },
+        { sku: 'MP-PAP-001', name: 'Nayt Colchón Flow Basic White Individual', brand: 'Nayt', category: 'Sustratos Industriales', inbound: 18, putaway: 16, picking: 16, outbound: 14, totalMoves: 64, percentage: 35 },
+        { sku: 'MP-BOPP-001', name: 'Nayt Colchón Flow Basic White Matrimonial', brand: 'Nayt', category: 'Sustratos Industriales', inbound: 12, putaway: 10, picking: 12, outbound: 8, totalMoves: 42, percentage: 23 },
+        { sku: 'MP-TIN-001', name: 'Spring Air Colchón Record Individual', brand: 'Spring Air', category: 'Sustratos Industriales', inbound: 10, putaway: 8, picking: 10, outbound: 8, totalMoves: 36, percentage: 20 },
+        { sku: 'MP-CAP-001', name: 'Restonic Colchón Ortopedic Matrimonial', brand: 'Restonic', category: 'Sustratos Industriales', inbound: 8, putaway: 6, picking: 6, outbound: 4, totalMoves: 24, percentage: 13 },
+        { sku: 'MP-BAR-001', name: 'Barniz UV Brillante SobreimpresiÃ³n', brand: 'Sealy', category: 'Sustratos Industriales', inbound: 6, putaway: 4, picking: 4, outbound: 4, totalMoves: 18, percentage: 9 },
       ],
       topLocations: [
         { code: 'A-A-01', label: 'Pasillo A · Pos 01 · Nivel A', type: 'Rack', moves: 28, occupancyPercentage: 80 },
@@ -217,7 +217,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       slowOrders: [
         { id: 'so-1', folio: 'OA-2026-0031', type: 'Acomodo', stage: 'Acomodo', progress: '3 / 6 unidades estibadas', timeActive: '1 h 18 min', tabTarget: 'putaway', elapsedMinutes: 78, thresholdMinutes: 45, responsible: 'Carlos Medina', reason: 'Retraso por incidencia de etiqueta dañada' },
-        { id: 'so-2', folio: 'OR-2026-0118', type: 'Recolección', stage: 'Recolección', progress: '2 / 6 unidades recolectadas', timeActive: '52 min', tabTarget: 'picking', elapsedMinutes: 52, thresholdMinutes: 40, responsible: 'Carlos Medina', reason: 'Unidad SC-UID-2026-000184 no localizada en posición' },
+        { id: 'so-2', folio: 'OR-2026-0118', type: 'Recolección', stage: 'Recolección', progress: '2 / 6 unidades recolectadas', timeActive: '52 min', tabTarget: 'picking', elapsedMinutes: 52, thresholdMinutes: 40, responsible: 'Carlos Medina', reason: 'Unidad UID-RTM-2026-000184 no localizada en posición' },
       ],
       timeBeforePutawayAvg: '24 min',
       timeBeforePutawayMax: '1 h 18 min',
@@ -355,9 +355,9 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       dayHourHeatmap: [],
       topArticles: [
-        { sku: 'SC-REST-ORTO-MAT', name: 'Restonic Colchón Ortopedic Matrimonial', brand: 'Restonic', category: 'Colchones', inbound: 10, putaway: 8, picking: 8, outbound: 6, totalMoves: 32, percentage: 39 },
-        { sku: 'SC-SEA-CLB-KS', name: 'Sealy Colchón Celebration Plus King Size', brand: 'Sealy', category: 'Colchones', inbound: 8, putaway: 6, picking: 8, outbound: 6, totalMoves: 28, percentage: 34 },
-        { sku: 'SC-SPA-REC-IND', name: 'Spring Air Colchón Record Individual', brand: 'Spring Air', category: 'Colchones', inbound: 6, putaway: 4, picking: 6, outbound: 6, totalMoves: 22, percentage: 27 },
+        { sku: 'MP-CAP-001', name: 'Restonic Colchón Ortopedic Matrimonial', brand: 'Restonic', category: 'Sustratos Industriales', inbound: 10, putaway: 8, picking: 8, outbound: 6, totalMoves: 32, percentage: 39 },
+        { sku: 'PT-ETIQ-001', name: 'Sealy Colchón Celebration Plus King Size', brand: 'Sealy', category: 'Sustratos Industriales', inbound: 8, putaway: 6, picking: 8, outbound: 6, totalMoves: 28, percentage: 34 },
+        { sku: 'MP-TIN-001', name: 'Spring Air Colchón Record Individual', brand: 'Spring Air', category: 'Sustratos Industriales', inbound: 6, putaway: 4, picking: 6, outbound: 6, totalMoves: 22, percentage: 27 },
       ],
       topLocations: [
         { code: 'B-A-01', label: 'Pasillo B · Pos 01 · Nivel A', type: 'Rack', moves: 18, occupancyPercentage: 85 },
@@ -500,7 +500,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       dayHourHeatmap: [],
       topArticles: [
-        { sku: 'SC-NAYT-FLOW-IND', name: 'Nayt Colchón Flow Basic Individual', brand: 'Nayt', category: 'Colchones', inbound: 4, putaway: 2, picking: 1, outbound: 1, totalMoves: 8, percentage: 57 },
+        { sku: 'MP-PAP-001', name: 'Nayt Colchón Flow Basic Individual', brand: 'Nayt', category: 'Sustratos Industriales', inbound: 4, putaway: 2, picking: 1, outbound: 1, totalMoves: 8, percentage: 57 },
       ],
       topLocations: [
         { code: 'SHOW-02', label: 'Bahía Showroom 02', type: 'Showroom', moves: 4, occupancyPercentage: 100 },
@@ -619,7 +619,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       dayHourHeatmap: [],
       topArticles: [
-        { sku: 'SC-SPA-REC-IND', name: 'Spring Air Colchón Record Individual', brand: 'Spring Air', category: 'Colchones', inbound: 2, putaway: 2, picking: 1, outbound: 1, totalMoves: 6, percentage: 55 },
+        { sku: 'MP-TIN-001', name: 'Spring Air Colchón Record Individual', brand: 'Spring Air', category: 'Sustratos Industriales', inbound: 2, putaway: 2, picking: 1, outbound: 1, totalMoves: 6, percentage: 55 },
       ],
       topLocations: [
         { code: 'SHOW-03', label: 'Bahía Showroom 03', type: 'Showroom', moves: 3, occupancyPercentage: 100 },

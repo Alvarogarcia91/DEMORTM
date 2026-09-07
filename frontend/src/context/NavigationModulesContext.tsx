@@ -35,17 +35,17 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   },
   {
     key: 'mesa-verificacion',
-    label: 'Mesa de Verificación (Inbound/Outbound)',
+    label: 'Operaciones de Almacén',
     category: 'operaciones',
     categoryLabel: 'Inventario y Operaciones',
-    description: 'Recepción con escáner, etiquetado de lotes, inspección de calidad y validación de salidas.',
+    description: 'Recepción de sustratos e insumos, acomodo, surtido a líneas Offset/Flexo y control de remanentes.',
   },
   {
     key: 'logistica',
-    label: 'Embarques & Entregas',
+    label: 'Producto Terminado & Embarques',
     category: 'operaciones',
     categoryLabel: 'Inventario y Operaciones',
-    description: 'Programación de rutas de distribución, control de transportistas y confirmación de entrega.',
+    description: 'Control de tarimas y rollos liberados por QA, staging y despacho de remisiones a clientes.',
   },
   {
     key: 'showroom-expos',
@@ -110,17 +110,17 @@ type VisibilityMap = Record<NavItemKey, boolean>;
 
 const DEFAULT_VISIBILITY: VisibilityMap = {
   'inicio': true,
-  'articulos': true,
+  'articulos': false,
   'inventario': true,
   'mesa-verificacion': true,
   'logistica': true,
-  'showroom-expos': true,
-  'requisiciones': true,
-  'compras': true,
-  'proveedores': true,
-  'cotizaciones': true,
-  'pedidos': true,
-  'clientes': true,
+  'showroom-expos': false,
+  'requisiciones': false,
+  'compras': false,
+  'proveedores': false,
+  'cotizaciones': false,
+  'pedidos': false,
+  'clientes': false,
   'configuracion': true,
 };
 
@@ -183,7 +183,11 @@ export const NavigationModulesProvider: React.FC<{ children: React.ReactNode }> 
   };
 
   const showAllModules = () => {
-    setVisibleModules(DEFAULT_VISIBILITY);
+    const all: VisibilityMap = {} as VisibilityMap;
+    MODULE_DEFINITIONS.forEach((m) => {
+      all[m.key] = true;
+    });
+    setVisibleModules(all);
   };
 
   const hideAllOptionalModules = () => {

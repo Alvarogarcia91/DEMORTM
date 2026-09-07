@@ -28,14 +28,14 @@ export const EmbarquesPage: React.FC = () => {
       <div className="space-y-1">
         <div className="flex items-center gap-2">
           <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white text-zinc-900 border border-rose-500 shadow-2xs">
-            Logística & Despacho de Flota
+            Despacho B2B & Logística Industrial
           </span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-theme-main">
-          Embarques & Entregas
+          Producto Terminado & Embarques
         </h1>
         <p className="text-xs sm:text-sm text-theme-muted">
-          Operación de carga, rutas y entregas
+          Control de producto terminado, asignación de transporte industrial, remisiones B2B y confirmación de entrega en plantas cliente.
         </p>
       </div>
 
@@ -102,7 +102,7 @@ export const EmbarquesPage: React.FC = () => {
             }`}
           >
             <PackageCheck className="h-4 w-4" />
-            <span>Entregas</span>
+            <span>Entregas B2B</span>
             <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-white text-zinc-900 border border-zinc-300 shadow-2xs">
               {historyCount}
             </span>
@@ -124,4 +124,3 @@ export const EmbarquesPage: React.FC = () => {
     </div>
   );
 };
-

@@ -1,5 +1,3 @@
-import { MOCK_MASTER_ARTICLES, MasterArticle } from './mockArticlesData';
-
 export interface PositionSerializedMattress {
   uid: string;
   sku: string;
@@ -7,7 +5,7 @@ export interface PositionSerializedMattress {
   brand: string;
   size: string;
   levelCode: 'C' | 'B' | 'A';
-  locationCode: string; // ej. 'B-C-09', 'SHOW-01'
+  locationCode: string; // ej. 'B-C-09', 'A-B-03'
   lotNumber: string;
   entryDate: string;
   ageDays: number;
@@ -16,27 +14,29 @@ export interface PositionSerializedMattress {
   notes?: string;
 }
 
+export type PositionSerializedItem = PositionSerializedMattress;
+
 export interface LevelItem {
   levelCode: 'C' | 'B' | 'A';
-  levelName: string; // 'Nivel C · Superior', 'Nivel B · Medio', 'Nivel A · Piso'
-  locationCode: string; // ej. 'A-C-01', 'A-B-01', 'A-A-01'
-  capacity: number; // 2 para C, 2 para B, 3 para A
+  levelName: string;
+  locationCode: string;
+  capacity: number;
   count: number;
   isOccupied: boolean;
   units: PositionSerializedMattress[];
 }
 
 export interface PositionRack {
-  positionNumber: string; // ej. '01', '02', '09'
-  positionId: string; // ej. 'A-01', 'B-09'
-  aisle: string; // ej. 'A', 'B', 'C'
-  capacity: number; // Máximo 7 colchones
-  currentUnitsCount: number; // 0 a 7
+  positionNumber: string;
+  positionId: string;
+  aisle: string;
+  capacity: number;
+  currentUnitsCount: number;
   availableCount: number;
   committedCount: number;
-  freeSlotsCount: number; // 7 - currentUnitsCount
+  freeSlotsCount: number;
   avgAgeDays: number;
-  totalLevels: number; // 3 (C, B, A)
+  totalLevels: number;
   levelsDistribution: {
     levelC: number;
     levelB: number;
@@ -47,7 +47,7 @@ export interface PositionRack {
 }
 
 export interface AisleData {
-  aisleCode: string; // ej. 'Pasillo A'
+  aisleCode: string;
   zoneName: string;
   positions: PositionRack[];
 }
@@ -69,8 +69,8 @@ export interface SpecialAreaSlot {
 }
 
 export interface ShowroomBay {
-  code: string; // ej. 'SHOW-01', 'SHOW-02', etc.
-  name: string; // ej. 'Bahía de Showroom 01'
+  code: string;
+  name: string;
   status: 'Ocupada' | 'Libre';
   mattress?: PositionSerializedMattress;
 }
@@ -83,9 +83,9 @@ export interface WarehouseLayout {
   address: string;
   isActive: boolean;
   kpis: {
-    totalLocations: number; // Racks * 7 capacidad
-    usedLocations: number;  // Racks ocupados
-    freeLocations: number;  // Racks libres
+    totalLocations: number;
+    usedLocations: number;
+    freeLocations: number;
     occupancyPercentage: number;
     physicalUnits: number;
   };
@@ -103,7 +103,7 @@ export interface InventoryMovement {
   uid: string;
   sku: string;
   productName: string;
-  movementType: 'ENTRADA' | 'ACOMODO' | 'TRASPASO' | 'RETRABAJO' | 'SURTIDO' | 'PICKING' | 'TRASLADO A EXHIBICIÓN' | 'RETIRO DE EXHIBICIÓN';
+  movementType: 'RECEPCIÓN' | 'ACOMODO' | 'REUBICACIÓN' | 'RESERVA' | 'SURTIDO OP' | 'DEVOLUCIÓN PRODUCCIÓN' | 'SCRAP' | 'AJUSTE' | 'LIBERACIÓN QA' | 'CUARENTENA' | 'PT GENERADO' | 'EMBARQUE' | 'ENTRADA' | 'TRASPASO' | 'RETRABAJO' | 'SURTIDO' | 'PICKING';
   origin: string;
   destination: string;
   user: string;
@@ -137,12 +137,146 @@ export interface InventoryTransferOrder {
 }
 
 // =========================================================================
-// HELPER FOR SEEDING POSITION RACKS
+// RTM INDUSTRIAL ITEMS MOCK CATALOG
 // =========================================================================
-function buildAisle(
+export interface IndustrialItemDefinition {
+  sku: string;
+  name: string;
+  brand: string;
+  size: string;
+  category: string;
+  prefix: 'TAR' | 'BOB' | 'CJ' | 'ROL';
+  classification: string;
+}
+
+export const RTM_INDUSTRIAL_ITEMS: IndustrialItemDefinition[] = [
+  {
+    sku: 'PAP-COU-090',
+    name: 'Papel Couché 90 g (Pliegos 70x100 cm)',
+    brand: 'Bio-Pappel',
+    size: 'Tarima 18,000 pliegos',
+    category: 'Papel Offset',
+    prefix: 'TAR',
+    classification: 'Sustrato Offset / Grado Editorial',
+  },
+  {
+    sku: 'PAP-BND-075',
+    name: 'Papel Bond 75 g (Pliegos 61x90 cm)',
+    brand: 'Copamex',
+    size: 'Tarima 20,000 pliegos',
+    category: 'Papel Offset',
+    prefix: 'TAR',
+    classification: 'Sustrato Offset / Grado Comercial',
+  },
+  {
+    sku: 'PAP-SBS-14',
+    name: 'Cartulina Sulfatada SBS 14 pts',
+    brand: 'WestRock',
+    size: 'Tarima 12,000 pliegos',
+    category: 'Papel Offset',
+    prefix: 'TAR',
+    classification: 'Cartulina SBS / Empaque Plegadizo',
+  },
+  {
+    sku: 'FLX-BOPP-WHT',
+    name: 'Sustrato BOPP Blanco Brillante 60 mic',
+    brand: 'Fasson Avery',
+    size: 'Bobina 2,500 m',
+    category: 'Sustratos Flexo',
+    prefix: 'BOB',
+    classification: 'Película Autoadherible Flexo',
+  },
+  {
+    sku: 'FLX-BOPP-CLR',
+    name: 'Sustrato BOPP Transparente Ultra-Clear',
+    brand: 'Fasson Avery',
+    size: 'Bobina 2,000 m',
+    category: 'Sustratos Flexo',
+    prefix: 'BOB',
+    classification: 'Película Transparente Flexo',
+  },
+  {
+    sku: 'FLX-THM-DIR',
+    name: 'Papel Térmico Directo Top-Coated',
+    brand: 'UPM Raflatac',
+    size: 'Bobina 3,000 m',
+    category: 'Sustratos Flexo',
+    prefix: 'BOB',
+    classification: 'Papel Térmico / Código de Barras',
+  },
+  {
+    sku: 'TNT-PMS-186C',
+    name: 'Tinta Especial Rojo Corporativo PMS 186 C',
+    brand: 'Siegwerk',
+    size: 'Cubeta 10 kg',
+    category: 'Tintas & Barnices',
+    prefix: 'CJ',
+    classification: 'Tinta Directa Pantone Especial',
+  },
+  {
+    sku: 'TNT-PROC-BLK',
+    name: 'Tinta Offset Proceso Black Intensa',
+    brand: 'Sun Chemical',
+    size: 'Lata 5 kg',
+    category: 'Tintas & Barnices',
+    prefix: 'CJ',
+    classification: 'Tinta Proceso Cuatricromía',
+  },
+  {
+    sku: 'BRN-UV-GLS',
+    name: 'Barniz UV Ultra Brillo Curado Rápido',
+    brand: 'Flint Group',
+    size: 'Cubeta 20 kg',
+    category: 'Tintas & Barnices',
+    prefix: 'CJ',
+    classification: 'Barniz y Químicos de Acabado',
+  },
+  {
+    sku: 'EMP-CAJ-COR',
+    name: 'Cajas Corrugadas 30x20x25 cm para Etiquetas',
+    brand: 'Smurfit Kappa',
+    size: 'Paquete 50 pzas',
+    category: 'Empaque & Insumos',
+    prefix: 'CJ',
+    classification: 'Material de Empaque & Protección',
+  },
+  {
+    sku: 'PT-ETIQ-FAR',
+    name: 'Etiqueta Farmacéutica 4x6" (Rollo 1,000 u)',
+    brand: 'Impresos RTM',
+    size: 'Caja 12 rollos',
+    category: 'Producto Terminado',
+    prefix: 'ROL',
+    classification: 'Producto Terminado / Aprobado QA',
+  },
+  {
+    sku: 'PT-FOL-MED',
+    name: 'Folleto Plegado Cuatricromía Laboratorio',
+    brand: 'Impresos RTM',
+    size: 'Caja 2,500 u',
+    category: 'Producto Terminado',
+    prefix: 'CJ',
+    classification: 'Producto Terminado / Aprobado QA',
+  },
+  {
+    sku: 'PT-EMP-ALM',
+    name: 'Caja Plegadiza Alimentos 6 Tintas + UV',
+    brand: 'Impresos RTM',
+    size: 'Tarima 15,000 u',
+    category: 'Producto Terminado',
+    prefix: 'TAR',
+    classification: 'Producto Terminado / Aprobado QA',
+  },
+];
+
+// =========================================================================
+// HELPER FOR SEEDING AISLE POSITION RACKS
+// =========================================================================
+function buildIndustrialAisle(
   aisleLetter: string,
+  zoneName: string,
   numPositions: number,
-  densityBias: number, // 0 to 1
+  densityBias: number,
   whCode: string
 ): AisleData {
   const positions: PositionRack[] = [];
@@ -154,23 +288,22 @@ function buildAisle(
     const seed = (aisleLetter.charCodeAt(0) * 19 + i * 37) % 100;
     let occupancy = 0;
 
-    if (seed < 12) {
-      occupancy = 0; // Empty
-    } else if (seed < 28) {
-      occupancy = Math.floor(1 + (seed % 2)); // 1 or 2 (Low)
+    if (seed < 15) {
+      occupancy = 0;
+    } else if (seed < 30) {
+      occupancy = Math.floor(1 + (seed % 2));
     } else if (seed < 70) {
-      occupancy = Math.floor(3 + (seed % 3)); // 3, 4 or 5 (Medium)
+      occupancy = Math.floor(3 + (seed % 3));
     } else if (seed < 90) {
-      occupancy = 6; // High
+      occupancy = 6;
     } else {
-      occupancy = 7; // Full (7/7)
+      occupancy = 7;
     }
 
     if (densityBias < 0.5 && occupancy > 4) {
       occupancy = Math.max(0, occupancy - 2);
     }
 
-    // Capacity standard per level: C=2, B=2, A=3 (Total=7)
     let countA = 0;
     let countB = 0;
     let countC = 0;
@@ -196,18 +329,21 @@ function buildAisle(
     let committed = 0;
 
     const generateUnit = (level: 'C' | 'B' | 'A', indexInLevel: number) => {
-      const artIndex = (aisleLetter.charCodeAt(0) + i * 3 + indexInLevel * 2 + (level === 'C' ? 1 : level === 'B' ? 2 : 0)) % MOCK_MASTER_ARTICLES.length;
-      const art = MOCK_MASTER_ARTICLES[artIndex] || MOCK_MASTER_ARTICLES[0];
+      const artIndex = (aisleLetter.charCodeAt(0) + i * 3 + indexInLevel * 2 + (level === 'C' ? 1 : level === 'B' ? 2 : 0)) % RTM_INDUSTRIAL_ITEMS.length;
+      const art = RTM_INDUSTRIAL_ITEMS[artIndex];
       const age = (i * 2 + indexInLevel * 3) % 15;
       totalAge += age;
 
       const isCommitted = (seed + indexInLevel * 7 + (level === 'C' ? 1 : 0)) % 5 === 0;
       if (isCommitted) committed++;
 
-      const levelOffset = level === 'C' ? 300000 : level === 'B' ? 200000 : 100000;
-      const serialSuffix = levelOffset + ((aisleLetter.charCodeAt(0) * 8923 + i * 451 + indexInLevel * 179) % 89999);
-      const uid = `SC-UID-2026-${serialSuffix}`;
+      const serialSuffix = ((aisleLetter.charCodeAt(0) * 100 + i * 10 + indexInLevel + 1) % 900 + 100);
+      const uid = `${art.prefix}-RTM-260906-${serialSuffix.toString().padStart(3, '0')}`;
       const locationCode = `${aisleLetter}-${level}-${posNum}`;
+
+      const lotNumber = art.sku.startsWith('PT-')
+        ? `RTM-PT-260905-${(10 + ((i + indexInLevel) % 5)).toString().padStart(3, '0')}`
+        : `RTM-MP-260901-${(10 + ((i + indexInLevel) % 5)).toString().padStart(3, '0')}`;
 
       return {
         uid,
@@ -217,12 +353,12 @@ function buildAisle(
         size: art.size,
         levelCode: level,
         locationCode,
-        lotNumber: `LOTE-2026-W${30 + ((i + indexInLevel) % 5)}`,
+        lotNumber,
         entryDate: `${Math.max(1, 27 - age)} Ago 2026`,
         ageDays: age,
         status: (isCommitted ? 'Comprometido' : 'Disponible') as any,
-        classification: 'Colchón Terminado / Calidad A',
-        notes: `Inspección de empaque aprobada en rampa de recibo ${whCode}.`,
+        classification: art.classification,
+        notes: `Inspección de calidad aprobada en recepción ${whCode}.`,
       };
     };
 
@@ -244,7 +380,7 @@ function buildAisle(
     for (let a = 0; a < countA; a++) {
       const u = generateUnit('A', a);
       unitsA.push(u);
-      units.push(u);
+      unitsA.push(u);
     }
 
     const levels: LevelItem[] = [
@@ -277,24 +413,18 @@ function buildAisle(
       },
     ];
 
-    const avgAgeDays = occupancy > 0 ? parseFloat((totalAge / occupancy).toFixed(1)) : 0;
-
     positions.push({
       positionNumber: posNum,
       positionId: posId,
       aisle: aisleLetter,
       capacity: 7,
       currentUnitsCount: occupancy,
-      availableCount: occupancy - committed,
+      availableCount: Math.max(0, occupancy - committed),
       committedCount: committed,
       freeSlotsCount: 7 - occupancy,
-      avgAgeDays,
+      avgAgeDays: occupancy > 0 ? Math.round(totalAge / occupancy) : 0,
       totalLevels: 3,
-      levelsDistribution: {
-        levelC: countC,
-        levelB: countB,
-        levelA: countA,
-      },
+      levelsDistribution: { levelC: countC, levelB: countB, levelA: countA },
       levels,
       units,
     });
@@ -302,715 +432,272 @@ function buildAisle(
 
   return {
     aisleCode: `Pasillo ${aisleLetter}`,
-    zoneName: `Zona Racks Principal`,
+    zoneName,
     positions,
   };
 }
 
 // =========================================================================
-// WAREHOUSE 1: CEDIS MONTERREY NORTE (MTY-N)
+// WAREHOUSE 1: ALMACÉN MATERIA PRIMA (ALM-MP)
 // =========================================================================
-const mtyNorthAisles: AisleData[] = [
-  buildAisle('A', 12, 0.85, 'MTY-N'),
-  buildAisle('B', 12, 0.75, 'MTY-N'),
-  buildAisle('C', 12, 0.65, 'MTY-N'),
-  buildAisle('D', 10, 0.55, 'MTY-N'),
-  buildAisle('E', 10, 0.45, 'MTY-N'),
+const mpAisles: AisleData[] = [
+  buildIndustrialAisle('A', 'Zona Papel Offset & Pliegos', 12, 0.85, 'ALM-MP'),
+  buildIndustrialAisle('B', 'Zona Bobinas Flexo & Térmico', 12, 0.75, 'ALM-MP'),
+  buildIndustrialAisle('C', 'Zona Tintas Especiales & Químicos', 12, 0.65, 'ALM-MP'),
+  buildIndustrialAisle('D', 'Zona Empaque & Corrugados', 10, 0.55, 'ALM-MP'),
+  buildIndustrialAisle('E', 'Zona Staging & Remanentes Producción', 10, 0.45, 'ALM-MP'),
 ];
 
-let mtyNTotalCap = 0;
-let mtyNUsedUnits = 0;
-let mtyNOccupiedPositions = 0;
-let mtyNTotalPositions = 0;
+let mpTotalCap = 0;
+let mpUsedUnits = 0;
+let mpOccupiedPositions = 0;
+let mpTotalPositions = 0;
 
-mtyNorthAisles.forEach((a) => {
+mpAisles.forEach((a) => {
   a.positions.forEach((p) => {
-    mtyNTotalPositions++;
-    mtyNTotalCap += p.capacity;
-    mtyNUsedUnits += p.currentUnitsCount;
-    if (p.currentUnitsCount > 0) mtyNOccupiedPositions++;
+    mpTotalPositions++;
+    mpTotalCap += p.capacity;
+    mpUsedUnits += p.currentUnitsCount;
+    if (p.currentUnitsCount > 0) mpOccupiedPositions++;
   });
 });
 
 export const MOCK_CEDIS_MONTERREY_NORTE: WarehouseLayout = {
   id: 'wh-mty-norte',
-  code: 'MTY-N',
-  name: 'CEDIS Monterrey Norte',
-  type: 'Centro de Distribución Primario',
-  address: 'Av. Manuel L. Barragán #4500, San Nicolás de los Garza, N.L.',
+  code: 'ALM-MP',
+  name: 'Almacén Materia Prima',
+  type: 'Almacén Principal de Materias Primas',
+  address: 'Planta Principal Reynosa, Tamps. (Nave 1)',
   isActive: true,
   kpis: {
-    totalLocations: mtyNTotalPositions,
-    usedLocations: mtyNOccupiedPositions,
-    freeLocations: mtyNTotalPositions - mtyNOccupiedPositions,
-    occupancyPercentage: Math.round((mtyNUsedUnits / mtyNTotalCap) * 1000) / 10,
-    physicalUnits: mtyNUsedUnits + 22,
+    totalLocations: mpTotalPositions,
+    usedLocations: mpOccupiedPositions,
+    freeLocations: mpTotalPositions - mpOccupiedPositions,
+    occupancyPercentage: Math.round((mpUsedUnits / mpTotalCap) * 1000) / 10,
+    physicalUnits: mpUsedUnits + 22,
   },
-  aisles: mtyNorthAisles,
+  aisles: mpAisles,
   receptionAreas: [
     {
       code: 'REC-01',
-      name: 'Rampa de Recibo R-01',
+      name: 'Rampa de Descarga de Sustratos R-01',
       type: 'recepcion',
       capacity: 10,
       currentUnits: 4,
       status: 'Operativa',
       units: [
-        { uid: 'SC-UID-2026-000182', sku: 'SC-NAYT-FLOW-IND', productName: 'Nayt Colchón Flow Basic White Individual', entryDate: '27 Ago 2026' },
-        { uid: 'SC-UID-2026-000183', sku: 'SC-NAYT-FLOW-IND', productName: 'Nayt Colchón Flow Basic White Individual', entryDate: '27 Ago 2026' },
+        { uid: 'TAR-RTM-260906-182', sku: 'PAP-COU-090', productName: 'Papel Couché 90 g (Pliegos 70x100 cm)', entryDate: '27 Ago 2026' },
+        { uid: 'TAR-RTM-260906-183', sku: 'PAP-COU-090', productName: 'Papel Couché 90 g (Pliegos 70x100 cm)', entryDate: '27 Ago 2026' },
       ],
     },
     {
       code: 'REC-02',
-      name: 'Rampa de Recibo R-02',
+      name: 'Rampa de Químicos & Tintas R-02',
       type: 'recepcion',
       capacity: 10,
       currentUnits: 2,
       status: 'Operativa',
       units: [
-        { uid: 'SC-UID-2026-000184', sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', entryDate: '27 Ago 2026' },
+        { uid: 'CJ-RTM-260906-184', sku: 'TNT-PMS-186C', productName: 'Tinta Especial Rojo PMS 186 C', entryDate: '27 Ago 2026' },
       ],
     },
   ],
   stagingAreas: [
     {
       code: 'ACO-01',
-      name: 'Acomodo Temporal Bloque Norte',
+      name: 'Staging Acomodo Sustratos Offset',
       type: 'acomodo',
       capacity: 15,
       currentUnits: 6,
       status: 'En proceso de asignación de racks',
       units: [
-        { uid: 'SC-UID-2026-000165', sku: 'SC-NAYT-FLOW-MAT', productName: 'Nayt Colchón Flow Basic White Matrimonial', entryDate: '27 Ago 2026' },
+        { uid: 'TAR-RTM-260906-165', sku: 'PAP-BND-075', productName: 'Papel Bond 75 g (Pliegos 61x90 cm)', entryDate: '27 Ago 2026' },
       ],
     },
     {
       code: 'ACO-02',
-      name: 'Acomodo Temporal Bloque Sur',
+      name: 'Staging Acomodo Bobinas Flexo',
       type: 'acomodo',
       capacity: 15,
       currentUnits: 3,
-      status: 'Libre para recepción de tarde',
+      status: 'Libre para recepción de turno vespertino',
       units: [],
     },
   ],
   reworkZone: {
     code: 'RET-NORTE',
-    name: 'Zona de Retrabajo & Calidad Norte',
+    name: 'Zona de Cuarentena & Calidad QA',
     type: 'retrabajo',
     capacity: 12,
     currentUnits: 4,
     status: 'Operativa',
     units: [
-      { uid: 'SC-UID-2026-000091', sku: 'SC-NAYT-FLOW-IND', productName: 'Nayt Colchón Flow Basic White Individual', reason: 'Funda plástica con micro-rasgadura en rampa', entryDate: '26 Ago 2026' },
-      { uid: 'SC-UID-2026-000092', sku: 'SC-RES-ORT-MAT', productName: 'Restonic Colchón Ortopedic Matrimonial', reason: 'Reetiquetado de código QR defectuoso', entryDate: '26 Ago 2026' },
-      { uid: 'SC-UID-2026-000093', sku: 'SC-SPA-REC-IND', productName: 'Spring Air Colchón Record Individual', reason: 'Inspección de costura perimetral', entryDate: '25 Ago 2026' },
-      { uid: 'SC-UID-2026-000094', sku: 'SC-AME-HAL-QS', productName: 'América Colchón Halston Queen Size', reason: 'Devolución de sucursal en verificación', entryDate: '24 Ago 2026' },
+      { uid: 'BOB-RTM-260906-091', sku: 'FLX-BOPP-WHT', productName: 'Sustrato BOPP Blanco Brillante 60 mic', reason: 'Tensión irregular en bobina de proveedor', entryDate: '26 Ago 2026' },
+      { uid: 'CJ-RTM-260906-092', sku: 'TNT-PMS-186C', productName: 'Tinta Especial Rojo PMS 186 C', reason: 'Revisión de viscosidad y tono en laboratorio QA', entryDate: '26 Ago 2026' },
+      { uid: 'TAR-RTM-260906-093', sku: 'PAP-COU-090', productName: 'Papel Couché 90 g (Pliegos 70x100 cm)', reason: 'Pliegos con humedad en esquinas de tarima', entryDate: '25 Ago 2026' },
+      { uid: 'TAR-RTM-260906-094', sku: 'PAP-SBS-14', productName: 'Cartulina Sulfatada SBS 14 pts', reason: 'Inspección de calibre por variación de lote', entryDate: '24 Ago 2026' },
     ],
   },
   shippingLanes: [
     {
       code: 'EMB-01',
-      name: 'Carril de Embarque 01',
+      name: 'Bahía Surtido Offset Heidelberg #01',
       type: 'embarque',
       capacity: 20,
       currentUnits: 14,
-      status: 'Secuenciando Ruta MTY-Centro #402',
+      status: 'Surtido programado OP-2026-0891',
       units: [],
     },
     {
       code: 'EMB-02',
-      name: 'Carril de Embarque 02',
+      name: 'Bahía Surtido Flexo Mark Andy #02',
       type: 'embarque',
       capacity: 20,
       currentUnits: 18,
-      status: 'Listo para carga Camión Unidad C-12',
+      status: 'Surtido en proceso OP-2026-0882',
       units: [],
     },
     {
       code: 'EMB-03',
-      name: 'Carril de Embarque 03',
+      name: 'Bahía Surtido Acabados & Suajes #03',
       type: 'embarque',
       capacity: 20,
       currentUnits: 0,
-      status: 'Disponible para consolidación',
+      status: 'Disponible para staging',
       units: [],
     },
     {
       code: 'EMB-04',
-      name: 'Carril de Embarque 04',
+      name: 'Bahía Retorno de Remanentes #04',
       type: 'embarque',
       capacity: 20,
       currentUnits: 8,
-      status: 'Secuenciando Ruta Traspaso Saltillo',
+      status: 'En verificación de metros devueltos',
       units: [],
     },
     {
       code: 'EMB-05',
-      name: 'Carril de Embarque 05',
+      name: 'Bahía Consumibles Generales #05',
       type: 'embarque',
       capacity: 20,
-      currentUnits: 0,
-      status: 'Disponible para consolidación',
+      currentUnits: 6,
+      status: 'Surtido de cajas y cores',
       units: [],
     },
   ],
 };
 
 // =========================================================================
-// WAREHOUSE 2: CEDIS MONTERREY SUR (MTY-S)
+// WAREHOUSE 2: ALMACÉN PRODUCTO TERMINADO (ALM-PT)
 // =========================================================================
-const mtySouthAisles: AisleData[] = [
-  buildAisle('A', 14, 0.65, 'MTY-S'),
-  buildAisle('B', 14, 0.55, 'MTY-S'),
-  buildAisle('C', 14, 0.45, 'MTY-S'),
-  buildAisle('D', 14, 0.35, 'MTY-S'),
+const ptAisles: AisleData[] = [
+  buildIndustrialAisle('A', 'Zona Etiquetas en Rollo (Farma / Industria)', 10, 0.70, 'ALM-PT'),
+  buildIndustrialAisle('B', 'Zona Folletería & Plegados Offset', 10, 0.60, 'ALM-PT'),
+  buildIndustrialAisle('C', 'Zona Empaque Plegadizo & Cajas', 10, 0.50, 'ALM-PT'),
+  buildIndustrialAisle('D', 'Zona Tarimas Completas Listas para Despacho', 8, 0.40, 'ALM-PT'),
 ];
 
-let mtySTotalCap = 0;
-let mtySUsedUnits = 0;
-let mtySOccupiedPositions = 0;
-let mtySTotalPositions = 0;
+let ptTotalCap = 0;
+let ptUsedUnits = 0;
+let ptOccupiedPositions = 0;
+let ptTotalPositions = 0;
 
-mtySouthAisles.forEach((a) => {
+ptAisles.forEach((a) => {
   a.positions.forEach((p) => {
-    mtySTotalPositions++;
-    mtySTotalCap += p.capacity;
-    mtySUsedUnits += p.currentUnitsCount;
-    if (p.currentUnitsCount > 0) mtySOccupiedPositions++;
+    ptTotalPositions++;
+    ptTotalCap += p.capacity;
+    ptUsedUnits += p.currentUnitsCount;
+    if (p.currentUnitsCount > 0) ptOccupiedPositions++;
   });
 });
 
 export const MOCK_CEDIS_MONTERREY_SUR: WarehouseLayout = {
   id: 'wh-mty-sur',
-  code: 'MTY-S',
-  name: 'CEDIS Monterrey Sur',
-  type: 'Centro de Distribución Regional',
-  address: 'Carretera Nacional Km 268, Villa de Santiago / Monterrey Sur, N.L.',
+  code: 'ALM-PT',
+  name: 'Almacén Producto Terminado',
+  type: 'Almacén de Producto Terminado & Despacho',
+  address: 'Planta Principal Reynosa, Tamps. (Nave 2)',
   isActive: true,
   kpis: {
-    totalLocations: mtySTotalPositions,
-    usedLocations: mtySOccupiedPositions,
-    freeLocations: mtySTotalPositions - mtySOccupiedPositions,
-    occupancyPercentage: Math.round((mtySUsedUnits / mtySTotalCap) * 1000) / 10,
-    physicalUnits: mtySUsedUnits + 15,
+    totalLocations: ptTotalPositions,
+    usedLocations: ptOccupiedPositions,
+    freeLocations: ptTotalPositions - ptOccupiedPositions,
+    occupancyPercentage: Math.round((ptUsedUnits / ptTotalCap) * 1000) / 10,
+    physicalUnits: ptUsedUnits + 15,
   },
-  aisles: mtySouthAisles,
+  aisles: ptAisles,
   receptionAreas: [
     {
-      code: 'REC-S1',
-      name: 'Rampa de Recibo Sur R-01',
+      code: 'REC-PT',
+      name: 'Entrada de Líneas de Empaque Final',
       type: 'recepcion',
-      capacity: 8,
+      capacity: 10,
       currentUnits: 3,
       status: 'Operativa',
       units: [
-        { uid: 'SC-UID-2026-000179', sku: 'SC-NAYT-FLOW-IND', productName: 'Nayt Colchón Flow Basic White Individual', entryDate: '24 Ago 2026' },
+        { uid: 'ROL-RTM-260906-501', sku: 'PT-ETIQ-FAR', productName: 'Etiqueta Farmacéutica 4x6" (Rollo 1,000 u)', entryDate: '27 Ago 2026' },
       ],
     },
   ],
   stagingAreas: [
     {
-      code: 'ACO-S1',
-      name: 'Acomodo Temporal Sur',
+      code: 'ACO-PT',
+      name: 'Staging Inspección QA de PT',
       type: 'acomodo',
       capacity: 12,
-      currentUnits: 2,
-      status: 'Operativo',
+      currentUnits: 4,
+      status: 'Pendiente de liberación de lote',
       units: [],
     },
   ],
   reworkZone: {
-    code: 'RET-SUR',
-    name: 'Zona de Retrabajo Sur',
+    code: 'RET-PT',
+    name: 'Cuarentena PT / Re-empaque',
     type: 'retrabajo',
-    capacity: 8,
+    capacity: 10,
     currentUnits: 2,
     status: 'Operativa',
     units: [
-      { uid: 'SC-UID-2026-000088', sku: 'SC-RES-MNC-QS', productName: 'Restonic Colchón Moon Cool Queen Size', reason: 'Inspección de empaque plástico', entryDate: '25 Ago 2026' },
-      { uid: 'SC-UID-2026-000089', sku: 'SC-SPA-VEN-MAT', productName: 'Spring Air Colchón Vendome Matrimonial', reason: 'Reetiquetado de código de barras', entryDate: '24 Ago 2026' },
+      { uid: 'CJ-RTM-260906-520', sku: 'PT-FOL-MED', productName: 'Folleto Plegado Cuatricromía Laboratorio', reason: 'Re-empaque por caja dañada en tarima', entryDate: '26 Ago 2026' },
     ],
   },
   shippingLanes: [
     {
       code: 'EMB-01',
-      name: 'Carril de Embarque 01',
+      name: 'Rampa de Despacho Cliente Farmacéutica',
       type: 'embarque',
       capacity: 20,
       currentUnits: 12,
-      status: 'Secuenciando Ruta Valle Oriente',
+      status: 'Consolidando Remisión REM-2026-0044',
       units: [],
     },
     {
       code: 'EMB-02',
-      name: 'Carril de Embarque 02',
+      name: 'Rampa de Despacho Local Reynosa',
       type: 'embarque',
       capacity: 20,
-      currentUnits: 6,
-      status: 'Secuenciando Ruta Carretera Nacional',
-      units: [],
-    },
-    {
-      code: 'EMB-03',
-      name: 'Carril de Embarque 03',
-      type: 'embarque',
-      capacity: 20,
-      currentUnits: 0,
-      status: 'Disponible',
-      units: [],
-    },
-    {
-      code: 'EMB-04',
-      name: 'Carril de Embarque 04',
-      type: 'embarque',
-      capacity: 20,
-      currentUnits: 0,
-      status: 'Disponible',
-      units: [],
-    },
-    {
-      code: 'EMB-05',
-      name: 'Carril de Embarque 05',
-      type: 'embarque',
-      capacity: 20,
-      currentUnits: 0,
-      status: 'Disponible',
+      currentUnits: 8,
+      status: 'Listo para carga Camión Unidad C-04',
       units: [],
     },
   ],
 };
 
-// =========================================================================
-// SHOWROOM BAYS: SUCURSAL VALLE ORIENTE (6 BAHÍAS · MÍNIMO 2 NAYT)
-// =========================================================================
-export const MOCK_SHOWROOM_VALLE_ORIENTE: ShowroomBay[] = [
-  {
-    code: 'SHOW-01',
-    name: 'Bahía de Showroom 01',
-    status: 'Ocupada',
-    mattress: {
-      uid: 'SC-UID-2026-000201',
-      sku: 'SC-NAYT-FLOW-IND',
-      productName: 'Nayt Colchón Flow Basic White Individual',
-      brand: 'Nayt',
-      size: 'Individual',
-      levelCode: 'A',
-      locationCode: 'SHOW-01',
-      lotNumber: 'LT-2026-N01',
-      entryDate: '15 Ago 2026',
-      ageDays: 12,
-      status: 'En exhibición',
-      classification: 'Exhibición Retail',
-      notes: 'Colchón de demostración en piso de venta',
-    },
-  },
-  {
-    code: 'SHOW-02',
-    name: 'Bahía de Showroom 02',
-    status: 'Ocupada',
-    mattress: {
-      uid: 'SC-UID-2026-000202',
-      sku: 'SC-NAYT-FLOW-MAT',
-      productName: 'Nayt Colchón Flow Basic White Matrimonial',
-      brand: 'Nayt',
-      size: 'Matrimonial',
-      levelCode: 'A',
-      locationCode: 'SHOW-02',
-      lotNumber: 'LT-2026-N02',
-      entryDate: '16 Ago 2026',
-      ageDays: 11,
-      status: 'En exhibición',
-      classification: 'Exhibición Retail',
-      notes: 'Colchón de demostración en piso de venta',
-    },
-  },
-  {
-    code: 'SHOW-03',
-    name: 'Bahía de Showroom 03',
-    status: 'Ocupada',
-    mattress: {
-      uid: 'SC-UID-2026-000203',
-      sku: 'SC-RES-ORT-MAT',
-      productName: 'Restonic Colchón Ortopedic Matrimonial',
-      brand: 'Restonic',
-      size: 'Matrimonial',
-      levelCode: 'A',
-      locationCode: 'SHOW-03',
-      lotNumber: 'LT-2026-R03',
-      entryDate: '10 Ago 2026',
-      ageDays: 17,
-      status: 'En exhibición',
-      classification: 'Exhibición Retail',
-      notes: 'Exhibición línea tradicional ortopédica',
-    },
-  },
-  {
-    code: 'SHOW-04',
-    name: 'Bahía de Showroom 04',
-    status: 'Ocupada',
-    mattress: {
-      uid: 'SC-UID-2026-000204',
-      sku: 'SC-SPA-REC-IND',
-      productName: 'Spring Air Colchón Record Individual',
-      brand: 'Spring Air',
-      size: 'Individual',
-      levelCode: 'A',
-      locationCode: 'SHOW-04',
-      lotNumber: 'LT-2026-S04',
-      entryDate: '18 Ago 2026',
-      ageDays: 9,
-      status: 'En exhibición',
-      classification: 'Exhibición Retail',
-      notes: 'Exhibición individual juvenil',
-    },
-  },
-  {
-    code: 'SHOW-05',
-    name: 'Bahía de Showroom 05',
-    status: 'Ocupada',
-    mattress: {
-      uid: 'SC-UID-2026-000205',
-      sku: 'SC-NAYT-FLOW-QS',
-      productName: 'Nayt Colchón Flow Pro Comfort Queen Size',
-      brand: 'Nayt',
-      size: 'Queen Size',
-      levelCode: 'A',
-      locationCode: 'SHOW-05',
-      lotNumber: 'LT-2026-N05',
-      entryDate: '12 Ago 2026',
-      ageDays: 15,
-      status: 'En exhibición',
-      classification: 'Exhibición Retail',
-      notes: 'Modelo insignia en exhibición principal',
-    },
-  },
-  {
-    code: 'SHOW-06',
-    name: 'Bahía de Showroom 06',
-    status: 'Libre',
-    mattress: undefined,
-  },
-];
-
-// =========================================================================
-// SHOWROOM BAYS: SUCURSAL CUMBRES (6 BAHÍAS · MÍNIMO 2 NAYT)
-// =========================================================================
-export const MOCK_SHOWROOM_CUMBRES: ShowroomBay[] = [
-  {
-    code: 'SHOW-01',
-    name: 'Bahía de Showroom 01',
-    status: 'Ocupada',
-    mattress: {
-      uid: 'SC-UID-2026-000211',
-      sku: 'SC-NAYT-FLOW-QS',
-      productName: 'Nayt Colchón Flow Pro Comfort Queen Size',
-      brand: 'Nayt',
-      size: 'Queen Size',
-      levelCode: 'A',
-      locationCode: 'SHOW-01',
-      lotNumber: 'LT-2026-N08',
-      entryDate: '14 Ago 2026',
-      ageDays: 13,
-      status: 'En exhibición',
-      classification: 'Exhibición Retail',
-      notes: 'Exhibición premium frontal Cumbres',
-    },
-  },
-  {
-    code: 'SHOW-02',
-    name: 'Bahía de Showroom 02',
-    status: 'Ocupada',
-    mattress: {
-      uid: 'SC-UID-2026-000212',
-      sku: 'SC-SPA-REC-IND',
-      productName: 'Spring Air Colchón Record Individual',
-      brand: 'Spring Air',
-      size: 'Individual',
-      levelCode: 'A',
-      locationCode: 'SHOW-02',
-      lotNumber: 'LT-2026-S12',
-      entryDate: '17 Ago 2026',
-      ageDays: 10,
-      status: 'En exhibición',
-      classification: 'Exhibición Retail',
-      notes: 'Exhibición para prueba de confort',
-    },
-  },
-  {
-    code: 'SHOW-03',
-    name: 'Bahía de Showroom 03',
-    status: 'Ocupada',
-    mattress: {
-      uid: 'SC-UID-2026-000213',
-      sku: 'SC-NAYT-FLOW-MAT',
-      productName: 'Nayt Colchón Flow Basic White Matrimonial',
-      brand: 'Nayt',
-      size: 'Matrimonial',
-      levelCode: 'A',
-      locationCode: 'SHOW-03',
-      lotNumber: 'LT-2026-N09',
-      entryDate: '13 Ago 2026',
-      ageDays: 14,
-      status: 'En exhibición',
-      classification: 'Exhibición Retail',
-      notes: 'Modelo de alta rotación en piso de venta',
-    },
-  },
-  {
-    code: 'SHOW-04',
-    name: 'Bahía de Showroom 04',
-    status: 'Ocupada',
-    mattress: {
-      uid: 'SC-UID-2026-000214',
-      sku: 'SC-SEA-CLB-KS',
-      productName: 'Sealy Colchón Celebration Plus King Size',
-      brand: 'Sealy',
-      size: 'King Size',
-      levelCode: 'A',
-      locationCode: 'SHOW-04',
-      lotNumber: 'LT-2026-E02',
-      entryDate: '11 Ago 2026',
-      ageDays: 16,
-      status: 'En exhibición',
-      classification: 'Exhibición Retail',
-      notes: 'Exhibición King Size alta gama',
-    },
-  },
-  {
-    code: 'SHOW-05',
-    name: 'Bahía de Showroom 05',
-    status: 'Ocupada',
-    mattress: {
-      uid: 'SC-UID-2026-000215',
-      sku: 'SC-RES-ORT-MAT',
-      productName: 'Restonic Colchón Ortopedic Matrimonial',
-      brand: 'Restonic',
-      size: 'Matrimonial',
-      levelCode: 'A',
-      locationCode: 'SHOW-05',
-      lotNumber: 'LT-2026-R07',
-      entryDate: '19 Ago 2026',
-      ageDays: 8,
-      status: 'En exhibición',
-      classification: 'Exhibición Retail',
-      notes: 'Línea ortopédica tradicional',
-    },
-  },
-  {
-    code: 'SHOW-06',
-    name: 'Bahía de Showroom 06',
-    status: 'Ocupada',
-    mattress: {
-      uid: 'SC-UID-2026-000216',
-      sku: 'SC-NAYT-FLOW-IND',
-      productName: 'Nayt Colchón Flow Basic White Individual',
-      brand: 'Nayt',
-      size: 'Individual',
-      levelCode: 'A',
-      locationCode: 'SHOW-06',
-      lotNumber: 'LT-2026-N11',
-      entryDate: '20 Ago 2026',
-      ageDays: 7,
-      status: 'En exhibición',
-      classification: 'Exhibición Retail',
-      notes: 'Nayt individual para pruebas de cliente',
-    },
-  },
-];
-
-// =========================================================================
-// SUCURSAL 1: SUCURSAL VALLE ORIENTE (SUC-VO) - MINI ALMACÉN RETAIL
-// =========================================================================
-const valleOrienteAisles: AisleData[] = [
-  buildAisle('A', 6, 0.70, 'SUC-VO'),
-  buildAisle('B', 6, 0.60, 'SUC-VO'),
-];
-
-let voTotalCap = 0;
-let voUsedUnits = 0;
-let voOccupiedPositions = 0;
-let voTotalPositions = 0;
-
-valleOrienteAisles.forEach((a) => {
-  a.positions.forEach((p) => {
-    voTotalPositions++;
-    voTotalCap += p.capacity;
-    voUsedUnits += p.currentUnitsCount;
-    if (p.currentUnitsCount > 0) voOccupiedPositions++;
-  });
-});
-
-export const MOCK_SUCURSAL_VALLE_ORIENTE: WarehouseLayout = {
-  id: 'wh-suc-valle-oriente',
-  code: 'SUC-VO',
-  name: 'Sucursal Valle Oriente',
-  type: 'Sucursal Retail',
-  address: 'Av. Lázaro Cárdenas #1000, Valle Oriente, San Pedro Garza García, N.L.',
-  isActive: true,
-  kpis: {
-    totalLocations: voTotalPositions,
-    usedLocations: voOccupiedPositions,
-    freeLocations: voTotalPositions - voOccupiedPositions,
-    occupancyPercentage: Math.round((voUsedUnits / voTotalCap) * 1000) / 10,
-    physicalUnits: 28,
-  },
-  aisles: valleOrienteAisles,
-  receptionAreas: [
-    {
-      code: 'REC-VO',
-      name: 'Área de Recepción',
-      type: 'recepcion',
-      capacity: 4,
-      currentUnits: 1,
-      status: 'Disponible para descarga',
-      units: [],
-    },
-  ],
-  stagingAreas: [
-    {
-      code: 'ENT-VO',
-      name: 'Área de Entrega a Clientes',
-      type: 'acomodo',
-      capacity: 4,
-      currentUnits: 1,
-      status: 'Operativo para entrega inmediata',
-      units: [],
-    },
-  ],
-  reworkZone: {
-    code: 'INC-VO',
-    name: 'Zona de Incidencias',
-    type: 'retrabajo',
-    capacity: 3,
-    currentUnits: 0,
-    status: 'Sin incidencias',
-    units: [],
-  },
-  shippingLanes: [
-    {
-      code: 'EMB-01',
-      name: 'Carril de Entrega / Despacho 01',
-      type: 'embarque',
-      capacity: 4,
-      currentUnits: 1,
-      status: 'Secuenciando reparto local San Pedro',
-      units: [],
-    },
-  ],
-  showroomBays: MOCK_SHOWROOM_VALLE_ORIENTE,
-};
-
-// =========================================================================
-// SUCURSAL 2: SUCURSAL CUMBRES (SUC-CUM) - MINI ALMACÉN RETAIL
-// =========================================================================
-const cumbresAisles: AisleData[] = [
-  buildAisle('A', 4, 0.65, 'SUC-CUM'),
-  buildAisle('B', 4, 0.50, 'SUC-CUM'),
-  buildAisle('C', 4, 0.40, 'SUC-CUM'),
-];
-
-let cumTotalCap = 0;
-let cumUsedUnits = 0;
-let cumOccupiedPositions = 0;
-let cumTotalPositions = 0;
-
-cumbresAisles.forEach((a) => {
-  a.positions.forEach((p) => {
-    cumTotalPositions++;
-    cumTotalCap += p.capacity;
-    cumUsedUnits += p.currentUnitsCount;
-    if (p.currentUnitsCount > 0) cumOccupiedPositions++;
-  });
-});
-
-export const MOCK_SUCURSAL_CUMBRES: WarehouseLayout = {
-  id: 'wh-suc-cumbres',
-  code: 'SUC-CUM',
-  name: 'Sucursal Cumbres',
-  type: 'Sucursal Retail',
-  address: 'Av. Paseo de los Leones #2800, Cumbres 5to Sector, Monterrey, N.L.',
-  isActive: true,
-  kpis: {
-    totalLocations: cumTotalPositions,
-    usedLocations: cumOccupiedPositions,
-    freeLocations: cumTotalPositions - cumOccupiedPositions,
-    occupancyPercentage: Math.round((cumUsedUnits / cumTotalCap) * 1000) / 10,
-    physicalUnits: 21,
-  },
-  aisles: cumbresAisles,
-  receptionAreas: [
-    {
-      code: 'REC-CUM',
-      name: 'Área de Recepción',
-      type: 'recepcion',
-      capacity: 5,
-      currentUnits: 1,
-      status: 'Operativa',
-      units: [],
-    },
-  ],
-  stagingAreas: [
-    {
-      code: 'RES-CUM',
-      name: 'Zona de Reserva / Staging',
-      type: 'acomodo',
-      capacity: 5,
-      currentUnits: 2,
-      status: 'Operativa para resurtido',
-      units: [],
-    },
-    {
-      code: 'ENT-CUM',
-      name: 'Área de Entrega a Clientes',
-      type: 'acomodo',
-      capacity: 4,
-      currentUnits: 1,
-      status: 'Operativa para entrega mostrador',
-      units: [],
-    },
-  ],
-  reworkZone: {
-    code: 'INC-CUM',
-    name: 'Zona de Incidencias',
-    type: 'retrabajo',
-    capacity: 3,
-    currentUnits: 0,
-    status: 'Sin incidencias',
-    units: [],
-  },
-  shippingLanes: [
-    {
-      code: 'EMB-01',
-      name: 'Carril de Entrega / Despacho 01',
-      type: 'embarque',
-      capacity: 4,
-      currentUnits: 1,
-      status: 'Secuenciando ruta Cumbres',
-      units: [],
-    },
-    {
-      code: 'EMB-02',
-      name: 'Carril de Entrega / Despacho 02',
-      type: 'embarque',
-      capacity: 4,
-      currentUnits: 0,
-      status: 'Libre y disponible',
-      units: [],
-    },
-  ],
-  showroomBays: MOCK_SHOWROOM_CUMBRES,
-};
+// Backward compatible aliases
+export const MOCK_ALMACEN_MATERIA_PRIMA = MOCK_CEDIS_MONTERREY_NORTE;
+export const MOCK_ALMACEN_PRODUCTO_TERMINADO = MOCK_CEDIS_MONTERREY_SUR;
+export const MOCK_SUCURSAL_VALLE_ORIENTE = MOCK_CEDIS_MONTERREY_NORTE;
+export const MOCK_SUCURSAL_CUMBRES = MOCK_CEDIS_MONTERREY_SUR;
+export const MOCK_SHOWROOM_VALLE_ORIENTE: ShowroomBay[] = [];
+export const MOCK_SHOWROOM_CUMBRES: ShowroomBay[] = [];
 
 export const MOCK_WAREHOUSES_LIST = [
   MOCK_CEDIS_MONTERREY_NORTE,
   MOCK_CEDIS_MONTERREY_SUR,
-  MOCK_SUCURSAL_VALLE_ORIENTE,
-  MOCK_SUCURSAL_CUMBRES,
 ];
 
 // =========================================================================
-// FULL STOCK ITEMS (EXISTENCIAS SERIALIZADAS REALES)
+// FULL STOCK ITEMS (EXISTENCIAS REALES COHERENTES)
 // =========================================================================
 export interface StockItemRecord {
   uid: string;
@@ -1027,220 +714,195 @@ export interface StockItemRecord {
   status: 'Disponible' | 'Comprometido' | 'En acomodo' | 'En retrabajo' | 'En embarque' | 'En tránsito' | 'En exhibición';
 }
 
-// Generate an authentic, consistent stock dataset spanning all SKUs and statuses
 function generateFullStockItems(): StockItemRecord[] {
   const stockList: StockItemRecord[] = [];
 
-  // Specification for each article to match exact totals across CEDIS and Sucursales
   const articleStockConfig = [
     {
-      sku: 'SC-NAYT-FLOW-IND',
-      name: 'Nayt Colchón Flow Basic White Individual',
-      brand: 'Nayt',
-      size: 'Individual',
-      north: { disp: 18, comp: 3, acomodo: 1, embarque: 2, retrabajo: 0, transito: 0 },
-      south: { disp: 11, comp: 1, acomodo: 1, embarque: 0, retrabajo: 1, transito: 0 },
-      valleOriente: { disp: 2, comp: 1, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-      cumbres: { disp: 3, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
+      sku: 'PAP-COU-090',
+      name: 'Papel Couché 90 g (Pliegos 70x100 cm)',
+      brand: 'Bio-Pappel',
+      size: 'Tarima 18,000 pliegos',
+      prefix: 'TAR',
+      lot: 'RTM-MP-260901-004',
+      north: { disp: 22, comp: 8, acomodo: 2, embarque: 0, retrabajo: 2, transito: 0 },
+      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
     },
     {
-      sku: 'SC-NAYT-FLOW-MAT',
-      name: 'Nayt Colchón Flow Basic White Matrimonial',
-      brand: 'Nayt',
-      size: 'Matrimonial',
-      north: { disp: 12, comp: 2, acomodo: 1, embarque: 1, retrabajo: 0, transito: 0 },
-      south: { disp: 7, comp: 1, acomodo: 1, embarque: 1, retrabajo: 0, transito: 0 },
-      valleOriente: { disp: 3, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-      cumbres: { disp: 2, comp: 1, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
+      sku: 'PAP-BND-075',
+      name: 'Papel Bond 75 g (Pliegos 61x90 cm)',
+      brand: 'Copamex',
+      size: 'Tarima 20,000 pliegos',
+      prefix: 'TAR',
+      lot: 'RTM-MP-260901-001',
+      north: { disp: 18, comp: 5, acomodo: 1, embarque: 0, retrabajo: 0, transito: 0 },
+      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
     },
     {
-      sku: 'SC-NAYT-PRO-QS',
-      name: 'Nayt Colchón Flow Pro Comfort Queen Size',
-      brand: 'Nayt',
-      size: 'Queen Size',
-      north: { disp: 8, comp: 1, acomodo: 0, embarque: 1, retrabajo: 0, transito: 0 },
-      south: { disp: 6, comp: 1, acomodo: 0, embarque: 0, retrabajo: 1, transito: 0 },
-      valleOriente: { disp: 2, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-      cumbres: { disp: 1, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
+      sku: 'PAP-SBS-14',
+      name: 'Cartulina Sulfatada SBS 14 pts',
+      brand: 'WestRock',
+      size: 'Tarima 12,000 pliegos',
+      prefix: 'TAR',
+      lot: 'RTM-MP-260902-005',
+      north: { disp: 14, comp: 4, acomodo: 2, embarque: 0, retrabajo: 1, transito: 0 },
+      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
     },
     {
-      sku: 'SC-NAYT-PRO-KS',
-      name: 'Nayt Colchón Flow Pro Comfort King Size',
-      brand: 'Nayt',
-      size: 'King Size',
-      north: { disp: 5, comp: 1, acomodo: 0, embarque: 1, retrabajo: 0, transito: 0 },
-      south: { disp: 4, comp: 1, acomodo: 0, embarque: 0, retrabajo: 0, transito: 1 },
-      valleOriente: { disp: 1, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-      cumbres: { disp: 1, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
+      sku: 'FLX-BOPP-WHT',
+      name: 'Sustrato BOPP Blanco Brillante 60 mic',
+      brand: 'Fasson Avery',
+      size: 'Bobina 2,500 m',
+      prefix: 'BOB',
+      lot: 'RTM-MP-260902-011',
+      north: { disp: 25, comp: 6, acomodo: 3, embarque: 0, retrabajo: 1, transito: 0 },
+      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
     },
     {
-      sku: 'SC-SPA-REC-IND',
-      name: 'Spring Air Colchón Record Individual',
-      brand: 'Spring Air',
-      size: 'Individual',
-      north: { disp: 15, comp: 2, acomodo: 1, embarque: 1, retrabajo: 1, transito: 0 },
-      south: { disp: 9, comp: 1, acomodo: 1, embarque: 1, retrabajo: 0, transito: 0 },
-      valleOriente: { disp: 3, comp: 1, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-      cumbres: { disp: 2, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
+      sku: 'FLX-BOPP-CLR',
+      name: 'Sustrato BOPP Transparente Ultra-Clear',
+      brand: 'Fasson Avery',
+      size: 'Bobina 2,000 m',
+      prefix: 'BOB',
+      lot: 'RTM-MP-260903-008',
+      north: { disp: 16, comp: 4, acomodo: 1, embarque: 0, retrabajo: 0, transito: 0 },
+      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
     },
     {
-      sku: 'SC-SPA-VEN-MAT',
-      name: 'Spring Air Colchón Vendome Matrimonial',
-      brand: 'Spring Air',
-      size: 'Matrimonial',
-      north: { disp: 10, comp: 2, acomodo: 1, embarque: 1, retrabajo: 0, transito: 0 },
-      south: { disp: 7, comp: 0, acomodo: 0, embarque: 0, retrabajo: 1, transito: 1 },
-      valleOriente: { disp: 2, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-      cumbres: { disp: 2, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
+      sku: 'FLX-THM-DIR',
+      name: 'Papel Térmico Directo Top-Coated',
+      brand: 'UPM Raflatac',
+      size: 'Bobina 3,000 m',
+      prefix: 'BOB',
+      lot: 'RTM-MP-260904-012',
+      north: { disp: 20, comp: 5, acomodo: 2, embarque: 0, retrabajo: 0, transito: 0 },
+      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
     },
     {
-      sku: 'SC-RES-ORT-MAT',
-      name: 'Restonic Colchón Ortopedic Matrimonial',
-      brand: 'Restonic',
-      size: 'Matrimonial',
-      north: { disp: 14, comp: 2, acomodo: 1, embarque: 1, retrabajo: 0, transito: 0 },
-      south: { disp: 7, comp: 1, acomodo: 1, embarque: 0, retrabajo: 1, transito: 0 },
-      valleOriente: { disp: 3, comp: 1, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-      cumbres: { disp: 2, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
+      sku: 'TNT-PMS-186C',
+      name: 'Tinta Especial Rojo Corporativo PMS 186 C',
+      brand: 'Siegwerk',
+      size: 'Cubeta 10 kg',
+      prefix: 'CJ',
+      lot: 'RTM-MP-260903-002',
+      north: { disp: 30, comp: 8, acomodo: 2, embarque: 0, retrabajo: 1, transito: 0 },
+      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
     },
     {
-      sku: 'SC-RES-MNC-QS',
-      name: 'Restonic Colchón Moon Cool Queen Size',
-      brand: 'Restonic',
-      size: 'Queen Size',
-      north: { disp: 8, comp: 1, acomodo: 0, embarque: 1, retrabajo: 0, transito: 0 },
-      south: { disp: 4, comp: 1, acomodo: 0, embarque: 0, retrabajo: 1, transito: 0 },
-      valleOriente: { disp: 2, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-      cumbres: { disp: 1, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
+      sku: 'TNT-PROC-BLK',
+      name: 'Tinta Offset Proceso Black Intensa',
+      brand: 'Sun Chemical',
+      size: 'Lata 5 kg',
+      prefix: 'CJ',
+      lot: 'RTM-MP-260902-003',
+      north: { disp: 40, comp: 12, acomodo: 4, embarque: 0, retrabajo: 0, transito: 0 },
+      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
     },
     {
-      sku: 'SC-AME-HAL-QS',
-      name: 'América Colchón Halston Queen Size',
-      brand: 'América',
-      size: 'Queen Size',
-      north: { disp: 6, comp: 1, acomodo: 0, embarque: 0, retrabajo: 1, transito: 0 },
-      south: { disp: 4, comp: 1, acomodo: 0, embarque: 0, retrabajo: 0, transito: 1 },
-      valleOriente: { disp: 1, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-      cumbres: { disp: 1, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
+      sku: 'BRN-UV-GLS',
+      name: 'Barniz UV Ultra Brillo Curado Rápido',
+      brand: 'Flint Group',
+      size: 'Cubeta 20 kg',
+      prefix: 'CJ',
+      lot: 'RTM-MP-260904-006',
+      north: { disp: 15, comp: 3, acomodo: 1, embarque: 0, retrabajo: 0, transito: 0 },
+      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
     },
     {
-      sku: 'SC-SEA-CLB-KS',
-      name: 'Sealy Colchón Celebration Plus King Size',
-      brand: 'Sealy',
-      size: 'King Size',
-      north: { disp: 4, comp: 1, acomodo: 0, embarque: 1, retrabajo: 0, transito: 0 },
-      south: { disp: 3, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 1 },
-      valleOriente: { disp: 1, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-      cumbres: { disp: 1, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
+      sku: 'EMP-CAJ-COR',
+      name: 'Cajas Corrugadas 30x20x25 cm para Etiquetas',
+      brand: 'Smurfit Kappa',
+      size: 'Paquete 50 pzas',
+      prefix: 'CJ',
+      lot: 'RTM-MP-260905-018',
+      north: { disp: 50, comp: 10, acomodo: 5, embarque: 0, retrabajo: 0, transito: 0 },
+      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
+    },
+    {
+      sku: 'PT-ETIQ-FAR',
+      name: 'Etiqueta Farmacéutica 4x6" (Rollo 1,000 u)',
+      brand: 'Impresos RTM',
+      size: 'Caja 12 rollos',
+      prefix: 'ROL',
+      lot: 'RTM-PT-260905-001',
+      north: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
+      south: { disp: 35, comp: 12, acomodo: 4, embarque: 8, retrabajo: 1, transito: 0 },
+    },
+    {
+      sku: 'PT-FOL-MED',
+      name: 'Folleto Plegado Cuatricromía Laboratorio',
+      brand: 'Impresos RTM',
+      size: 'Caja 2,500 u',
+      prefix: 'CJ',
+      lot: 'RTM-PT-260906-007',
+      north: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
+      south: { disp: 28, comp: 10, acomodo: 2, embarque: 6, retrabajo: 1, transito: 0 },
+    },
+    {
+      sku: 'PT-EMP-ALM',
+      name: 'Caja Plegadiza Alimentos 6 Tintas + UV',
+      brand: 'Impresos RTM',
+      size: 'Tarima 15,000 u',
+      prefix: 'TAR',
+      lot: 'RTM-PT-260906-015',
+      north: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
+      south: { disp: 20, comp: 8, acomodo: 2, embarque: 4, retrabajo: 0, transito: 0 },
     },
   ];
 
-  let serialCounter = 100;
+  let seqCounter = 100;
 
-  articleStockConfig.forEach((art, artIdx) => {
-    // Generate units for a specific location
-    const addUnits = (
+  articleStockConfig.forEach((cfg) => {
+    const addBatch = (
       whId: string,
       whName: string,
-      whPrefix: string,
-      statusCounts: { disp: number; comp: number; acomodo: number; embarque: number; retrabajo: number; transito: number }
+      counts: { disp: number; comp: number; acomodo: number; embarque: number; retrabajo: number; transito: number },
+      aisleBase: string
     ) => {
-      const statuses: Array<{ type: StockItemRecord['status']; count: number }> = [
-        { type: 'Disponible', count: statusCounts.disp },
-        { type: 'Comprometido', count: statusCounts.comp },
-        { type: 'En acomodo', count: statusCounts.acomodo },
-        { type: 'En embarque', count: statusCounts.embarque },
-        { type: 'En retrabajo', count: statusCounts.retrabajo },
-        { type: 'En tránsito', count: statusCounts.transito },
+      const statuses: Array<{ count: number; status: StockItemRecord['status']; locPrefix: string }> = [
+        { count: counts.disp, status: 'Disponible', locPrefix: `${aisleBase}-A` },
+        { count: counts.comp, status: 'Comprometido', locPrefix: `${aisleBase}-B` },
+        { count: counts.acomodo, status: 'En acomodo', locPrefix: 'ACO-01' },
+        { count: counts.embarque, status: 'En embarque', locPrefix: 'EMB-01' },
+        { count: counts.retrabajo, status: 'En retrabajo', locPrefix: 'RET-NORTE' },
       ];
 
-      statuses.forEach((st) => {
-        for (let c = 0; c < st.count; c++) {
-          serialCounter++;
-          const uid = `SC-UID-2026-00${serialCounter}`;
-          const age = (artIdx * 2 + c * 3) % 15;
-          const entryDate = `${Math.max(1, 27 - age)} Ago 2026`;
-          const lotNumber = `LOTE-2026-W${31 + ((artIdx + c) % 4)}`;
-
-          let location = '';
-          if (st.type === 'En acomodo') {
-            location = whId === 'wh-mty-norte' ? 'ACO-01' : whId === 'wh-mty-sur' ? 'ACO-S1' : 'ENT-VO';
-          } else if (st.type === 'En embarque') {
-            location = whId === 'wh-mty-norte' ? 'EMB-02' : whId === 'wh-mty-sur' ? 'EMB-01' : 'DESP-VO';
-          } else if (st.type === 'En retrabajo') {
-            location = whId === 'wh-mty-norte' ? 'RET-NORTE' : whId === 'wh-mty-sur' ? 'RET-SUR' : 'INC-VO';
-          } else if (st.type === 'En tránsito') {
-            location = 'OTP-2026-0042 (En camión)';
-          } else {
-            // In racks (e.g. A-C-06, B-B-04)
-            const aisle = String.fromCharCode(65 + ((artIdx + c) % 2));
-            const level = c % 3 === 0 ? 'A' : c % 3 === 1 ? 'B' : 'C';
-            const pos = ((c + artIdx) % 4) + 1;
-            const posStr = pos < 10 ? `0${pos}` : `${pos}`;
-            location = `${aisle}-${level}-${posStr}`;
-          }
+      statuses.forEach(({ count, status, locPrefix }) => {
+        for (let i = 0; i < count; i++) {
+          seqCounter++;
+          const pos = (i % 12) + 1;
+          const posStr = pos < 10 ? `0${pos}` : `${pos}`;
+          const location = locPrefix.startsWith('ACO') || locPrefix.startsWith('EMB') || locPrefix.startsWith('RET')
+            ? locPrefix
+            : `${locPrefix}-${posStr}`;
+          const age = 3 + (seqCounter % 14);
 
           stockList.push({
-            uid,
-            sku: art.sku,
-            productName: art.name,
-            brand: art.brand,
-            size: art.size,
+            uid: `${cfg.prefix}-RTM-260906-${seqCounter}`,
+            sku: cfg.sku,
+            productName: cfg.name,
+            brand: cfg.brand,
+            size: cfg.size,
             warehouseId: whId,
             warehouseName: whName,
             location,
-            lotNumber,
-            entryDate,
+            lotNumber: cfg.lot,
+            entryDate: `${Math.max(1, 27 - age)} Ago 2026`,
             ageDays: age,
-            status: st.type,
+            status,
           });
         }
       });
     };
 
-    addUnits('wh-mty-norte', 'CEDIS Monterrey Norte', 'MTY-N', art.north);
-    addUnits('wh-mty-sur', 'CEDIS Monterrey Sur', 'MTY-S', art.south);
-    addUnits('wh-suc-valle-oriente', 'Sucursal Valle Oriente', 'SUC-VO', { ...art.valleOriente, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 });
-    addUnits('wh-suc-cumbres', 'Sucursal Cumbres', 'SUC-CUM', { ...art.cumbres, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 });
-  });
-
-  // Add Showroom items for Valle Oriente
-  MOCK_SHOWROOM_VALLE_ORIENTE.forEach((b) => {
-    if (b.mattress) {
-      stockList.push({
-        uid: b.mattress.uid,
-        sku: b.mattress.sku,
-        productName: b.mattress.productName,
-        brand: b.mattress.brand,
-        size: b.mattress.size,
-        warehouseId: 'wh-suc-valle-oriente',
-        warehouseName: 'Sucursal Valle Oriente',
-        location: b.code,
-        lotNumber: b.mattress.lotNumber,
-        entryDate: b.mattress.entryDate,
-        ageDays: b.mattress.ageDays,
-        status: 'En exhibición',
-      });
+    if (cfg.north.disp + cfg.north.comp > 0) {
+      const aisle = cfg.sku.startsWith('PAP') ? 'A' : cfg.sku.startsWith('FLX') ? 'B' : cfg.sku.startsWith('TNT') ? 'C' : 'D';
+      addBatch('wh-mty-norte', 'Almacén Materia Prima', cfg.north, aisle);
     }
-  });
 
-  // Add Showroom items for Cumbres
-  MOCK_SHOWROOM_CUMBRES.forEach((b) => {
-    if (b.mattress) {
-      stockList.push({
-        uid: b.mattress.uid,
-        sku: b.mattress.sku,
-        productName: b.mattress.productName,
-        brand: b.mattress.brand,
-        size: b.mattress.size,
-        warehouseId: 'wh-suc-cumbres',
-        warehouseName: 'Sucursal Cumbres',
-        location: b.code,
-        lotNumber: b.mattress.lotNumber,
-        entryDate: b.mattress.entryDate,
-        ageDays: b.mattress.ageDays,
-        status: 'En exhibición',
-      });
+    if (cfg.south.disp + cfg.south.comp > 0) {
+      const aisle = cfg.sku.startsWith('PT-ETIQ') ? 'A' : cfg.sku.startsWith('PT-FOL') ? 'B' : 'C';
+      addBatch('wh-mty-sur', 'Almacén Producto Terminado', cfg.south, aisle);
     }
   });
 
@@ -1254,379 +916,128 @@ export const MOCK_STOCK_ITEMS: StockItemRecord[] = generateFullStockItems();
 // =========================================================================
 export const MOCK_INVENTORY_MOVEMENTS: InventoryMovement[] = [
   {
+    id: 'mov-105',
+    timestamp: '27 Ago 11:30',
+    uid: 'BOB-RTM-260906-014',
+    sku: 'FLX-BOPP-WHT',
+    productName: 'Sustrato BOPP Blanco Brillante 60 mic',
+    movementType: 'DEVOLUCIÓN PRODUCCIÓN',
+    origin: 'Línea Flexo Mark Andy #02',
+    destination: 'Rack B-A-04 (ALM-MP)',
+    user: 'operador_flexo',
+    notes: 'Devolución de remanente 680 m de bobina surtida con 2,500 m (Lote RTM-MP-260902-011)',
+  },
+  {
+    id: 'mov-104',
+    timestamp: '27 Ago 10:45',
+    uid: 'ROL-RTM-260906-501',
+    sku: 'PT-ETIQ-FAR',
+    productName: 'Etiqueta Farmacéutica 4x6" (Rollo 1,000 u)',
+    movementType: 'LIBERACIÓN QA',
+    origin: 'Staging Inspección QA (ALM-PT)',
+    destination: 'Rack PT-B-01 (PT Liberado)',
+    user: 'calidad_reynosa',
+    notes: 'Inspección de registro de color y código de barras aprobada 100% (Lote RTM-PT-260905-001)',
+  },
+  {
     id: 'mov-103',
-    timestamp: '27 Ago 11:15',
-    uid: 'SC-UID-2026-000201',
-    sku: 'SC-NAYT-FLOW-IND',
-    productName: 'Nayt Colchón Flow Basic White Individual',
-    movementType: 'TRASLADO A EXHIBICIÓN',
-    origin: 'Recepción Sucursal VO',
-    destination: 'SHOW-01',
-    user: 'supervisor_vo',
-    notes: 'Montaje de exhibición en Showroom Valle Oriente',
+    timestamp: '27 Ago 10:15',
+    uid: 'TAR-RTM-260906-182',
+    sku: 'PAP-COU-090',
+    productName: 'Papel Couché 90 g (Pliegos 70x100 cm)',
+    movementType: 'SURTIDO OP',
+    origin: 'Rack A-B-03 (ALM-MP)',
+    destination: 'Línea Offset Heidelberg Speedmaster',
+    user: 'almacenista_offset',
+    notes: 'Surtido de 4,200 pliegos para OP-2026-0891 (Folleto Corporativo Cuatricromía)',
   },
   {
     id: 'mov-102',
-    timestamp: '27 Ago 10:50',
-    uid: 'SC-UID-2026-000213',
-    sku: 'SC-NAYT-FLOW-MAT',
-    productName: 'Nayt Colchón Flow Basic White Matrimonial',
-    movementType: 'TRASLADO A EXHIBICIÓN',
-    origin: 'Zona de Reserva Cumbres',
-    destination: 'SHOW-03',
-    user: 'asesor_cum',
-    notes: 'Exhibición de modelo Nayt Matrimonial en Showroom',
+    timestamp: '27 Ago 09:30',
+    uid: 'TAR-RTM-260906-183',
+    sku: 'PAP-COU-090',
+    productName: 'Papel Couché 90 g (Pliegos 70x100 cm)',
+    movementType: 'ACOMODO',
+    origin: 'Rampa de Descarga REC-01',
+    destination: 'Rack A-B-03 (ALM-MP)',
+    user: 'montacargas01',
+    notes: 'Acomodo de tarima completa 18,000 pliegos lote RTM-MP-260901-004',
   },
   {
     id: 'mov-101',
-    timestamp: '27 Ago 10:24',
-    uid: 'SC-UID-2026-000184',
-    sku: 'SC-NAYT-FLOW-IND',
-    productName: 'Nayt Colchón Flow Basic White Individual',
-    movementType: 'ACOMODO',
-    origin: 'Recepción (Mesa Verificación)',
-    destination: 'Rack A-C-04',
-    user: 'montacargas02',
-    notes: 'Acomodo confirmado en posición sugerida',
+    timestamp: '27 Ago 09:00',
+    uid: 'TAR-RTM-260906-183',
+    sku: 'PAP-COU-090',
+    productName: 'Papel Couché 90 g (Pliegos 70x100 cm)',
+    movementType: 'RECEPCIÓN',
+    origin: 'Proveedor Bio-Pappel (OC-2026-0081)',
+    destination: 'Rampa de Descarga REC-01',
+    user: 'recibo_almacen',
+    notes: 'Recepción conforme contra remisión de proveedor. Factura BP-88912',
   },
   {
     id: 'mov-100',
-    timestamp: '27 Ago 10:21',
-    uid: 'SC-UID-2026-000184',
-    sku: 'SC-NAYT-FLOW-IND',
-    productName: 'Nayt Colchón Flow Basic White Individual',
-    movementType: 'ENTRADA',
-    origin: 'Línea de Ensamble / Rampa',
-    destination: 'Recepción (Mesa Verificación)',
-    user: 'operador01',
-    notes: 'Escaneo y serialización individual de pieza',
+    timestamp: '26 Ago 16:30',
+    uid: 'BOB-RTM-260906-091',
+    sku: 'FLX-BOPP-WHT',
+    productName: 'Sustrato BOPP Blanco Brillante 60 mic',
+    movementType: 'CUARENTENA',
+    origin: 'Rampa de Descarga REC-01',
+    destination: 'Zona de Cuarentena QA (RET-NORTE)',
+    user: 'calidad_reynosa',
+    notes: 'Lote retenido preventivamente por tensión irregular en bobina de lote proveedor',
   },
   {
     id: 'mov-099',
-    timestamp: '27 Ago 09:40',
-    uid: 'SC-UID-2026-000149',
-    sku: 'SC-SPA-REC-IND',
-    productName: 'Spring Air Colchón Record Individual',
-    movementType: 'SURTIDO',
-    origin: 'Rack B-B-02',
-    destination: 'Carril EMB-02',
-    user: 'picker03',
-    notes: 'Secuenciación para carga de camión Ruta MTY-402',
+    timestamp: '26 Ago 14:15',
+    uid: 'TAR-RTM-260906-165',
+    sku: 'PAP-BND-075',
+    productName: 'Papel Bond 75 g (Pliegos 61x90 cm)',
+    movementType: 'RESERVA',
+    origin: 'Rack A-A-02',
+    destination: 'Staging Producción (Staging OP)',
+    user: 'planeacion_prod',
+    notes: 'Reserva automática para OP-2026-0904 programada para turno nocturno',
   },
   {
     id: 'mov-098',
-    timestamp: '26 Ago 16:15',
-    uid: 'SC-UID-2026-000091',
-    sku: 'SC-NAYT-FLOW-IND',
-    productName: 'Nayt Colchón Flow Basic White Individual',
-    movementType: 'RETRABAJO',
-    origin: 'Rampa REC-01',
-    destination: 'Zona Retrabajo Norte',
-    user: 'calidad01',
-    notes: 'Aislado por rasgadura en empaque plástico',
-  },
-  {
-    id: 'mov-097',
-    timestamp: '26 Ago 11:30',
-    uid: 'SC-UID-2026-000122',
-    sku: 'SC-RES-ORT-MAT',
-    productName: 'Restonic Colchón Ortopedic Matrimonial',
-    movementType: 'ACOMODO',
-    origin: 'Área de Acomodo Temporal',
-    destination: 'Rack A-A-08',
-    user: 'montacargas01',
-    notes: 'Acomodo estándar en bahía alta rotación',
-  },
-  {
-    id: 'mov-096',
-    timestamp: '25 Ago 15:45',
-    uid: 'SC-UID-2026-000075',
-    sku: 'SC-AME-HAL-QS',
-    productName: 'América Colchón Halston Queen Size',
-    movementType: 'TRASPASO',
-    origin: 'CEDIS Monterrey Norte',
-    destination: 'CEDIS Monterrey Sur (En tránsito)',
-    user: 'logistica02',
-    notes: 'Orden de traspaso OTP-2026-0042',
+    timestamp: '26 Ago 11:20',
+    uid: 'CJ-RTM-260906-520',
+    sku: 'PT-FOL-MED',
+    productName: 'Folleto Plegado Cuatricromía Corporativo',
+    movementType: 'EMBARQUE',
+    origin: 'Rack PT-B-02 (ALM-PT)',
+    destination: 'Rampa de Despacho EMB-01',
+    user: 'despacho_pt',
+    notes: 'Despacho de 10 cajas con remisión REM-2026-0039 a cliente industrial de Reynosa',
   },
 ];
 
 // =========================================================================
-// TRANSFERS
+// TRANSFERS (TRANSFERENCIAS ENTRE ÁREAS RTM)
 // =========================================================================
 export const MOCK_TRANSFERS: InventoryTransferOrder[] = [
   {
     id: 'trf-01',
-    folio: 'OTP-2026-0042',
+    folio: 'TRF-2026-0012',
     sourceWarehouseId: 'wh-mty-norte',
-    sourceWarehouseName: 'CEDIS Monterrey Norte',
+    sourceWarehouseName: 'Almacén Materia Prima',
     destinationWarehouseId: 'wh-mty-sur',
-    destinationWarehouseName: 'CEDIS Monterrey Sur',
-    totalUnits: 15,
-    status: 'En tránsito',
-    plannedDate: '27 Ago 2026',
-    departureDate: '27 Ago 08:30',
-    arrivalDate: '27 Ago 14:00 (Estimada)',
-    driver: 'Roberto Garza (Unidad Camión #08)',
-    truckPlates: 'NL-8842-A',
-    items: [
-      { 
-        sku: 'SC-NAYT-FLOW-IND', 
-        productName: 'Nayt Colchón Flow Basic White Individual', 
-        quantity: 10, 
-        serials: [
-          'SC-UID-2026-000171',
-          'SC-UID-2026-000172',
-          'SC-UID-2026-000173',
-          'SC-UID-2026-000174',
-          'SC-UID-2026-000175',
-          'SC-UID-2026-000176',
-          'SC-UID-2026-000177',
-          'SC-UID-2026-000178',
-          'SC-UID-2026-000179',
-          'SC-UID-2026-000180'
-        ] 
-      },
-      { 
-        sku: 'SC-RES-ORT-MAT', 
-        productName: 'Restonic Colchón Ortopedic Matrimonial', 
-        quantity: 5, 
-        serials: [
-          'SC-UID-2026-000161',
-          'SC-UID-2026-000162',
-          'SC-UID-2026-000163',
-          'SC-UID-2026-000164',
-          'SC-UID-2026-000165'
-        ] 
-      },
-    ],
-  },
-  {
-    id: 'trf-02',
-    folio: 'OTP-2026-0041',
-    sourceWarehouseId: 'wh-mty-sur',
-    sourceWarehouseName: 'CEDIS Monterrey Sur',
-    destinationWarehouseId: 'wh-mty-norte',
-    destinationWarehouseName: 'CEDIS Monterrey Norte',
-    totalUnits: 8,
-    status: 'Recibido',
-    plannedDate: '25 Ago 2026',
-    departureDate: '25 Ago 09:00',
-    arrivalDate: '25 Ago 13:20',
-    driver: 'Manuel Treviño (Unidad #03)',
-    truckPlates: 'NL-3319-B',
-    items: [
-      { 
-        sku: 'SC-SPA-REC-IND', 
-        productName: 'Spring Air Colchón Record Individual', 
-        quantity: 8, 
-        serials: [
-          'SC-UID-2026-000110',
-          'SC-UID-2026-000111',
-          'SC-UID-2026-000112',
-          'SC-UID-2026-000113',
-          'SC-UID-2026-000114',
-          'SC-UID-2026-000115',
-          'SC-UID-2026-000116',
-          'SC-UID-2026-000117'
-        ] 
-      },
-    ],
-  },
-  {
-    id: 'trf-03',
-    folio: 'OTP-2026-0043',
-    sourceWarehouseId: 'wh-mty-norte',
-    sourceWarehouseName: 'CEDIS Monterrey Norte',
-    destinationWarehouseId: 'wh-mty-sur',
-    destinationWarehouseName: 'CEDIS Monterrey Sur',
-    totalUnits: 20,
-    status: 'Preparando',
-    plannedDate: '28 Ago 2026',
-    items: [
-      { 
-        sku: 'SC-NAYT-FLOW-MAT', 
-        productName: 'Nayt Colchón Flow Basic White Matrimonial', 
-        quantity: 12, 
-        serials: [
-          'SC-UID-2026-000121',
-          'SC-UID-2026-000122',
-          'SC-UID-2026-000123',
-          'SC-UID-2026-000124',
-          'SC-UID-2026-000125',
-          'SC-UID-2026-000126',
-          'SC-UID-2026-000127',
-          'SC-UID-2026-000128',
-          'SC-UID-2026-000129',
-          'SC-UID-2026-000130',
-          'SC-UID-2026-000131',
-          'SC-UID-2026-000132'
-        ] 
-      },
-      { 
-        sku: 'SC-SEA-CLB-KS', 
-        productName: 'Sealy Colchón Celebration Plus King Size', 
-        quantity: 8, 
-        serials: [
-          'SC-UID-2026-000141',
-          'SC-UID-2026-000142',
-          'SC-UID-2026-000143',
-          'SC-UID-2026-000144',
-          'SC-UID-2026-000145',
-          'SC-UID-2026-000146',
-          'SC-UID-2026-000147',
-          'SC-UID-2026-000148'
-        ] 
-      },
-    ],
-  },
-  {
-    id: 'trf-04',
-    folio: 'OTP-2026-0044',
-    sourceWarehouseId: 'wh-mty-norte',
-    sourceWarehouseName: 'CEDIS Monterrey Norte',
-    destinationWarehouseId: 'wh-suc-valle-oriente',
-    destinationWarehouseName: 'Sucursal Valle Oriente',
+    destinationWarehouseName: 'Almacén Producto Terminado',
     totalUnits: 10,
-    receivedUnits: 6,
-    receivedSerials: [
-      'SC-UID-2026-000181',
-      'SC-UID-2026-000182',
-      'SC-UID-2026-000183',
-      'SC-UID-2026-000184',
-      'SC-UID-2026-000185',
-      'SC-UID-2026-000186'
-    ],
-    status: 'Parcial',
+    status: 'Listo para salida',
     plannedDate: '27 Ago 2026',
-    departureDate: '27 Ago 09:15',
-    arrivalDate: '27 Ago 11:30',
-    driver: 'Arturo Elizondo (Unidad #05)',
-    truckPlates: 'NL-4412-C',
+    departureDate: '27 Ago 12:00',
+    arrivalDate: '27 Ago 12:30 (Estimada)',
+    driver: 'Transfer Interno Montacargas C-02',
+    truckPlates: 'INT-RTM-02',
     items: [
       {
-        sku: 'SC-NAYT-FLOW-IND',
-        productName: 'Nayt Colchón Flow Basic White Individual',
-        quantity: 6,
-        serials: [
-          'SC-UID-2026-000181',
-          'SC-UID-2026-000182',
-          'SC-UID-2026-000183',
-          'SC-UID-2026-000184',
-          'SC-UID-2026-000185',
-          'SC-UID-2026-000186'
-        ],
-        receivedSerials: [
-          'SC-UID-2026-000181',
-          'SC-UID-2026-000182',
-          'SC-UID-2026-000183',
-          'SC-UID-2026-000184',
-          'SC-UID-2026-000185',
-          'SC-UID-2026-000186'
-        ]
+        sku: 'EMP-CAJ-COR',
+        productName: 'Cajas Corrugadas 30x20x25 cm para Etiquetas',
+        quantity: 10,
+        serials: ['CJ-RTM-260906-110', 'CJ-RTM-260906-111'],
       },
-      {
-        sku: 'SC-RES-ORT-MAT',
-        productName: 'Restonic Colchón Ortopedic Matrimonial',
-        quantity: 4,
-        serials: [
-          'SC-UID-2026-000187',
-          'SC-UID-2026-000188',
-          'SC-UID-2026-000189',
-          'SC-UID-2026-000190'
-        ],
-        receivedSerials: []
-      }
-    ]
-  },
-  {
-    id: 'trf-05',
-    folio: 'OTP-2026-0045',
-    sourceWarehouseId: 'wh-mty-sur',
-    sourceWarehouseName: 'CEDIS Monterrey Sur',
-    destinationWarehouseId: 'wh-suc-cumbres',
-    destinationWarehouseName: 'Sucursal Cumbres',
-    totalUnits: 8,
-    receivedUnits: 0,
-    receivedSerials: [],
-    status: 'En tránsito',
-    plannedDate: '27 Ago 2026',
-    departureDate: '27 Ago 10:00',
-    arrivalDate: '27 Ago 12:45 (Estimada)',
-    driver: 'Gerardo Cantú (Unidad #09)',
-    truckPlates: 'NL-9921-A',
-    items: [
-      {
-        sku: 'SC-SPA-REC-IND',
-        productName: 'Spring Air Colchón Record Individual',
-        quantity: 5,
-        serials: [
-          'SC-UID-2026-000191',
-          'SC-UID-2026-000192',
-          'SC-UID-2026-000193',
-          'SC-UID-2026-000194',
-          'SC-UID-2026-000195'
-        ],
-        receivedSerials: []
-      },
-      {
-        sku: 'SC-AME-HAL-QS',
-        productName: 'América Colchón Halston Queen Size',
-        quantity: 3,
-        serials: [
-          'SC-UID-2026-000196',
-          'SC-UID-2026-000197',
-          'SC-UID-2026-000198'
-        ],
-        receivedSerials: []
-      }
-    ]
-  },
-  {
-    id: 'trf-06',
-    folio: 'OTP-2026-0040',
-    sourceWarehouseId: 'wh-mty-norte',
-    sourceWarehouseName: 'CEDIS Monterrey Norte',
-    destinationWarehouseId: 'wh-suc-valle-oriente',
-    destinationWarehouseName: 'Sucursal Valle Oriente',
-    totalUnits: 6,
-    receivedUnits: 6,
-    receivedSerials: [
-      'SC-UID-2026-000151',
-      'SC-UID-2026-000152',
-      'SC-UID-2026-000153',
-      'SC-UID-2026-000154',
-      'SC-UID-2026-000155',
-      'SC-UID-2026-000156'
     ],
-    status: 'Recibido',
-    plannedDate: '24 Ago 2026',
-    departureDate: '24 Ago 08:00',
-    arrivalDate: '24 Ago 10:45',
-    driver: 'Arturo Elizondo (Unidad #05)',
-    truckPlates: 'NL-4412-C',
-    items: [
-      {
-        sku: 'SC-SEA-CLB-KS',
-        productName: 'Sealy Colchón Celebration Plus King Size',
-        quantity: 6,
-        serials: [
-          'SC-UID-2026-000151',
-          'SC-UID-2026-000152',
-          'SC-UID-2026-000153',
-          'SC-UID-2026-000154',
-          'SC-UID-2026-000155',
-          'SC-UID-2026-000156'
-        ],
-        receivedSerials: [
-          'SC-UID-2026-000151',
-          'SC-UID-2026-000152',
-          'SC-UID-2026-000153',
-          'SC-UID-2026-000154',
-          'SC-UID-2026-000155',
-          'SC-UID-2026-000156'
-        ]
-      }
-    ]
-  }
+  },
 ];

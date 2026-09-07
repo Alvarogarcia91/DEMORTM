@@ -319,7 +319,7 @@ export const WarehousesTab: React.FC = () => {
  <strong className="text-sm sm:text-base font-extrabold text-theme-primary font-mono block mt-0.5">
  {unitsCount} pzas
  </strong>
- <span className="text-[10px] text-theme-muted">colchones</span>
+ <span className="text-[10px] text-theme-muted">unidades / bobinas</span>
  </div>
 
  <div className="p-3 rounded-2xl bg-theme-muted/50 border border-theme-subtle">
@@ -583,7 +583,7 @@ export const WarehousesTab: React.FC = () => {
  <strong className="text-xl font-black text-theme-primary font-mono block">
  {nodeStockMetrics.total} pzas
  </strong>
- <span className="text-[10px] text-theme-muted">Colchones físicos</span>
+ <span className="text-[10px] text-theme-muted">Sustratos / Bobinas físicos</span>
  </div>
 
  <div className="p-4 rounded-2xl bg-theme-muted/40 border border-theme-subtle space-y-1">
@@ -643,7 +643,7 @@ export const WarehousesTab: React.FC = () => {
  <div className="border-l border-purple-500/20 pl-4">
  <span className="text-[9px] uppercase font-bold text-purple-700 block">En Exhibición</span>
  <strong className="text-sm font-black text-purple-700 font-mono">
- {selectedWarehouse.showroomBays.filter(b => b.status === 'Ocupada').length} colchones
+ {selectedWarehouse.showroomBays.filter(b => b.status === 'Ocupada').length} unidades / bobinas
  </strong>
  </div>
  <div className="border-l border-purple-500/20 pl-4">
@@ -740,7 +740,7 @@ export const WarehousesTab: React.FC = () => {
  {aisle.aisleCode} &middot; {aisle.positions.length} Posiciones
  </span>
  <span className="text-[11px] font-mono text-theme-muted">
- {aisle.positions.reduce((acc, p) => acc + p.currentUnitsCount, 0)} colchones almacenados
+ {aisle.positions.reduce((acc, p) => acc + p.currentUnitsCount, 0)} unidades / bobinas almacenados
  </span>
  </div>
 
@@ -919,7 +919,7 @@ export const WarehousesTab: React.FC = () => {
  <th className="py-2.5 px-4">Código</th>
  <th className="py-2.5 px-4">Tipo</th>
  <th className="py-2.5 px-4">Espacio Físico / Descripción</th>
- <th className="py-2.5 px-3 text-center">Colchones Actuales</th>
+ <th className="py-2.5 px-3 text-center">Sustratos / Bobinas Actuales</th>
  <th className="py-2.5 px-3">Estado</th>
  <th className="py-2.5 px-4 text-right">Acciones</th>
  </tr>
@@ -1126,7 +1126,7 @@ export const WarehousesTab: React.FC = () => {
  </div>
  <h5 className="text-xs font-bold text-theme-main">Showroom de Exhibición Retail</h5>
  <p className="text-[11px] text-theme-muted">
- {selectedWarehouse.showroomBays.filter(b => b.status === 'Ocupada').length} colchones en exhibición activa &bull; {selectedWarehouse.showroomBays.filter(b => b.status === 'Libre').length} bahías disponibles para prueba de confort.
+ {selectedWarehouse.showroomBays.filter(b => b.status === 'Ocupada').length} unidades / bobinas en exhibición activa &bull; {selectedWarehouse.showroomBays.filter(b => b.status === 'Libre').length} bahías disponibles para prueba de confort.
  </p>
  <div className="flex items-center justify-end gap-1.5 pt-2 border-t border-purple-500/20">
  <button
@@ -1151,7 +1151,7 @@ export const WarehousesTab: React.FC = () => {
  </div>
  <h5 className="text-xs font-bold text-theme-main">{rec.name}</h5>
  <p className="text-[11px] text-theme-muted">
- Capacidad de rampa: <strong className="font-mono text-theme-main">{rec.capacity} colchones</strong> &bull; Estado: <span className="text-emerald-600 font-semibold">{rec.status}</span>
+ Capacidad de rampa: <strong className="font-mono text-theme-main">{rec.capacity} unidades / bobinas</strong> &bull; Estado: <span className="text-emerald-600 font-semibold">{rec.status}</span>
  </p>
  <div className="flex items-center justify-end gap-1.5 pt-2 border-t border-theme-subtle">
  <button
@@ -1201,7 +1201,7 @@ export const WarehousesTab: React.FC = () => {
  </div>
  <h5 className="text-xs font-bold text-theme-main">{stg.name}</h5>
  <p className="text-[11px] text-theme-muted">
- Capacidad: <strong className="font-mono text-theme-main">{stg.capacity} colchones</strong> &bull; Estado: <span className="text-blue-600 font-semibold">{stg.status}</span>
+ Capacidad: <strong className="font-mono text-theme-main">{stg.capacity} unidades / bobinas</strong> &bull; Estado: <span className="text-blue-600 font-semibold">{stg.status}</span>
  </p>
  <div className="flex items-center justify-end gap-1.5 pt-2 border-t border-theme-subtle">
  <button

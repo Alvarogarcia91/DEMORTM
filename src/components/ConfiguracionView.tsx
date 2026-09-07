@@ -516,7 +516,7 @@ export const ConfiguracionView: React.FC = () => {
         <div className="bg-theme-surface border border-theme-subtle rounded-2xl p-6 shadow-xs space-y-4">
           <h2 className="text-sm font-bold text-theme-main">Dispositivos de Escaneo / Terminales RF</h2>
           <p className="text-xs text-theme-muted">
-            El sistema soporta lectores de código de barras USB/Bluetooth y cámaras de smartphones Android para escaneo individual de empaques, rollos y lotes.
+            Lectores QR/código de barras para lotes, rollos, bobinas, tarimas, producto terminado y ubicaciones físicas.
           </p>
           <div className="p-4 rounded-xl bg-white border border-emerald-600 shadow-2xs text-xs text-zinc-900 flex items-center gap-3">
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />

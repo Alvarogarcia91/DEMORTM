@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { 
  ArrowLeft, 
  RotateCcw, 
@@ -137,7 +137,7 @@ export const ReturnOrderDetailView: React.FC<ReturnOrderDetailViewProps> = ({
  <div className="flex items-center justify-between">
  <div>
  <h3 className="text-sm font-extrabold text-theme-main">
- Partidas Físicas Serializadas (Colchones)
+ Partidas Físicas Serializadas (Sustratos / Bobinas)
  </h3>
  <p className="text-xs text-theme-muted">
  Cada unidad conserva su UID original para trazabilidad de ciclo de vida.

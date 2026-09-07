@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo } from 'react';
 import { 
  Search, 
  Building2, 
@@ -91,7 +91,7 @@ export const PendingReceiptsList: React.FC<PendingReceiptsListProps> = ({
  <span>Compras por Recibir en CEDIS</span>
  </h3>
  <p className="text-xs text-theme-muted">
- Órdenes de compra emitidas y en tránsito listas para validación física, escaneo y serialización individual de colchones al arribo.
+ Órdenes de compra emitidas y en tránsito listas para validación física, escaneo y serialización individual de unidades / bobinas al arribo.
  </p>
  </div>
  <div className="text-xs font-mono font-bold text-rose-600 bg-rose-500/10 px-3 py-1.5 rounded-xl border border-rose-500/20 self-start sm:self-auto whitespace-nowrap">

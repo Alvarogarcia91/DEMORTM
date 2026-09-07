@@ -72,8 +72,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
  items: [
  { key: 'articulos', label: 'Artículos', icon: Package },
  { key: 'inventario', label: 'Inventario', icon: Boxes },
- { key: 'mesa-verificacion', label: 'Mesa de Verificación', icon: Scan },
- { key: 'logistica', label: 'Embarques & Entregas', icon: Truck },
+ { key: 'mesa-verificacion', label: 'Operaciones de Almacén', icon: Scan },
+ { key: 'logistica', label: 'Producto Terminado & Embarques', icon: Truck },
  { key: 'showroom-expos', label: 'Showroom & Expos', icon: Store },
  ],
  },
