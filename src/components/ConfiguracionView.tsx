@@ -40,7 +40,8 @@ import {
   UserCheck,
   LayoutDashboard,
   CheckCheck,
-  ShieldCheck
+  ShieldCheck,
+  Wrench
 } from 'lucide-react';
 import { NavItemKey } from './Sidebar';
 
@@ -110,6 +111,7 @@ export const ConfiguracionView: React.FC = () => {
       case 'cxc': return CreditCard;
       case 'cxp': return Scale;
       case 'nomina': return UserCheck;
+      case 'mantenimiento': return Wrench;
       case 'configuracion': return Palette;
       default: return Layers;
     }

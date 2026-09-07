@@ -17,6 +17,7 @@ import { FacturacionPage } from './Finanzas/FacturacionPage';
 import { CxcPage } from './Finanzas/CxcPage';
 import { CxpPage } from './Finanzas/CxpPage';
 import { NominaPage } from './Nomina/NominaPage';
+import { MantenimientoPage } from './Mantenimiento/MantenimientoPage';
 import {
   SalesInvoice,
   AccountReceivable,
@@ -74,6 +75,14 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
   const [targetQuoteCustomerId, setTargetQuoteCustomerId] = useState<string | null>(null);
   const [targetQuoteFolio, setTargetQuoteFolio] = useState<string | null>(null);
   const [targetOrderFolio, setTargetOrderFolio] = useState<string | null>(null);
+  const [targetRequisitionPrefilledItem, setTargetRequisitionPrefilledItem] = useState<{
+    sku: string;
+    productName: string;
+    brand: string;
+    quantity: number;
+    targetWarehouseId?: string;
+    note?: string;
+  } | null>(null);
 
   const handleInvoiceStamped = (inv: SalesInvoice) => {
     const dueDate = new Date();
@@ -353,14 +362,15 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  </p>
  </div>
 
- <RequisicionesTab
- requisitions={requisitions}
- onSetRequisitions={setRequisitions}
- onNavigateToPurchasesTab={() => {
- setTargetPurchaseOrderFolio(null);
- setActiveTab('compras');
- }}
- />
+        <RequisicionesTab
+          requisitions={requisitions}
+          onSetRequisitions={setRequisitions}
+          initialPrefilledItem={targetRequisitionPrefilledItem}
+          onNavigateToPurchasesTab={() => {
+            setTargetPurchaseOrderFolio(null);
+            setActiveTab('compras');
+          }}
+        />
  </div>
  );
  case 'compras':
@@ -490,6 +500,15 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
         );
       case 'nomina':
         return <NominaPage />;
+      case 'mantenimiento':
+        return (
+          <MantenimientoPage
+            onNavigateToRequisitions={(prefilledItem) => {
+              setTargetRequisitionPrefilledItem(prefilledItem);
+              setActiveTab('requisiciones');
+            }}
+          />
+        );
       case 'configuracion':
         return <ConfiguracionView />;
  default:
@@ -502,11 +521,14 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  {/* Sidebar Navigation */}
  <Sidebar
  activeTab={activeTab}
- onSelectTab={(tab) => {
- setTargetPurchaseOrderFolio(null);
- setTargetInboundFolio(null);
- setActiveTab(tab);
- }}
+        onSelectTab={(tab) => {
+          setTargetPurchaseOrderFolio(null);
+          setTargetInboundFolio(null);
+          if (tab !== 'requisiciones') {
+            setTargetRequisitionPrefilledItem(null);
+          }
+          setActiveTab(tab);
+        }}
  isOpenMobile={isOpenMobile}
  onCloseMobile={() => setIsOpenMobile(false)}
  onLogout={onLogout}

@@ -48,6 +48,13 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     description: 'Despacho de producto terminado liberado por QA, staging de tarimas y validación de carga para clientes industriales.',
   },
   {
+    key: 'mantenimiento',
+    label: 'Mantenimiento & OTs',
+    category: 'operaciones',
+    categoryLabel: 'Inventario y Operaciones',
+    description: 'Control de maquinaria y equipos, órdenes de trabajo (OT), refacciones y mantenimiento preventivo.',
+  },
+  {
     key: 'requisiciones',
     label: 'Requisiciones',
     category: 'compras',
@@ -145,10 +152,11 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'cxc': true,
   'cxp': true,
   'nomina': true,
+  'mantenimiento': true,
   'configuracion': true,
 };
 
-const STORAGE_KEY = 'rtm_visible_navigation_modules_v4';
+const STORAGE_KEY = 'rtm_visible_navigation_modules_v5';
 
 interface NavigationModulesContextType {
   visibleModules: VisibilityMap;
