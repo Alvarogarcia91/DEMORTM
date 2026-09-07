@@ -48,7 +48,8 @@ export const Topbar: React.FC<TopbarProps> = ({
  <span className="text-theme-muted font-mono uppercase tracking-wider text-[10px]">RTM ERP</span>
  <span className="text-theme-muted">/</span>
  <span className="font-bold text-theme-main">
- {activeTab === 'mantenimiento' ? 'Mantenimiento' :
+ {activeTab === 'produccion' ? 'Producción' :
+ activeTab === 'mantenimiento' ? 'Mantenimiento' :
  activeTab === 'nomina' ? 'Nómina & Asistencia' :
  activeTab === 'crm' ? 'CRM' :
  activeTab === 'finanzas' ? 'Finanzas' :

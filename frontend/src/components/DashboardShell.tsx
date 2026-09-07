@@ -19,6 +19,7 @@ import { CxpPage } from './Finanzas/CxpPage';
 import { FinanceWorkspace } from './Finanzas/FinanceWorkspace';
 import { NominaPage } from './Nomina/NominaPage';
 import { MantenimientoPage } from './Mantenimiento/MantenimientoPage';
+import { ProduccionPage } from './Produccion/ProduccionPage';
 import { CentroAlertasPage } from './CentroAlertasPage';
 import { CrmPage } from './Comercial/CrmPage';
 import { DemoAlert } from '../data/mockAlertasData';
@@ -546,6 +547,8 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
         return <FinanceWorkspace area="reports" salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
       case 'nomina':
         return <NominaPage />;
+      case 'produccion':
+        return <ProduccionPage />;
       case 'mantenimiento':
         return (
           <MantenimientoPage

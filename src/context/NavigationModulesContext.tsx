@@ -69,6 +69,13 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     description: 'Despacho de producto terminado liberado por QA, staging de tarimas y validación de carga para clientes industriales.',
   },
   {
+    key: 'produccion',
+    label: 'Producción',
+    category: 'operaciones',
+    categoryLabel: 'Producción & Planta',
+    description: 'Planeación, órdenes de producción, piso, materiales e incidencias de planta.',
+  },
+  {
     key: 'mantenimiento',
     label: 'Mantenimiento & Equipos',
     category: 'mantenimiento',
@@ -163,6 +170,7 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'inventario': true,
   'mesa-verificacion': true,
   'logistica': false,
+  'produccion': true,
   'requisiciones': false,
   'compras': false,
   'proveedores': false,

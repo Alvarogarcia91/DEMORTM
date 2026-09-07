@@ -19,7 +19,8 @@ import {
  CreditCard,
  Scale,
  UserCheck,
- Wrench
+ Wrench,
+ Factory
 } from 'lucide-react';
 import { useNavigationModules } from '../context/NavigationModulesContext';
 
@@ -29,6 +30,7 @@ export type NavItemKey =
  | 'inventario'
  | 'mesa-verificacion'
  | 'logistica'
+ | 'produccion'
  | 'requisiciones'
  | 'compras'
  | 'proveedores'
@@ -90,6 +92,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
  { key: 'inventario', label: 'Inventario', icon: Boxes },
  { key: 'mesa-verificacion', label: 'Operaciones de Almacén', icon: Scan },
  { key: 'logistica', label: 'Órdenes de Salida', icon: Truck },
+ ],
+ },
+ {
+ title: 'PRODUCCIÓN',
+ items: [
+ { key: 'produccion', label: 'Producción', icon: Factory },
  ],
  },
  {
