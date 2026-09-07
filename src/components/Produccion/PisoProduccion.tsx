@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { AlertTriangle, Pause, Play, Wrench, ShieldCheck, Plus, FileText, CheckCircle2 } from 'lucide-react';
-import { ProductionOrder } from '../../data/mockProduccionData';
+import React, { useState, useEffect } from 'react';
+import { AlertTriangle, Pause, Play, Wrench, ShieldCheck, Plus, FileText, CheckCircle2, Clock } from 'lucide-react';
+import { OperatorDailyReportEntry, ProductionOrder } from '../../data/mockProduccionData';
 import { ProductionCard, StatusBadge, formatNumber } from './productionUi';
 import { SolicitarMaterialExtraModal } from './SolicitarMaterialExtraModal';
 import { ReporteDiarioOperadorModal } from './ReporteDiarioOperadorModal';
@@ -10,13 +10,39 @@ interface Props {
   onOpenOrder: (order: ProductionOrder) => void;
   onUpdate: (id: string, patch: Partial<ProductionOrder>) => void;
   onIncident: (order: ProductionOrder) => void;
+  onSaveDailyReport?: (entry: OperatorDailyReportEntry) => void;
 }
 
-export const PisoProduccion: React.FC<Props> = ({ orders, onOpenOrder, onUpdate, onIncident }) => {
+export const PisoProduccion: React.FC<Props> = ({
+  orders,
+  onOpenOrder,
+  onUpdate,
+  onIncident,
+  onSaveDailyReport,
+}) => {
   const [materialOrder, setMaterialOrder] = useState<ProductionOrder | null>(null);
   const [reportOrder, setReportOrder] = useState<ProductionOrder | null>(null);
-  const [activeTimers, setActiveTimers] = useState<Record<string, number>>({});
+  const [activeTimerOrderId, setActiveTimerOrderId] = useState<string | null>(null);
+  const [timerSeconds, setTimerSeconds] = useState(1420); // Simulación de tiempo transcurrido en vivo
 
+  // Cronómetro visual para la orden en proceso (Sección 13.1 de la auditoría)
+  useEffect(() => {
+    let interval: any;
+    if (activeTimerOrderId) {
+      interval = setInterval(() => {
+        setTimerSeconds((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [activeTimerOrderId]);
+
+  const formatTimer = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // Corrección Sección 13.3: Solo sumar scrap si la categoría o motivo es merma / defecto técnico
   const handleRequestMaterialExtra = (
     order: ProductionOrder,
     materialName: string,
@@ -25,22 +51,46 @@ export const PisoProduccion: React.FC<Props> = ({ orders, onOpenOrder, onUpdate,
     category4M: string,
     comment: string
   ) => {
-    const updatedScrap = order.scrap + 150;
+    const isDefectOrMerma = category4M === 'Material' || category4M === 'Mano de obra' || reason.toLowerCase().includes('merma');
+    const scrapIncrement = isDefectOrMerma ? 100 : 0; // No sumar scrap arbitrariamente si es por faltante o ajuste
+
     const newTraceabilityEvent = {
       id: `tr-mat-${Date.now()}`,
       timestamp: '07 Sep · 10:45',
       user: order.operator,
       station: order.machine,
-      event: `Material extra solicitado: ${quantity} de ${materialName}`,
-      notes: `Motivo 4M (${category4M}): ${reason} · ${comment}`,
+      event: `Material adicional solicitado: ${quantity} de ${materialName}`,
+      notes: `Motivo 4M (${category4M}): ${reason} · ${comment}${scrapIncrement > 0 ? ` (+${scrapIncrement} piezas registradas en scrap)` : ' (Sin incremento de scrap: faltante de almacén)'}`,
       badgeTone: 'warning' as const,
     };
 
     onUpdate(order.id, {
-      scrap: updatedScrap,
+      scrap: order.scrap + scrapIncrement,
       traceability: [newTraceabilityEvent, ...(order.traceability ?? [])],
     });
     setMaterialOrder(null);
+  };
+
+  // Simulación de solicitud de primera pieza a Calidad (Sección 13.4 de la auditoría)
+  const handleRequestFirstPiece = (order: ProductionOrder) => {
+    onUpdate(order.id, {
+      qualityGates: {
+        ...(order.qualityGates ?? { prepressReleased: true, finalAuditApproved: false, firstPieceReleased: false }),
+        firstPieceRequested: true,
+      },
+      traceability: [
+        {
+          id: `tr-qp-req-${Date.now()}`,
+          timestamp: '07 Sep · 09:20',
+          user: order.operator,
+          station: order.machine,
+          event: 'Primera Pieza enviada a inspección de Calidad',
+          notes: 'Esperando liberación en mesa de calidad de Alicia Ramírez',
+          badgeTone: 'primary',
+        },
+        ...(order.traceability ?? []),
+      ],
+    });
   };
 
   const handleApproveFirstPiece = (order: ProductionOrder) => {
@@ -48,6 +98,7 @@ export const PisoProduccion: React.FC<Props> = ({ orders, onOpenOrder, onUpdate,
       qualityGates: {
         ...(order.qualityGates ?? { prepressReleased: true, finalAuditApproved: false }),
         firstPieceReleased: true,
+        firstPieceRequested: false,
         firstPieceApprover: 'Alicia Ramírez (Calidad)',
       },
       status: 'En proceso',
@@ -55,11 +106,11 @@ export const PisoProduccion: React.FC<Props> = ({ orders, onOpenOrder, onUpdate,
       traceability: [
         {
           id: `tr-qp-${Date.now()}`,
-          timestamp: '07 Sep · 09:30',
+          timestamp: '07 Sep · 09:27',
           user: 'Alicia Ramírez (Calidad)',
           station: order.machine,
           event: 'Primera Pieza Liberada por Calidad',
-          notes: 'Inspección de registro, tono, código de barras y corte conforme a máster',
+          notes: 'Inspección de registro, tono, código de barras y corte conforme a máster aprobada',
           badgeTone: 'success',
         },
         ...(order.traceability ?? []),
@@ -76,7 +127,7 @@ export const PisoProduccion: React.FC<Props> = ({ orders, onOpenOrder, onUpdate,
             Consola Operativa de Piso de Planta (RTM)
           </h2>
           <p className="text-xs text-theme-muted">
-            Ejecución en vivo de órdenes, control de setup, cronómetros, primera pieza y reporte diario de operador.
+            Ejecución en vivo, cronómetro operativo, solicitud de 1ra pieza a QA, material adicional sin scrap arbitrario y reporte diario.
           </p>
         </div>
         <button
@@ -92,11 +143,13 @@ export const PisoProduccion: React.FC<Props> = ({ orders, onOpenOrder, onUpdate,
       <div className="grid gap-4 lg:grid-cols-2">
         {orders
           .filter((order) =>
-            ['En proceso', 'En preparación', 'Detenida', 'Lista para producir', 'Planeada'].includes(order.status)
+            ['En proceso', 'En preparación', 'Detenida', 'Lista para producir', 'Material surtido'].includes(order.status)
           )
           .slice(0, 8)
           .map((order) => {
-            const isFirstPiecePending = !order.qualityGates?.firstPieceReleased;
+            const isFirstPieceReleased = order.qualityGates?.firstPieceReleased;
+            const isFirstPieceRequested = order.qualityGates?.firstPieceRequested;
+            const isTimerRunning = activeTimerOrderId === order.id;
 
             return (
               <ProductionCard key={order.id}>
@@ -109,12 +162,18 @@ export const PisoProduccion: React.FC<Props> = ({ orders, onOpenOrder, onUpdate,
                           {order.machine}
                         </span>
                         <span className="text-[11px] font-mono text-theme-muted">{order.area}</span>
+                        {/* Cronómetro visual si está activo */}
+                        {isTimerRunning && (
+                          <span className="inline-flex items-center gap-1 rounded-md bg-emerald-100 dark:bg-emerald-950/50 px-2 py-0.5 text-[11px] font-mono font-bold text-emerald-800 dark:text-emerald-200 animate-pulse">
+                            <Clock className="h-3 w-3" /> {formatTimer(timerSeconds)}
+                          </span>
+                        )}
                       </div>
                       <b className="mt-1 block text-sm text-theme-main">
                         {order.folio} · {order.cliente}
                       </b>
                       <small className="block text-theme-muted">
-                        Parte: <b>{order.partNumber}</b> ({order.revision}) · Operador: <b>{order.operator}</b> · Siguiente en cola: {order.nextJob}
+                        Parte: <b>{order.partNumber}</b> ({order.revision}) · Operador: <b>{order.operator}</b> · Siguiente: {order.nextJob}
                       </small>
                     </div>
                     <StatusBadge status={order.status} />
@@ -125,7 +184,7 @@ export const PisoProduccion: React.FC<Props> = ({ orders, onOpenOrder, onUpdate,
                     {[
                       ['Objetivo', formatNumber(order.quantity)],
                       ['Buenas', formatNumber(order.good)],
-                      ['Scrap', formatNumber(order.scrap)],
+                      ['Scrap', `${formatNumber(order.scrap)} ejs`],
                       ['Tiempo', `${order.elapsedMinutes}/${order.standardMinutes} min`],
                     ].map(([label, value]) => (
                       <span className="rounded-xl bg-theme-muted/40 p-2 text-xs" key={label}>
@@ -135,35 +194,49 @@ export const PisoProduccion: React.FC<Props> = ({ orders, onOpenOrder, onUpdate,
                     ))}
                   </div>
 
-                  {/* Quality Gate: Primera pieza */}
+                  {/* Quality Gate: Solicitud y Aprobación de Primera Pieza (Sección 13.4) */}
                   <div className="mt-3 flex items-center justify-between rounded-xl border border-theme-subtle bg-theme-surface p-3 text-xs">
                     <div className="flex items-center gap-2">
                       <ShieldCheck
                         className={`h-4 w-4 ${
-                          isFirstPiecePending ? 'text-amber-500' : 'text-emerald-600'
+                          isFirstPieceReleased ? 'text-emerald-600' : isFirstPieceRequested ? 'text-blue-500 animate-bounce' : 'text-amber-500'
                         }`}
                       />
                       <span>
                         Primera Pieza:{' '}
-                        {isFirstPiecePending ? (
-                          <b className="text-amber-700 dark:text-amber-300">Pendiente de Aprobación</b>
-                        ) : (
+                        {isFirstPieceReleased ? (
                           <b className="text-emerald-700 dark:text-emerald-300">
                             Liberada ({order.qualityGates?.firstPieceApprover ?? 'Alicia Ramírez'})
                           </b>
+                        ) : isFirstPieceRequested ? (
+                          <b className="text-blue-700 dark:text-blue-300">En revisión por Calidad (Alicia Ramírez)</b>
+                        ) : (
+                          <b className="text-amber-700 dark:text-amber-300">Pendiente de Aprobación</b>
                         )}
                       </span>
                     </div>
 
-                    {isFirstPiecePending && (
-                      <button
-                        type="button"
-                        onClick={() => handleApproveFirstPiece(order)}
-                        className="rounded-lg bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white hover:bg-emerald-700"
-                      >
-                        ✓ Liberar 1ra Pieza
-                      </button>
-                    )}
+                    <div className="flex gap-1.5">
+                      {!isFirstPieceReleased && !isFirstPieceRequested && (
+                        <button
+                          type="button"
+                          onClick={() => handleRequestFirstPiece(order)}
+                          className="rounded-lg border border-theme-subtle bg-theme-muted/20 px-2 py-1 text-[10px] font-bold text-theme-main hover:bg-theme-muted/40"
+                        >
+                          Solicitar liberación a Calidad
+                        </button>
+                      )}
+
+                      {!isFirstPieceReleased && (
+                        <button
+                          type="button"
+                          onClick={() => handleApproveFirstPiece(order)}
+                          className="rounded-lg bg-emerald-600 px-2.5 py-1 text-[10px] font-bold text-white hover:bg-emerald-700"
+                        >
+                          ✓ Aprobar QA
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   {/* Insumos y Herramental */}
@@ -195,7 +268,10 @@ export const PisoProduccion: React.FC<Props> = ({ orders, onOpenOrder, onUpdate,
                     {order.status === 'En proceso' ? (
                       <button
                         type="button"
-                        onClick={() => onUpdate(order.id, { status: 'Detenida' })}
+                        onClick={() => {
+                          setActiveTimerOrderId(null);
+                          onUpdate(order.id, { status: 'Detenida' });
+                        }}
                         className="rounded-xl border border-amber-400 bg-amber-50/50 dark:bg-amber-950/20 px-3 py-2 text-xs font-bold text-amber-800 dark:text-amber-200"
                       >
                         <Pause className="mr-1 inline h-3.5 w-3.5" /> Pausar
@@ -203,20 +279,21 @@ export const PisoProduccion: React.FC<Props> = ({ orders, onOpenOrder, onUpdate,
                     ) : (
                       <button
                         type="button"
-                        onClick={() =>
+                        onClick={() => {
+                          setActiveTimerOrderId(order.id);
                           onUpdate(order.id, {
                             status: 'En proceso',
                             progress: Math.max(order.progress, 10),
-                          })
-                        }
-                        className="rounded-xl bg-theme-primary px-3 py-2 text-xs font-bold text-white hover:bg-theme-primary/90"
+                          });
+                        }}
+                        className="rounded-xl bg-theme-primary px-3 py-2 text-xs font-bold text-white hover:bg-theme-primary/90 shadow-xs"
                       >
                         <Play className="mr-1 inline h-3.5 w-3.5" />
-                        {order.status === 'En preparación' ? 'Iniciar producción' : 'Iniciar preparación'}
+                        {order.status === 'En preparación' ? 'Iniciar producción' : 'Iniciar preparación y timer'}
                       </button>
                     )}
 
-                    {/* Botón Material Adicional (Sección 17) */}
+                    {/* Botón Material Adicional (Sección 17 y 13.3) */}
                     <button
                       type="button"
                       onClick={() => setMaterialOrder(order)}
@@ -235,13 +312,14 @@ export const PisoProduccion: React.FC<Props> = ({ orders, onOpenOrder, onUpdate,
 
                     <button
                       type="button"
-                      onClick={() =>
+                      onClick={() => {
+                        setActiveTimerOrderId(null);
                         onUpdate(order.id, {
                           status: 'Pendiente de calidad',
                           progress: 96,
                           good: Math.round(order.quantity * 0.98),
-                        })
-                      }
+                        });
+                      }}
                       className="rounded-xl border border-theme-subtle bg-theme-surface px-3 py-2 text-xs font-bold text-theme-main hover:bg-theme-muted/30"
                     >
                       Terminar operación
@@ -278,6 +356,7 @@ export const PisoProduccion: React.FC<Props> = ({ orders, onOpenOrder, onUpdate,
           order={reportOrder}
           onClose={() => setReportOrder(null)}
           onSaveReport={(entry) => {
+            if (onSaveDailyReport) onSaveDailyReport(entry);
             setReportOrder(null);
           }}
         />

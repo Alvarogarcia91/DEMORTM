@@ -296,6 +296,70 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
                   <p><b className="text-theme-muted">Riesgo de Entrega:</b> {order.deliveryRisk ?? 'Bajo'}</p>
                 </div>
               </div>
+
+              {/* Estado de Hoja Física Impresa */}
+              <div className="flex flex-wrap items-center justify-between rounded-2xl border border-theme-subtle bg-theme-muted/10 p-3.5 text-xs">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-theme-primary" />
+                  <span className="text-theme-muted">
+                    Hoja de OP Física para Piso:{' '}
+                    <b className="text-theme-main">
+                      {order.sheetPrintedStatus?.isPrinted
+                        ? `Impresa ✓ (${order.sheetPrintedStatus.printedAt || '07 Sep · 10:30'} por ${order.sheetPrintedStatus.printedBy || 'Supervisor RTM'})`
+                        : 'No impresa (Pendiente entrega a operador)'}
+                    </b>
+                  </span>
+                </div>
+                {order.sheetPrintedStatus?.reprintCount ? (
+                  <span className="rounded-md bg-theme-muted/30 px-2 py-0.5 text-[10px] font-bold text-theme-muted">
+                    {order.sheetPrintedStatus.reprintCount} reimpresiones registradas
+                  </span>
+                ) : null}
+              </div>
+
+              {/* Desviación Técnica de Material Activa (si existe) */}
+              {order.activeDeviation && (
+                <div className="rounded-2xl border border-amber-400/70 bg-amber-50/60 dark:bg-amber-950/20 p-4 text-xs space-y-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="font-black text-amber-950 dark:text-amber-200 flex items-center gap-1.5">
+                      <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
+                      Desviación Técnica Autorizada: {order.activeDeviation.deviationNumber}
+                    </span>
+                    <span className="rounded-full bg-emerald-100 dark:bg-emerald-950/50 px-2.5 py-0.5 text-[10px] font-black text-emerald-800 dark:text-emerald-300">
+                      Aprobada por {order.activeDeviation.authorizedBy ?? 'Alicia Ramírez (Calidad)'}
+                    </span>
+                  </div>
+                  <div className="grid gap-2 sm:grid-cols-2 text-[11px]">
+                    <p className="text-theme-main">
+                      <b>Material Original:</b> {order.activeDeviation.originalMaterial}
+                    </p>
+                    <p className="text-theme-main">
+                      <b>Sustituto Aprobado:</b> <span className="font-bold text-amber-800 dark:text-amber-300">{order.activeDeviation.substituteMaterial}</span>
+                    </p>
+                  </div>
+                  <p className="text-theme-muted text-[11px]">
+                    <b>Justificación Técnica:</b> {order.activeDeviation.reason} · <b>Alcance:</b> {order.activeDeviation.notes ?? 'Lote actual únicamente'}
+                  </p>
+                </div>
+              )}
+
+              {/* Remanente de Bobina Asignado (si existe) */}
+              {order.selectedRemnant && (
+                <div className="rounded-2xl border border-blue-400/70 bg-blue-50/60 dark:bg-blue-950/20 p-4 text-xs space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="font-black text-blue-950 dark:text-blue-200">
+                      Remanente de Bobina Asignado ({order.selectedRemnant.remnantCode || order.selectedRemnant.id})
+                    </span>
+                    <span className="font-mono font-bold text-blue-700 dark:text-blue-300">
+                      {order.selectedRemnant.remainingFt.toLocaleString()} ft disponibles
+                    </span>
+                  </div>
+                  <p className="text-theme-muted text-[11px]">
+                    <b>Material:</b> {order.selectedRemnant.substrate} ({order.selectedRemnant.widthMm} mm) · <b>Ubicación:</b> {order.selectedRemnant.location} · <b>Lote:</b> {order.selectedRemnant.lot}.
+                    Priorizado para tiro inicial antes de abrir rollo virgen.
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
@@ -551,6 +615,22 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
                   </button>
                 )}
               </div>
+
+              {order.activeDeviation && (
+                <div className="rounded-xl border border-amber-400/60 bg-amber-50/50 dark:bg-amber-950/20 p-3 text-xs flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
+                    <span>
+                      <b>Desviación Técnica Autorizada ({order.activeDeviation.deviationNumber}):</b> Sustitución de{' '}
+                      <span className="line-through text-theme-muted">{order.activeDeviation.originalMaterial}</span> por{' '}
+                      <b className="text-amber-800 dark:text-amber-300">{order.activeDeviation.substituteMaterial}</b>.
+                    </span>
+                  </div>
+                  <span className="rounded-full bg-emerald-100 dark:bg-emerald-950/50 px-2 py-0.5 font-bold text-[10px] text-emerald-800 dark:text-emerald-300">
+                    Aprobó: {order.activeDeviation.authorizedBy ?? 'Alicia Ramírez (Calidad)'}
+                  </span>
+                </div>
+              )}
 
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[700px] text-xs">

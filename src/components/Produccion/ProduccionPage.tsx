@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Plus } from 'lucide-react';
-import { PRODUCTION_ORDERS, ProductionOrder } from '../../data/mockProduccionData';
+import { PRODUCTION_ORDERS, ProductionOrder, MasterManufacturingRecipe, OperatorDailyReportEntry } from '../../data/mockProduccionData';
 import { DashboardProduccion } from './DashboardProduccion';
 import { PlaneacionProduccion } from './PlaneacionProduccion';
 import { OrdenesProduccion } from './OrdenesProduccion';
@@ -10,8 +10,9 @@ import { MaquinasCapacidad } from './MaquinasCapacidad';
 import { AnaliticaProduccion } from './AnaliticaProduccion';
 import { ReportarIncidenciaModal } from './ReportarIncidenciaModal';
 import { NewProductionOrderWizard } from './NewProductionOrderWizard';
+import { ConfiguracionFabricacion } from './ConfiguracionFabricacion';
 
-type ProductionTab = 'Dashboard' | 'Planeación' | 'Órdenes' | 'Piso' | 'Máquinas' | 'Analítica';
+type ProductionTab = 'Dashboard' | 'Planeación' | 'Órdenes' | 'Piso' | 'Procesos' | 'Máquinas' | 'Analítica';
 
 export const ProduccionPage: React.FC = () => {
   const [tab, setTab] = useState<ProductionTab>('Dashboard');
@@ -20,6 +21,7 @@ export const ProduccionPage: React.FC = () => {
   const [incidence, setIncidence] = useState<ProductionOrder | null>(null);
   const [notice, setNotice] = useState('');
   const [isWizardOpen, setIsWizardOpen] = useState(false);
+  const [initialRecipe, setInitialRecipe] = useState<MasterManufacturingRecipe | null>(null);
 
   const activeOrders = useMemo(
     () => orders.filter((order) => !['Terminada', 'Liberada'].includes(order.status)),
@@ -107,6 +109,80 @@ export const ProduccionPage: React.FC = () => {
     );
   };
 
+  const handlePrintSheet = (order: ProductionOrder) => {
+    const isAlreadyPrinted = order.sheetPrintedStatus?.isPrinted;
+    const updatedStatus = {
+      isPrinted: true,
+      printedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      printedBy: 'Supervisor RTM',
+      reprintCount: (order.sheetPrintedStatus?.reprintCount ?? 0) + (isAlreadyPrinted ? 1 : 0),
+    };
+    updateOrder(order.id, {
+      sheetPrintedStatus: updatedStatus,
+      traceability: [
+        {
+          id: `tr-print-${Date.now()}`,
+          timestamp: '07 Sep · 10:30',
+          user: 'Supervisor RTM',
+          station: 'Oficina de Producción',
+          event: isAlreadyPrinted ? `Hoja de OP Reimpresa (copia #${updatedStatus.reprintCount})` : 'Hoja de OP Física Impresa para Piso',
+          notes: 'Entregada al operador para control físico en máquina.',
+          badgeTone: 'primary',
+        },
+        ...(order.traceability ?? []),
+      ],
+    });
+    setNotice(
+      isAlreadyPrinted
+        ? `Hoja de OP física reimpresa para ${order.folio} (copia #${updatedStatus.reprintCount}).`
+        : `✓ Hoja de OP física para ${order.folio} marcada como impresa y entregada a piso.`
+    );
+  };
+
+  const handleMarkMaterialDelivered = (order: ProductionOrder) => {
+    const newStatus = order.toolingAlert ? 'Por surtir' : 'Lista para producir';
+    updateOrder(order.id, {
+      status: newStatus,
+      traceability: [
+        {
+          id: `tr-mat-del-${Date.now()}`,
+          timestamp: '07 Sep · 09:50',
+          user: 'Almacén MP / Logística RTM',
+          station: 'Almacén MP',
+          event: 'Material surtido a pie de máquina (Ventana 24h)',
+          notes: 'Bobinas, pliegos y tintas posicionados físicamente en máquina.',
+          badgeTone: 'success',
+        },
+        ...(order.traceability ?? []),
+      ],
+    });
+    setNotice(`✓ Material de ${order.folio} surtido a pie de máquina. Estado actualizado a "${newStatus}".`);
+  };
+
+  const handleSaveDailyReport = (entry: OperatorDailyReportEntry) => {
+    const ord = orders.find((o) => o.folio === entry.opFolio);
+    if (ord) {
+      updateOrder(ord.id, {
+        good: (ord.good ?? 0) + entry.producedQuantity,
+        traceability: [
+          {
+            id: `tr-rep-${entry.id}`,
+            timestamp: '07 Sep · 14:00',
+            user: entry.operator,
+            station: entry.areaMachine,
+            event: `Reporte Diario de Turno (${entry.shift})`,
+            notes: `${entry.producedQuantity.toLocaleString()} unidades producidas. Código: ${entry.code} - ${entry.codeDescription}. ${entry.comments}`,
+            badgeTone: 'primary',
+          },
+          ...(ord.traceability ?? []),
+        ],
+      });
+    }
+    setNotice(
+      `✓ Reporte de operador persistido para ${entry.opFolio} (${entry.areaMachine}, ${entry.operator}). Unidades y trazabilidad actualizadas en la orden.`
+    );
+  };
+
   return (
     <div className="space-y-5 animate-in fade-in duration-200">
       {/* Header superior */}
@@ -115,14 +191,17 @@ export const ProduccionPage: React.FC = () => {
           <p className="text-[10px] font-black tracking-widest text-theme-primary">PRODUCCIÓN · RTM</p>
           <h1 className="text-2xl font-black text-theme-main">Producción y piso</h1>
           <p className="text-xs text-theme-muted">
-            Del pedido a la liberación: configuración técnica, paginación, insumos, planeación, ejecución y trazabilidad.
+            Del pedido a la liberación: recetas maestras, paginación, insumos, planeación, ejecución y trazabilidad.
           </p>
         </div>
 
         {/* Botón Nueva OP real: abre wizard */}
         <button
           type="button"
-          onClick={() => setIsWizardOpen(true)}
+          onClick={() => {
+            setInitialRecipe(null);
+            setIsWizardOpen(true);
+          }}
           className="flex items-center gap-1.5 w-fit rounded-xl bg-theme-primary px-4 py-2.5 text-xs font-bold text-white shadow-md hover:bg-theme-primary/90 transition-all hover:scale-[1.02]"
         >
           <Plus className="h-4 w-4" />
@@ -132,7 +211,7 @@ export const ProduccionPage: React.FC = () => {
 
       {/* Tabs */}
       <div className="flex gap-1 overflow-x-auto border-b border-theme-subtle">
-        {(['Dashboard', 'Planeación', 'Órdenes', 'Piso', 'Máquinas', 'Analítica'] as ProductionTab[]).map((item) => (
+        {(['Dashboard', 'Planeación', 'Órdenes', 'Piso', 'Procesos', 'Máquinas', 'Analítica'] as ProductionTab[]).map((item) => (
           <button
             type="button"
             onClick={() => setTab(item)}
@@ -170,10 +249,17 @@ export const ProduccionPage: React.FC = () => {
           orders={orders}
           onOpenOrder={openOrder}
           onMoveOrder={handleMoveOrder}
+          onMarkMaterialDelivered={handleMarkMaterialDelivered}
         />
       )}
 
-      {tab === 'Órdenes' && <OrdenesProduccion orders={orders} onOpenOrder={openOrder} />}
+      {tab === 'Órdenes' && (
+        <OrdenesProduccion
+          orders={orders}
+          onOpenOrder={openOrder}
+          onPrintSheet={handlePrintSheet}
+        />
+      )}
 
       {tab === 'Piso' && (
         <PisoProduccion
@@ -181,6 +267,16 @@ export const ProduccionPage: React.FC = () => {
           onOpenOrder={openOrder}
           onUpdate={updateOrder}
           onIncident={setIncidence}
+          onSaveDailyReport={handleSaveDailyReport}
+        />
+      )}
+
+      {tab === 'Procesos' && (
+        <ConfiguracionFabricacion
+          onSelectRecipeForNewOrder={(recipe) => {
+            setInitialRecipe(recipe);
+            setIsWizardOpen(true);
+          }}
         />
       )}
 
@@ -191,8 +287,16 @@ export const ProduccionPage: React.FC = () => {
       {/* Modal Wizard de Nueva OP */}
       {isWizardOpen && (
         <NewProductionOrderWizard
-          onClose={() => setIsWizardOpen(false)}
-          onCreateOrder={handleCreateOrderFromWizard}
+          initialRecipe={initialRecipe || undefined}
+          onClose={() => {
+            setIsWizardOpen(false);
+            setInitialRecipe(null);
+          }}
+          onCreateOrder={(newOrder) => {
+            handleCreateOrderFromWizard(newOrder);
+            setIsWizardOpen(false);
+            setInitialRecipe(null);
+          }}
         />
       )}
 
