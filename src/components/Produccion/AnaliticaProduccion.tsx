@@ -1,7 +1,315 @@
-import React, { useState } from 'react';
-import { Download, RefreshCw } from 'lucide-react';
-import { PRODUCTION_INCIDENTS, PRODUCTION_MACHINES, ProductionOrder } from '../../data/mockProduccionData';
-import { ProductionCard, ProgressBar } from './productionUi';
+import React, { useState, useMemo } from 'react';
+import { ProductionOrder } from '../../data/mockProduccionData';
+import {
+  ProductionPeriod,
+  ProductionAnalyticsArea,
+  ProductionAnalyticsShift,
+  ProductionAnalyticsSubView,
+  getProductionAnalyticsForPeriod,
+} from '../../data/mockProduccionAnaliticaData';
+import { ProductionAnalyticsHeader } from './analytics/ProductionAnalyticsHeader';
+import { ProductionAnalyticsKpis } from './analytics/ProductionAnalyticsKpis';
+import { ProductionSmartInsights } from './analytics/ProductionSmartInsights';
+import { ProductionPlanVsActual } from './analytics/ProductionPlanVsActual';
+import { ProductionMachineAnalytics } from './analytics/ProductionMachineAnalytics';
+import { ProductionDowntimeAnalytics } from './analytics/ProductionDowntimeAnalytics';
+import { ProductionScrapAnalytics } from './analytics/ProductionScrapAnalytics';
+import { ProductionSetupAnalytics } from './analytics/ProductionSetupAnalytics';
+import { ProductionOperatorAnalytics } from './analytics/ProductionOperatorAnalytics';
+import { ProductionDeliveryAnalytics } from './analytics/ProductionDeliveryAnalytics';
+import { ProductionPerformanceHeatmap } from './analytics/ProductionPerformanceHeatmap';
 
-interface Props { orders: ProductionOrder[]; onNotice: (message: string) => void; }
-export const AnaliticaProduccion: React.FC<Props> = ({ orders, onNotice }) => { const [period, setPeriod] = useState('Semana actual'); const groups = ['Offset', 'Flexografía', 'Acabados']; return <div className="space-y-4"><div className="flex justify-end gap-2"><select value={period} onChange={event => setPeriod(event.target.value)} className="rounded-xl border border-theme-subtle bg-theme-surface px-3 text-xs"><option>Semana actual</option><option>Mes actual</option><option>Q3 2026</option></select><button onClick={() => onNotice(`Analítica actualizada · ${period}`)} className="rounded-xl border border-theme-subtle px-3 py-2 text-xs font-bold"><RefreshCw className="mr-1 inline h-3.5 w-3.5" />Actualizar</button><button onClick={() => onNotice('Exportación a Excel de Producción preparada · Demo')} className="rounded-xl bg-theme-primary px-3 py-2 text-xs font-bold text-white"><Download className="mr-1 inline h-3.5 w-3.5" />Exportar</button></div><div className="grid gap-4 xl:grid-cols-2"><ProductionCard><div className="p-5"><b>Plan vs real por área</b><p className="mt-1 text-xs text-theme-muted">Cumplimiento del periodo seleccionado.</p>{groups.map((area, index) => { const planned = 88 + index * 4; const actual = 82 + index * 5; return <div className="mt-5 text-xs" key={area}><div className="flex justify-between"><b>{area}</b><span>Plan {planned}% · Real {actual}%</span></div><div className="mt-2"><ProgressBar value={actual} tone={actual < planned ? 'bg-amber-500' : 'bg-emerald-500'} /></div></div>; })}</div></ProductionCard><ProductionCard><div className="p-5"><b>Utilización por máquina</b><p className="mt-1 text-xs text-theme-muted">Carga semanal de estaciones críticas.</p>{PRODUCTION_MACHINES.slice(0, 6).map(machine => <div className="mt-4 text-xs" key={machine.id}><div className="flex justify-between"><span>{machine.name}</span><b>{machine.load}%</b></div><div className="mt-2"><ProgressBar value={machine.load} tone={machine.load > 90 ? 'bg-rose-500' : 'bg-theme-primary'} /></div></div>)}</div></ProductionCard><ProductionCard><div className="p-5"><b>Scrap y entregas</b><p className="mt-1 text-xs text-theme-muted">Lectura operativa sin cálculo contable.</p><div className="mt-5 grid grid-cols-2 gap-3 text-xs"><span className="rounded-xl bg-theme-muted/50 p-4"><small className="text-theme-muted">Scrap registrado</small><b className="mt-1 block font-mono text-lg">{orders.reduce((sum, order) => sum + order.scrap, 0).toLocaleString('es-MX')}</b></span><span className="rounded-xl bg-theme-muted/50 p-4"><small className="text-theme-muted">OP a tiempo</small><b className="mt-1 block font-mono text-lg">86%</b></span></div></div></ProductionCard><ProductionCard><div className="p-5"><b>Pareto de incidencias 4M</b><p className="mt-1 text-xs text-theme-muted">Minutos perdidos por categoría.</p>{['Máquina', 'Material', 'Método', 'Mano de obra'].map(category => { const minutes = PRODUCTION_INCIDENTS.filter(item => item.category === category).reduce((sum, item) => sum + item.minutes, 0); return <div className="mt-4 text-xs" key={category}><div className="flex justify-between"><span>{category}</span><b>{minutes} min</b></div><div className="mt-2"><ProgressBar value={Math.min(100, minutes)} tone="bg-rose-500" /></div></div>; })}</div></ProductionCard></div></div>; };
+interface AnaliticaProduccionProps {
+  orders: ProductionOrder[];
+  onNotice: (message: string) => void;
+  onOpenOrder?: (folio: string) => void;
+  onNavigateTab?: (tab: any) => void;
+}
+
+export const AnaliticaProduccion: React.FC<AnaliticaProduccionProps> = ({
+  orders,
+  onNotice,
+  onOpenOrder,
+  onNavigateTab,
+}) => {
+  // Global Filters
+  const [selectedPeriod, setSelectedPeriod] = useState<ProductionPeriod>('30 días');
+  const [selectedArea, setSelectedArea] = useState<ProductionAnalyticsArea>('Todas');
+  const [selectedMachine, setSelectedMachine] = useState<string>('all');
+  const [selectedShift, setSelectedShift] = useState<ProductionAnalyticsShift>('Todos');
+  const [comparePrevious, setComparePrevious] = useState<boolean>(true);
+  const [activeSubView, setActiveSubView] = useState<ProductionAnalyticsSubView>('Resumen');
+
+  // Export Banner State
+  const [exportSuccessMessage, setExportSuccessMessage] = useState<{
+    filename: string;
+    subtitle: string;
+  } | null>(null);
+
+  // Load dataset according to period
+  const dataset = useMemo(() => {
+    return getProductionAnalyticsForPeriod(selectedPeriod);
+  }, [selectedPeriod]);
+
+  // Handler for Excel Export
+  const handleExportExcel = () => {
+    const filename = `analitica_produccion_${
+      selectedArea === 'Todas' ? 'PLANTA-RTM' : selectedArea.toUpperCase()
+    }_${selectedPeriod.replace(/\s+/g, '_')}_2026-09-07.xlsx`;
+
+    const subtitle = `Manufactura RTM · ${
+      selectedArea === 'Todas' ? 'Todas las áreas' : `Área ${selectedArea}`
+    } · ${selectedPeriod} · ${selectedShift === 'Todos' ? 'Todos los turnos' : selectedShift}`;
+
+    setExportSuccessMessage({ filename, subtitle });
+    onNotice(`✓ Reporte analítico exportado a Excel: ${filename}`);
+
+    // Auto-dismiss after 6s
+    setTimeout(() => {
+      setExportSuccessMessage(null);
+    }, 6000);
+  };
+
+  // Handler for Smart Actions (No dead buttons)
+  const handleSmartAction = (target: string, payload?: string) => {
+    if (target === 'maquinas') {
+      if (onNavigateTab) {
+        onNavigateTab('Máquinas');
+      } else {
+        setActiveSubView('Máquinas');
+      }
+      onNotice(
+        payload
+          ? `Navegando a análisis de estación: ${payload}`
+          : 'Navegando a catálogo y estado de máquinas'
+      );
+    } else if (target === 'planeacion') {
+      if (onNavigateTab) {
+        onNavigateTab('Planeación');
+      }
+      onNotice('Abriendo consola de Planeación para balanceo y secuencia de órdenes');
+    } else if (target === 'scrap') {
+      if (onNavigateTab) {
+        onNavigateTab('Scrap y pérdidas');
+      } else {
+        setActiveSubView('Scrap y paros');
+      }
+      onNotice('Abriendo módulo de control de Scrap y pérdidas');
+    } else if (target === 'operador') {
+      setActiveSubView('Operadores');
+      onNotice('Filtrando vista analítica por operadores de piso');
+    } else if (target === 'orden' && payload) {
+      if (onOpenOrder) {
+        onOpenOrder(payload);
+      }
+      onNotice(`Abriendo orden de producción ${payload}`);
+    }
+  };
+
+  // Filtered dataset subsets if specific area or machine is selected
+  const filteredTopMachines = useMemo(() => {
+    if (selectedArea === 'Todas') return dataset.topProductiveMachines;
+    return dataset.topProductiveMachines.filter((m) => m.area === selectedArea);
+  }, [dataset, selectedArea]);
+
+  const filteredEfficiency = useMemo(() => {
+    if (selectedArea === 'Todas') return dataset.machineEfficiency;
+    return dataset.machineEfficiency.filter((m) => m.area === selectedArea);
+  }, [dataset, selectedArea]);
+
+  const filteredDowntime = useMemo(() => {
+    if (selectedArea === 'Todas') return dataset.machineDowntime;
+    return dataset.machineDowntime.filter((m) => m.area === selectedArea);
+  }, [dataset, selectedArea]);
+
+  return (
+    <div className="space-y-6 animate-in fade-in duration-200 w-full pb-12">
+      {/* 1. HEADER & CONTROLES SUPERIORES */}
+      <ProductionAnalyticsHeader
+        selectedPeriod={selectedPeriod}
+        onPeriodChange={(p) => {
+          setSelectedPeriod(p);
+          onNotice(`Periodo analítico actualizado a: ${p}`);
+        }}
+        selectedArea={selectedArea}
+        onAreaChange={(a) => {
+          setSelectedArea(a);
+          onNotice(`Filtrando analítica por área: ${a}`);
+        }}
+        selectedMachine={selectedMachine}
+        onMachineChange={(m) => {
+          setSelectedMachine(m);
+          onNotice(m === 'all' ? 'Mostrando todas las máquinas' : `Filtrando por estación: ${m}`);
+        }}
+        selectedShift={selectedShift}
+        onShiftChange={(s) => {
+          setSelectedShift(s);
+          onNotice(`Turno seleccionado: ${s}`);
+        }}
+        comparePrevious={comparePrevious}
+        onToggleComparePrevious={() => setComparePrevious((prev) => !prev)}
+        activeSubView={activeSubView}
+        onSubViewChange={setActiveSubView}
+        onExportExcel={handleExportExcel}
+        exportSuccessMessage={exportSuccessMessage}
+        onDismissExportMessage={() => setExportSuccessMessage(null)}
+      />
+
+      {/* 2. KPIS ANALÍTICOS GLOBALES (6 COMPACTOS) */}
+      <ProductionAnalyticsKpis
+        kpis={dataset.kpis}
+        comparePrevious={comparePrevious}
+      />
+
+      {/* 3. SUGERENCIAS DEL SISTEMA — PROTAGONISTA MORADO */}
+      <ProductionSmartInsights
+        suggestions={dataset.smartSuggestions}
+        onActionClick={handleSmartAction}
+        onNotice={onNotice}
+      />
+
+      {/* 4. CONTENIDO MODULAR SEGÚN SUB-VISTA */}
+
+      {/* SUB-VISTA: RESUMEN (VISTA GENERAL COMPLETA) */}
+      {activeSubView === 'Resumen' && (
+        <div className="space-y-6">
+          {/* Plan vs Real + Scrap Tendencia */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-6">
+              <ProductionPlanVsActual datasets={dataset.planVsActual} />
+            </div>
+            <div className="lg:col-span-6">
+              <ProductionPerformanceHeatmap
+                heatmap={dataset.machineHeatmap}
+                pareto4M={dataset.pareto4M}
+                onNavigateTab={onNavigateTab}
+              />
+            </div>
+          </div>
+
+          {/* Máquinas: Horas Productivas & Eficiencia */}
+          <ProductionMachineAnalytics
+            topMachines={filteredTopMachines}
+            efficiencyList={filteredEfficiency}
+            onSelectMachine={(mName) => {
+              setSelectedMachine(mName);
+              onNotice(`Estación seleccionada: ${mName}`);
+            }}
+          />
+
+          {/* Paros por Máquina & Causas Principales */}
+          <ProductionDowntimeAnalytics
+            machineDowntime={filteredDowntime}
+            downtimeCauses={dataset.downtimeCauses}
+            onOpenOrder={onOpenOrder}
+            onNavigateTab={onNavigateTab}
+          />
+
+          {/* Setup Estándar vs Real & Oportunidad */}
+          <ProductionSetupAnalytics
+            setupComparison={dataset.setupComparison}
+            onNavigateTab={onNavigateTab}
+          />
+
+          {/* Desempeño de Operadores & Distribución del Tiempo */}
+          <ProductionOperatorAnalytics
+            operators={dataset.operatorPerformance}
+            timeDistribution={dataset.operatorTimeDistribution}
+            onOpenOrder={onOpenOrder}
+          />
+
+          {/* Scrap Completo: Tendencia, Procesos, Causas & Top OPs */}
+          <ProductionScrapAnalytics
+            weeklyTrend={dataset.scrapWeeklyTrend}
+            byProcess={dataset.scrapByProcess}
+            scrapCauses={dataset.scrapCauses}
+            topOps={dataset.topScrapOps}
+            onOpenOrder={onOpenOrder}
+          />
+
+          {/* Capacidad por Cliente & Cumplimiento de Entrega / Lead time */}
+          <ProductionDeliveryAnalytics
+            clientCapacity={dataset.clientCapacity}
+            deliveryCompliance={dataset.deliveryCompliance}
+            topDelayedOps={dataset.topDelayedOps}
+            onOpenOrder={onOpenOrder}
+          />
+        </div>
+      )}
+
+      {/* SUB-VISTA: MÁQUINAS */}
+      {activeSubView === 'Máquinas' && (
+        <div className="space-y-6">
+          <ProductionMachineAnalytics
+            topMachines={filteredTopMachines}
+            efficiencyList={filteredEfficiency}
+            onSelectMachine={(mName) => {
+              setSelectedMachine(mName);
+              onNotice(`Estación seleccionada: ${mName}`);
+            }}
+          />
+
+          <ProductionDowntimeAnalytics
+            machineDowntime={filteredDowntime}
+            downtimeCauses={dataset.downtimeCauses}
+            onOpenOrder={onOpenOrder}
+            onNavigateTab={onNavigateTab}
+          />
+
+          <ProductionPerformanceHeatmap
+            heatmap={dataset.machineHeatmap}
+            pareto4M={dataset.pareto4M}
+            onNavigateTab={onNavigateTab}
+          />
+
+          <ProductionSetupAnalytics
+            setupComparison={dataset.setupComparison}
+            onNavigateTab={onNavigateTab}
+          />
+        </div>
+      )}
+
+      {/* SUB-VISTA: OPERADORES */}
+      {activeSubView === 'Operadores' && (
+        <div className="space-y-6">
+          <ProductionOperatorAnalytics
+            operators={dataset.operatorPerformance}
+            timeDistribution={dataset.operatorTimeDistribution}
+            onOpenOrder={onOpenOrder}
+          />
+
+          <ProductionSetupAnalytics
+            setupComparison={dataset.setupComparison}
+            onNavigateTab={onNavigateTab}
+          />
+        </div>
+      )}
+
+      {/* SUB-VISTA: SCRAP Y PAROS */}
+      {activeSubView === 'Scrap y paros' && (
+        <div className="space-y-6">
+          <ProductionScrapAnalytics
+            weeklyTrend={dataset.scrapWeeklyTrend}
+            byProcess={dataset.scrapByProcess}
+            scrapCauses={dataset.scrapCauses}
+            topOps={dataset.topScrapOps}
+            onOpenOrder={onOpenOrder}
+          />
+
+          <ProductionDowntimeAnalytics
+            machineDowntime={filteredDowntime}
+            downtimeCauses={dataset.downtimeCauses}
+            onOpenOrder={onOpenOrder}
+            onNavigateTab={onNavigateTab}
+          />
+
+          <ProductionPerformanceHeatmap
+            heatmap={dataset.machineHeatmap}
+            pareto4M={dataset.pareto4M}
+            onNavigateTab={onNavigateTab}
+          />
+        </div>
+      )}
+    </div>
+  );
+};

@@ -350,7 +350,21 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
         <ScrapPérdidasWorkspace orders={orders} onOpenOrder={openOrder} onNotice={setNotice} />
       )}
 
-      {tab === 'Analítica' && <AnaliticaProduccion orders={orders} onNotice={setNotice} />}
+      {tab === 'Analítica' && (
+        <AnaliticaProduccion
+          orders={orders}
+          onNotice={setNotice}
+          onOpenOrder={(folio) => {
+            const found = orders.find((o) => o.folio === folio);
+            if (found) {
+              openOrder(found);
+            } else {
+              setNotice(`Orden ${folio} referenciada en analítica.`);
+            }
+          }}
+          onNavigateTab={(targetTab) => setTab(targetTab)}
+        />
+      )}
 
       {/* Modal Wizard de Nueva OP */}
       {isWizardOpen && (
