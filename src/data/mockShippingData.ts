@@ -171,7 +171,7 @@ export interface ShippingOutboundOrder {
   originWarehouseId: string;
   originWarehouseName: string; // ej. 'ALM-MP (Materia Prima - Nave 1 Reynosa)'
   originCoordinates: { x: number; y: number; name: string };
-  destinationName: string; // ej. 'Roberto Cantú Garza' o 'Laboratorios Medifarma (Parque Industrial)'
+  destinationName: string; // ej. 'Schneider Electric México (Planta 3)' o 'Laboratorios Medifarma (Parque Industrial)'
   destinationAddress?: string;
   destinationFacility?: string;
   totalUnits: number;
@@ -337,7 +337,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
     items: [
       {
         sku: 'CJ-EMB-MED',
-        productName: 'RTM Packaging Colchón Ortopedic Matrimonial',
+        productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
         brand: 'RTM Packaging',
         size: 'Matrimonial',
         quantity: 4,
@@ -346,7 +346,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       },
       {
         sku: 'ETQ-FAR-VIL',
-        productName: 'RTM Packaging Colchón Flow Basic White Individual',
+        productName: 'RTM Packaging Manual Instructivo 24 Páginas',
         brand: 'RTM Packaging',
         size: 'Individual',
         quantity: 3,
@@ -355,7 +355,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       },
       {
         sku: 'FOL-MED-PLE',
-        productName: 'RTM Packaging Colchón Record King Size',
+        productName: 'RTM Packaging Blister Card Termosellable',
         brand: 'RTM Packaging',
         size: 'King Size',
         quantity: 7,
@@ -367,22 +367,22 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       {
         id: 'stop-48-1',
         sequenceNumber: 1,
-        destinationName: 'Roberto Cantú Garza',
+        destinationName: 'Schneider Electric México (Planta 3)',
         zoneName: 'San Pedro Garza García',
         address: 'Av. Roble 600, Col. Valle del Campestre, San Pedro Garza García, N.L.',
         coordinates: { x: 330, y: 310 },
         totalUnits: 4,
         remisionFolio: 'REM-2026-0061',
         sourceDocumentFolio: 'PED-2026-0103',
-        customerType: 'Persona física',
-        contactName: 'Lic. Roberto Cantú',
+        customerType: 'Cliente Industrial',
+        contactName: 'Ing. Roberto Cantú',
         timeWindow: '09:00 - 10:30 h',
         priority: 'Normal',
-        notes: 'Entrega en residencia particular. Maniobra en 2do piso autorizada.',
+        notes: 'Entrega en andén 2 de planta. Maniobra con montacargas autorizada.',
         items: [
           {
             sku: 'CJ-EMB-MED',
-            productName: 'RTM Packaging Colchón Ortopedic Matrimonial',
+            productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
             brand: 'RTM Packaging',
             size: 'Matrimonial',
             quantity: 4,
@@ -393,14 +393,14 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       {
         id: 'stop-48-2',
         sequenceNumber: 2,
-        destinationName: 'Hotel Boutique Las Lomas',
+        destinationName: 'Laboratorios Medifarma (Planta Apodaca)',
         zoneName: 'Valle Oriente',
         address: 'Av. Frida Kahlo 195, Valle Oriente, San Pedro Garza García, N.L.',
         coordinates: { x: 440, y: 340 },
         totalUnits: 3,
         remisionFolio: 'REM-2026-0063',
         sourceDocumentFolio: 'PED-2026-0107',
-        customerType: 'Hotel / Corporativo',
+        customerType: 'Cliente Industrial B2B',
         contactName: 'Ing. Fernando Morales (Compras)',
         timeWindow: '10:30 - 12:00 h',
         priority: 'Urgente',
@@ -408,7 +408,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         items: [
           {
             sku: 'ETQ-FAR-VIL',
-            productName: 'RTM Packaging Colchón Flow Basic White Individual',
+            productName: 'RTM Packaging Manual Instructivo 24 Páginas',
             brand: 'RTM Packaging',
             size: 'Individual',
             quantity: 3,
@@ -419,14 +419,14 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       {
         id: 'stop-48-3',
         sequenceNumber: 3,
-        destinationName: 'Grupo Hotelero Sierra Madre S.A.',
+        destinationName: 'Black & Decker Planta 2',
         zoneName: 'Zona Sur / Contry',
         address: 'Av. Eugenio Garza Sada 3820, Col. Contry, Monterrey, N.L.',
         coordinates: { x: 500, y: 350 },
         totalUnits: 7,
         remisionFolio: 'REM-2026-0064',
         sourceDocumentFolio: 'PED-2026-0180',
-        customerType: 'Cadena Hotelera',
+        customerType: 'Manufactura Global',
         contactName: 'Lic. Marcela Lozano',
         timeWindow: '12:00 - 13:30 h',
         priority: 'Alta',
@@ -434,7 +434,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         items: [
           {
             sku: 'FOL-MED-PLE',
-            productName: 'RTM Packaging Colchón Record King Size',
+            productName: 'RTM Packaging Blister Card Termosellable',
             brand: 'RTM Packaging',
             size: 'King Size',
             quantity: 7,
@@ -482,7 +482,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         windowsMetCount: 3,
         totalWindowsCount: 3,
         stopsSequence: ['stop-48-2', 'stop-48-3', 'stop-48-1'],
-        description: 'Prioriza la entrega de alta urgencia en Hotel Boutique Las Lomas como primera parada garantizada antes de las 10:00 h.',
+        description: 'Prioriza la entrega de alta urgencia en Laboratorios Medifarma (Planta Apodaca) como primera parada garantizada antes de las 10:00 h.',
       },
     ],
   },
@@ -517,7 +517,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
     items: [
       {
         sku: 'ETQ-FAR-VIL',
-        productName: 'RTM Packaging Colchón Flow Basic White Individual',
+        productName: 'RTM Packaging Manual Instructivo 24 Páginas',
         brand: 'RTM Packaging',
         size: 'Individual',
         quantity: 4,
@@ -526,7 +526,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       },
       {
         sku: 'ETQ-FAR-VIL',
-        productName: 'RTM Packaging Colchón Flow Basic White Matrimonial',
+        productName: 'Folleto Plegable Médico 48 Páginas Medifarma',
         brand: 'RTM Packaging',
         size: 'Matrimonial',
         quantity: 4,
@@ -538,14 +538,14 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       {
         id: 'stop-50-1',
         sequenceNumber: 1,
-        destinationName: 'Desarrollos Residenciales del Norte S.A.',
+        destinationName: 'Empaques Modernos del Norte S.A.',
         zoneName: 'Cumbres 5to Sector',
         address: 'Av. Paseo de los Leones 3300, Cumbres, Monterrey, N.L.',
         coordinates: { x: 170, y: 190 },
         totalUnits: 5,
         remisionFolio: 'REM-2026-0062',
         sourceDocumentFolio: 'PED-2026-0107',
-        customerType: 'Desarrolladora',
+        customerType: 'Cliente Industrial',
         contactName: 'Arq. Esteban Morales',
         timeWindow: '09:30 - 11:00 h',
         priority: 'Alta',
@@ -553,7 +553,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         items: [
           {
             sku: 'ETQ-FAR-VIL',
-            productName: 'RTM Packaging Colchón Flow Basic White Individual',
+            productName: 'RTM Packaging Manual Instructivo 24 Páginas',
             brand: 'RTM Packaging',
             size: 'Individual',
             quantity: 3,
@@ -561,7 +561,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
           },
           {
             sku: 'ETQ-FAR-VIL',
-            productName: 'RTM Packaging Colchón Flow Basic White Matrimonial',
+            productName: 'Folleto Plegable Médico 48 Páginas Medifarma',
             brand: 'RTM Packaging',
             size: 'Matrimonial',
             quantity: 2,
@@ -572,7 +572,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       {
         id: 'stop-50-2',
         sequenceNumber: 2,
-        destinationName: 'Inmobiliaria & Rentas Cumbres S.A.',
+        destinationName: 'Industrial Automotriz Monterrey S.A.',
         zoneName: 'Santa Catarina Poniente',
         address: 'Av. Manuel Ordóñez 720, Santa Catarina, N.L.',
         coordinates: { x: 110, y: 310 },
@@ -587,7 +587,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         items: [
           {
             sku: 'ETQ-FAR-VIL',
-            productName: 'RTM Packaging Colchón Flow Basic White Individual',
+            productName: 'RTM Packaging Manual Instructivo 24 Páginas',
             brand: 'RTM Packaging',
             size: 'Individual',
             quantity: 1,
@@ -595,7 +595,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
           },
           {
             sku: 'ETQ-FAR-VIL',
-            productName: 'RTM Packaging Colchón Flow Basic White Matrimonial',
+            productName: 'Folleto Plegable Médico 48 Páginas Medifarma',
             brand: 'RTM Packaging',
             size: 'Matrimonial',
             quantity: 2,
@@ -660,7 +660,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
     originWarehouseId: 'wh-mty-norte',
     originWarehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
     originCoordinates: { x: 260, y: 70, name: 'ALM-MP (Materia Prima - Nave 1 Reynosa)' },
-    destinationName: 'Desarrollos Residenciales del Norte S.A.',
+    destinationName: 'Empaques Modernos del Norte S.A.',
     destinationAddress: 'Av. Ricardo Margáin 555, Santa Engracia, San Pedro Garza García, N.L.',
     totalUnits: 6,
     remisionFolio: 'REM-2026-0064',
@@ -678,7 +678,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
     items: [
       {
         sku: 'FOL-MED-PLE',
-        productName: 'RTM Packaging Colchón Record King Size',
+        productName: 'RTM Packaging Blister Card Termosellable',
         brand: 'RTM Packaging',
         size: 'King Size',
         quantity: 3,
@@ -687,7 +687,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       },
       {
         sku: 'CJ-EMB-MED',
-        productName: 'RTM Packaging Colchón Ortopedic King Size',
+        productName: 'RTM Packaging Caja Plegadiza Farmacéutica 500u',
         brand: 'RTM Packaging',
         size: 'King Size',
         quantity: 3,
@@ -699,21 +699,21 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       {
         id: 'stop-52-1',
         sequenceNumber: 1,
-        destinationName: 'Desarrollos Residenciales del Norte S.A.',
+        destinationName: 'Empaques Modernos del Norte S.A.',
         zoneName: 'San Pedro Garza García',
         address: 'Av. Ricardo Margáin 555, Santa Engracia, San Pedro Garza García, N.L.',
         coordinates: { x: 330, y: 310 },
         totalUnits: 6,
         remisionFolio: 'REM-2026-0064',
         sourceDocumentFolio: 'PED-2026-0180',
-        customerType: 'Desarrolladora',
+        customerType: 'Cliente Industrial',
         contactName: 'Lic. Javier Cantú',
         timeWindow: '08:30 - 10:00 h',
         priority: 'Alta',
         items: [
           {
             sku: 'FOL-MED-PLE',
-            productName: 'RTM Packaging Colchón Record King Size',
+            productName: 'RTM Packaging Blister Card Termosellable',
             brand: 'RTM Packaging',
             size: 'King Size',
             quantity: 3,
@@ -721,7 +721,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
           },
           {
             sku: 'CJ-EMB-MED',
-            productName: 'RTM Packaging Colchón Ortopedic King Size',
+            productName: 'RTM Packaging Caja Plegadiza Farmacéutica 500u',
             brand: 'RTM Packaging',
             size: 'King Size',
             quantity: 3,
@@ -760,7 +760,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
     originWarehouseId: 'wh-mty-sur',
     originWarehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
     originCoordinates: { x: 580, y: 410, name: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)' },
-    destinationName: 'Roberto Cantú Garza',
+    destinationName: 'Schneider Electric México (Planta 3)',
     destinationAddress: 'Av. Eugenio Garza Sada 3820, Col. Contry, Monterrey, N.L.',
     totalUnits: 3,
     remisionFolio: 'REM-2026-0066',
@@ -778,7 +778,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
     items: [
       {
         sku: 'FOL-MED-PLE',
-        productName: 'RTM Packaging Colchón Record King Size',
+        productName: 'RTM Packaging Blister Card Termosellable',
         brand: 'RTM Packaging',
         size: 'King Size',
         quantity: 1,
@@ -787,7 +787,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       },
       {
         sku: 'CJ-EMB-MED',
-        productName: 'RTM Packaging Colchón Ortopedic Matrimonial',
+        productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
         brand: 'RTM Packaging',
         size: 'Matrimonial',
         quantity: 2,
@@ -799,20 +799,20 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       {
         id: 'stop-54-1',
         sequenceNumber: 1,
-        destinationName: 'Roberto Cantú Garza',
+        destinationName: 'Schneider Electric México (Planta 3)',
         zoneName: 'Zona Sur / Contry',
         address: 'Av. Eugenio Garza Sada 3820, Col. Contry, Monterrey, N.L.',
         coordinates: { x: 500, y: 350 },
         totalUnits: 3,
         remisionFolio: 'REM-2026-0066',
         sourceDocumentFolio: 'PED-2026-0186',
-        customerType: 'Persona física',
+        customerType: 'Cliente Industrial',
         timeWindow: '10:00 - 11:30 h',
         priority: 'Normal',
         items: [
           {
             sku: 'FOL-MED-PLE',
-            productName: 'RTM Packaging Colchón Record King Size',
+            productName: 'RTM Packaging Blister Card Termosellable',
             brand: 'RTM Packaging',
             size: 'King Size',
             quantity: 1,
@@ -820,7 +820,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
           },
           {
             sku: 'CJ-EMB-MED',
-            productName: 'RTM Packaging Colchón Ortopedic Matrimonial',
+            productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
             brand: 'RTM Packaging',
             size: 'Matrimonial',
             quantity: 2,
@@ -877,7 +877,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
     items: [
       {
         sku: 'FOL-MED-PLE',
-        productName: 'RTM Packaging Colchón Record Individual',
+        productName: 'RTM Packaging Manual Instructivo 24 Páginas',
         brand: 'RTM Packaging',
         size: 'Individual',
         quantity: 4,
@@ -886,7 +886,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       },
       {
         sku: 'ETQ-FAR-VIL',
-        productName: 'RTM Packaging Colchón Flow Basic White Individual',
+        productName: 'RTM Packaging Manual Instructivo 24 Páginas',
         brand: 'RTM Packaging',
         size: 'Individual',
         quantity: 6,
@@ -895,7 +895,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       },
       {
         sku: 'CJ-EMB-MED',
-        productName: 'RTM Packaging Colchón Ortopedic Matrimonial',
+        productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
         brand: 'RTM Packaging',
         size: 'Matrimonial',
         quantity: 4,
@@ -921,7 +921,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         items: [
           {
             sku: 'FOL-MED-PLE',
-            productName: 'RTM Packaging Colchón Record Individual',
+            productName: 'RTM Packaging Manual Instructivo 24 Páginas',
             brand: 'RTM Packaging',
             size: 'Individual',
             quantity: 4,
@@ -929,7 +929,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
           },
           {
             sku: 'ETQ-FAR-VIL',
-            productName: 'RTM Packaging Colchón Flow Basic White Individual',
+            productName: 'RTM Packaging Manual Instructivo 24 Páginas',
             brand: 'RTM Packaging',
             size: 'Individual',
             quantity: 6,
@@ -937,7 +937,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
           },
           {
             sku: 'CJ-EMB-MED',
-            productName: 'RTM Packaging Colchón Ortopedic Matrimonial',
+            productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
             brand: 'RTM Packaging',
             size: 'Matrimonial',
             quantity: 4,
@@ -994,7 +994,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
     items: [
       {
         sku: 'CJ-EMB-MED',
-        productName: 'RTM Packaging Colchón Ortopedic Matrimonial',
+        productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
         brand: 'RTM Packaging',
         size: 'Matrimonial',
         quantity: 5,
@@ -1003,7 +1003,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       },
       {
         sku: 'EST-COS-PLE',
-        productName: 'RTM Packaging Colchón Celebration Plus King Size',
+        productName: 'Tag Impreso Colgante con Barniz UV',
         brand: 'RTM Packaging',
         size: 'King Size',
         quantity: 4,
@@ -1029,7 +1029,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         items: [
           {
             sku: 'CJ-EMB-MED',
-            productName: 'RTM Packaging Colchón Ortopedic Matrimonial',
+            productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
             brand: 'RTM Packaging',
             size: 'Matrimonial',
             quantity: 5,
@@ -1037,7 +1037,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
           },
           {
             sku: 'EST-COS-PLE',
-            productName: 'RTM Packaging Colchón Celebration Plus King Size',
+            productName: 'Tag Impreso Colgante con Barniz UV',
             brand: 'RTM Packaging',
             size: 'King Size',
             quantity: 4,
@@ -1093,7 +1093,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
     items: [
       {
         sku: 'ETQ-FAR-VIL',
-        productName: 'RTM Packaging Colchón Flow Basic White Individual',
+        productName: 'RTM Packaging Manual Instructivo 24 Páginas',
         brand: 'RTM Packaging',
         size: 'Individual',
         quantity: 2,
@@ -1102,7 +1102,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       },
       {
         sku: 'ETQ-FAR-VIL',
-        productName: 'RTM Packaging Colchón Flow Basic White Matrimonial',
+        productName: 'Folleto Plegable Médico 48 Páginas Medifarma',
         brand: 'RTM Packaging',
         size: 'Matrimonial',
         quantity: 1,
@@ -1110,8 +1110,8 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
         uids: ['CJ-RTM-2026-000303'],
       },
       {
-        sku: 'SC-NAYT-PRO-QS',
-        productName: 'RTM Packaging Colchón Flow Pro Comfort Queen Size',
+        sku: 'PT-MAN-048',
+        productName: 'RTM Packaging Manual Instructivo Industrial 48 Páginas',
         brand: 'RTM Packaging',
         size: 'Queen Size',
         quantity: 1,
@@ -1120,7 +1120,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       },
       {
         sku: 'FOL-MED-PLE',
-        productName: 'RTM Packaging Colchón Record Individual',
+        productName: 'RTM Packaging Manual Instructivo 24 Páginas',
         brand: 'RTM Packaging',
         size: 'Individual',
         quantity: 1,
@@ -1129,7 +1129,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       },
       {
         sku: 'FOL-MED-PLE',
-        productName: 'RTM Packaging Colchón Record Matrimonial',
+        productName: 'RTM Packaging Folleto Plegable Médico 48 Páginas',
         brand: 'RTM Packaging',
         size: 'Matrimonial',
         quantity: 1,
@@ -1138,7 +1138,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       },
       {
         sku: 'CJ-EMB-MED',
-        productName: 'RTM Packaging Colchón Ortopédico Matrimonial',
+        productName: 'RTM Packaging Etiqueta Farmacéutica 4x6 en Rollo',
         brand: 'RTM Packaging',
         size: 'Matrimonial',
         quantity: 1,
@@ -1147,7 +1147,7 @@ export const INITIAL_MOCK_SHIPPING_ORDERS: ShippingOutboundOrder[] = [
       },
       {
         sku: 'EST-COS-PLE',
-        productName: 'RTM Packaging Colchón Crown Jewel King Size',
+        productName: 'RTM Packaging Blister Card Termosellable Stanley',
         brand: 'RTM Packaging',
         size: 'King Size',
         quantity: 1,
@@ -1284,7 +1284,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         loadingOrderNumber: 1,
         stopId: 'stop-48-3',
         stopSequenceNumber: 3,
-        destinationName: 'Grupo Hotelero Sierra Madre S.A.',
+        destinationName: 'Black & Decker Planta 2',
         zoneName: 'Zona Sur / Contry',
         address: 'Av. Eugenio Garza Sada 3820, Col. Contry, Monterrey, N.L.',
         remisionFolio: 'REM-2026-0064',
@@ -1300,7 +1300,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         loadingOrderNumber: 2,
         stopId: 'stop-48-2',
         stopSequenceNumber: 2,
-        destinationName: 'Hotel Boutique Las Lomas',
+        destinationName: 'Laboratorios Medifarma (Planta Apodaca)',
         zoneName: 'Valle Oriente',
         address: 'Av. Frida Kahlo 195, Valle Oriente, San Pedro Garza García, N.L.',
         remisionFolio: 'REM-2026-0063',
@@ -1316,7 +1316,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         loadingOrderNumber: 3,
         stopId: 'stop-48-1',
         stopSequenceNumber: 1,
-        destinationName: 'Roberto Cantú Garza',
+        destinationName: 'Schneider Electric México (Planta 3)',
         zoneName: 'San Pedro Garza García',
         address: 'Av. Roble 600, Col. Valle del Campestre, San Pedro Garza García, N.L.',
         remisionFolio: 'REM-2026-0061',
@@ -1330,15 +1330,15 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
       {
         id: 'stop-48-1',
         sequenceNumber: 1,
-        destinationName: 'Roberto Cantú Garza',
+        destinationName: 'Schneider Electric México (Planta 3)',
         zoneName: 'San Pedro Garza García',
         address: 'Av. Roble 600, Col. Valle del Campestre, San Pedro Garza García, N.L.',
         coordinates: { x: 330, y: 310 },
         totalUnits: 4,
         remisionFolio: 'REM-2026-0061',
         sourceDocumentFolio: 'PED-2026-0103',
-        customerType: 'Persona física',
-        contactName: 'Lic. Roberto Cantú',
+        customerType: 'Cliente Industrial',
+        contactName: 'Ing. Roberto Cantú',
         timeWindow: '09:00 - 10:30 h',
         priority: 'Normal',
         status: 'Próxima',
@@ -1346,7 +1346,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         items: [
           {
             sku: 'CJ-EMB-MED',
-            productName: 'RTM Packaging Colchón Ortopedic Matrimonial',
+            productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
             brand: 'RTM Packaging',
             size: 'Matrimonial',
             quantity: 4,
@@ -1357,14 +1357,14 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
       {
         id: 'stop-48-2',
         sequenceNumber: 2,
-        destinationName: 'Hotel Boutique Las Lomas',
+        destinationName: 'Laboratorios Medifarma (Planta Apodaca)',
         zoneName: 'Valle Oriente',
         address: 'Av. Frida Kahlo 195, Valle Oriente, San Pedro Garza García, N.L.',
         coordinates: { x: 440, y: 340 },
         totalUnits: 3,
         remisionFolio: 'REM-2026-0063',
         sourceDocumentFolio: 'PED-2026-0107',
-        customerType: 'Hotel / Corporativo',
+        customerType: 'Cliente Industrial B2B',
         contactName: 'Ing. Fernando Morales (Compras)',
         timeWindow: '10:30 - 12:00 h',
         priority: 'Urgente',
@@ -1372,7 +1372,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         items: [
           {
             sku: 'ETQ-FAR-VIL',
-            productName: 'RTM Packaging Colchón Flow Basic White Individual',
+            productName: 'RTM Packaging Manual Instructivo 24 Páginas',
             brand: 'RTM Packaging',
             size: 'Individual',
             quantity: 3,
@@ -1383,14 +1383,14 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
       {
         id: 'stop-48-3',
         sequenceNumber: 3,
-        destinationName: 'Grupo Hotelero Sierra Madre S.A.',
+        destinationName: 'Black & Decker Planta 2',
         zoneName: 'Zona Sur / Contry',
         address: 'Av. Eugenio Garza Sada 3820, Col. Contry, Monterrey, N.L.',
         coordinates: { x: 500, y: 350 },
         totalUnits: 7,
         remisionFolio: 'REM-2026-0064',
         sourceDocumentFolio: 'PED-2026-0180',
-        customerType: 'Cadena Hotelera',
+        customerType: 'Manufactura Global',
         contactName: 'Lic. Marcela Lozano',
         timeWindow: '12:00 - 13:30 h',
         priority: 'Alta',
@@ -1398,7 +1398,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         items: [
           {
             sku: 'FOL-MED-PLE',
-            productName: 'RTM Packaging Colchón Record King Size',
+            productName: 'RTM Packaging Blister Card Termosellable',
             brand: 'RTM Packaging',
             size: 'King Size',
             quantity: 7,
@@ -1444,7 +1444,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         loadingOrderNumber: 1,
         stopId: 'stop-55-4',
         stopSequenceNumber: 4,
-        destinationName: 'Residencial Las Lajas S.A.',
+        destinationName: 'Envases y Etiquetas del Centro S.A.',
         zoneName: 'Cumbres 6to Sector',
         address: 'Paseo de los Leones 4500, Cumbres, Monterrey, N.L.',
         remisionFolio: 'REM-2026-0074',
@@ -1459,7 +1459,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         loadingOrderNumber: 2,
         stopId: 'stop-55-3',
         stopSequenceNumber: 3,
-        destinationName: 'Arquitectura & Hábitat Monterrey',
+        destinationName: 'Distribuidora Gráfica del Norte',
         zoneName: 'Cumbres 4to Sector',
         address: 'Av. Paseo de los Conquistadores 800, Cumbres, N.L.',
         remisionFolio: 'REM-2026-0073',
@@ -1474,7 +1474,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         loadingOrderNumber: 3,
         stopId: 'stop-55-2',
         stopSequenceNumber: 2,
-        destinationName: 'Inmobiliaria & Rentas Cumbres S.A.',
+        destinationName: 'Industrial Automotriz Monterrey S.A.',
         zoneName: 'Santa Catarina Poniente',
         address: 'Av. Manuel Ordóñez 720, Santa Catarina, N.L.',
         remisionFolio: 'REM-2026-0072',
@@ -1489,7 +1489,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         loadingOrderNumber: 4,
         stopId: 'stop-55-1',
         stopSequenceNumber: 1,
-        destinationName: 'Desarrollos Residenciales del Norte S.A.',
+        destinationName: 'Empaques Modernos del Norte S.A.',
         zoneName: 'Cumbres 1er Sector',
         address: 'Av. Paseo de los Leones 1500, Monterrey, N.L.',
         remisionFolio: 'REM-2026-0071',
@@ -1502,14 +1502,14 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
       {
         id: 'stop-55-1',
         sequenceNumber: 1,
-        destinationName: 'Desarrollos Residenciales del Norte S.A.',
+        destinationName: 'Empaques Modernos del Norte S.A.',
         zoneName: 'Cumbres 1er Sector',
         address: 'Av. Paseo de los Leones 1500, Monterrey, N.L.',
         coordinates: { x: 220, y: 195 },
         totalUnits: 3,
         remisionFolio: 'REM-2026-0071',
         sourceDocumentFolio: 'PED-2026-0120',
-        customerType: 'Desarrolladora',
+        customerType: 'Cliente Industrial',
         timeWindow: '09:30 - 10:30 h',
         priority: 'Normal',
         status: 'Completada',
@@ -1518,7 +1518,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         items: [
           {
             sku: 'ETQ-FAR-VIL',
-            productName: 'RTM Packaging Colchón Flow Basic White Individual',
+            productName: 'RTM Packaging Manual Instructivo 24 Páginas',
             brand: 'RTM Packaging',
             size: 'Individual',
             quantity: 3,
@@ -1529,7 +1529,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
       {
         id: 'stop-55-2',
         sequenceNumber: 2,
-        destinationName: 'Inmobiliaria & Rentas Cumbres S.A.',
+        destinationName: 'Industrial Automotriz Monterrey S.A.',
         zoneName: 'Santa Catarina Poniente',
         address: 'Av. Manuel Ordóñez 720, Santa Catarina, N.L.',
         coordinates: { x: 110, y: 310 },
@@ -1541,11 +1541,11 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         priority: 'Normal',
         status: 'Completada',
         completedAt: '11:10',
-        statusNotes: 'Entrega finalizada en caseta de obra.',
+        statusNotes: 'Entrega finalizada en almacén de insumos de planta.',
         items: [
           {
             sku: 'ETQ-FAR-VIL',
-            productName: 'RTM Packaging Colchón Flow Basic White Matrimonial',
+            productName: 'Folleto Plegable Médico 48 Páginas Medifarma',
             brand: 'RTM Packaging',
             size: 'Matrimonial',
             quantity: 2,
@@ -1556,22 +1556,22 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
       {
         id: 'stop-55-3',
         sequenceNumber: 3,
-        destinationName: 'Arquitectura & Hábitat Monterrey',
+        destinationName: 'Distribuidora Gráfica del Norte',
         zoneName: 'Cumbres 4to Sector',
         address: 'Av. Paseo de los Conquistadores 800, Cumbres, N.L.',
         coordinates: { x: 170, y: 190 },
         totalUnits: 2,
         remisionFolio: 'REM-2026-0073',
         sourceDocumentFolio: 'PED-2026-0125',
-        customerType: 'Desarrolladora',
+        customerType: 'Cliente Industrial',
         timeWindow: '11:30 - 12:30 h',
         priority: 'Alta',
         status: 'En atención',
-        statusNotes: 'Unidad descargando paquetes / tarimas en departamento muestra.',
+        statusNotes: 'Unidad descargando tarimas en andén de recibo de planta.',
         items: [
           {
             sku: 'CJ-EMB-MED',
-            productName: 'RTM Packaging Colchón Ortopedic Matrimonial',
+            productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
             brand: 'RTM Packaging',
             size: 'Matrimonial',
             quantity: 2,
@@ -1582,21 +1582,21 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
       {
         id: 'stop-55-4',
         sequenceNumber: 4,
-        destinationName: 'Residencial Las Lajas S.A.',
+        destinationName: 'Envases y Etiquetas del Centro S.A.',
         zoneName: 'Cumbres 6to Sector',
         address: 'Paseo de los Leones 4500, Cumbres, Monterrey, N.L.',
         coordinates: { x: 140, y: 170 },
         totalUnits: 2,
         remisionFolio: 'REM-2026-0074',
         sourceDocumentFolio: 'PED-2026-0128',
-        customerType: 'Desarrolladora',
+        customerType: 'Cliente Industrial',
         timeWindow: '12:30 - 13:30 h',
         priority: 'Normal',
         status: 'Pendiente',
         items: [
           {
             sku: 'FOL-MED-PLE',
-            productName: 'RTM Packaging Colchón Record King Size',
+            productName: 'RTM Packaging Blister Card Termosellable',
             brand: 'RTM Packaging',
             size: 'King Size',
             quantity: 2,
@@ -1784,7 +1784,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         loadingOrderNumber: 1,
         stopId: 'stop-52-1',
         stopSequenceNumber: 1,
-        destinationName: 'Desarrollos Residenciales del Norte S.A.',
+        destinationName: 'Empaques Modernos del Norte S.A.',
         zoneName: 'San Pedro Garza García',
         address: 'Av. Ricardo Margáin 555, Santa Engracia, San Pedro Garza García, N.L.',
         remisionFolio: 'REM-2026-0064',
@@ -1797,14 +1797,14 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
       {
         id: 'stop-52-1',
         sequenceNumber: 1,
-        destinationName: 'Desarrollos Residenciales del Norte S.A.',
+        destinationName: 'Empaques Modernos del Norte S.A.',
         zoneName: 'San Pedro Garza García',
         address: 'Av. Ricardo Margáin 555, Santa Engracia, San Pedro Garza García, N.L.',
         coordinates: { x: 330, y: 310 },
         totalUnits: 6,
         remisionFolio: 'REM-2026-0064',
         sourceDocumentFolio: 'PED-2026-0180',
-        customerType: 'Desarrolladora',
+        customerType: 'Cliente Industrial',
         contactName: 'Lic. Javier Cantú',
         timeWindow: '11:00 - 12:30 h',
         priority: 'Alta',
@@ -1813,7 +1813,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         items: [
           {
             sku: 'FOL-MED-PLE',
-            productName: 'RTM Packaging Colchón Record King Size',
+            productName: 'RTM Packaging Blister Card Termosellable',
             brand: 'RTM Packaging',
             size: 'King Size',
             quantity: 3,
@@ -1821,7 +1821,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
           },
           {
             sku: 'CJ-EMB-MED',
-            productName: 'RTM Packaging Colchón Ortopedic King Size',
+            productName: 'RTM Packaging Caja Plegadiza Farmacéutica 500u',
             brand: 'RTM Packaging',
             size: 'King Size',
             quantity: 3,
@@ -1869,7 +1869,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         loadingOrderNumber: 1,
         stopId: 'stop-54-1',
         stopSequenceNumber: 1,
-        destinationName: 'Roberto Cantú Garza',
+        destinationName: 'Schneider Electric México (Planta 3)',
         zoneName: 'Zona Sur / Contry',
         address: 'Av. Eugenio Garza Sada 3820, Col. Contry, Monterrey, N.L.',
         remisionFolio: 'REM-2026-0066',
@@ -1882,14 +1882,14 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
       {
         id: 'stop-54-1',
         sequenceNumber: 1,
-        destinationName: 'Roberto Cantú Garza',
+        destinationName: 'Schneider Electric México (Planta 3)',
         zoneName: 'Zona Sur / Contry',
         address: 'Av. Eugenio Garza Sada 3820, Col. Contry, Monterrey, N.L.',
         coordinates: { x: 500, y: 350 },
         totalUnits: 3,
         remisionFolio: 'REM-2026-0066',
         sourceDocumentFolio: 'PED-2026-0186',
-        customerType: 'Persona física',
+        customerType: 'Cliente Industrial',
         timeWindow: '10:00 - 11:30 h',
         priority: 'Normal',
         status: 'En atención',
@@ -1904,7 +1904,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
         items: [
           {
             sku: 'FOL-MED-PLE',
-            productName: 'RTM Packaging Colchón Record King Size',
+            productName: 'RTM Packaging Blister Card Termosellable',
             brand: 'RTM Packaging',
             size: 'King Size',
             quantity: 1,
@@ -1912,7 +1912,7 @@ export const INITIAL_MOCK_ACTIVE_ROUTES: ActiveShippingRoute[] = [
           },
           {
             sku: 'CJ-EMB-MED',
-            productName: 'RTM Packaging Colchón Ortopedic Matrimonial',
+            productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo',
             brand: 'RTM Packaging',
             size: 'Matrimonial',
             quantity: 2,
@@ -2436,7 +2436,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     outboundOrderFolio: 'OS-2026-0041',
     sourceDocumentFolio: 'PED-2026-0098',
     sourceDocumentType: 'Pedido',
-    destinationSummary: 'Roberto Cantú Garza + 2 destinos',
+    destinationSummary: 'Schneider Electric México (Planta 3) + 2 destinos',
     vehicleId: 'veh-08',
     vehicleName: 'Camión #08 · Isuzu NPR',
     driverId: 'drv-1',
@@ -2457,8 +2457,8 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     stops: [
       {
         stopSequence: 1,
-        destinationName: 'Roberto Cantú Garza',
-        customerType: 'Persona física',
+        destinationName: 'Schneider Electric México (Planta 3)',
+        customerType: 'Cliente Industrial',
         address: 'Av. Roble 600, Col. Valle del Campestre, San Pedro Garza García, N.L.',
         zoneName: 'San Pedro Garza García',
         remisionFolio: 'REM-2026-0061',
@@ -2469,15 +2469,15 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         arrivalDateTime: '27 Ago 2026 · 14:42',
         deliveryDateTime: '27 Ago 2026 · 14:48',
         coordinates: { lat: 25.6573, lng: -100.3668, label: '25.6573, -100.3668 (San Pedro Garza García)' },
-        recipientName: 'Roberto Cantú Garza',
+        recipientName: 'Schneider Electric México (Planta 3)',
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Colchón Record King Size', brand: 'RTM Packaging', size: 'King Size', quantity: 2, uids: ['CJ-RTM-2026-000101', 'CJ-RTM-2026-000102'] },
-          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Colchón Ortopedic Matrimonial', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 2, uids: ['CJ-RTM-2026-000107', 'CJ-RTM-2026-000108'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'King Size', quantity: 2, uids: ['CJ-RTM-2026-000101', 'CJ-RTM-2026-000102'] },
+          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 2, uids: ['CJ-RTM-2026-000107', 'CJ-RTM-2026-000108'] },
         ],
       },
       {
         stopSequence: 2,
-        destinationName: 'Hotel Boutique Las Lomas',
+        destinationName: 'Laboratorios Medifarma (Planta Apodaca)',
         customerType: 'Corporativo Hotelero',
         address: 'Av. Lázaro Cárdenas 2225, Valle Oriente, San Pedro Garza García, N.L.',
         zoneName: 'Valle Oriente',
@@ -2491,7 +2491,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         coordinates: { lat: 25.6482, lng: -100.3275, label: '25.6482, -100.3275 (Valle Oriente)' },
         recipientName: 'Ing. Fernando Lozano (Recepción Hotel)',
         items: [
-          { sku: 'SC-SEA-POST-QS', productName: 'RTM Packaging Colchón Posturepedic Queen Size', brand: 'RTM Packaging', size: 'Queen Size', quantity: 3, uids: ['CJ-RTM-2026-000109', 'CJ-RTM-2026-000110', 'CJ-RTM-2026-000111'] },
+          { sku: 'PT-BLI-001', productName: 'RTM Packaging Blister Card Termosellable 1000u', brand: 'RTM Packaging', size: 'Queen Size', quantity: 3, uids: ['CJ-RTM-2026-000109', 'CJ-RTM-2026-000110', 'CJ-RTM-2026-000111'] },
         ],
       },
       {
@@ -2510,8 +2510,8 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         coordinates: { lat: 25.6210, lng: -100.2830, label: '25.6210, -100.2830 (Zona Sur)' },
         recipientName: 'Lic. Mónica Treviño (Compras GH)',
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Colchón Record King Size', brand: 'RTM Packaging', size: 'King Size', quantity: 4, uids: ['CJ-RTM-2026-000112', 'CJ-RTM-2026-000113', 'CJ-RTM-2026-000114', 'CJ-RTM-2026-000115'] },
-          { sku: 'SC-AMER-CONF-IND', productName: 'America Colchón Confort Individual', brand: 'America', size: 'Individual', quantity: 3, uids: ['CJ-RTM-2026-000116', 'CJ-RTM-2026-000117', 'CJ-RTM-2026-000118'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'King Size', quantity: 4, uids: ['CJ-RTM-2026-000112', 'CJ-RTM-2026-000113', 'CJ-RTM-2026-000114', 'CJ-RTM-2026-000115'] },
+          { sku: 'PT-TAG-001', productName: 'Tag Impreso Colgante con Barniz UV', brand: 'America', size: 'Individual', quantity: 3, uids: ['CJ-RTM-2026-000116', 'CJ-RTM-2026-000117', 'CJ-RTM-2026-000118'] },
         ],
       },
     ],
@@ -2521,7 +2521,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
       { stepName: 'Verificación de salida validada 100%', timestamp: '27 Ago 2026 · 12:45', responsibleUser: 'Valeria Torres (Mesa 02)', referenceFolio: 'OS-2026-0041' },
       { stepName: 'Carga secuenciada en camión', timestamp: '27 Ago 2026 · 13:50', responsibleUser: 'Estiba CEDIS Norte', referenceFolio: 'Camión #08' },
       { stepName: 'Ruta iniciada en tránsito', timestamp: '27 Ago 2026 · 14:20', responsibleUser: 'Roberto Garza (Chofer)', referenceFolio: 'RT-2026-0025' },
-      { stepName: 'Parada 1: Arribo y entrega confirmada', timestamp: '27 Ago 2026 · 14:48', responsibleUser: 'Roberto Garza (Chofer)', referenceFolio: 'REM-2026-0061', notes: 'Recibió de conformidad Roberto Cantú Garza.' },
+      { stepName: 'Parada 1: Arribo y entrega confirmada', timestamp: '27 Ago 2026 · 14:48', responsibleUser: 'Roberto Garza (Chofer)', referenceFolio: 'REM-2026-0061', notes: 'Recibió de conformidad Schneider Electric México (Planta 3).' },
       { stepName: 'Parada 2: Arribo y entrega confirmada', timestamp: '27 Ago 2026 · 15:40', responsibleUser: 'Roberto Garza (Chofer)', referenceFolio: 'REM-2026-0063', notes: 'Recibió Ing. Fernando Lozano.' },
       { stepName: 'Parada 3: Arribo y entrega confirmada', timestamp: '27 Ago 2026 · 16:55', responsibleUser: 'Roberto Garza (Chofer)', referenceFolio: 'REM-2026-0064', notes: 'Recibió Lic. Mónica Treviño.' },
       { stepName: 'Cierre oficial de ruta de despacho', timestamp: '27 Ago 2026 · 17:08', responsibleUser: 'Roberto Garza (Chofer)', referenceFolio: 'RT-2026-0025', notes: '100% de piezas entregadas de conformidad.' },
@@ -2538,7 +2538,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     outboundOrderFolio: 'OS-2026-0044',
     sourceDocumentFolio: 'PED-2026-0100',
     sourceDocumentType: 'Pedido',
-    destinationSummary: 'Desarrollos Residenciales del Norte S.A.',
+    destinationSummary: 'Empaques Modernos del Norte S.A.',
     vehicleId: 'veh-15',
     vehicleName: 'Unidad #15 · Freightliner M2',
     driverId: 'drv-4',
@@ -2559,8 +2559,8 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     stops: [
       {
         stopSequence: 1,
-        destinationName: 'Desarrollos Residenciales del Norte S.A.',
-        customerType: 'Desarrolladora',
+        destinationName: 'Empaques Modernos del Norte S.A.',
+        customerType: 'Cliente Industrial',
         address: 'Av. Ricardo Margáin 555, Santa Engracia, San Pedro Garza García, N.L.',
         zoneName: 'San Pedro Garza García',
         remisionFolio: 'REM-2026-0060',
@@ -2573,8 +2573,8 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         coordinates: { lat: 25.6540, lng: -100.3620, label: '25.6540, -100.3620 (Santa Engracia)' },
         recipientName: 'Lic. Javier Cantú (Superintendente)',
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Colchón Record King Size', brand: 'RTM Packaging', size: 'King Size', quantity: 3, uids: ['CJ-RTM-2026-000121', 'CJ-RTM-2026-000122', 'CJ-RTM-2026-000123'] },
-          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Colchón Ortopedic King Size', brand: 'RTM Packaging', size: 'King Size', quantity: 3, uids: ['CJ-RTM-2026-000124', 'CJ-RTM-2026-000125', 'CJ-RTM-2026-000126'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'King Size', quantity: 3, uids: ['CJ-RTM-2026-000121', 'CJ-RTM-2026-000122', 'CJ-RTM-2026-000123'] },
+          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Caja Plegadiza Farmacéutica 500u', brand: 'RTM Packaging', size: 'King Size', quantity: 3, uids: ['CJ-RTM-2026-000124', 'CJ-RTM-2026-000125', 'CJ-RTM-2026-000126'] },
         ],
       },
     ],
@@ -2620,7 +2620,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     stops: [
       {
         stopSequence: 1,
-        destinationName: 'Inmobiliaria & Rentas Cumbres S.A.',
+        destinationName: 'Industrial Automotriz Monterrey S.A.',
         customerType: 'Inmobiliaria',
         address: 'Av. Paseo de los Leones 2800, Cumbres 4to Sector, Monterrey, N.L.',
         zoneName: 'Cumbres Poniente',
@@ -2634,10 +2634,10 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         coordinates: { lat: 25.7280, lng: -100.4120, label: '25.7280, -100.4120 (Cumbres Poniente)' },
         recipientName: 'Arq. Gerardo Salinas (Residente de Obra)',
         incidentType: 'Unidad no localizada',
-        incidentNotes: 'Se entregaron 3 de 4 paquetes / tarimas. Faltó 1 pieza SKU SC-AMER-CONF-IND (CJ-RTM-2026-000084). Pendiente reenvío en ruta vespertina.',
+        incidentNotes: 'Se entregaron 3 de 4 paquetes / tarimas. Faltó 1 pieza SKU PT-TAG-001 (CJ-RTM-2026-000084). Pendiente reenvío en ruta vespertina.',
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Colchón Record Matrimonial', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 2, uids: ['CJ-RTM-2026-000081', 'CJ-RTM-2026-000082'] },
-          { sku: 'SC-AMER-CONF-IND', productName: 'America Colchón Confort Individual', brand: 'America', size: 'Individual', quantity: 1, uids: ['CJ-RTM-2026-000083'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Folleto Plegable Médico 48 Páginas', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 2, uids: ['CJ-RTM-2026-000081', 'CJ-RTM-2026-000082'] },
+          { sku: 'PT-TAG-001', productName: 'Tag Impreso Colgante con Barniz UV', brand: 'America', size: 'Individual', quantity: 1, uids: ['CJ-RTM-2026-000083'] },
         ],
       },
     ],
@@ -2661,7 +2661,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     outboundOrderFolio: 'OS-2026-0042',
     sourceDocumentFolio: 'PED-2026-0095',
     sourceDocumentType: 'Pedido',
-    destinationSummary: 'Hotel Boutique Las Lomas',
+    destinationSummary: 'Laboratorios Medifarma (Planta Apodaca)',
     vehicleId: 'veh-08',
     vehicleName: 'Camión #08 · Isuzu NPR',
     driverId: 'drv-1',
@@ -2682,7 +2682,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     stops: [
       {
         stopSequence: 1,
-        destinationName: 'Hotel Boutique Las Lomas',
+        destinationName: 'Laboratorios Medifarma (Planta Apodaca)',
         customerType: 'Corporativo Hotelero',
         address: 'Av. Lázaro Cárdenas 2225, Valle Oriente, San Pedro Garza García, N.L.',
         zoneName: 'Valle Oriente',
@@ -2698,7 +2698,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         incidentType: 'Cliente rechaza unidad',
         incidentNotes: 'Cliente aceptó 5 paquetes / tarimas y rechazó 1 pieza (CJ-RTM-2026-000095) por plástico protector rasgado durante la maniobra.',
         items: [
-          { sku: 'SC-SEA-POST-QS', productName: 'RTM Packaging Colchón Posturepedic Queen Size', brand: 'RTM Packaging', size: 'Queen Size', quantity: 5, uids: ['CJ-RTM-2026-000091', 'CJ-RTM-2026-000092', 'CJ-RTM-2026-000093', 'CJ-RTM-2026-000094', 'CJ-RTM-2026-000096'] },
+          { sku: 'PT-BLI-001', productName: 'RTM Packaging Blister Card Termosellable 1000u', brand: 'RTM Packaging', size: 'Queen Size', quantity: 5, uids: ['CJ-RTM-2026-000091', 'CJ-RTM-2026-000092', 'CJ-RTM-2026-000093', 'CJ-RTM-2026-000094', 'CJ-RTM-2026-000096'] },
         ],
       },
     ],
@@ -2720,7 +2720,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     outboundOrderFolio: 'OS-2026-0035',
     sourceDocumentFolio: 'PED-2026-0078',
     sourceDocumentType: 'Pedido',
-    destinationSummary: 'Arquitectura & Hábitat Monterrey',
+    destinationSummary: 'Distribuidora Gráfica del Norte',
     vehicleId: 'veh-04',
     vehicleName: 'Unidad #04 · Nissan Cabstar',
     driverId: 'drv-2',
@@ -2741,7 +2741,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
     stops: [
       {
         stopSequence: 1,
-        destinationName: 'Arquitectura & Hábitat Monterrey',
+        destinationName: 'Distribuidora Gráfica del Norte',
         customerType: 'Despacho de Diseño',
         address: 'Av. Gonzalitos 450, Mitras Sur, Monterrey, N.L.',
         zoneName: 'Mitras / Gonzalitos',
@@ -2755,9 +2755,9 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         coordinates: { lat: 25.6820, lng: -100.3510, label: '25.6820, -100.3510 (Mitras Sur)' },
         recipientName: 'Lic. Marcela Elizondo',
         incidentType: 'Producto dañado',
-        incidentNotes: 'El cliente recibió las 3 piezas pero firmó bajo reserva por leve raspadura en esquina inferior del colchón CJ-RTM-2026-000072.',
+        incidentNotes: 'El cliente recibió las 3 piezas pero firmó bajo reserva por leve raspadura en esquina inferior del empaque / tarima CJ-RTM-2026-000072.',
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Colchón Record King Size', brand: 'RTM Packaging', size: 'King Size', quantity: 3, uids: ['CJ-RTM-2026-000071', 'CJ-RTM-2026-000072', 'CJ-RTM-2026-000073'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'King Size', quantity: 3, uids: ['CJ-RTM-2026-000071', 'CJ-RTM-2026-000072', 'CJ-RTM-2026-000073'] },
         ],
       },
     ],
@@ -2801,7 +2801,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
       {
         stopSequence: 1,
         destinationName: 'Residencial Las Lajas (Sra. Patricia Benavides)',
-        customerType: 'Persona física',
+        customerType: 'Cliente Industrial',
         address: 'Paseo de las Lajas 1420, Col. Las Lajas, San Pedro Garza García, N.L.',
         zoneName: 'San Pedro / Las Lajas',
         remisionFolio: 'REM-2026-0057',
@@ -2816,7 +2816,7 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         incidentType: 'Otro',
         incidentNotes: 'Acceso denegado por administración del fraccionamiento después de las 17:00 h. Cliente no contestó llamada. Mercancía retornó a CEDIS para reprogramación.',
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Colchón Record King Size', brand: 'RTM Packaging', size: 'King Size', quantity: 2, uids: ['CJ-RTM-2026-000076', 'CJ-RTM-2026-000077'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'King Size', quantity: 2, uids: ['CJ-RTM-2026-000076', 'CJ-RTM-2026-000077'] },
         ],
       },
     ],
@@ -2874,8 +2874,8 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         recipientName: 'Brenda Cavazos (Encargada VO)',
         branchReceiptConfirmed: false,
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Colchón Record King Size', brand: 'RTM Packaging', size: 'King Size', quantity: 6, uids: ['CJ-RTM-2026-000051', 'CJ-RTM-2026-000052', 'CJ-RTM-2026-000053', 'CJ-RTM-2026-000054', 'CJ-RTM-2026-000055', 'CJ-RTM-2026-000056'] },
-          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Colchón Ortopedic Matrimonial', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 8, uids: ['CJ-RTM-2026-000061', 'CJ-RTM-2026-000062', 'CJ-RTM-2026-000063', 'CJ-RTM-2026-000064', 'CJ-RTM-2026-000065', 'CJ-RTM-2026-000066', 'CJ-RTM-2026-000067', 'CJ-RTM-2026-000068'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'King Size', quantity: 6, uids: ['CJ-RTM-2026-000051', 'CJ-RTM-2026-000052', 'CJ-RTM-2026-000053', 'CJ-RTM-2026-000054', 'CJ-RTM-2026-000055', 'CJ-RTM-2026-000056'] },
+          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 8, uids: ['CJ-RTM-2026-000061', 'CJ-RTM-2026-000062', 'CJ-RTM-2026-000063', 'CJ-RTM-2026-000064', 'CJ-RTM-2026-000065', 'CJ-RTM-2026-000066', 'CJ-RTM-2026-000067', 'CJ-RTM-2026-000068'] },
         ],
       },
     ],
@@ -2935,8 +2935,8 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         recipientName: 'Jorge Villarreal (Encargado Cumbres)',
         branchReceiptConfirmed: false,
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Colchón Record Matrimonial', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 5, uids: ['CJ-RTM-2026-000041', 'CJ-RTM-2026-000042', 'CJ-RTM-2026-000043', 'CJ-RTM-2026-000044', 'CJ-RTM-2026-000045'] },
-          { sku: 'SC-SEA-POST-QS', productName: 'RTM Packaging Colchón Posturepedic Queen Size', brand: 'RTM Packaging', size: 'Queen Size', quantity: 4, uids: ['CJ-RTM-2026-000046', 'CJ-RTM-2026-000047', 'CJ-RTM-2026-000048', 'CJ-RTM-2026-000049'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Folleto Plegable Médico 48 Páginas', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 5, uids: ['CJ-RTM-2026-000041', 'CJ-RTM-2026-000042', 'CJ-RTM-2026-000043', 'CJ-RTM-2026-000044', 'CJ-RTM-2026-000045'] },
+          { sku: 'PT-BLI-001', productName: 'RTM Packaging Blister Card Termosellable 1000u', brand: 'RTM Packaging', size: 'Queen Size', quantity: 4, uids: ['CJ-RTM-2026-000046', 'CJ-RTM-2026-000047', 'CJ-RTM-2026-000048', 'CJ-RTM-2026-000049'] },
         ],
       },
     ],
@@ -2996,8 +2996,8 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         branchReceiptDateTime: '25 Ago 2026 · 11:35',
         branchReceiptOperator: 'Brenda Cavazos (Mesa de Verificación VO)',
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Colchón Record King Size', brand: 'RTM Packaging', size: 'King Size', quantity: 6, uids: ['CJ-RTM-2026-000031', 'CJ-RTM-2026-000032', 'CJ-RTM-2026-000033', 'CJ-RTM-2026-000034', 'CJ-RTM-2026-000035', 'CJ-RTM-2026-000036'] },
-          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Colchón Ortopedic Matrimonial', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 6, uids: ['CJ-RTM-2026-000037', 'CJ-RTM-2026-000038', 'CJ-RTM-2026-000039', 'CJ-RTM-2026-000040', 'CJ-RTM-2026-000021', 'CJ-RTM-2026-000022'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Blister Card Termosellable', brand: 'RTM Packaging', size: 'King Size', quantity: 6, uids: ['CJ-RTM-2026-000031', 'CJ-RTM-2026-000032', 'CJ-RTM-2026-000033', 'CJ-RTM-2026-000034', 'CJ-RTM-2026-000035', 'CJ-RTM-2026-000036'] },
+          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 6, uids: ['CJ-RTM-2026-000037', 'CJ-RTM-2026-000038', 'CJ-RTM-2026-000039', 'CJ-RTM-2026-000040', 'CJ-RTM-2026-000021', 'CJ-RTM-2026-000022'] },
         ],
       },
     ],
@@ -3057,8 +3057,8 @@ export const INITIAL_MOCK_SHIPPING_HISTORY: ShippingHistoryRecord[] = [
         branchReceiptDateTime: '26 Ago 2026 · 15:30',
         branchReceiptOperator: 'Jorge Villarreal (Mesa de Verificación Cumbres)',
         items: [
-          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Colchón Record Matrimonial', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 4, uids: ['CJ-RTM-2026-000011', 'CJ-RTM-2026-000012', 'CJ-RTM-2026-000013', 'CJ-RTM-2026-000014'] },
-          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Colchón Ortopedic Matrimonial', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 4, uids: ['CJ-RTM-2026-000015', 'CJ-RTM-2026-000016', 'CJ-RTM-2026-000017', 'CJ-RTM-2026-000018'] },
+          { sku: 'FOL-MED-PLE', productName: 'RTM Packaging Folleto Plegable Médico 48 Páginas', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 4, uids: ['CJ-RTM-2026-000011', 'CJ-RTM-2026-000012', 'CJ-RTM-2026-000013', 'CJ-RTM-2026-000014'] },
+          { sku: 'CJ-EMB-MED', productName: 'RTM Packaging Etiqueta Farmacéutica 4x6" en Rollo', brand: 'RTM Packaging', size: 'Matrimonial', quantity: 4, uids: ['CJ-RTM-2026-000015', 'CJ-RTM-2026-000016', 'CJ-RTM-2026-000017', 'CJ-RTM-2026-000018'] },
         ],
       },
     ],
@@ -3515,7 +3515,7 @@ export const INITIAL_MOCK_ATTENTION_ITEMS: DashboardAttentionItem[] = [
     vehicleName: 'Camión #08',
     driverName: 'Roberto Garza',
     stopSequenceText: 'Parada 2 de 4',
-    destinationName: 'Hotel Boutique Las Lomas',
+    destinationName: 'Laboratorios Medifarma (Planta Apodaca)',
     detailText: 'Retraso estimado: 18 min (tráfico en Av. Lázaro Cárdenas)',
     actionLabel: 'Abrir ruta',
     severity: 'warning',
@@ -3569,7 +3569,7 @@ export const INITIAL_MOCK_ATTENTION_ITEMS: DashboardAttentionItem[] = [
     vehicleName: 'Camión #08',
     driverName: 'Roberto Garza',
     stopSequenceText: 'Parada 1 de 3',
-    destinationName: 'Roberto Cantú Garza',
+    destinationName: 'Schneider Electric México (Planta 3)',
     detailText: 'En tiempo · Arribo programado 14:45 h',
     actionLabel: 'Abrir ruta',
     severity: 'success',

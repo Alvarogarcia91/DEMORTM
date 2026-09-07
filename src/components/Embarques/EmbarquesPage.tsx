@@ -16,7 +16,7 @@ import { getShippingOrdersList, getActiveRoutesList, getShippingHistoryList } fr
 export type EmbarquesSubtab = 'dashboard' | 'orders' | 'in_route' | 'history';
 
 export const EmbarquesPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<EmbarquesSubtab>('dashboard');
+  const [activeTab, setActiveTab] = useState<EmbarquesSubtab>('orders');
   const activeOrdersCount = getShippingOrdersList().filter((o) => o.status !== 'En ruta' && o.status !== 'Completada').length;
   const inRouteCount = getActiveRoutesList().filter((r) => r.status === 'En ruta').length;
   const historyCount = getShippingHistoryList().length;
@@ -32,10 +32,10 @@ export const EmbarquesPage: React.FC = () => {
           </span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-theme-main">
-          Producto Terminado & Embarques
+          Órdenes de Salida
         </h1>
         <p className="text-xs sm:text-sm text-theme-muted">
-          Control de producto terminado, asignación de transporte industrial, remisiones B2B y confirmación de entrega en plantas cliente.
+          Despacho de producto terminado liberado por QA, staging de tarimas y validación de carga para clientes industriales.
         </p>
       </div>
 
@@ -43,19 +43,7 @@ export const EmbarquesPage: React.FC = () => {
       <div className="border-b border-theme-subtle">
         <div className="flex flex-wrap gap-4">
           
-          {/* Subtab Dashboard */}
-          <button
-            type="button"
-            onClick={() => setActiveTab('dashboard')}
-            className={`flex items-center gap-1.5 border-b-2 px-1 pb-2.5 text-xs font-bold transition-colors cursor-pointer ${
-              activeTab === 'dashboard'
-                ? 'border-theme-primary text-theme-primary'
-                : 'border-transparent text-theme-muted hover:text-theme-main'
-            }`}
-          >
-            <LayoutDashboard className="h-4 w-4" />
-            <span>Dashboard</span>
-          </button>
+          {/* Tabs visibles: Órdenes de salida, En ruta, Historial */}
 
           {/* Subtab Órdenes de salida */}
           <button

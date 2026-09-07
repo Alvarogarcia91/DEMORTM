@@ -213,7 +213,7 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  <strong className="text-xl font-mono font-black text-theme-main block">
  {currentData.flow.putaway}
  </strong>
- <span className="text-[9px] text-theme-muted">{isSucursal ? 'Showroom / Mini Alm.' : 'En rack final'}</span>
+ <span className="text-[9px] text-theme-muted">{isSucursal ? 'Área de Muestras / QA' : 'En rack final'}</span>
  </div>
 
  {/* Step 3 */}
@@ -223,12 +223,12 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  >
  <div className="flex items-center justify-center gap-1 text-[10px] font-bold text-theme-muted uppercase">
  <PackageSearch className="w-3 h-3 text-purple-600" />
- <span>{isSucursal ? 'En Showroom' : 'Recolección'}</span>
+ <span>{isSucursal ? 'En Inspección' : 'Recolección'}</span>
  </div>
  <strong className="text-xl font-mono font-black text-theme-main block">
  {isSucursal ? 6 : currentData.flow.picking}
  </strong>
- <span className="text-[9px] text-theme-muted">{isSucursal ? 'Modelos en exhibición' : 'En staging salida'}</span>
+ <span className="text-[9px] text-theme-muted">{isSucursal ? 'Muestras liberadas' : 'En staging salida'}</span>
  </div>
 
  {/* Step 4 */}
@@ -409,19 +409,19 @@ export const OperationalSummaryTab: React.FC<OperationalSummaryTabProps> = ({
  <div className="flex items-center justify-between">
  <h3 className="text-sm font-extrabold text-theme-main flex items-center gap-2">
  <Boxes className="w-4 h-4 text-purple-600" />
- <span>Bahías de Showroom</span>
+ <span>Bahías de Inspección & Muestras</span>
  </h3>
  <span className="text-[10px] font-mono text-theme-muted">SHOW-01 a 06</span>
  </div>
 
  <div className="space-y-2">
  {[
- { code: 'SHOW-01', status: 'En exhibición', model: 'Restonic Ortopedic Matrimonial', uid: 'SC-UID-2026-000155' },
- { code: 'SHOW-02', status: 'Disponible', model: 'Espacio libre para Flow Basic', uid: null },
- { code: 'SHOW-03', status: 'En exhibición', model: 'Spring Air Record Individual', uid: 'SC-UID-2026-000110' },
- { code: 'SHOW-04', status: 'En exhibición', model: 'Sealy Celebration King Size', uid: 'SC-UID-2026-000151' },
- { code: 'SHOW-05', status: 'En exhibición', model: 'América Halston Queen Size', uid: 'SC-UID-2026-000196' },
- { code: 'SHOW-06', status: 'En exhibición', model: 'Nayt Flow Basic Matrimonial', uid: 'SC-UID-2026-000121' },
+ { code: 'SHOW-01', status: 'En exhibición', model: 'Manual Instructivo 24 Páginas Black & Decker', uid: 'TAR-RTM-2026-000155' },
+ { code: 'SHOW-02', status: 'Disponible', model: 'Espacio libre para Tarimas PT', uid: null },
+ { code: 'SHOW-03', status: 'En exhibición', model: 'Etiqueta Farmacéutica 4x6" Medifarma', uid: 'BOB-RTM-2026-000110' },
+ { code: 'SHOW-04', status: 'En exhibición', model: 'Blister Card Termosellable Stanley Tools', uid: 'TAR-RTM-2026-000151' },
+ { code: 'SHOW-05', status: 'En exhibición', model: 'Folleto Plegable Médico Medifarma', uid: 'TAR-RTM-2026-000196' },
+ { code: 'SHOW-06', status: 'En exhibición', model: 'Etiqueta Código de Barras Schneider', uid: 'BOB-RTM-2026-000121' },
  ].map((bay) => (
  <div
  key={bay.code}

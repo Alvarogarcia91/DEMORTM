@@ -896,7 +896,7 @@ export const WarehousesTab: React.FC = () => {
  <option value="all">Todos los tipos ({currentWarehouseLocations.length})</option>
  <option value="RACK">Racks</option>
  <option value="SUCURSAL">Racks Sucursal</option>
- <option value="SHOWROOM">Showroom / Exhibición</option>
+ <option value="SHOWROOM">Muestras / Exhibición Técnica</option>
  <option value="RECEPCION">Recepción</option>
  <option value="ACOMODO">Acomodo / Entrega</option>
  <option value="RETRABAJO">Retrabajo / Incidencias</option>

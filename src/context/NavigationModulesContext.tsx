@@ -42,10 +42,10 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   },
   {
     key: 'logistica',
-    label: 'Producto Terminado & Embarques',
+    label: 'Órdenes de Salida',
     category: 'operaciones',
     categoryLabel: 'Inventario y Operaciones',
-    description: 'Control de tarimas y rollos liberados por QA, staging y despacho de remisiones a clientes.',
+    description: 'Despacho de producto terminado liberado por QA, staging de tarimas y validación de carga para clientes industriales.',
   },
   {
     key: 'showroom-expos',
@@ -113,7 +113,7 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'articulos': false,
   'inventario': true,
   'mesa-verificacion': true,
-  'logistica': true,
+  'logistica': false,
   'showroom-expos': false,
   'requisiciones': false,
   'compras': false,
@@ -124,7 +124,7 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'configuracion': true,
 };
 
-const STORAGE_KEY = 'rtm_visible_navigation_modules';
+const STORAGE_KEY = 'rtm_visible_navigation_modules_v2';
 
 interface NavigationModulesContextType {
   visibleModules: VisibilityMap;

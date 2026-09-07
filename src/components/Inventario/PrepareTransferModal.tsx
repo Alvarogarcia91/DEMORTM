@@ -53,7 +53,7 @@ export const PrepareTransferModal: React.FC<PrepareTransferModalProps> = ({
  // Simulate scanning an invalid/unexpected unit
  const handleScanInvalid = () => {
  setErrorMessage(
- `Unidad no incluida en este traspaso (SC-UID-2026-999401). Verifica la etiqueta física antes de cargar al camión.`
+ `Unidad no incluida en este traspaso (TAR-RTM-2026-999401). Verifica la etiqueta física antes de cargar al camión.`
  );
  };
 
@@ -210,7 +210,7 @@ export const PrepareTransferModal: React.FC<PrepareTransferModalProps> = ({
  className="w-full py-2.5 rounded-xl bg-theme-muted hover:bg-rose-500/10 text-theme-muted hover:text-rose-600 font-semibold text-xs transition-colors border border-theme-subtle cursor-pointer flex items-center justify-center gap-1.5"
  >
  <AlertTriangle className="w-3.5 h-3.5" />
- <span>Simular escaneo de serie incorrecta (SC-UID-2026-999401)</span>
+ <span>Simular escaneo de serie incorrecta (TAR-RTM-2026-999401)</span>
  </button>
  </div>
  ) : (

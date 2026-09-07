@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
  Search, 
  Printer, 
@@ -164,7 +164,7 @@ export const UnitReprintSection: React.FC<UnitReprintSectionProps> = ({
  setSearchQuery(e.target.value);
  setShowAutocomplete(true);
  }}
- placeholder="Buscar UID (SC-UID-...), SKU, artículo, lote o ubicación..."
+ placeholder="Buscar UID (TAR-RTM-..., BOB-RTM-...), SKU, artículo, lote o ubicación..."
  className="w-full bg-theme-surface border border-theme-subtle rounded-2xl pl-10 pr-9 py-3 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30 shadow-xs"
  />
  {searchQuery && (

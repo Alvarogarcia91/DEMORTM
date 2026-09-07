@@ -99,7 +99,7 @@ export const LocationReprintSection: React.FC<LocationReprintSectionProps> = ({
  name: `Ubicación ${code}`,
  type: 'Rack de Almacenamiento' as const,
  warehouseId: 'wh-mty-norte',
- warehouseName: 'CEDIS Monterrey Norte',
+ warehouseName: 'Almacén Materia Prima',
  status: 'Activa' as const,
  };
 

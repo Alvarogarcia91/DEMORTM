@@ -74,7 +74,7 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
  setIsScanning(false);
  
  const nextSerialNum = 180 + line.receivedUnits.length + Math.floor(Math.random() * 50);
- const newUid = `SC-UID-2026-000${nextSerialNum}`;
+ const newUid = `TAR-RTM-2026-000${nextSerialNum}`;
  const now = new Date();
  const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
  const fullDateStr = `27 Ago 2026, ${timeStr}`;
@@ -434,7 +434,7 @@ export const ReceiptItemScanStationModal: React.FC<ReceiptItemScanStationModalPr
  </div>
  ) : (
  /* ========================================================================= */
- /* NON-SERIALIZED BULK RECEIPT (ALMOHADAS / PROTECTORES) */
+ /* NON-SERIALIZED BULK RECEIPT (QUÍMICOS / CONSUMIBLES) */
  /* ========================================================================= */
  <div className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle space-y-4 shadow-xs">
  <div className="space-y-1">

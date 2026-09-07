@@ -15,7 +15,7 @@ import {
  Info,
  ShieldCheck,
  Eye,
- BedDouble
+ Package
 } from 'lucide-react';
 import { ShowroomBay, PositionSerializedMattress } from '../../data/mockInventoryData';
 import { LocationQrModal, PhysicalLocationMeta } from './LocationQrModal';
@@ -166,16 +166,16 @@ export const ShowroomBayModal: React.FC<ShowroomBayModalProps> = ({
  </div>
  </div>
 
- {/* Card 2: Contenido / Colchón Exhibido */}
+ {/* Card 2: Contenido / Material en Exhibición */}
  {isOccupied && mattress ? (
  <div className="p-5 rounded-3xl bg-theme-surface border border-theme-subtle space-y-4 shadow-xs">
  <div className="flex items-center justify-between border-b border-theme-subtle pb-3">
  <div className="flex items-center gap-2.5">
  <div className="w-8 h-8 rounded-xl bg-theme-primary/10 text-theme-primary flex items-center justify-center">
- <BedDouble className="w-4 h-4" />
+ <Package className="w-4 h-4" />
  </div>
  <div>
- <span className="text-[10px] uppercase font-bold text-theme-muted block">Colchón en Exhibición</span>
+ <span className="text-[10px] uppercase font-bold text-theme-muted block">Material / Muestra en Exhibición</span>
  <h3 className="text-xs font-black text-theme-main">{mattress.productName}</h3>
  </div>
  </div>
@@ -255,7 +255,7 @@ export const ShowroomBayModal: React.FC<ShowroomBayModalProps> = ({
  <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
  <p className="text-xs font-bold text-theme-main">Esta bahía de showroom se encuentra disponible</p>
  <p className="text-[11px] text-theme-muted">
- Espacio listo para montaje de un nuevo colchón de exhibición mediante movimiento de inventario.
+ Espacio listo para montaje de una nueva muestra técnica mediante movimiento de inventario.
  </p>
  </div>
  )}

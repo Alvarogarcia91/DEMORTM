@@ -94,8 +94,8 @@ export const ReturnOrdersList: React.FC<ReturnOrdersListProps> = ({
  className="bg-theme-muted border border-theme-subtle rounded-2xl px-3 py-2 text-xs font-bold text-theme-main focus:outline-none cursor-pointer"
  >
  <option value="all">Todos los CEDIS</option>
- <option value="wh-mty-norte">CEDIS Monterrey Norte</option>
- <option value="wh-mty-sur">CEDIS Monterrey Sur</option>
+ <option value="wh-mty-norte">Almacén Materia Prima</option>
+ <option value="wh-mty-sur">Almacén Producto Terminado</option>
  </select>
  </div>
  </div>

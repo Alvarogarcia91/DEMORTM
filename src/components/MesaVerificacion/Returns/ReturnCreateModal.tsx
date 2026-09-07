@@ -93,7 +93,7 @@ export const ReturnCreateModal: React.FC<ReturnCreateModalProps> = ({
  reference: reference.trim(),
  originClientOrBranch: originClientOrBranch.trim(),
  warehouseId,
- warehouseName: warehouseId === 'wh-mty-sur' ? 'CEDIS Monterrey Sur' : 'CEDIS Monterrey Norte',
+ warehouseName: warehouseId === 'wh-mty-sur' ? 'Almacén Producto Terminado' : 'Almacén Materia Prima',
  reason,
  customReason: reason === 'Otro' ? customReason.trim() : undefined,
  notes: notes.trim(),
@@ -172,8 +172,8 @@ export const ReturnCreateModal: React.FC<ReturnCreateModalProps> = ({
  onChange={(e) => setWarehouseId(e.target.value)}
  className="w-full bg-theme-muted border border-theme-subtle rounded-xl p-2.5 text-xs font-bold text-theme-main focus:outline-none cursor-pointer"
  >
- <option value="wh-mty-norte">CEDIS Monterrey Norte</option>
- <option value="wh-mty-sur">CEDIS Monterrey Sur</option>
+ <option value="wh-mty-norte">Almacén Materia Prima</option>
+ <option value="wh-mty-sur">Almacén Producto Terminado</option>
  </select>
  </div>
 
@@ -251,7 +251,7 @@ export const ReturnCreateModal: React.FC<ReturnCreateModalProps> = ({
  setUnitSearch(e.target.value);
  setShowUnitDropdown(true);
  }}
- placeholder="Buscar y agregar UID elegible (SC-UID-...)..."
+ placeholder="Buscar y agregar UID elegible (TAR-RTM-...)..."
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl pl-9 pr-4 py-2.5 text-xs text-theme-main font-semibold focus:outline-none shadow-2xs"
  />
  </div>

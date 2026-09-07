@@ -107,8 +107,8 @@ export const EnRutaTab: React.FC = () => {
               className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-3 py-2 text-xs text-zinc-900 font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
             >
               <option value="ALL">Todos los CEDIS de origen</option>
-              <option value="CEDIS Monterrey Norte">CEDIS Monterrey Norte</option>
-              <option value="CEDIS Monterrey Sur">CEDIS Monterrey Sur</option>
+              <option value="Almacén Principal RTM">Almacén Principal RTM</option>
+              <option value="Almacén Producto Terminado">Almacén Producto Terminado</option>
             </select>
           </div>
         </div>

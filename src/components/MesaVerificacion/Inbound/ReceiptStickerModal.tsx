@@ -24,7 +24,7 @@ interface ReceiptStickerModalProps {
 
 export const ReceiptStickerModal: React.FC<ReceiptStickerModalProps> = ({
  unit,
- warehouseName = 'CEDIS Monterrey Norte',
+ warehouseName = 'Almacén Materia Prima',
  onClose,
  onPrintSuccess,
 }) => {
@@ -93,7 +93,7 @@ export const ReceiptStickerModal: React.FC<ReceiptStickerModalProps> = ({
  <div className="w-full h-full flex flex-col items-center justify-center relative">
  <QrCode className="w-20 h-20 text-zinc-900" />
  <span className="text-[8px] font-mono font-bold text-zinc-600 truncate max-w-[90px] mt-0.5">
- {unit.uid.replace('SC-UID-2026-', '')}
+ {unit.uid.replace('TAR-RTM-2026-', '')}
  </span>
  </div>
  </div>

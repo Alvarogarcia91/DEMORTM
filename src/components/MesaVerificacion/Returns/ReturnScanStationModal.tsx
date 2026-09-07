@@ -70,7 +70,7 @@ export const ReturnScanStationModal: React.FC<ReturnScanStationModalProps> = ({
  };
 
  const handleSimulateInvalidUnitScan = () => {
- const wrongUid = 'SC-UID-2026-000190';
+ const wrongUid = 'TAR-RTM-2026-000190';
  setScannedUid(wrongUid);
  setIsUnitVerified(false);
  setUnitScanError(`✕ Unidad incorrecta. Se esperaba ${item.uid} pero se escaneó ${wrongUid}.`);
@@ -218,7 +218,7 @@ export const ReturnScanStationModal: React.FC<ReturnScanStationModalProps> = ({
  <div className="space-y-4 animate-in fade-in">
  <div className="text-center space-y-1">
  <h3 className="text-sm font-extrabold text-theme-main">
- Paso 1 — Identificar y Escanear UID del Colchón
+ Paso 1 — Identificar y Escanear UID del Material / Tarima
  </h3>
  <p className="text-xs text-theme-muted">
  Apunta el lector láser al código QR adherido al bulto que regresa al almacén.
@@ -273,7 +273,7 @@ export const ReturnScanStationModal: React.FC<ReturnScanStationModalProps> = ({
  Paso 2 — Evaluar Condición Física del Producto
  </h3>
  <p className="text-xs text-theme-muted">
- Inspecciona visualmente el colchón y su funda plástica protectora.
+ Inspecciona visualmente el producto y su embalaje de protección.
  </p>
  </div>
 
@@ -282,15 +282,15 @@ export const ReturnScanStationModal: React.FC<ReturnScanStationModalProps> = ({
  {
  id: 'En buen estado' as ReturnUnitCondition,
  title: '1. En Buen Estado',
- desc: 'Sin daños visibles. Bolsa protectora íntegra y limpio.',
+ desc: 'Sin daños visibles. Embalaje o flejado íntegro y limpio.',
  suggested: 'Destino: REC-DEV-01 (Pendiente de acomodo)',
  tone: 'border-emerald-600/40 hover:border-emerald-600 /50',
  },
  {
  id: 'Empaque dañado' as ReturnUnitCondition,
  title: '2. Empaque Dañado',
- desc: 'Plástico roto o sucio pero colchón interior intacto.',
- suggested: 'Destino: RET-NORTE (Reempaque)',
+ desc: 'Flejado o esquinero roto pero material interior intacto.',
+ suggested: 'Destino: RET-01 (Reempaque / Reacondicionamiento)',
  tone: 'border-amber-500/40 hover:border-amber-500',
  },
  {

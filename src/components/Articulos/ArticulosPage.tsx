@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { 
  Package, 
  FolderTree, 
@@ -30,8 +30,7 @@ export const ArticulosPage: React.FC = () => {
  // Filters State
  const [searchTerm, setSearchTerm] = useState('');
  const [filterCategory, setFilterCategory] = useState<string>('all');
- const [filterBrand, setFilterBrand] = useState<string>('all');
- const [filterSize, setFilterSize] = useState<string>('all');
+ const [filterTechnology, setFilterTechnology] = useState<string>('all');
  const [filterActive, setFilterActive] = useState<string>('all');
 
  // Modals & Toast State
@@ -50,21 +49,23 @@ export const ArticulosPage: React.FC = () => {
 
  // Filter Logic
  const filteredArticles = articles.filter((art) => {
+ const term = searchTerm.toLowerCase();
  const matchesSearch = 
- art.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
- art.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
- art.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
- (art.barcode && art.barcode.includes(searchTerm));
+ art.sku.toLowerCase().includes(term) ||
+ art.name.toLowerCase().includes(term) ||
+ (art.customer && art.customer.toLowerCase().includes(term)) ||
+ (art.brand && art.brand.toLowerCase().includes(term)) ||
+ (art.barcode && art.barcode.includes(term));
 
  const matchesCategory = filterCategory === 'all' || art.category === filterCategory;
- const matchesBrand = filterBrand === 'all' || art.brand === filterBrand;
- const matchesSize = filterSize === 'all' || art.size === filterSize;
+ const artTech = art.technology || art.characteristics?.technology || 'N/A';
+ const matchesTech = filterTechnology === 'all' || artTech === filterTechnology;
  const matchesActive = 
  filterActive === 'all' || 
  (filterActive === 'active' && art.isActive) ||
  (filterActive === 'inactive' && !art.isActive);
 
- return matchesSearch && matchesCategory && matchesBrand && matchesSize && matchesActive;
+ return matchesSearch && matchesCategory && matchesTech && matchesActive;
  });
 
  const totalPages = Math.ceil(filteredArticles.length / pageSize) || 1;
@@ -101,8 +102,7 @@ export const ArticulosPage: React.FC = () => {
  const handleResetFilters = () => {
  setSearchTerm('');
  setFilterCategory('all');
- setFilterBrand('all');
- setFilterSize('all');
+ setFilterTechnology('all');
  setFilterActive('all');
  setCurrentPage(1);
  };
@@ -227,7 +227,6 @@ export const ArticulosPage: React.FC = () => {
  <Filter className="w-3.5 h-3.5" />
  <span>Filtros:</span>
  </div>
-
  {/* Categoría */}
  <select
  value={filterCategory}
@@ -238,46 +237,27 @@ export const ArticulosPage: React.FC = () => {
  className="bg-theme-muted border border-theme-subtle text-xs font-semibold text-theme-main py-2 px-3 rounded-xl focus:outline-none focus:border-theme-primary"
  >
  <option value="all">Todas las Categorías</option>
- <option value="Colchones">Colchones</option>
- <option value="Bases">Bases y Somieres</option>
- <option value="Almohadas">Almohadas</option>
- <option value="Protectores">Protectores</option>
+ <option value="Producto Terminado">Producto Terminado</option>
+ <option value="Sustratos / Papel">Sustratos / Papel</option>
+ <option value="Películas / Flexo">Películas / Flexo</option>
+ <option value="Tintas & Barnices">Tintas & Barnices</option>
+ <option value="Empaque">Empaque</option>
  </select>
 
- {/* Marca */}
+ {/* Tecnología */}
  <select
- value={filterBrand}
+ value={filterTechnology}
  onChange={(e) => {
- setFilterBrand(e.target.value);
+ setFilterTechnology(e.target.value);
  setCurrentPage(1);
  }}
  className="bg-theme-muted border border-theme-subtle text-xs font-semibold text-theme-main py-2 px-3 rounded-xl focus:outline-none focus:border-theme-primary"
  >
- <option value="all">Todas las Marcas</option>
- <option value="Nayt">Nayt</option>
- <option value="Spring Air">Spring Air</option>
- <option value="Restonic">Restonic</option>
- <option value="América">América</option>
- <option value="Sealy">Sealy</option>
- <option value="Therapedic">Therapedic</option>
- <option value="Sognare">Sognare</option>
- </select>
-
- {/* Medida */}
- <select
- value={filterSize}
- onChange={(e) => {
- setFilterSize(e.target.value);
- setCurrentPage(1);
- }}
- className="bg-theme-muted border border-theme-subtle text-xs font-semibold text-theme-main py-2 px-3 rounded-xl focus:outline-none focus:border-theme-primary"
- >
- <option value="all">Todas las Medidas</option>
- <option value="Individual">Individual</option>
- <option value="Matrimonial">Matrimonial</option>
- <option value="Queen Size">Queen Size</option>
- <option value="King Size">King Size</option>
- <option value="Estándar">Estándar</option>
+ <option value="all">Todas las Tecnologías</option>
+ <option value="Offset">Offset</option>
+ <option value="Flexografía">Flexografía</option>
+ <option value="Serigrafía">Serigrafía</option>
+ <option value="N/A">N/A</option>
  </select>
 
  {/* Estado */}
@@ -294,10 +274,10 @@ export const ArticulosPage: React.FC = () => {
  <option value="inactive">Inactivos</option>
  </select>
 
- {(searchTerm || filterCategory !== 'all' || filterBrand !== 'all' || filterSize !== 'all' || filterActive !== 'all') && (
+ {(searchTerm || filterCategory !== 'all' || filterTechnology !== 'all' || filterActive !== 'all') && (
  <button
  onClick={handleResetFilters}
- className="p-2 rounded-xl bg-theme-muted hover:bg-theme-subtle text-theme-muted hover:text-theme-main transition-colors"
+ className="p-2 rounded-xl bg-theme-muted hover:bg-theme-subtle text-theme-muted hover:text-theme-main transition-colors cursor-pointer"
  title="Restablecer filtros"
  >
  <RotateCcw className="w-3.5 h-3.5" />
@@ -312,13 +292,12 @@ export const ArticulosPage: React.FC = () => {
  <table className="w-full text-left text-xs border-collapse min-w-[1100px]">
  <thead>
  <tr className="bg-theme-muted/60 border-b border-theme-subtle text-theme-muted font-bold uppercase tracking-wider text-[10px]">
- <th className="py-3 px-4 whitespace-nowrap">SKU</th>
- <th className="py-3 px-4 min-w-[220px]">Artículo</th>
- <th className="py-3 px-4 whitespace-nowrap">Marca</th>
+ <th className="py-3 px-4 whitespace-nowrap">SKU / N° Parte</th>
+ <th className="py-3 px-4 min-w-[240px]">Artículo & Especificación</th>
+ <th className="py-3 px-4 whitespace-nowrap">Cliente / Fabricante</th>
  <th className="py-3 px-4 whitespace-nowrap">Categoría</th>
- <th className="py-3 px-4 whitespace-nowrap">Medida</th>
+ <th className="py-3 px-4 whitespace-nowrap">Tecnología</th>
  <th className="py-3 px-4 whitespace-nowrap">Unidad</th>
- <th className="py-3 px-4 whitespace-nowrap">Serialización</th>
  <th className="py-3 px-4 whitespace-nowrap">Estado</th>
  <th className="py-3 px-4 whitespace-nowrap text-right">Acciones</th>
  </tr>
@@ -326,12 +305,14 @@ export const ArticulosPage: React.FC = () => {
  <tbody className="divide-y divide-theme-subtle">
  {paginatedArticles.length === 0 ? (
  <tr>
- <td colSpan={9} className="py-12 text-center text-theme-muted text-xs">
+ <td colSpan={8} className="py-12 text-center text-theme-muted text-xs">
  No se encontraron artículos con los filtros aplicados.
  </td>
  </tr>
  ) : (
- paginatedArticles.map((art) => (
+ paginatedArticles.map((art) => {
+ const tech = art.technology || art.characteristics?.technology || 'N/A';
+ return (
  <tr key={art.id} className="hover:bg-theme-muted/40 transition-colors">
  
  {/* SKU */}
@@ -353,14 +334,14 @@ export const ArticulosPage: React.FC = () => {
  {art.name}
  </button>
  <span className="text-[10px] text-theme-muted font-mono block mt-0.5 whitespace-nowrap">
- SAT: {art.satCode} &middot; Clave: {art.classCode}-{art.groupCode}
+ {art.revision ? `${art.revision} · ` : ''}SAT: {art.satCode} &middot; Clave: {art.classCode}-{art.groupCode}
  </span>
  </td>
 
- {/* Marca */}
+ {/* Cliente / Marca */}
  <td className="py-3 px-4 whitespace-nowrap">
  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-theme-muted text-theme-main border border-theme-subtle inline-block">
- {art.brand}
+ {art.customer || art.brand}
  </span>
  </td>
 
@@ -369,23 +350,16 @@ export const ArticulosPage: React.FC = () => {
  {art.category}
  </td>
 
- {/* Medida */}
- <td className="py-3 px-4 font-semibold text-theme-main whitespace-nowrap">
- {art.size}
+ {/* Tecnología */}
+ <td className="py-3 px-4 whitespace-nowrap">
+ <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-theme-primary/10 text-theme-primary border border-theme-primary/20 inline-block font-mono">
+ {tech}
+ </span>
  </td>
 
  {/* Unidad */}
- <td className="py-3 px-4 text-theme-muted whitespace-nowrap">
+ <td className="py-3 px-4 text-theme-muted whitespace-nowrap font-mono">
  {art.baseUnit}
- </td>
-
- {/* Serialización */}
- <td className="py-3 px-4 whitespace-nowrap">
- <SemanticBadge
- tone={art.serialization === 'Por unidad' ? 'success' : 'neutral'}
- label={art.serialization}
- size="sm"
- />
  </td>
 
  {/* Estado */}
@@ -433,7 +407,8 @@ export const ArticulosPage: React.FC = () => {
  </div>
  </td>
  </tr>
- ))
+ );
+ })
  )}
  </tbody>
  </table>

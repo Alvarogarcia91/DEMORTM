@@ -102,7 +102,7 @@ const getReadableStrategyReason = (strategyKey: string, u: StockItemRecord, isFr
  };
  case 'SHOWROOM_PRIORITY':
  return {
- badge: 'Showroom',
+ badge: 'Prioridad Alta',
  text: 'Prioridad de rotación en piso'
  };
  case 'MANUAL':
@@ -158,7 +158,7 @@ export const CreateTransferWizardModal: React.FC<CreateTransferWizardModalProps>
  } | null>(() => {
  return {
  warehouseId: 'wh-mty-norte',
- warehouseName: 'CEDIS Monterrey Norte',
+ warehouseName: 'Almacén Principal RTM',
  reason: 'Es la ubicación con mayor disponibilidad para este artículo.',
  availableCount: 24,
  };

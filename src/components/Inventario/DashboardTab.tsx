@@ -550,7 +550,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
  {activeNodeData.specialZones.showroom && (
  <div className="p-4 rounded-3xl bg-white border border-purple-500 space-y-1.5 shadow-2xs">
  <div className="flex items-center justify-between">
- <span className="text-[10px] font-bold uppercase text-zinc-900">Showroom Retail</span>
+ <span className="text-[10px] font-bold uppercase text-zinc-900">Área de Muestras / QA</span>
  <span className="font-mono text-xs font-black text-zinc-900">
  {activeNodeData.specialZones.showroom.occupied}/{activeNodeData.specialZones.showroom.capacity}
  </span>

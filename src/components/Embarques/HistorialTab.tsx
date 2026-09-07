@@ -283,8 +283,8 @@ export const HistorialTab: React.FC = () => {
               className="w-full px-3 py-2 rounded-xl border border-zinc-300 bg-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-theme-primary text-zinc-800"
             >
               <option value="ALL">Origen: Todos</option>
-              <option value="CEDIS Monterrey Norte">CEDIS Norte</option>
-              <option value="CEDIS Monterrey Sur">CEDIS Sur</option>
+              <option value="Almacén Principal RTM">Almacén Principal</option>
+              <option value="Almacén Producto Terminado">Almacén PT</option>
             </select>
           </div>
         </div>

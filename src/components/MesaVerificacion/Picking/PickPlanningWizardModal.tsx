@@ -425,9 +425,9 @@ export const PickPlanningWizardModal: React.FC<PickPlanningWizardModalProps> = (
 
  <div className="space-y-2">
  {[
- { uid: 'SC-UID-2026-000109', loc: 'A-A-04', age: 26, dist: 12 },
- { uid: 'SC-UID-2026-000115', loc: 'A-B-02', age: 24, dist: 18 },
- { uid: 'SC-UID-2026-000119', loc: 'B-A-04', age: 20, dist: 35 },
+ { uid: 'TAR-RTM-2026-000109', loc: 'A-A-04', age: 26, dist: 12 },
+ { uid: 'TAR-RTM-2026-000115', loc: 'A-B-02', age: 24, dist: 18 },
+ { uid: 'TAR-RTM-2026-000119', loc: 'B-A-04', age: 20, dist: 35 },
  ].map((alt) => (
  <div
  key={alt.uid}

@@ -106,7 +106,7 @@ export const RequisitionDetailModal: React.FC<RequisitionDetailModalProps> = ({
 
  // Supplier context lookup
  const suggestedSupplierInfo = useMemo(() => {
- const supName = requisition.suggestedSupplier || 'Nayt México';
+ const supName = requisition.suggestedSupplier || 'Sun Chemical México';
  const found = INITIAL_MOCK_SUPPLIERS.find(
  (s) =>
  s.tradeName.toLowerCase().includes(supName.toLowerCase()) ||
@@ -376,7 +376,7 @@ export const RequisitionDetailModal: React.FC<RequisitionDetailModalProps> = ({
  Proveedor Sugerido
  </span>
  <strong className="text-xs font-bold text-theme-main block truncate">
- {requisition.suggestedSupplier || 'Nayt México'}
+ {requisition.suggestedSupplier || 'Sun Chemical México'}
  </strong>
  </div>
 

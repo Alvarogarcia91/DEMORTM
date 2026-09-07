@@ -226,8 +226,8 @@ export const ShippingOrdersTab: React.FC<ShippingOrdersTabProps> = ({
               className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-2.5 py-1.5 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
             >
               <option value="Todos">Todos los CEDIS</option>
-              <option value="CEDIS Monterrey Norte">CEDIS Monterrey Norte</option>
-              <option value="CEDIS Monterrey Sur">CEDIS Monterrey Sur</option>
+              <option value="Almacén Principal RTM">Almacén Principal RTM</option>
+              <option value="Almacén Producto Terminado">Almacén Producto Terminado</option>
             </select>
           </div>
 
