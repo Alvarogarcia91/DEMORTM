@@ -280,7 +280,14 @@ export const PisoQaWorkspace: React.FC<PisoQaWorkspaceProps> = ({
 
         {/* 4 Prioritized Stations in Suggested Route */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-          <div className="p-3.5 rounded-2xl bg-theme-surface border border-purple-200/60 dark:border-purple-900/30 space-y-1.5 shadow-2xs">
+          <button
+            type="button"
+            onClick={() => {
+              const match = audits.find((a) => a.origin === 'OP-2026-95250' && a.type === 'Primera pieza');
+              if (match) setExecutingAudit(match);
+            }}
+            className="p-3.5 rounded-2xl bg-theme-surface border border-purple-200/60 dark:border-purple-900/30 space-y-1.5 shadow-2xs text-left hover:border-purple-500 transition-all hover:scale-[1.01] group cursor-pointer"
+          >
             <div className="flex items-center justify-between">
               <span className="w-5 h-5 rounded-full bg-purple-600 text-white font-bold text-[10px] flex items-center justify-center">
                 1
@@ -289,52 +296,70 @@ export const PisoQaWorkspace: React.FC<PisoQaWorkspaceProps> = ({
                 Bloquea producción
               </span>
             </div>
-            <strong className="block text-theme-main">OP-2026-95250 · Panasonic</strong>
+            <strong className="block text-theme-main group-hover:text-purple-600">OP-95250 · Panasonic</strong>
             <p className="text-[11px] text-theme-muted">Primera Pieza · Mark Andy Scout</p>
             <span className="text-[10px] text-rose-600 font-bold block">18 min esperando arranque</span>
-          </div>
+          </button>
 
-          <div className="p-3.5 rounded-2xl bg-theme-surface border border-purple-200/60 dark:border-purple-900/30 space-y-1.5 shadow-2xs">
+          <button
+            type="button"
+            onClick={() => {
+              const match = audits.find((a) => a.origin === 'OP-2026-95252' && a.type.includes('> 2'));
+              if (match) setExecutingAudit(match);
+            }}
+            className="p-3.5 rounded-2xl bg-theme-surface border border-purple-200/60 dark:border-purple-900/30 space-y-1.5 shadow-2xs text-left hover:border-purple-500 transition-all hover:scale-[1.01] group cursor-pointer"
+          >
             <div className="flex items-center justify-between">
               <span className="w-5 h-5 rounded-full bg-purple-600 text-white font-bold text-[10px] flex items-center justify-center">
                 2
               </span>
               <span className="px-1.5 py-0.2 rounded text-[9px] font-black uppercase bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
-                Corrida &gt; 2h
+                Control &gt; 2h
               </span>
             </div>
-            <strong className="block text-theme-main">OP-2026-95252 · TYCO</strong>
-            <p className="text-[11px] text-theme-muted">Control &gt; 2 horas · Mark Andy 830</p>
-            <span className="text-[10px] text-amber-600 font-bold block">Auditoría mandatoria activa</span>
-          </div>
+            <strong className="block text-theme-main group-hover:text-purple-600">OP-95252 · TYCO</strong>
+            <p className="text-[11px] text-theme-muted">Control &gt; 2h · Mark Andy 830</p>
+            <span className="text-[10px] text-amber-600 font-bold block">Auditoría automática pendiente</span>
+          </button>
 
-          <div className="p-3.5 rounded-2xl bg-theme-surface border border-purple-200/60 dark:border-purple-900/30 space-y-1.5 shadow-2xs">
+          <button
+            type="button"
+            onClick={() => onOpenControl(controls[0])}
+            className="p-3.5 rounded-2xl bg-theme-surface border border-purple-200/60 dark:border-purple-900/30 space-y-1.5 shadow-2xs text-left hover:border-purple-500 transition-all hover:scale-[1.01] group cursor-pointer"
+          >
             <div className="flex items-center justify-between">
               <span className="w-5 h-5 rounded-full bg-purple-600 text-white font-bold text-[10px] flex items-center justify-center">
                 3
               </span>
               <span className="px-1.5 py-0.2 rounded text-[9px] font-black uppercase bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300">
-                Ronda 10:00
+                Captura vence 12 min
               </span>
             </div>
-            <strong className="block text-theme-main">Cuarto de Adhesivos</strong>
+            <strong className="block text-theme-main group-hover:text-purple-600">Cuarto Adhesivos</strong>
             <p className="text-[11px] text-theme-muted">Temperatura fuera de rango (25.8 °C)</p>
             <span className="text-[10px] text-purple-600 font-bold block">Captura de verificación requerida</span>
-          </div>
+          </button>
 
-          <div className="p-3.5 rounded-2xl bg-theme-surface border border-purple-200/60 dark:border-purple-900/30 space-y-1.5 shadow-2xs">
+          <button
+            type="button"
+            onClick={() => {
+              const match = audits.find((a) => a.origin === 'OP-2026-95252' && a.type === 'Auditoría final');
+              if (match) setExecutingAudit(match);
+            }}
+            className="p-3.5 rounded-2xl bg-theme-surface border border-purple-200/60 dark:border-purple-900/30 space-y-1.5 shadow-2xs text-left hover:border-purple-500 transition-all hover:scale-[1.01] group cursor-pointer"
+          >
             <div className="flex items-center justify-between">
               <span className="w-5 h-5 rounded-full bg-purple-600 text-white font-bold text-[10px] flex items-center justify-center">
                 4
               </span>
               <span className="px-1.5 py-0.2 rounded text-[9px] font-black uppercase bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
-                Liberación PT
+                Muestra final
               </span>
             </div>
-            <strong className="block text-theme-main">OP-2026-95249 · BLACK & DECKER</strong>
-            <p className="text-[11px] text-theme-muted">Bache BCH-44947 (145 folletos)</p>
-            <span className="text-[10px] text-emerald-600 font-bold block">Muestreo final para entrega</span>
-          </div>
+            <strong className="block text-theme-main group-hover:text-purple-600">BCH-44948 · TYCO</strong>
+            <p className="text-[11px] text-theme-muted">Muestra pendiente para liberación</p>
+            <span className="text-[10px] text-emerald-600 font-bold block">Liberación de lote PT</span>
+          </button>
         </div>
       </div>
 
@@ -558,30 +583,30 @@ export const PisoQaWorkspace: React.FC<PisoQaWorkspaceProps> = ({
             <div className="p-5 rounded-3xl border border-theme-subtle bg-theme-surface space-y-3 shadow-xs">
               <div className="flex items-center justify-between pb-2 border-b border-theme-subtle">
                 <h4 className="font-extrabold text-sm text-theme-main">OFFSET</h4>
-                <span className="text-xs text-amber-600 font-bold">1 en proceso</span>
+                <span className="text-xs text-rose-600 font-bold">1 primera pieza</span>
               </div>
 
               <div className="space-y-2 text-xs">
                 <button
                   type="button"
                   onClick={() => {
-                    const match = audits.find((a) => a.origin.includes('95249'));
+                    const match = audits.find((a) => a.origin.includes('95249') || a.line.includes('Heidelberg'));
                     if (match) setExecutingAudit(match);
                   }}
                   className="w-full p-3 rounded-2xl border border-amber-300 dark:border-amber-900/60 bg-amber-50/30 dark:bg-amber-950/20 text-left hover:border-amber-500 transition-colors flex items-center justify-between group"
                 >
                   <div>
                     <strong className="block text-theme-main group-hover:text-amber-600">Heidelberg Speedmaster</strong>
-                    <span className="text-[11px] text-theme-muted">OP-95249 · BLACK & DECKER</span>
+                    <span className="text-[11px] text-theme-muted">OP-95249 · BLACK &amp; DECKER</span>
                   </div>
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-500 text-white">
-                    🟡 Muestra Final
+                    🟡 Auditoría en proceso
                   </span>
                 </button>
 
                 <div className="p-3 rounded-2xl border border-theme-subtle bg-theme-muted/20 text-left flex items-center justify-between">
                   <div>
-                    <strong className="block text-theme-muted">Conserver 3-4</strong>
+                    <strong className="block text-theme-muted">Conserver 3–4</strong>
                     <span className="text-[11px] text-theme-muted">Turno cubierto</span>
                   </div>
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40">
@@ -589,10 +614,54 @@ export const PisoQaWorkspace: React.FC<PisoQaWorkspaceProps> = ({
                   </span>
                 </div>
 
+                <button
+                  type="button"
+                  onClick={() => {
+                    const match = audits.find((a) => a.line.includes('Ryobi'));
+                    if (match) setExecutingAudit(match);
+                  }}
+                  className="w-full p-3 rounded-2xl border border-rose-300 dark:border-rose-900/60 bg-rose-50/30 dark:bg-rose-950/20 text-left hover:border-rose-500 transition-colors flex items-center justify-between group"
+                >
+                  <div>
+                    <strong className="block text-theme-main group-hover:text-rose-600">Ryobi 524HX</strong>
+                    <span className="text-[11px] text-theme-muted">OP-95254 · Schneider Electric</span>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-rose-600 text-white">
+                    🔴 Primera pieza
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            {/* ACABADOS */}
+            <div className="p-5 rounded-3xl border border-theme-subtle bg-theme-surface space-y-3 shadow-xs">
+              <div className="flex items-center justify-between pb-2 border-b border-theme-subtle">
+                <h4 className="font-extrabold text-sm text-theme-main">ACABADOS</h4>
+                <span className="text-xs text-amber-600 font-bold">1 pendiente</span>
+              </div>
+
+              <div className="space-y-2 text-xs">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const match = audits.find((a) => a.line.includes('Guillotina 2'));
+                    if (match) setExecutingAudit(match);
+                  }}
+                  className="w-full p-3 rounded-2xl border border-amber-300 dark:border-amber-900/60 bg-amber-50/30 dark:bg-amber-950/20 text-left hover:border-amber-500 transition-colors flex items-center justify-between group"
+                >
+                  <div>
+                    <strong className="block text-theme-main group-hover:text-amber-600">Guillotina 2</strong>
+                    <span className="text-[11px] text-theme-muted">OP-95251 · Alpharma</span>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-500 text-white">
+                    🟡 Medición pendiente
+                  </span>
+                </button>
+
                 <div className="p-3 rounded-2xl border border-theme-subtle bg-theme-muted/20 text-left flex items-center justify-between">
                   <div>
-                    <strong className="block text-theme-muted">Ryobi 524HX</strong>
-                    <span className="text-[11px] text-theme-muted">Programada 14:00</span>
+                    <strong className="block text-theme-muted">Muller Martini</strong>
+                    <span className="text-[11px] text-theme-muted">Operación conforme</span>
                   </div>
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40">
                     ✓ Sin pendientes
@@ -601,10 +670,10 @@ export const PisoQaWorkspace: React.FC<PisoQaWorkspaceProps> = ({
               </div>
             </div>
 
-            {/* ACABADOS & ALMACÉN */}
+            {/* ALMACÉN & AMBIENTAL */}
             <div className="p-5 rounded-3xl border border-theme-subtle bg-theme-surface space-y-3 shadow-xs">
               <div className="flex items-center justify-between pb-2 border-b border-theme-subtle">
-                <h4 className="font-extrabold text-sm text-theme-main">ACABADOS & ALMACÉN</h4>
+                <h4 className="font-extrabold text-sm text-theme-main">ALMACÉN &amp; AMBIENTAL</h4>
                 <span className="text-xs text-purple-600 font-bold">2 acciones</span>
               </div>
 
@@ -639,16 +708,6 @@ export const PisoQaWorkspace: React.FC<PisoQaWorkspaceProps> = ({
                     🟣 Incoming
                   </span>
                 </button>
-
-                <div className="p-3 rounded-2xl border border-theme-subtle bg-theme-muted/20 text-left flex items-center justify-between">
-                  <div>
-                    <strong className="block text-theme-muted">Guillotina Polar 115</strong>
-                    <span className="text-[11px] text-theme-muted">Cuchilla afilada</span>
-                  </div>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40">
-                    ✓ Sin pendientes
-                  </span>
-                </div>
               </div>
             </div>
           </div>

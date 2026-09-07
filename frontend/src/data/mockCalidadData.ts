@@ -95,7 +95,9 @@ export interface QualityAuditItem {
     | 'Preimpresión'
     | 'Cambio de bobina'
     | 'Ajuste de máquina'
-    | 'Cambio de turno';
+    | 'Cambio de turno'
+    | 'Auditoría por operación'
+    | 'Corte eléctrico';
   origin: string; // OP-2026-95250, OC-2026-1402, BOB-REM-042, etc.
   client: string;
   part: string;
@@ -547,6 +549,66 @@ export const QUALITY_AUDITS: QualityAuditItem[] = [
     operationType: 'Impresión + Troquel',
     defectCount: 0,
     notes: 'Empalme de bobina nueva verificado sin salto de registro ni variación tonal.',
+  },
+  {
+    id: 'aud-09',
+    folio: 'AUD-2026-109',
+    type: 'Primera pieza',
+    origin: 'OP-2026-95254',
+    client: 'Schneider Electric',
+    part: 'SCH-77102',
+    revision: 'Rev D',
+    area: 'Offset',
+    line: 'Ryobi 524HX',
+    operator: 'G. Morales',
+    auditor: 'Alicia Ramírez',
+    scheduledAt: '10:05',
+    status: 'Pendiente',
+    waitingMinutes: 22,
+    operationType: 'Impresión',
+    defectCount: 0,
+    notes: 'Prensa Ryobi en espera de liberación de primera pieza para catálogo corporativo de 12 páginas. Bloquea arranque de tiro.',
+  },
+  {
+    id: 'aud-10',
+    folio: 'AUD-2026-110',
+    type: 'Auditoría final',
+    origin: 'OP-2026-95252',
+    client: 'TYCO Electronics',
+    part: 'IS-2420',
+    revision: 'Rev I-01',
+    area: 'Flexografía',
+    line: 'Mesa de Inspección Final',
+    operator: 'C. Medina',
+    auditor: 'Alicia Ramírez',
+    scheduledAt: '10:55',
+    status: 'Pendiente',
+    waitingMinutes: 14,
+    operationType: 'Auditoría Final',
+    defectCount: 0,
+    batches: [
+      { id: 'b-tyco-1', batchNumber: 'BCH-44948', producedQty: 250, sampleSize: 8, defectsFound: 0, status: 'Pendiente', packageCount: 10, unitPerPackage: 25 },
+    ],
+    notes: 'Muestra de bache BCH-44948 lista en mesa para auditoría final AQL 0.65 y traspaso a almacén de PT.',
+  },
+  {
+    id: 'aud-11',
+    folio: 'AUD-2026-111',
+    type: 'Auditoría por operación',
+    origin: 'OP-2026-95251',
+    client: 'Laboratorios Alpharma',
+    part: 'AL-BOX-402',
+    revision: 'Rev B',
+    area: 'Acabados',
+    line: 'Guillotina 2',
+    operator: 'E. Vargas',
+    auditor: 'Alicia Ramírez',
+    scheduledAt: '10:45',
+    status: 'Pendiente',
+    waitingMinutes: 16,
+    operationType: 'Corte',
+    defectCount: 0,
+    notes: 'Medición dimensional pendiente en escuadra y corte de folletos con tolerancia crítica ± 0.5 mm.',
   },
 ];
 
