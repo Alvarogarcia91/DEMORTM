@@ -54,6 +54,9 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  // Cross-module targeted navigation state
  const [targetPurchaseOrderFolio, setTargetPurchaseOrderFolio] = useState<string | null>(null);
  const [targetInboundFolio, setTargetInboundFolio] = useState<string | null>(null);
+ const [targetQuoteCustomerId, setTargetQuoteCustomerId] = useState<string | null>(null);
+ const [targetQuoteFolio, setTargetQuoteFolio] = useState<string | null>(null);
+ const [targetOrderFolio, setTargetOrderFolio] = useState<string | null>(null);
 
  const handleUpdateRequisition = (updated: Requisition) => {
  setRequisitions((prev) =>
@@ -119,10 +122,10 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  branchId: quote.branchId,
  branchName: quote.branchName,
  priceListName: quote.priceListName,
- sellerName: quote.sellerName || 'Admin Demo (Ventas Retail)',
+ sellerName: quote.sellerName || 'Admin Demo (Ventas Industriales)',
  status: 'Pendiente de autorización',
  paymentConditions: quote.paymentConditions || 'Contado / Transferencia SPEI',
- deliveryAddress: 'Av. Vasconcelos #450, Col. del Valle, San Pedro Garza García N.L.',
+ deliveryAddress: 'Av. Industria Pesada #1000, Parque Industrial Milimex, Apodaca N.L.',
  items: quote.items.map((it) => ({
  id: 'ord-it-' + it.id,
  sku: it.sku,
@@ -168,7 +171,8 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  )
  );
 
- // 4. Navigate to pedidos
+ // 4. Navigate to pedidos with selected order
+ setTargetOrderFolio(orderFolio);
  setActiveTab('pedidos');
  };
 
@@ -235,9 +239,11 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  setCustomers((prev) => [newCustomer, ...prev]);
  };
 
- const handleStartQuoteForCustomer = (customer: SalesCustomer) => {
- setActiveTab('cotizaciones');
- };
+  const handleStartQuoteForCustomer = (customer: SalesCustomer) => {
+    setTargetQuoteCustomerId(customer.id);
+    setTargetQuoteFolio(null);
+    setActiveTab('cotizaciones');
+  };
 
  // Cross Navigation: From Compras to Mesa de Verificación
  const handleNavigateToInbound = (folio: string, targetWarehouseId?: string) => {
@@ -347,37 +353,43 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
  />
  </div>
  );
- case 'cotizaciones':
- return (
- <CotizacionesPage
- quotes={quotes}
- customers={customers}
- priceLists={priceLists}
- onSaveQuote={handleSaveQuote}
- onUpdateQuoteStatus={handleUpdateQuoteStatus}
- onSaveCustomer={handleSaveCustomer}
- onGenerateOrderFromQuote={handleGenerateOrderFromQuote}
- onNavigateToOrder={(folio) => {
- setActiveTab('pedidos');
- }}
- />
- );
- case 'pedidos':
- return (
- <PedidosPage
- orders={salesOrders}
- quotes={quotes}
- onAuthorizeOrder={handleAuthorizeSalesOrder}
- onRequestAdjustmentOrder={handleRequestAdjustmentSalesOrder}
- onRejectOrder={handleRejectSalesOrder}
- onNavigateToRequisitions={(sku) => {
- setActiveTab('requisiciones');
- }}
- onNavigateToQuote={(folio) => {
- setActiveTab('cotizaciones');
- }}
- />
- );
+  case 'cotizaciones':
+  return (
+  <CotizacionesPage
+  quotes={quotes}
+  customers={customers}
+  priceLists={priceLists}
+  onSaveQuote={handleSaveQuote}
+  onUpdateQuoteStatus={handleUpdateQuoteStatus}
+  onSaveCustomer={handleSaveCustomer}
+  onGenerateOrderFromQuote={handleGenerateOrderFromQuote}
+  onNavigateToOrder={(folio) => {
+    setTargetOrderFolio(folio);
+    setActiveTab('pedidos');
+  }}
+  initialPreselectedCustomerId={targetQuoteCustomerId}
+  initialSelectedQuoteFolio={targetQuoteFolio}
+  />
+  );
+  case 'pedidos':
+  return (
+  <PedidosPage
+  orders={salesOrders}
+  quotes={quotes}
+  onAuthorizeOrder={handleAuthorizeSalesOrder}
+  onRequestAdjustmentOrder={handleRequestAdjustmentSalesOrder}
+  onRejectOrder={handleRejectSalesOrder}
+  onNavigateToRequisitions={(sku) => {
+  setActiveTab('requisiciones');
+  }}
+  onNavigateToQuote={(folio) => {
+    setTargetQuoteFolio(folio);
+    setTargetQuoteCustomerId(null);
+    setActiveTab('cotizaciones');
+  }}
+  initialSelectedOrderFolio={targetOrderFolio}
+  />
+  );
  case 'clientes':
  return (
  <ClientesPage

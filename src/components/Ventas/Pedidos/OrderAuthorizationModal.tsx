@@ -62,7 +62,7 @@ export const OrderAuthorizationModal: React.FC<OrderAuthorizationModalProps> = (
  <span className="font-semibold text-zinc-900">{order.customerName}</span>
  </div>
  <div>
- <span className="text-zinc-500 block">Sucursal:</span>
+ <span className="text-zinc-500 block">Planta / Almacén:</span>
  <span className="font-semibold text-zinc-900">{order.branchName}</span>
  </div>
  <div>
@@ -84,7 +84,7 @@ export const OrderAuthorizationModal: React.FC<OrderAuthorizationModalProps> = (
  rows={3}
  value={notes}
  onChange={(e) => setNotes(e.target.value)}
- placeholder="Instrucciones para surtido, confirmación de stock, etc..."
+ placeholder="Instrucciones para programación, disponibilidad PT, condiciones comerciales..."
  className="w-full p-2.5 rounded-xl bg-white border border-zinc-300 text-zinc-900 focus:outline-none focus:border-theme-primary text-xs resize-none shadow-2xs"
  />
  </div>

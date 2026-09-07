@@ -237,7 +237,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                     }}
                     className="px-3.5 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold text-xs shadow-xs transition-colors cursor-pointer flex items-center gap-1.5 shrink-0 self-start sm:self-center"
                   >
-                    <span>Ver en Requisiciones / Por comprar</span>
+                    <span>Enviar a Compras</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 )}
@@ -246,16 +246,21 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
 
             {/* Production Prepared Success Toast */}
             {productionPreparedSuccess && (
-              <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-400 shadow-xs flex items-center gap-3 animate-in fade-in duration-150">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-                <div className="flex-1">
-                  <span className="font-bold text-emerald-900 text-xs block">
-                    Orden preparada para programación de producción.
-                  </span>
-                  <p className="text-[11px] text-emerald-800">
-                    Tiraje faltante de <strong className="font-mono">{formatUnits(missingToProduce)} pzas</strong> preasignado tentativamente a línea {technology === 'Offset' ? 'Prensa Heidelberg Speedmaster' : 'Prensa Flexográfica Mark Andy'}. (Demo de enlace operativo con planta).
-                  </p>
+              <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-400 shadow-xs flex items-center justify-between gap-3 animate-in fade-in duration-150">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                  <div className="flex-1">
+                    <span className="font-bold text-emerald-900 text-xs block">
+                      Orden preparada para programación de producción.
+                    </span>
+                    <p className="text-[11px] text-emerald-800">
+                      Tiraje faltante de <strong className="font-mono">{formatUnits(missingToProduce)} pzas</strong> preasignado tentativamente a línea {technology === 'Offset' ? 'Prensa Heidelberg Speedmaster' : 'Prensa Flexográfica Mark Andy'}. (Demo de preparación comercial).
+                    </p>
+                  </div>
                 </div>
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white text-emerald-900 border border-emerald-500 shadow-2xs whitespace-nowrap">
+                  Pendiente de planeación
+                </span>
               </div>
             )}
 
@@ -312,7 +317,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
               {missingToProduce > 0 ? (
                 <div className="p-3 rounded-2xl bg-amber-50/60 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                   <span className="text-amber-900 font-medium">
-                    Se requiere emitir orden de trabajo para producir <strong className="font-mono">{formatUnits(missingToProduce)} unidades</strong> en nave {technology}.
+                    {formatUnits(reservableQty)} pzas pueden cubrirse desde producto terminado. Restan {formatUnits(missingToProduce)} pzas por producir.
                   </span>
                   <button
                     type="button"

@@ -394,7 +394,7 @@ export const QuoteDetailModal: React.FC<QuoteDetailModalProps> = ({
             </div>
 
             <p className="text-[10px] text-zinc-400 italic">
-              * Estimación demostrativa para cotizaciones de Impresos RTM. No sustituye la ingeniería de producto ni el cálculo de imposición definitivo.
+              * Estimación demo. El costeo productivo definitivo será parametrizado con reglas, capacidades, materiales y tiempos RTM.
             </p>
           </div>
 

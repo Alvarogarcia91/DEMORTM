@@ -254,14 +254,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
  <div className="p-2.5 rounded-2xl bg-theme-muted/50 border border-theme-subtle space-y-2">
  <div className="flex items-center gap-2.5">
  <div className="w-8 h-8 rounded-full bg-theme-primary/10 border border-theme-primary/20 flex items-center justify-center font-black text-xs text-theme-primary shrink-0">
- SC
+ RTM
  </div>
  <div className="min-w-0 flex-1">
  <p className="text-xs font-bold text-theme-main truncate">
  Admin Demo
  </p>
  <p className="text-[10px] text-theme-muted truncate">
- Gerencia de Operaciones
+ Gerencia Comercial RTM
  </p>
  </div>
  </div>
