@@ -6,7 +6,7 @@ export const PRODUCTION_MACHINES=[
  ['Heidelberg Speedmaster XL 75','Offset',82],['Conserver 1–2','Offset',64],['Conserver 3–4','Offset',71],['DiDDE 860','Offset',58],['Conserver 8 colores','Offset',76],['Ryobi 1–2','Offset',61],['Guillotina 2','Acabados',88],['Stahl 2','Acabados',73],['Muller Martini','Acabados',69],['Mark Andy 830 7”','Flexografía',67],['Mark Andy 830 10”','Flexografía',96],['Mark Andy Scout 10”','Flexografía',84],['Mark Andy 4120 17”','Flexografía',62],['Allied Gear','Flexografía',55],['Rotoflex I','Flexografía',78],['BGM 2','Flexografía',74],
 ].map(([name,area,load],i)=>({id:`maq-${i+1}`,name,area,load,status:load>92?'Atención':'Operativa',next:`OP-2026-${95240+i}`}));
 const customers=['BLACK & DECKER','TYCO','PANASONIC','ILSCO','FRESENIUS','PENTAIR','ENTAIL ENGINE','TRW'];
-const statuses:ProductionStatus[]=['En proceso','Detenida','Pendiente de calidad','Planeada','Lista para producir','En preparación','Liberada','Terminada','En proceso','Detenida','Planeada','Pendiente de calidad','En proceso','Lista para producir','Terminada','Liberada','En preparación','Detenida','Terminada','Planeada'];
+const statuses:ProductionStatus[]=['En proceso','Detenida','Pendiente de calidad','Planeada','Lista para producir','En preparación','Liberada','Terminada','En proceso','Detenida','Detenida','Pendiente de calidad','En proceso','Lista para producir','Terminada','Liberada','En preparación','Detenida','Terminada','Pendiente de calidad'];
 export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (_, i) => {
  const area: ProductionArea = i % 3 === 0 ? 'Offset' : i % 3 === 1 ? 'Flexografía' : 'Acabados';
  const status = statuses[i];

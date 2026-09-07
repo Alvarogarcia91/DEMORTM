@@ -41,7 +41,8 @@ import {
   LayoutDashboard,
   CheckCheck,
   ShieldCheck,
-  Wrench
+  Wrench,
+  Factory
 } from 'lucide-react';
 import { NavItemKey } from './Sidebar';
 
@@ -112,6 +113,7 @@ export const ConfiguracionView: React.FC = () => {
       case 'cxp': return Scale;
       case 'nomina': return UserCheck;
       case 'mantenimiento': return Wrench;
+      case 'produccion': return Factory;
       case 'configuracion': return Palette;
       default: return Layers;
     }
