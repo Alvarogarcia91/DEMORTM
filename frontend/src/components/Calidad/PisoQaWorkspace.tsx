@@ -3,7 +3,8 @@ import {
   ShieldCheck, AlertTriangle, CheckCircle2, Clock, MapPin,
   Sparkles, ArrowRight, Activity, Building2, Layers,
   ChevronRight, Thermometer, Filter, AlertOctagon, User,
-  Check, RefreshCw, Eye, Printer, Play, Flag
+  Check, RefreshCw, Eye, Printer, Play, Flag,
+  Disc, Wrench, Zap
 } from 'lucide-react';
 import {
   QualityAuditItem,
@@ -60,25 +61,32 @@ export const PisoQaWorkspace: React.FC<PisoQaWorkspaceProps> = ({
   }, [audits, selectedArea]);
 
   // Prioritized Route Order
+  // Prioritized Route Order (Reglas P0 - Doc v13):
   // 1. Bloquea producción (Primera pieza)
-  // 2. Vencida (waitingMinutes > 15)
-  // 3. Auditoría final
-  // 4. Control > 2h
-  // 5. Otros
+  // 2. Vencida (waitingMinutes >= 15)
+  // 3. Auditoría final (liberación a PT)
+  // 4. Cambio de bobina / Ajuste de máquina / Corte eléctrico
+  // 5. Control > 2h
+  // 6. Cambio de turno
   const prioritizedRoute = useMemo(() => {
     const list = [...pendingAudits];
     return list.sort((a, b) => {
-      const scoreA =
-        (a.type === 'Primera pieza' ? 100 : 0) +
-        (a.waitingMinutes > 15 ? 50 : 0) +
-        (a.type === 'Auditoría final' ? 40 : 0) +
-        (a.type === 'Control > 2 horas' ? 30 : 0);
-      const scoreB =
-        (b.type === 'Primera pieza' ? 100 : 0) +
-        (b.waitingMinutes > 15 ? 50 : 0) +
-        (b.type === 'Auditoría final' ? 40 : 0) +
-        (b.type === 'Control > 2 horas' ? 30 : 0);
-      return scoreB - scoreA;
+      const getPriorityScore = (item: QualityAuditItem) => {
+        if (item.type === 'Primera pieza') return 1000 + item.waitingMinutes;
+        if (item.waitingMinutes >= 15) return 800 + item.waitingMinutes;
+        if (item.type === 'Auditoría final') return 600 + item.waitingMinutes;
+        if (
+          item.type === 'Cambio de bobina' ||
+          item.type === 'Ajuste de máquina' ||
+          item.type === 'Corte eléctrico'
+        ) {
+          return 400 + item.waitingMinutes;
+        }
+        if (item.type === 'Control > 2 horas') return 300 + item.waitingMinutes;
+        if (item.type === 'Cambio de turno') return 200 + item.waitingMinutes;
+        return 100 + item.waitingMinutes;
+      };
+      return getPriorityScore(b) - getPriorityScore(a);
     });
   }, [pendingAudits]);
 
@@ -409,9 +417,47 @@ export const PisoQaWorkspace: React.FC<PisoQaWorkspaceProps> = ({
                           PRIORIDAD {index + 1} &middot; Esperando {audit.waitingMinutes} min
                         </span>
 
-                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200">
-                          {audit.type.toUpperCase()}
-                        </span>
+                        {/* 7 Disparadores QA Visibles P0 */}
+                        {isFirstPiece ? (
+                          <span className="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase bg-rose-600 text-white tracking-wide flex items-center gap-1 shadow-2xs">
+                            <AlertOctagon className="w-3 h-3" />
+                            1 · PRIMERA PIEZA · BLOQUEA PRODUCCIÓN
+                          </span>
+                        ) : audit.type === 'Control > 2 horas' ? (
+                          <span className="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase bg-amber-500 text-white tracking-wide flex items-center gap-1 shadow-2xs">
+                            <Clock className="w-3 h-3" />
+                            2 · CONTROL &gt;2H · VENCIDO
+                          </span>
+                        ) : audit.type === 'Cambio de bobina' ? (
+                          <span className="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase bg-purple-600 text-white tracking-wide flex items-center gap-1 shadow-2xs">
+                            <Disc className="w-3 h-3" />
+                            3 · CAMBIO DE BOBINA · NUEVO
+                          </span>
+                        ) : audit.type === 'Ajuste de máquina' ? (
+                          <span className="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase bg-amber-600 text-white tracking-wide flex items-center gap-1 shadow-2xs">
+                            <Wrench className="w-3 h-3" />
+                            4 · AJUSTE DE MÁQUINA · NUEVO
+                          </span>
+                        ) : audit.type === 'Corte eléctrico' ? (
+                          <span className="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase bg-red-600 text-white tracking-wide flex items-center gap-1 shadow-2xs">
+                            <Zap className="w-3 h-3" />
+                            6 · CORTE ELÉCTRICO · REINICIO
+                          </span>
+                        ) : audit.type === 'Cambio de turno' ? (
+                          <span className="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase bg-blue-600 text-white tracking-wide flex items-center gap-1 shadow-2xs">
+                            <Clock className="w-3 h-3" />
+                            5 · CAMBIO DE TURNO · RELEVO
+                          </span>
+                        ) : isFinal ? (
+                          <span className="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase bg-emerald-600 text-white tracking-wide flex items-center gap-1 shadow-2xs">
+                            <ShieldCheck className="w-3 h-3" />
+                            7 · AUDITORÍA FINAL · LIBERACIÓN PT
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200">
+                            {audit.type.toUpperCase()}
+                          </span>
+                        )}
 
                         <span className="text-xs font-mono font-bold text-theme-muted">{audit.folio}</span>
                       </div>
@@ -433,11 +479,19 @@ export const PisoQaWorkspace: React.FC<PisoQaWorkspaceProps> = ({
                           <span className="font-bold">Motivo del evento:</span>
                           <span className={`${isFirstPiece ? 'text-rose-600 font-bold' : 'text-theme-muted'}`}>
                             {isFirstPiece
-                              ? 'Inicio de corrida · PRODUCCIÓN BLOQUEADA'
+                              ? 'Inicio de corrida · PRODUCCIÓN BLOQUEADA HASTA LIBERACIÓN'
                               : audit.type === 'Control > 2 horas'
-                              ? 'Producción continua > 2 horas sin control'
+                              ? 'Corrida > 2 horas sin inspección · Riesgo de desvío acumulado'
+                              : audit.type === 'Cambio de bobina'
+                              ? 'Bobina cambiada en devanador · Validación de tiro inicial y adherencia'
+                              : audit.type === 'Ajuste de máquina'
+                              ? 'Ajuste de registro/corte/color reportado · Validación de reanudación'
+                              : audit.type === 'Corte eléctrico'
+                              ? 'Reinicio de línea tras corte de energía · Estabilización requerida'
+                              : audit.type === 'Cambio de turno'
+                              ? 'Relevo 14:00 · Verificación de continuidad entre operadores'
                               : audit.type === 'Auditoría final'
-                              ? 'Lote terminado listo para liberación a PT'
+                              ? 'Tiraje terminado · Muestreo final obligatorio para liberación a PT'
                               : audit.notes || 'Auditoría operativa de proceso'}
                           </span>
                         </div>

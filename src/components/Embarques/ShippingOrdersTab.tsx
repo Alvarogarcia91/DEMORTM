@@ -13,7 +13,8 @@ import {
   AlertTriangle,
   Building2,
   Calendar,
-  Layers
+  Layers,
+  Sparkles,
 } from 'lucide-react';
 import { 
   ShippingOutboundOrder, 
@@ -21,6 +22,10 @@ import {
   getShippingOrdersList,
   assignTransportToOrder 
 } from '../../data/mockShippingData';
+import { 
+  FinishedGoodsRelease, 
+  finishedGoodToShippingOrder 
+} from '../../data/mockFinishedGoodsData';
 import { getRemisionForOutboundOrder, OutboundRemision, getRemisionesList } from '../../data/mockRemisionesData';
 import { StatusBadge } from '../common/StatusBadge';
 import { AssignTransportModal } from './AssignTransportModal';
@@ -30,12 +35,40 @@ import { RemisionPreviewModal } from '../MesaVerificacion/Outbound/RemisionPrevi
 
 interface ShippingOrdersTabProps {
   onNavigateToInRoute?: () => void;
+  releasedFinishedGoods?: FinishedGoodsRelease[];
+  onOpenPtDetail?: (pt: FinishedGoodsRelease) => void;
 }
 
 export const ShippingOrdersTab: React.FC<ShippingOrdersTabProps> = ({
   onNavigateToInRoute,
+  releasedFinishedGoods,
+  onOpenPtDetail,
 }) => {
-  const [orders, setOrders] = useState<ShippingOutboundOrder[]>(() => getShippingOrdersList());
+  const [orders, setOrders] = useState<ShippingOutboundOrder[]>(() => {
+    const base = getShippingOrdersList();
+    if (releasedFinishedGoods && releasedFinishedGoods.length > 0) {
+      const mapped = releasedFinishedGoods.map((pt, idx) => finishedGoodToShippingOrder(pt, idx));
+      const existing = new Set(mapped.map((m) => m.folio));
+      return [...mapped, ...base.filter((b) => !existing.has(b.folio))];
+    }
+    return base;
+  });
+
+  React.useEffect(() => {
+    if (releasedFinishedGoods && releasedFinishedGoods.length > 0) {
+      setOrders((prev) => {
+        const mapped = releasedFinishedGoods.map((pt, idx) => finishedGoodToShippingOrder(pt, idx));
+        const existing = new Set(prev.map((p) => p.folio));
+        const newItems = mapped.filter((m) => !existing.has(m.folio));
+        if (newItems.length === 0) return prev;
+        return [...newItems, ...prev];
+      });
+    }
+  }, [releasedFinishedGoods]);
+
+  const recentPt = releasedFinishedGoods?.find((pt) => pt.isRecentRelease) || releasedFinishedGoods?.[0];
+  const matchingRecentOrder = recentPt ? orders.find((o) => o.folio === `OS-${recentPt.lotNumber}`) : null;
+
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<'Todos' | 'Venta' | 'Traspaso'>('Todos');
   const [statusFilter, setStatusFilter] = useState<string>('Todos');
@@ -265,6 +298,124 @@ export const ShippingOrdersTab: React.FC<ShippingOrdersTabProps> = ({
 
         </div>
 
+      </div>
+
+      {/* Featured Card: Lote PT recién liberado por Calidad */}
+      {recentPt && (
+        <div className="rounded-3xl border-2 border-emerald-500/40 bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent p-5 text-xs shadow-md">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="flex items-start gap-3.5">
+              <div className="w-11 h-11 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5">
+                <CheckCircle2 className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-md bg-emerald-600 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-white">
+                    ✓ RECIÉN LIBERADO POR CALIDAD
+                  </span>
+                  <span className="rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-bold px-2 py-0.5 text-[10px]">
+                    Listo para Carga y Despacho
+                  </span>
+                  <span className="font-mono text-emerald-700 dark:text-emerald-300 font-black text-xs">
+                    Lote: {recentPt.lotNumber}
+                  </span>
+                  <span className="font-mono text-theme-muted text-[11px]">
+                    Orden Salida: OS-{recentPt.lotNumber}
+                  </span>
+                </div>
+
+                <h3 className="text-base font-black text-theme-main">
+                  {recentPt.client} · {recentPt.partNumber} ({recentPt.finishedQty.toLocaleString()} pzas)
+                </h3>
+
+                <p className="text-theme-muted text-[11px] leading-relaxed max-w-3xl">
+                  Inspección final de calidad AQL 0.65 concluida por <b className="text-theme-main">{recentPt.releasedBy}</b>. Baches estibados en <b className="font-mono text-theme-main">{recentPt.warehouseName} ({recentPt.location})</b>. Orden de salida lista para asignación y validación de carga.
+                </p>
+
+                <div className="pt-1.5 flex flex-wrap items-center gap-3 text-[11px]">
+                  <div>
+                    <span className="text-theme-muted">Presentación: </span>
+                    <b className="text-theme-main font-bold">{recentPt.packageCount || 50} bultos tarimados</b>
+                  </div>
+                  <div className="h-3 w-px bg-theme-subtle" />
+                  <div>
+                    <span className="text-theme-muted">Pedido Origen: </span>
+                    <b className="font-mono text-theme-main font-bold">{recentPt.pedido}</b>
+                  </div>
+                  <div className="h-3 w-px bg-theme-subtle" />
+                  <div>
+                    <span className="text-theme-muted">OP Fabril: </span>
+                    <b className="font-mono text-theme-main font-bold">{recentPt.opFolio}</b>
+                  </div>
+                  <div className="h-3 w-px bg-theme-subtle" />
+                  <div>
+                    <span className="text-theme-muted">Andén Sugerido: </span>
+                    <b className="font-mono text-theme-main font-bold">EMB-02 (Rampa PT)</b>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap lg:flex-col items-stretch gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  const targetOrder = matchingRecentOrder || finishedGoodToShippingOrder(recentPt);
+                  setSelectedOrderForLoad(targetOrder);
+                }}
+                className="flex-1 lg:flex-initial flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 text-xs font-black shadow-md transition-all hover:scale-[1.02] cursor-pointer"
+              >
+                <Send className="w-4 h-4" />
+                Preparar salida
+              </button>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => onOpenPtDetail?.(recentPt)}
+                  className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-theme-subtle bg-theme-surface hover:bg-theme-muted/40 text-theme-main px-3 py-1.5 text-xs font-bold shadow-2xs cursor-pointer"
+                >
+                  <FileText className="w-3.5 h-3.5 text-theme-primary" />
+                  Ver Ficha PT
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const targetOrder = matchingRecentOrder || finishedGoodToShippingOrder(recentPt);
+                    setSelectedOrderForAssign(targetOrder);
+                  }}
+                  className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-theme-subtle bg-theme-surface hover:bg-theme-muted/40 text-theme-main px-3 py-1.5 text-xs font-bold shadow-2xs cursor-pointer"
+                >
+                  <Truck className="w-3.5 h-3.5 text-theme-primary" />
+                  Asignar Unidad
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sugerencia del sistema morada (IA Logística) */}
+      <div className="rounded-3xl border border-purple-500/30 bg-purple-500/5 p-4 text-xs">
+        <div className="flex items-start gap-3">
+          <div className="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-600 dark:text-purple-400 border border-purple-500/30 flex items-center justify-center shrink-0">
+            <Sparkles className="w-4 h-4" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="rounded-md bg-purple-600 px-2 py-0.5 text-[9px] font-black uppercase text-white">
+                SISTEMA
+              </span>
+              <span className="font-bold text-purple-900 dark:text-purple-300">
+                Consolidación Inteligente de Salidas de Producto Terminado
+              </span>
+            </div>
+            <p className="text-theme-muted text-[11px] mt-1">
+              Se detectaron baches de Fresenius Kabi y Black & Decker listos en Almacén PT Nave 1. Puedes despacharlos en la ruta de las 16:00 h (Camión #08 · Isuzu NPR) ahorrando 45 minutos de recorrido metropolitano.
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Orders Table */}

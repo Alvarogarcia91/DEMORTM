@@ -610,6 +610,63 @@ export const QUALITY_AUDITS: QualityAuditItem[] = [
     defectCount: 0,
     notes: 'Medición dimensional pendiente en escuadra y corte de folletos con tolerancia crítica ± 0.5 mm.',
   },
+  {
+    id: 'aud-12',
+    folio: 'AUD-2026-112',
+    type: 'Cambio de bobina',
+    origin: 'OP-2026-95250',
+    client: 'Panasonic Industrial',
+    part: '526412 | G |',
+    revision: 'Rev G',
+    area: 'Flexografía',
+    line: 'Mark Andy Scout 10”',
+    operator: 'María Ríos',
+    auditor: 'Alicia Ramírez',
+    scheduledAt: '11:10',
+    status: 'Pendiente',
+    waitingMinutes: 7,
+    operationType: 'Impresión + Troquel',
+    defectCount: 0,
+    notes: 'Cambio de rollo matriz: desmontada BOB-BOPP-2024-08, montada BOB-BOPP-2024-09. Validación de tiro inicial requerida.',
+  },
+  {
+    id: 'aud-13',
+    folio: 'AUD-2026-113',
+    type: 'Ajuste de máquina',
+    origin: 'OP-2026-95252',
+    client: 'TYCO Electronics',
+    part: 'IS-2420',
+    revision: 'Rev I-01',
+    area: 'Flexografía',
+    line: 'Mark Andy 830 10”',
+    operator: 'C. Medina',
+    auditor: 'Alicia Ramírez',
+    scheduledAt: '11:15',
+    status: 'Pendiente',
+    waitingMinutes: 6,
+    operationType: 'Impresión + Troquel',
+    defectCount: 0,
+    notes: 'Ajuste de presión en cilindro anilox y alineación de suaje rotativo. Requiere aprobación QA antes de reanudar tiraje.',
+  },
+  {
+    id: 'aud-14',
+    folio: 'AUD-2026-114',
+    type: 'Cambio de turno',
+    origin: 'OP-2026-95250',
+    client: 'Panasonic Industrial',
+    part: '526412 | G |',
+    revision: 'Rev G',
+    area: 'Flexografía',
+    line: 'Mark Andy Scout 10”',
+    operator: 'María Ríos',
+    auditor: 'Alicia Ramírez',
+    scheduledAt: '14:00',
+    status: 'Pendiente',
+    waitingMinutes: 2,
+    operationType: 'Impresión + Troquel',
+    defectCount: 0,
+    notes: 'Entrega de puesto y relevo de turno 14:00 (M. Ríos -> R. Méndez). Verificación de continuidad de parámetros.',
+  },
 ];
 
 // Reutilizamos QUALITY_RELEASES para compatibilidad pero enriquecido
@@ -1244,6 +1301,45 @@ export const BACKUP_LOGS: BackupLogEntry[] = [
   },
 ];
 
+export interface DocumentDestructionEvidence {
+  certificateNumber: string;
+  date: string;
+  destroyedBy: string;
+  physicalCopiesRetrieved: number;
+  destructionMethod: 'Triturado mecánico de alta seguridad' | 'Incineración controlada' | 'Baja digital';
+  retrievalLocation: string;
+  notes?: string;
+}
+
+export interface DocumentRevision {
+  revision: string;
+  effectiveDate: string;
+  releasedBy: string;
+  approvedBy: string;
+  changeDescription: string;
+  status: 'Vigente' | 'Obsoleta' | 'En revisión' | 'Borrador';
+  documentUrl?: string;
+  destructionEvidence?: DocumentDestructionEvidence;
+}
+
+export interface DocumentAuditTrailEntry {
+  id: string;
+  timestamp: string;
+  action:
+    | 'Creación'
+    | 'Nueva Revisión'
+    | 'Aprobación'
+    | 'Puesta en Vigor'
+    | 'Paso a Obsoleto'
+    | 'Retiro Físico'
+    | 'Acta de Destrucción'
+    | 'Bloqueo en Producción';
+  user: string;
+  role: string;
+  notes: string;
+  revision: string;
+}
+
 export interface ControlledDocument {
   code: string;
   title: string;
@@ -1252,18 +1348,465 @@ export interface ControlledDocument {
   effectiveDate: string;
   owner: string;
   applicableArea: string;
-  status: 'Vigente' | 'En revisión';
+  status: 'Vigente' | 'En revisión' | 'Obsoleto';
+  description?: string;
+  isoStandard?: string;
+  linkedParts?: string[];
+  linkedClients?: string[];
+  linkedOps?: string[];
+  physicalCopiesCount?: number;
+  physicalLocations?: string[];
+  pendingApprover?: string;
+  revisions: DocumentRevision[];
+  auditTrail: DocumentAuditTrailEntry[];
 }
 
 export const CONTROLLED_DOCUMENTS: ControlledDocument[] = [
-  { code: 'FM-PR-024', title: 'Hoja de Viajero y Control de OP', type: 'Formato', revision: 'Rev 5', effectiveDate: '01 Ago 2026', owner: 'Producción / Planeación', applicableArea: 'Toda la planta', status: 'Vigente' },
-  { code: 'FM-QA-153', title: 'Etiqueta Térmica de Identificación de Caja PT', type: 'Formato', revision: 'Rev 4', effectiveDate: '15 Jul 2026', owner: 'Calidad', applicableArea: 'Acabados / PT', status: 'Vigente' },
-  { code: 'FM-QA-172', title: 'Registro y Liberación de Primera Pieza', type: 'Formato', revision: 'Rev 3', effectiveDate: '10 Jun 2026', owner: 'Calidad', applicableArea: 'Piso de Prensa', status: 'Vigente' },
-  { code: 'FM-QA-180', title: 'Boleta de Identificación de Material en HOLD / Cuarentena', type: 'Formato', revision: 'Rev 2', effectiveDate: '20 May 2026', owner: 'Calidad', applicableArea: 'Cuarentena', status: 'Vigente' },
-  { code: 'WI-PR-012', title: 'Instructivo de Trabajo: Montaje y Ajuste de Tintas Flexo', type: 'WI', revision: 'Rev 6', effectiveDate: '01 Jun 2026', owner: 'Producción Flexo', applicableArea: 'Prensa Mark Andy', status: 'Vigente' },
-  { code: 'WI-QA-004', title: 'Instructivo: Medición de Temperatura y Humedad en Almacén', type: 'WI', revision: 'Rev 2', effectiveDate: '12 Ene 2026', owner: 'Calidad', applicableArea: 'Almacén MP', status: 'Vigente' },
-  { code: 'PCP-526412', title: 'Plan de Control: Etiqueta Panasonic 526412', type: 'Plan de Control', revision: 'Rev G', effectiveDate: '05 Sep 2026', owner: 'Calidad (Alicia Ramírez)', applicableArea: 'Flexografía', status: 'Vigente' },
-  { code: 'PFMEA-FLX-01', title: 'Análisis de Modo y Efecto de Falla: Flexografía UV', type: 'PFMEA', revision: 'Rev 3', effectiveDate: '15 Mar 2026', owner: 'Ingeniería & Calidad', applicableArea: 'Flexografía', status: 'Vigente' },
+  {
+    code: 'FM-QA-153',
+    title: 'Etiqueta Térmica de Identificación de Caja PT',
+    type: 'Formato',
+    revision: 'Rev 4',
+    effectiveDate: '15 Jul 2026',
+    owner: 'Calidad (Alicia Ramírez)',
+    applicableArea: 'Acabados / PT',
+    status: 'Vigente',
+    description: 'Especificación de layout Zebra para empaque final con código de barras GS1-128 y DataMatrix de cliente.',
+    isoStandard: 'ISO 9001:2015 § 8.5.2 Identificación y Trazabilidad',
+    linkedParts: ['526412 | G |', 'IS-2420', 'NA472050'],
+    linkedClients: ['Panasonic Industrial', 'TYCO Electronics', 'BLACK & DECKER'],
+    linkedOps: ['OP-2026-95250', 'OP-2026-95252'],
+    physicalCopiesCount: 3,
+    physicalLocations: ['Mesa de Inspección Final', 'Almacén PT - Bahía 2', 'Oficina Calidad'],
+    revisions: [
+      {
+        revision: 'Rev 4',
+        effectiveDate: '15 Jul 2026',
+        releasedBy: 'Alicia Ramírez',
+        approvedBy: 'Iván Estrada (Producción)',
+        changeDescription: 'Adecuación de código DataMatrix GS1 para trazabilidad FDA y campo de bache obligatorio.',
+        status: 'Vigente',
+      },
+      {
+        revision: 'Rev 3',
+        effectiveDate: '10 Nov 2025',
+        releasedBy: 'Alicia Ramírez',
+        approvedBy: 'Iván Estrada',
+        changeDescription: 'Versión previa reemplazada por Rev 4.',
+        status: 'Obsoleta',
+        destructionEvidence: {
+          certificateNumber: 'ACT-DEST-2026-042',
+          date: '16 Jul 2026',
+          destroyedBy: 'Alicia Ramírez (Calidad)',
+          physicalCopiesRetrieved: 4,
+          destructionMethod: 'Triturado mecánico de alta seguridad',
+          retrievalLocation: 'Mesa Empaque Acabados, Almacén PT',
+          notes: '4 copias plastificadas trituradas ante supervisor de turno.',
+        },
+      },
+    ],
+    auditTrail: [
+      {
+        id: 'aud-doc-01',
+        timestamp: '15 Jul 2026 · 11:30',
+        action: 'Puesta en Vigor',
+        user: 'Alicia Ramírez',
+        role: 'Aseguramiento de Calidad',
+        notes: 'Puesta en vigor de Rev 4 autorizada por Iván Estrada.',
+        revision: 'Rev 4',
+      },
+      {
+        id: 'aud-doc-02',
+        timestamp: '16 Jul 2026 · 09:15',
+        action: 'Acta de Destrucción',
+        user: 'Alicia Ramírez',
+        role: 'Aseguramiento de Calidad',
+        notes: 'Retiro y trituración de 4 copias de Rev 3 (Acta ACT-DEST-2026-042).',
+        revision: 'Rev 3',
+      },
+    ],
+  },
+  {
+    code: 'PCP-526412',
+    title: 'Plan de Control: Etiqueta Panasonic 526412',
+    type: 'Plan de Control',
+    revision: 'Rev G',
+    effectiveDate: '05 Sep 2026',
+    owner: 'Calidad (Alicia Ramírez)',
+    applicableArea: 'Flexografía',
+    status: 'Vigente',
+    description: 'Plan de control de proceso para impresión, troquel y embobinado de etiquetas automotrices.',
+    isoStandard: 'IATF 16949 § 8.5.1.1 Plan de Control',
+    linkedParts: ['526412 | G |'],
+    linkedClients: ['Panasonic Industrial'],
+    linkedOps: ['OP-2026-95250'],
+    physicalCopiesCount: 2,
+    physicalLocations: ['Prensa Mark Andy Scout', 'Carpeta de Plan de Calidad Flexo'],
+    revisions: [
+      {
+        revision: 'Rev G',
+        effectiveDate: '05 Sep 2026',
+        releasedBy: 'Alicia Ramírez',
+        approvedBy: 'Iván Estrada',
+        changeDescription: 'Actualización por cambio de ingeniería de Panasonic a Rev G. Se adiciona cota crítica de radio de esquina.',
+        status: 'Vigente',
+      },
+      {
+        revision: 'Rev F',
+        effectiveDate: '12 Feb 2026',
+        releasedBy: 'Alicia Ramírez',
+        approvedBy: 'Iván Estrada',
+        changeDescription: 'Versión previa reemplazada por Rev G.',
+        status: 'Obsoleta',
+        destructionEvidence: {
+          certificateNumber: 'ACT-DEST-2026-088',
+          date: '06 Sep 2026',
+          destroyedBy: 'Alicia Ramírez',
+          physicalCopiesRetrieved: 2,
+          destructionMethod: 'Triturado mecánico de alta seguridad',
+          retrievalLocation: 'Carpeta de Prensa Mark Andy Scout',
+          notes: 'Copias de Rev F retiradas de prensa y destruidas.',
+        },
+      },
+    ],
+    auditTrail: [
+      {
+        id: 'aud-doc-03',
+        timestamp: '05 Sep 2026 · 14:20',
+        action: 'Puesta en Vigor',
+        user: 'Alicia Ramírez',
+        role: 'Calidad',
+        notes: 'Publicación oficial de Rev G vinculada a OP-95250.',
+        revision: 'Rev G',
+      },
+      {
+        id: 'aud-doc-04',
+        timestamp: '06 Sep 2026 · 08:30',
+        action: 'Acta de Destrucción',
+        user: 'Alicia Ramírez',
+        role: 'Calidad',
+        notes: 'Retiro físico de Rev F en Mark Andy Scout.',
+        revision: 'Rev F',
+      },
+    ],
+  },
+  {
+    code: 'PL-526412',
+    title: 'Plano de Ingeniería / Dibujo Mecánico: Etiqueta 526412',
+    type: 'Plano',
+    revision: 'Rev G',
+    effectiveDate: '02 Sep 2026',
+    owner: 'Ingeniería de Producto',
+    applicableArea: 'Prensa Flexo / Preprensa',
+    status: 'Vigente',
+    description: 'Dibujo mecánico con tolerancias de suaje, sentido de embobinado No. 4 y gaps de desmalle.',
+    isoStandard: 'ISO 9001:2015 § 7.5.3 Control de Información Documentada',
+    linkedParts: ['526412 | G |'],
+    linkedClients: ['Panasonic Industrial'],
+    linkedOps: ['OP-2026-95250'],
+    physicalCopiesCount: 2,
+    physicalLocations: ['Taller de Suajes y Placas', 'Prensa Mark Andy Scout'],
+    revisions: [
+      {
+        revision: 'Rev G',
+        effectiveDate: '02 Sep 2026',
+        releasedBy: 'Jorge Márquez (Preprensa)',
+        approvedBy: 'Alicia Ramírez',
+        changeDescription: 'Ajuste de radio de esquina a 0.125" y actualización de cajetín con firma de cliente.',
+        status: 'Vigente',
+      },
+      {
+        revision: 'Rev F',
+        effectiveDate: '10 Ene 2026',
+        releasedBy: 'Jorge Márquez',
+        approvedBy: 'Alicia Ramírez',
+        changeDescription: 'Dibujo superado por rediseño de Panasonic.',
+        status: 'Obsoleta',
+        destructionEvidence: {
+          certificateNumber: 'ACT-DEST-2026-085',
+          date: '03 Sep 2026',
+          destroyedBy: 'Jorge Márquez',
+          physicalCopiesRetrieved: 3,
+          destructionMethod: 'Triturado mecánico de alta seguridad',
+          retrievalLocation: 'Prensa Scout y CTP Preprensa',
+          notes: '3 impresiones a escala 1:1 trituradas.',
+        },
+      },
+    ],
+    auditTrail: [
+      {
+        id: 'aud-doc-05',
+        timestamp: '02 Sep 2026 · 10:00',
+        action: 'Puesta en Vigor',
+        user: 'Jorge Márquez',
+        role: 'Preprensa',
+        notes: 'Liberación de plano Rev G con aprobación de cliente.',
+        revision: 'Rev G',
+      },
+    ],
+  },
+  {
+    code: 'WI-PR-012',
+    title: 'Instructivo de Trabajo: Montaje y Ajuste de Tintas Flexo',
+    type: 'WI',
+    revision: 'Rev 6',
+    effectiveDate: '01 Jun 2026',
+    owner: 'Producción Flexo',
+    applicableArea: 'Prensa Mark Andy',
+    status: 'Vigente',
+    description: 'Procedimiento de batido, ajuste de pH y viscosidad en copa Zahn #2 para tintas base agua y solvente.',
+    isoStandard: 'ISO 9001:2015 § 8.5.1 Control de la Producción',
+    linkedParts: ['IS-2420', '526412 | G |'],
+    linkedClients: ['TYCO Electronics', 'Panasonic Industrial'],
+    linkedOps: ['OP-2026-95252', 'OP-2026-95250'],
+    physicalCopiesCount: 4,
+    physicalLocations: ['Mark Andy Scout', 'Mark Andy 830', 'Mark Andy 4120', 'Cuarto de Tintas'],
+    revisions: [
+      {
+        revision: 'Rev 6',
+        effectiveDate: '01 Jun 2026',
+        releasedBy: 'Iván Estrada',
+        approvedBy: 'Alicia Ramírez',
+        changeDescription: 'Inclusión de rangos de curado UV por lámpara LED y control de viscosidad.',
+        status: 'Vigente',
+      },
+      {
+        revision: 'Rev 5',
+        effectiveDate: '15 Ago 2025',
+        releasedBy: 'Iván Estrada',
+        approvedBy: 'Alicia Ramírez',
+        changeDescription: 'Versión obsoleta.',
+        status: 'Obsoleta',
+        destructionEvidence: {
+          certificateNumber: 'ACT-DEST-2026-031',
+          date: '05 Jun 2026',
+          destroyedBy: 'Alicia Ramírez',
+          physicalCopiesRetrieved: 2,
+          destructionMethod: 'Triturado mecánico de alta seguridad',
+          retrievalLocation: 'Prensa Mark Andy 830',
+          notes: '2 copias retiradas; pendiente verificar 1 copia en cuarto de tintas.',
+        },
+      },
+    ],
+    auditTrail: [
+      {
+        id: 'aud-doc-06',
+        timestamp: '01 Jun 2026 · 09:00',
+        action: 'Puesta en Vigor',
+        user: 'Iván Estrada',
+        role: 'Gerente Producción',
+        notes: 'Puesta en vigor de Rev 6.',
+        revision: 'Rev 6',
+      },
+    ],
+  },
+  {
+    code: 'FM-QA-172',
+    title: 'Registro y Liberación de Primera Pieza',
+    type: 'Formato',
+    revision: 'Rev 3',
+    effectiveDate: '10 Jun 2026',
+    owner: 'Calidad',
+    applicableArea: 'Piso de Prensa',
+    status: 'Vigente',
+    description: 'Checklist físico de validación de arranque de máquina con tolerancia dimensional y prueba de cinta 3M 610.',
+    isoStandard: 'ISO 9001:2015 § 8.6 Liberación de Productos',
+    linkedOps: ['OP-2026-95250', 'OP-2026-95252', 'OP-2026-95254'],
+    physicalCopiesCount: 6,
+    physicalLocations: ['Prensas Offset y Flexo', 'Tablero QA'],
+    revisions: [
+      {
+        revision: 'Rev 3',
+        effectiveDate: '10 Jun 2026',
+        releasedBy: 'Alicia Ramírez',
+        approvedBy: 'Iván Estrada',
+        changeDescription: 'Inclusión de verificación obligatoria de curado UV con prueba de frotado Scotch.',
+        status: 'Vigente',
+      },
+      {
+        revision: 'Rev 2',
+        effectiveDate: '08 Mar 2025',
+        releasedBy: 'Alicia Ramírez',
+        approvedBy: 'Iván Estrada',
+        changeDescription: 'Versión previa sustituida.',
+        status: 'Obsoleta',
+      },
+    ],
+    auditTrail: [
+      {
+        id: 'aud-doc-07',
+        timestamp: '10 Jun 2026 · 12:00',
+        action: 'Puesta en Vigor',
+        user: 'Alicia Ramírez',
+        role: 'Calidad',
+        notes: 'Revisión anual completada conforme a programa SGC.',
+        revision: 'Rev 3',
+      },
+    ],
+  },
+  {
+    code: 'WI-OF-008',
+    title: 'Instructivo: Calibración y Lavado de Batería Offset Heidelberg',
+    type: 'WI',
+    revision: 'Rev 4',
+    effectiveDate: 'Por autorizar',
+    owner: 'Producción Offset',
+    applicableArea: 'Prensa Heidelberg CD 102',
+    status: 'En revisión',
+    description: 'Nuevo método de cambio rápido de solución de fuente con reducción de compuestos orgánicos volátiles (VOCs).',
+    isoStandard: 'ISO 9001:2015 § 8.5.1 Control Operacional',
+    pendingApprover: 'Alicia Ramírez (Calidad)',
+    revisions: [
+      {
+        revision: 'Rev 4',
+        effectiveDate: 'Pendiente firma',
+        releasedBy: 'J. Salinas (Operador Líder)',
+        approvedBy: 'Pendiente Calidad',
+        changeDescription: 'Optimización de tiempos de lavado de rodillos entintadores y balance agua/tinta.',
+        status: 'En revisión',
+      },
+      {
+        revision: 'Rev 3',
+        effectiveDate: '18 Nov 2025',
+        releasedBy: 'Iván Estrada',
+        approvedBy: 'Alicia Ramírez',
+        changeDescription: 'Versión vigente actualmente en piso hasta la aprobación formal de Rev 4.',
+        status: 'Vigente',
+      },
+    ],
+    auditTrail: [
+      {
+        id: 'aud-doc-08',
+        timestamp: '04 Sep 2026 · 16:45',
+        action: 'Nueva Revisión',
+        user: 'J. Salinas',
+        role: 'Operador Offset',
+        notes: 'Propuesta de Rev 4 enviada al flujo de aprobación SGC.',
+        revision: 'Rev 4',
+      },
+    ],
+  },
+  {
+    code: 'FM-PR-024',
+    title: 'Hoja de Viajero y Control de OP',
+    type: 'Formato',
+    revision: 'Rev 5',
+    effectiveDate: '01 Ago 2026',
+    owner: 'Producción / Planeación',
+    applicableArea: 'Toda la planta',
+    status: 'Vigente',
+    description: 'Documento maestro que acompaña a la tarima con registro de mermas, buenos y firmas de entrega entre áreas.',
+    isoStandard: 'ISO 9001:2015 § 8.5.2 Trazabilidad',
+    linkedOps: ['OP-2026-95248', 'OP-2026-95249', 'OP-2026-95250', 'OP-2026-95252'],
+    revisions: [
+      {
+        revision: 'Rev 5',
+        effectiveDate: '01 Ago 2026',
+        releasedBy: 'Planeación RTM',
+        approvedBy: 'Alicia Ramírez',
+        changeDescription: 'Unificación con campos de scrap 4M.',
+        status: 'Vigente',
+      },
+    ],
+    auditTrail: [],
+  },
+  {
+    code: 'WI-QA-004',
+    title: 'Instructivo: Medición de Temperatura y Humedad en Almacén',
+    type: 'WI',
+    revision: 'Rev 2',
+    effectiveDate: '12 Ene 2026',
+    owner: 'Calidad',
+    applicableArea: 'Almacén MP',
+    status: 'Vigente',
+    description: 'Tolerancias para cuarto de adhesivos (20–24 °C, 45–60% HR) y almacén de materias primas.',
+    isoStandard: 'ISO 9001:2015 § 7.1.5 Monitoreo y Medición',
+    revisions: [
+      {
+        revision: 'Rev 2',
+        effectiveDate: '12 Ene 2026',
+        releasedBy: 'Alicia Ramírez',
+        approvedBy: 'Dirección Operaciones',
+        changeDescription: 'Actualización de frecuencia de rondas a intervalos de 2 horas en turno A.',
+        status: 'Vigente',
+      },
+    ],
+    auditTrail: [],
+  },
+  {
+    code: 'PFMEA-FLX-01',
+    title: 'Análisis de Modo y Efecto de Falla: Flexografía UV',
+    type: 'PFMEA',
+    revision: 'Rev 3',
+    effectiveDate: '15 Mar 2026',
+    owner: 'Ingeniería & Calidad',
+    applicableArea: 'Flexografía',
+    status: 'Vigente',
+    description: 'Matriz RPN para riesgos de desprendimiento de tinta, desajuste de troquel y tensión de embobinado.',
+    isoStandard: 'IATF 16949 § 8.3.5.2 FMEA de Proceso',
+    revisions: [
+      {
+        revision: 'Rev 3',
+        effectiveDate: '15 Mar 2026',
+        releasedBy: 'Ingeniería de Procesos',
+        approvedBy: 'Alicia Ramírez',
+        changeDescription: 'Reclasificación de severidad en curado UV.',
+        status: 'Vigente',
+      },
+    ],
+    auditTrail: [],
+  },
+  {
+    code: 'FM-PR-020-OLD',
+    title: 'Bitácora Manual de Consumo de Tintas (Sustituido por Nexora MES)',
+    type: 'Formato',
+    revision: 'Rev 1',
+    effectiveDate: '01 May 2026',
+    owner: 'Producción',
+    applicableArea: 'Prensas Offset y Flexo',
+    status: 'Obsoleto',
+    description: 'Formato en papel descontinuado al migrar a captura digital en terminales de máquina.',
+    isoStandard: 'ISO 9001:2015 § 7.5.3.2 Retiro de Documentos Obsoletos',
+    revisions: [
+      {
+        revision: 'Rev 1',
+        effectiveDate: '01 May 2026',
+        releasedBy: 'Alicia Ramírez',
+        approvedBy: 'Iván Estrada',
+        changeDescription: 'Formato cancelado definitivamente. Se retiraron todas las copias en piso.',
+        status: 'Obsoleta',
+        destructionEvidence: {
+          certificateNumber: 'ACT-DEST-2026-015',
+          date: '02 May 2026',
+          destroyedBy: 'Alicia Ramírez (Calidad)',
+          physicalCopiesRetrieved: 8,
+          destructionMethod: 'Triturado mecánico de alta seguridad',
+          retrievalLocation: 'Prensas Offset, Flexo y Archivo de Piso',
+          notes: '8 formatos físicos engargolados triturados en presencia del Comité SGC.',
+        },
+      },
+    ],
+    auditTrail: [
+      {
+        id: 'aud-doc-09',
+        timestamp: '01 May 2026 · 10:00',
+        action: 'Paso a Obsoleto',
+        user: 'Alicia Ramírez',
+        role: 'Calidad',
+        notes: 'Baja formal del documento por digitalización Nexora.',
+        revision: 'Rev 1',
+      },
+      {
+        id: 'aud-doc-10',
+        timestamp: '02 May 2026 · 11:30',
+        action: 'Acta de Destrucción',
+        user: 'Alicia Ramírez',
+        role: 'Calidad',
+        notes: 'Acta ACT-DEST-2026-015 firmada y sellada.',
+        revision: 'Rev 1',
+      },
+    ],
+  },
 ];
 
 // ====================================================
@@ -1286,4 +1829,8 @@ export const CROSS_CONSULTATIONS = {
     { machine: 'Heidelberg Speedmaster XL 106', type: 'Offset', lastPreventive: '28 Ago 2026', nextDue: '18 Sep 2026', oee: '89.4%', status: 'Operando Conforme' },
   ],
 };
+
+// Re-export Customer Quality (Quejas & RMA)
+export * from './mockCustomerQualityData';
+
 

@@ -12,10 +12,19 @@ import { ShippingOrdersTab } from './ShippingOrdersTab';
 import { EnRutaTab } from './EnRutaTab';
 import { HistorialTab } from './HistorialTab';
 import { getShippingOrdersList, getActiveRoutesList, getShippingHistoryList } from '../../data/mockShippingData';
+import { FinishedGoodsRelease } from '../../data/mockFinishedGoodsData';
 
 export type EmbarquesSubtab = 'dashboard' | 'orders' | 'in_route' | 'history';
 
-export const EmbarquesPage: React.FC = () => {
+interface EmbarquesPageProps {
+  releasedFinishedGoods?: FinishedGoodsRelease[];
+  onOpenPtDetail?: (pt: FinishedGoodsRelease) => void;
+}
+
+export const EmbarquesPage: React.FC<EmbarquesPageProps> = ({
+  releasedFinishedGoods,
+  onOpenPtDetail,
+}) => {
   const [activeTab, setActiveTab] = useState<EmbarquesSubtab>('orders');
   const activeOrdersCount = getShippingOrdersList().filter((o) => o.status !== 'En ruta' && o.status !== 'Completada').length;
   const inRouteCount = getActiveRoutesList().filter((r) => r.status === 'En ruta').length;
@@ -105,7 +114,13 @@ export const EmbarquesPage: React.FC = () => {
           onNavigateTab={(tab) => setActiveTab(tab)} 
         />
       )}
-      {activeTab === 'orders' && <ShippingOrdersTab onNavigateToInRoute={() => setActiveTab('in_route')} />}
+      {activeTab === 'orders' && (
+        <ShippingOrdersTab
+          onNavigateToInRoute={() => setActiveTab('in_route')}
+          releasedFinishedGoods={releasedFinishedGoods}
+          onOpenPtDetail={onOpenPtDetail}
+        />
+      )}
       {activeTab === 'in_route' && <EnRutaTab />}
       {activeTab === 'history' && <HistorialTab />}
 

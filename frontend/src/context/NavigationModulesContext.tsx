@@ -174,6 +174,13 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     description: 'Gestión de checadas de planta, incidencias con reposición, pre-nómina y timbrado fiscal CFDI 4.0.',
   },
   {
+    key: 'bitacora',
+    label: 'Bitácora & Cambios',
+    category: 'sistema',
+    categoryLabel: 'Sistema',
+    description: 'Historial global de cambios, aprobaciones, motivos y trazabilidad de eventos.',
+  },
+  {
     key: 'configuracion',
     label: 'Configuración & Temas',
     category: 'sistema',
@@ -214,6 +221,7 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'nomina': true,
   'mantenimiento': true,
   'centro-alertas': true,
+  'bitacora': true,
   'configuracion': true,
 };
 

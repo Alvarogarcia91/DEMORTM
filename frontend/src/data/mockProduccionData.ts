@@ -30,6 +30,8 @@ export interface RoutingStep {
   inQuantity?: number;
   goodQuantity?: number;
   scrapQuantity?: number;
+  scrapUom?: string; // 'pliegos' | 'piezas' | 'm' | 'kg' | 'ft' | 'rollos'
+  scrapPercentContribution?: number; // % contribution to cumulative OP margin
   operator?: string;
   startTime?: string;
   endTime?: string;
@@ -114,6 +116,154 @@ export interface TraceabilityEvent {
   event: string;
   notes?: string;
   badgeTone?: 'primary' | 'success' | 'warning' | 'danger';
+  category?: 'production' | 'qa_trigger' | 'quality';
+  isBlocking?: boolean;
+}
+
+export interface ProcessQaControl {
+  id: string;
+  trigger:
+    | 'Preimpresión'
+    | 'Primera pieza'
+    | 'Control > 2 horas'
+    | 'Cambio de bobina'
+    | 'Ajuste de máquina'
+    | 'Cambio de turno'
+    | 'Corte eléctrico'
+    | 'Auditoría final';
+  status: 'Pendiente' | 'Solicitada' | 'En revisión' | 'Liberada' | 'No conforme / HOLD';
+  timingDescription: string;
+  isBlocking: boolean;
+  responsible: string;
+  lastVerifiedAt?: string;
+  evidenceNotes?: string;
+  badgeTone?: 'success' | 'warning' | 'danger' | 'info' | 'neutral';
+}
+
+export function getDefaultQaControls(
+  folio: string,
+  area: ProductionArea,
+  progress: number,
+  isHold: boolean = false
+): ProcessQaControl[] {
+  return [
+    {
+      id: `${folio}-qa-0`,
+      trigger: 'Preimpresión',
+      status: 'Liberada',
+      timingDescription: 'Previo a montaje y arranque de máquina',
+      isBlocking: true,
+      responsible: 'Preprensa / QA',
+      lastVerifiedAt: '07 Sep · 07:30',
+      evidenceNotes: 'Archivos RIP, separación de color y curvas calibradas aprobadas.',
+      badgeTone: 'success',
+    },
+    {
+      id: `${folio}-qa-1`,
+      trigger: 'Primera pieza',
+      status: progress > 20 ? 'Liberada' : progress > 0 ? 'Solicitada' : 'Pendiente',
+      timingDescription: 'Al concluir setup y primer tiro de muestra',
+      isBlocking: true,
+      responsible: 'Alicia Ramírez (Calidad)',
+      lastVerifiedAt: progress > 20 ? '07 Sep · 08:35' : undefined,
+      evidenceNotes:
+        progress > 20
+          ? 'Tono Delta E < 1.8, registro 0.05 mm y lectura de código de barras conforme.'
+          : 'Muestra en mesa de inspección esperando dictamen.',
+      badgeTone: progress > 20 ? 'success' : progress > 0 ? 'warning' : 'neutral',
+    },
+    {
+      id: `${folio}-qa-2`,
+      trigger: 'Control > 2 horas',
+      status: progress > 55 ? 'Liberada' : progress > 35 ? 'Solicitada' : 'Pendiente',
+      timingDescription: 'Inspección periódica cada 120 minutos de corrida',
+      isBlocking: false,
+      responsible: 'Inspector QA en Piso',
+      lastVerifiedAt: progress > 55 ? '07 Sep · 10:40' : undefined,
+      evidenceNotes:
+        progress > 55
+          ? '1,500 piezas inspeccionadas en línea: sin descalce ni variación cromática.'
+          : progress > 35
+          ? 'Próximo control sugerido en 18 min para evitar parada.'
+          : 'Ciclo periódico activo (vigencia 2 horas).',
+      badgeTone: progress > 55 ? 'success' : progress > 35 ? 'warning' : 'neutral',
+    },
+    {
+      id: `${folio}-qa-3`,
+      trigger: 'Cambio de bobina',
+      status:
+        area === 'Flexografía'
+          ? progress > 60
+            ? 'Liberada'
+            : progress > 25
+            ? 'Solicitada'
+            : 'Pendiente'
+          : 'Pendiente',
+      timingDescription: 'Al realizar empalme o montaje de nueva bobina de sustrato',
+      isBlocking: true,
+      responsible: 'Auditor de Proceso',
+      lastVerifiedAt: area === 'Flexografía' && progress > 60 ? '07 Sep · 11:15' : undefined,
+      evidenceNotes:
+        area === 'Flexografía'
+          ? 'Validación de sustrato lote BOB-BOPP-2026-088, corona y anclaje de tinta.'
+          : 'Aplica en prensas flexográficas y continuas.',
+      badgeTone:
+        area === 'Flexografía' && progress > 60
+          ? 'success'
+          : area === 'Flexografía' && progress > 25
+          ? 'warning'
+          : 'neutral',
+    },
+    {
+      id: `${folio}-qa-4`,
+      trigger: 'Ajuste de máquina',
+      status: isHold ? 'No conforme / HOLD' : progress > 40 ? 'Liberada' : 'Pendiente',
+      timingDescription: 'Si el ajuste en máquina altera registro, color, corte o dimensiones',
+      isBlocking: true,
+      responsible: 'Alicia Ramírez (Calidad)',
+      lastVerifiedAt: isHold ? undefined : progress > 40 ? '07 Sep · 09:45' : undefined,
+      evidenceNotes: isHold
+        ? 'Parada por descalce en estación 3; requiere nueva muestra liberada antes de continuar.'
+        : 'Tiro de ajuste dentro de rangos paramétricos.',
+      badgeTone: isHold ? 'danger' : progress > 40 ? 'success' : 'neutral',
+    },
+    {
+      id: `${folio}-qa-5`,
+      trigger: 'Cambio de turno',
+      status: 'Pendiente',
+      timingDescription: 'Entrega y relevo de guardia operativa (14:00 hrs)',
+      isBlocking: false,
+      responsible: 'Supervisor de Turno / QA',
+      lastVerifiedAt: undefined,
+      evidenceNotes: 'Chequeo de continuidad de parámetros y muestra testigo en entrega.',
+      badgeTone: 'neutral',
+    },
+    {
+      id: `${folio}-qa-6`,
+      trigger: 'Corte eléctrico',
+      status: 'Pendiente',
+      timingDescription: 'Reinicio de línea posterior a paro no programado por suministro eléctrico',
+      isBlocking: true,
+      responsible: 'Mantenimiento + Calidad',
+      lastVerifiedAt: undefined,
+      evidenceNotes: 'Línea eléctrica estable sin variaciones de tensión reportadas.',
+      badgeTone: 'neutral',
+    },
+    {
+      id: `${folio}-qa-7`,
+      trigger: 'Auditoría final',
+      status: progress === 100 ? 'Liberada' : progress >= 95 ? 'Solicitada' : 'Pendiente',
+      timingDescription: 'Al terminar producción completa antes de transferir a PT',
+      isBlocking: true,
+      responsible: 'Alicia Ramírez (Calidad PT)',
+      lastVerifiedAt: progress === 100 ? '07 Sep · 13:20' : undefined,
+      evidenceNotes:
+        progress === 100
+          ? 'Inspección AQL 0.65 Nivel II conforme. Certificado de calidad emitido.'
+          : 'Obligatoria para habilitar liberación y entrada a Producto Terminado.',
+      badgeTone: progress === 100 ? 'success' : progress >= 95 ? 'warning' : 'neutral',
+    },
+  ];
 }
 
 export interface OperatorDailyReportEntry {
@@ -227,8 +377,20 @@ export interface ProductionOrder {
     firstPieceReleased: boolean;
     firstPieceApprover?: string;
     firstPieceRequested?: boolean;
+    periodicControlDue?: boolean;
+    periodicControlRequested?: boolean;
+    bobbinChangePending?: boolean;
+    bobbinOldLot?: string;
+    bobbinNewLot?: string;
+    machineAdjustmentPending?: boolean;
+    machineAdjustmentReason?: string;
+    shiftChangePending?: boolean;
+    shiftDeliveredAt?: string;
+    powerOutagePending?: boolean;
     finalAuditApproved: boolean;
+    finalAuditRequested?: boolean;
   };
+  qaControls?: ProcessQaControl[];
   expedited?: boolean;
   expeditedReason?: string;
 }
@@ -251,40 +413,419 @@ export interface ProductionMachine {
     precut: boolean;
     rewind: boolean;
   };
+  // V11 Enriched machine catalog attributes (docs/produccion-maquinas-capacidades-v11.md)
+  code?: string;
+  standardSpeed?: number;
+  speedUnit?: 'pliegos/h' | 'ft/h' | 'pzas/h' | 'rollos/h' | 'cortes/h';
+  baseSetupMinutes?: number;
+  efficiencyTargetPct?: number;
+  weeklyCapacityHours?: number;
+  specialty?: string;
+  manufacturer?: string;
+  modelYear?: string;
+  location?: string;
+  alternateMachineNames?: string[];
+  maxSheetSize?: string;
+  minSheetSize?: string;
+  paperWeightRangeGsm?: string;
 }
 
-// Catálogo de máquinas con capacidades reales documentadas (Ivan & spec)
-const machineRows: [string, ProductionArea, number, number?, number?, any?, (16 | 32)?][] = [
-  ['Heidelberg Speedmaster', 'Offset', 82, 6, undefined, { dieCut: false, varnish: true, laminate: false, corona: false, precut: false, rewind: false }, 32],
-  ['Conserver 1–2', 'Offset', 64, 2, undefined, { dieCut: false, varnish: false, laminate: false, corona: false, precut: false, rewind: false }, 16],
-  ['Conserver 3–4', 'Offset', 71, 4, undefined, { dieCut: false, varnish: false, laminate: false, corona: false, precut: false, rewind: false }, 16],
-  ['DiDDE 860', 'Offset', 58, 4, undefined, { dieCut: false, varnish: false, laminate: false, corona: false, precut: false, rewind: false }, 16],
-  ['Conserver 8 colores', 'Offset', 76, 8, undefined, { dieCut: false, varnish: true, laminate: false, corona: false, precut: false, rewind: false }, 32],
-  ['Ryobi 1–2', 'Offset', 61, 2, undefined, { dieCut: false, varnish: false, laminate: false, corona: false, precut: false, rewind: false }, 16],
-  ['Guillotina 2', 'Acabados', 88, 0, undefined, undefined, undefined],
-  ['Stahl 2', 'Acabados', 73, 0, undefined, undefined, undefined],
-  ['Muller Martini', 'Acabados', 69, 0, undefined, undefined, undefined],
-  ['Mark Andy 830 7”', 'Flexografía', 67, 2, 7, { dieCut: true, varnish: false, laminate: false, corona: false, precut: false, rewind: false }, undefined],
-  ['Mark Andy 830 10”', 'Flexografía', 96, 3, 10, { dieCut: true, varnish: true, laminate: false, corona: false, precut: false, rewind: false }, undefined],
-  ['Mark Andy Scout 10”', 'Flexografía', 84, 6, 10, { dieCut: true, varnish: true, laminate: true, corona: true, precut: true, rewind: false }, undefined],
-  ['Mark Andy 4120 17”', 'Flexografía', 62, 8, 17, { dieCut: true, varnish: true, laminate: true, corona: true, precut: true, rewind: false }, undefined],
-  ['Allied Gear', 'Flexografía', 55, 4, 10, { dieCut: true, varnish: true, laminate: false, corona: false, precut: false, rewind: false }, undefined],
-  ['Rotoflex I', 'Flexografía', 78, 0, 10, { dieCut: false, varnish: false, laminate: false, corona: false, precut: true, rewind: true }, undefined],
-  ['BGM 2', 'Flexografía', 74, 0, 10, { dieCut: false, varnish: false, laminate: false, corona: false, precut: true, rewind: true }, undefined],
+// Catálogo de máquinas con capacidades reales documentadas (Ivan & spec v11)
+interface RawMachineDefinition {
+  name: string;
+  area: ProductionArea;
+  load: number;
+  maxColors?: number;
+  supportedWidthInches?: number;
+  features?: {
+    dieCut: boolean;
+    varnish: boolean;
+    laminate: boolean;
+    corona: boolean;
+    precut: boolean;
+    rewind: boolean;
+  };
+  maxFormPages?: 16 | 32;
+  code: string;
+  standardSpeed: number;
+  speedUnit: 'pliegos/h' | 'ft/h' | 'pzas/h' | 'rollos/h' | 'cortes/h';
+  baseSetupMinutes: number;
+  efficiencyTargetPct: number;
+  weeklyCapacityHours: number;
+  specialty: string;
+  manufacturer: string;
+  modelYear: string;
+  location: string;
+  alternateMachineNames: string[];
+  maxSheetSize?: string;
+  minSheetSize?: string;
+  paperWeightRangeGsm?: string;
+}
+
+const rawMachineCatalog: RawMachineDefinition[] = [
+  {
+    name: 'Heidelberg Speedmaster',
+    area: 'Offset',
+    load: 82,
+    maxColors: 6,
+    features: { dieCut: false, varnish: true, laminate: false, corona: false, precut: false, rewind: false },
+    maxFormPages: 32,
+    code: 'OFF-01',
+    standardSpeed: 3500,
+    speedUnit: 'pliegos/h',
+    baseSetupMinutes: 30,
+    efficiencyTargetPct: 85,
+    weeklyCapacityHours: 40,
+    specialty: 'Manuales de alta paginación (32 págs/forma) y barniz en línea',
+    manufacturer: 'Heidelberg Druckmaschinen AG',
+    modelYear: 'Speedmaster SM 102-6P',
+    location: 'Nave A · Bahía Offset 1',
+    alternateMachineNames: ['Conserver 8 colores'],
+    maxSheetSize: '720 x 1020 mm',
+    minSheetSize: '280 x 400 mm',
+    paperWeightRangeGsm: '60 – 350 g/m²',
+  },
+  {
+    name: 'Conserver 1–2',
+    area: 'Offset',
+    load: 64,
+    maxColors: 2,
+    features: { dieCut: false, varnish: false, laminate: false, corona: false, precut: false, rewind: false },
+    maxFormPages: 16,
+    code: 'OFF-02',
+    standardSpeed: 7000,
+    speedUnit: 'pliegos/h',
+    baseSetupMinutes: 25,
+    efficiencyTargetPct: 80,
+    weeklyCapacityHours: 40,
+    specialty: 'Instructivos monocromáticos y 2 tintas alta velocidad',
+    manufacturer: 'Conserver Web Press',
+    modelYear: 'Series 200',
+    location: 'Nave A · Bahía Offset 2',
+    alternateMachineNames: ['Ryobi 1–2', 'Conserver 3–4'],
+    maxSheetSize: '570 x 870 mm',
+    minSheetSize: '210 x 297 mm',
+    paperWeightRangeGsm: '50 – 120 g/m²',
+  },
+  {
+    name: 'Conserver 3–4',
+    area: 'Offset',
+    load: 71,
+    maxColors: 4,
+    features: { dieCut: false, varnish: false, laminate: false, corona: false, precut: false, rewind: false },
+    maxFormPages: 16,
+    code: 'OFF-03',
+    standardSpeed: 7500,
+    speedUnit: 'pliegos/h',
+    baseSetupMinutes: 35,
+    efficiencyTargetPct: 82,
+    weeklyCapacityHours: 40,
+    specialty: 'Instructivos cuatricromía y formas estándar de 16 páginas',
+    manufacturer: 'Conserver Web Press',
+    modelYear: 'Series 400',
+    location: 'Nave A · Bahía Offset 3',
+    alternateMachineNames: ['DiDDE 860', 'Conserver 8 colores'],
+    maxSheetSize: '570 x 870 mm',
+    minSheetSize: '210 x 297 mm',
+    paperWeightRangeGsm: '50 – 150 g/m²',
+  },
+  {
+    name: 'DiDDE 860',
+    area: 'Offset',
+    load: 58,
+    maxColors: 4,
+    features: { dieCut: false, varnish: false, laminate: false, corona: false, precut: false, rewind: false },
+    maxFormPages: 16,
+    code: 'OFF-04',
+    standardSpeed: 8500,
+    speedUnit: 'pliegos/h',
+    baseSetupMinutes: 20,
+    efficiencyTargetPct: 88,
+    weeklyCapacityHours: 40,
+    specialty: 'Instructivos médicos/farmacéuticos (Paginación 24 págs → 16 + 8)',
+    manufacturer: 'DiDDE Graphic Systems',
+    modelYear: 'Web Offset 860',
+    location: 'Nave A · Bahía Offset 4',
+    alternateMachineNames: ['Conserver 3–4'],
+    maxSheetSize: 'Corte rotativo 17" x 22"',
+    paperWeightRangeGsm: '45 – 90 g/m²',
+  },
+  {
+    name: 'Conserver 8 colores',
+    area: 'Offset',
+    load: 76,
+    maxColors: 8,
+    features: { dieCut: false, varnish: true, laminate: false, corona: false, precut: false, rewind: false },
+    maxFormPages: 32,
+    code: 'OFF-05',
+    standardSpeed: 8000,
+    speedUnit: 'pliegos/h',
+    baseSetupMinutes: 50,
+    efficiencyTargetPct: 84,
+    weeklyCapacityHours: 40,
+    specialty: 'Impresión comercial 8 tintas directas/cuatricromía + barniz UV',
+    manufacturer: 'Conserver Web Press',
+    modelYear: 'OctoPress 800',
+    location: 'Nave A · Bahía Offset 5',
+    alternateMachineNames: ['Heidelberg Speedmaster'],
+    maxSheetSize: '650 x 960 mm',
+    minSheetSize: '280 x 420 mm',
+    paperWeightRangeGsm: '60 – 300 g/m²',
+  },
+  {
+    name: 'Ryobi 1–2',
+    area: 'Offset',
+    load: 61,
+    maxColors: 2,
+    features: { dieCut: false, varnish: false, laminate: false, corona: false, precut: false, rewind: false },
+    maxFormPages: 16,
+    code: 'OFF-06',
+    standardSpeed: 6000,
+    speedUnit: 'pliegos/h',
+    baseSetupMinutes: 20,
+    efficiencyTargetPct: 85,
+    weeklyCapacityHours: 40,
+    specialty: 'Tirajes cortos y rápidos, papelería técnica e insertos',
+    manufacturer: 'Ryobi MHI Graphic Technology',
+    modelYear: 'Ryobi 3302M',
+    location: 'Nave A · Bahía Offset 6',
+    alternateMachineNames: ['Conserver 1–2'],
+    maxSheetSize: '340 x 450 mm',
+    paperWeightRangeGsm: '45 – 250 g/m²',
+  },
+  {
+    name: 'Harris Press P2',
+    area: 'Offset',
+    load: 52,
+    maxColors: 4,
+    features: { dieCut: false, varnish: true, laminate: false, corona: false, precut: false, rewind: false },
+    maxFormPages: 16,
+    code: 'OFF-07',
+    standardSpeed: 8500,
+    speedUnit: 'pliegos/h',
+    baseSetupMinutes: 60,
+    efficiencyTargetPct: 80,
+    weeklyCapacityHours: 40,
+    specialty: 'Prensa rotativa offset comercial para tirajes continuos',
+    manufacturer: 'Harris Graphics Corp.',
+    modelYear: 'Harris P2 Web',
+    location: 'Nave A · Bahía Offset 7',
+    alternateMachineNames: ['DiDDE 860', 'Conserver 3–4'],
+    maxSheetSize: 'Rotativa bobina 57 cm',
+    paperWeightRangeGsm: '50 – 90 g/m²',
+  },
+  {
+    name: 'Guillotina 2',
+    area: 'Acabados',
+    load: 93, // Saturada >90% (Atención)
+    maxColors: 0,
+    code: 'FIN-01',
+    standardSpeed: 1200,
+    speedUnit: 'cortes/h',
+    baseSetupMinutes: 15,
+    efficiencyTargetPct: 90,
+    weeklyCapacityHours: 40,
+    specialty: 'Corte trilateral, desbarbado y escuadrado con memoria óptica',
+    manufacturer: 'Polar Mohr',
+    modelYear: 'Polar 115 EMC-MON',
+    location: 'Nave C · Acabados',
+    alternateMachineNames: ['Guillotina 1'],
+  },
+  {
+    name: 'Stahl 2',
+    area: 'Acabados',
+    load: 73,
+    maxColors: 0,
+    code: 'FIN-02',
+    standardSpeed: 4500,
+    speedUnit: 'pliegos/h',
+    baseSetupMinutes: 25,
+    efficiencyTargetPct: 82,
+    weeklyCapacityHours: 40,
+    specialty: 'Doblado en cruz, paralelo y acordeón tipo prospecto',
+    manufacturer: 'Heidelberg / Stahlfolder',
+    modelYear: 'Stahl Ti 52',
+    location: 'Nave C · Acabados',
+    alternateMachineNames: ['Stahl 1'],
+  },
+  {
+    name: 'Muller Martini',
+    area: 'Acabados',
+    load: 69,
+    maxColors: 0,
+    code: 'FIN-03',
+    standardSpeed: 3800,
+    speedUnit: 'pzas/h',
+    baseSetupMinutes: 30,
+    efficiencyTargetPct: 85,
+    weeklyCapacityHours: 40,
+    specialty: 'Alzado automático de cuadernillos y grapado al lomo tipo libro',
+    manufacturer: 'Muller Martini AG',
+    modelYear: 'Presto E90',
+    location: 'Nave C · Acabados',
+    alternateMachineNames: ['Mesa manual grapado'],
+  },
+  {
+    name: 'Mark Andy 830 7”',
+    area: 'Flexografía',
+    load: 67,
+    maxColors: 2,
+    supportedWidthInches: 7,
+    features: { dieCut: true, varnish: false, laminate: false, corona: false, precut: false, rewind: false },
+    code: 'FLX-01',
+    standardSpeed: 9000,
+    speedUnit: 'ft/h',
+    baseSetupMinutes: 15,
+    efficiencyTargetPct: 88,
+    weeklyCapacityHours: 40,
+    specialty: 'Etiqueta blanca sin impresión (corte y troquel) o 2 tintas formato 7"',
+    manufacturer: 'Mark Andy Inc.',
+    modelYear: '830 Series (7")',
+    location: 'Nave B · Bahía Flexo 1',
+    alternateMachineNames: ['Mark Andy 830 10”', 'Allied Gear'],
+  },
+  {
+    name: 'Mark Andy 830 10”',
+    area: 'Flexografía',
+    load: 96, // Saturada >90% (Atención)
+    maxColors: 3,
+    supportedWidthInches: 10,
+    features: { dieCut: true, varnish: true, laminate: false, corona: false, precut: false, rewind: false },
+    code: 'FLX-02',
+    standardSpeed: 9000,
+    speedUnit: 'ft/h',
+    baseSetupMinutes: 30,
+    efficiencyTargetPct: 86,
+    weeklyCapacityHours: 40,
+    specialty: 'Etiquetas industriales con troquel y barniz UV hasta 3 tintas 10"',
+    manufacturer: 'Mark Andy Inc.',
+    modelYear: '830 Series (10")',
+    location: 'Nave B · Bahía Flexo 2',
+    alternateMachineNames: ['Mark Andy Scout 10”', 'Allied Gear'],
+  },
+  {
+    name: 'Mark Andy Scout 10”',
+    area: 'Flexografía',
+    load: 84,
+    maxColors: 6,
+    supportedWidthInches: 10,
+    features: { dieCut: true, varnish: true, laminate: true, corona: true, precut: true, rewind: false },
+    code: 'FLX-03',
+    standardSpeed: 6000,
+    speedUnit: 'ft/h',
+    baseSetupMinutes: 30,
+    efficiencyTargetPct: 85,
+    weeklyCapacityHours: 40,
+    specialty: 'Etiquetas premium 6 tintas con laminado, barniz UV y troquel rotativo en línea',
+    manufacturer: 'Mark Andy Inc.',
+    modelYear: 'Scout 10" Servo Line',
+    location: 'Nave B · Bahía Flexo 3',
+    alternateMachineNames: ['Mark Andy 4120 17”', 'Mark Andy 830 10”'],
+  },
+  {
+    name: 'Mark Andy 4120 17”',
+    area: 'Flexografía',
+    load: 62,
+    maxColors: 8,
+    supportedWidthInches: 17,
+    features: { dieCut: true, varnish: true, laminate: true, corona: true, precut: true, rewind: false },
+    code: 'FLX-04',
+    standardSpeed: 7000,
+    speedUnit: 'ft/h',
+    baseSetupMinutes: 45,
+    efficiencyTargetPct: 82,
+    weeklyCapacityHours: 40,
+    specialty: 'Banda ancha 17" multi-pista, 8 tintas UV y combinaciones complejas',
+    manufacturer: 'Mark Andy Inc.',
+    modelYear: '4120 Servo (17")',
+    location: 'Nave B · Bahía Flexo 4',
+    alternateMachineNames: ['Mark Andy Scout 10”'],
+  },
+  {
+    name: 'Allied Gear',
+    area: 'Flexografía',
+    load: 55,
+    maxColors: 4,
+    supportedWidthInches: 10,
+    features: { dieCut: true, varnish: true, laminate: false, corona: false, precut: false, rewind: false },
+    code: 'FLX-05',
+    standardSpeed: 5500,
+    speedUnit: 'ft/h',
+    baseSetupMinutes: 25,
+    efficiencyTargetPct: 80,
+    weeklyCapacityHours: 40,
+    specialty: 'Etiquetas comerciales estándar y tirajes medianos a 4 tintas',
+    manufacturer: 'Allied Gear & Machine Co.',
+    modelYear: 'Flexomaster 2',
+    location: 'Nave B · Bahía Flexo 5',
+    alternateMachineNames: ['Mark Andy 830 10”', 'Mark Andy Scout 10”'],
+  },
+  {
+    name: 'Rotoflex I',
+    area: 'Flexografía',
+    load: 78,
+    maxColors: 0,
+    supportedWidthInches: 10,
+    features: { dieCut: false, varnish: false, laminate: false, corona: false, precut: true, rewind: true },
+    code: 'FIN-04',
+    standardSpeed: 8500,
+    speedUnit: 'ft/h',
+    baseSetupMinutes: 15,
+    efficiencyTargetPct: 92,
+    weeklyCapacityHours: 40,
+    specialty: 'Inspección estroboscópica 100%, refilado con navajas y rebobinado a núcleos',
+    manufacturer: 'Rotoflex / Mark Andy',
+    modelYear: 'VLI 330',
+    location: 'Nave B · Acabados Flexo',
+    alternateMachineNames: ['BGM 2'],
+  },
+  {
+    name: 'BGM 2',
+    area: 'Flexografía',
+    load: 74,
+    maxColors: 0,
+    supportedWidthInches: 10,
+    features: { dieCut: false, varnish: false, laminate: false, corona: false, precut: true, rewind: true },
+    code: 'FIN-05',
+    standardSpeed: 8000,
+    speedUnit: 'ft/h',
+    baseSetupMinutes: 15,
+    efficiencyTargetPct: 90,
+    weeklyCapacityHours: 40,
+    specialty: 'Rebobinado continuo de alta velocidad, conteo de etiquetas y corte',
+    manufacturer: 'Bar Graphic Machinery',
+    modelYear: 'BGM Elite iDieline',
+    location: 'Nave B · Acabados Flexo',
+    alternateMachineNames: ['Rotoflex I'],
+  },
 ];
 
-export const PRODUCTION_MACHINES: ProductionMachine[] = machineRows.map(
-  ([name, area, load, maxColors, supportedWidthInches, features, maxFormPages], i) => ({
+export const PRODUCTION_MACHINES: ProductionMachine[] = rawMachineCatalog.map(
+  (machine, i) => ({
     id: `maq-${i + 1}`,
-    name,
-    area,
-    load,
-    status: load > 92 ? 'Atención' : 'Operativa',
+    name: machine.name,
+    area: machine.area,
+    load: machine.load,
+    status: machine.load > 92 ? 'Atención' : 'Operativa',
     next: `OP-2026-${95240 + i}`,
-    maxColors,
-    supportedWidthInches,
-    features,
-    maxFormPages,
+    maxColors: machine.maxColors,
+    supportedWidthInches: machine.supportedWidthInches,
+    features: machine.features,
+    maxFormPages: machine.maxFormPages,
+    code: machine.code,
+    standardSpeed: machine.standardSpeed,
+    speedUnit: machine.speedUnit,
+    baseSetupMinutes: machine.baseSetupMinutes,
+    efficiencyTargetPct: machine.efficiencyTargetPct,
+    weeklyCapacityHours: machine.weeklyCapacityHours,
+    specialty: machine.specialty,
+    manufacturer: machine.manufacturer,
+    modelYear: machine.modelYear,
+    location: machine.location,
+    alternateMachineNames: machine.alternateMachineNames,
+    maxSheetSize: machine.maxSheetSize,
+    minSheetSize: machine.minSheetSize,
+    paperWeightRangeGsm: machine.paperWeightRangeGsm,
   })
 );
 
@@ -585,6 +1126,7 @@ const statuses: ProductionStatus[] = [
   'Pendiente de calidad',
 ];
 
+
 export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (_, i) => {
   const area: ProductionArea = i % 3 === 0 ? 'Offset' : i % 3 === 1 ? 'Flexografía' : 'Acabados';
   const status = statuses[i];
@@ -623,7 +1165,9 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
             firstPieceTime: progress > 20 ? '09:27' : undefined,
             inQuantity: quantity + 500,
             goodQuantity: Math.round(quantity * (progress / 100)),
-            scrapQuantity: status === 'Detenida' ? 150 : 35,
+            scrapQuantity: status === 'Detenida' ? 205 : 95,
+            scrapUom: 'm',
+            scrapPercentContribution: status === 'Detenida' ? 2.33 : 1.15,
             operator: 'M. Ríos',
             startTime: '08:30',
             subOperations: ['Impresión (4 tintas UV)', 'Barniz sobreimpresión', 'Troquelado rotativo', 'Laminado BOPP'],
@@ -637,6 +1181,9 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
             runMinutes: 60,
             status: progress >= 100 ? 'Completada' : 'Pendiente',
             requiresFirstPieceQuality: false,
+            scrapQuantity: 46,
+            scrapUom: 'm',
+            scrapPercentContribution: 0.39,
             subOperations: ['Corte longitudinal', 'Conteo estroboscópico', 'Inspección de etiquetas'],
           },
           {
@@ -647,6 +1194,9 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
             runMinutes: 30,
             status: progress === 100 ? 'Completada' : 'Pendiente',
             requiresFirstPieceQuality: false,
+            scrapQuantity: 12,
+            scrapUom: 'piezas',
+            scrapPercentContribution: 0.10,
           },
         ]
       : [
@@ -661,6 +1211,9 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
             firstPieceApproved: true,
             firstPieceApprover: 'J. Méndez (Preprensa)',
             firstPieceTime: '08:10',
+            scrapQuantity: 0,
+            scrapUom: 'placas',
+            scrapPercentContribution: 0,
           },
           {
             stepNumber: 2,
@@ -676,14 +1229,16 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
             firstPieceTime: progress > 20 ? '09:40' : undefined,
             inQuantity: quantity + 800,
             goodQuantity: Math.round(quantity * (progress / 100)),
-            scrapQuantity: status === 'Detenida' ? 220 : 60,
+            scrapQuantity: status === 'Detenida' ? 240 : 180,
+            scrapUom: 'pliegos',
+            scrapPercentContribution: status === 'Detenida' ? 1.80 : 1.35,
             operator: 'J. Salinas',
             startTime: '09:00',
           },
-          { stepNumber: 3, process: 'Guillotina', machine: 'Guillotina 2', setupMinutes: 15, runMinutes: 45, status: progress > 70 ? 'Completada' : 'Pendiente', requiresFirstPieceQuality: false },
-          { stepNumber: 4, process: 'Doblado', machine: 'Stahl 2', setupMinutes: 25, runMinutes: 60, status: progress > 85 ? 'Completada' : 'Pendiente', requiresFirstPieceQuality: false },
-          { stepNumber: 5, process: 'Intercalado y Grapado', machine: 'Muller Martini', setupMinutes: 30, runMinutes: 70, status: progress >= 100 ? 'Completada' : 'Pendiente', requiresFirstPieceQuality: true },
-          { stepNumber: 6, process: 'Empaque', machine: 'Mesa Empaque', setupMinutes: 10, runMinutes: 30, status: progress === 100 ? 'Completada' : 'Pendiente', requiresFirstPieceQuality: false },
+          { stepNumber: 3, process: 'Guillotina', machine: 'Guillotina 2', setupMinutes: 15, runMinutes: 45, status: progress > 70 ? 'Completada' : 'Pendiente', requiresFirstPieceQuality: false, scrapQuantity: 42, scrapUom: 'pliegos', scrapPercentContribution: 0.31 },
+          { stepNumber: 4, process: 'Doblado', machine: 'Stahl 2', setupMinutes: 25, runMinutes: 60, status: progress > 85 ? 'Completada' : 'Pendiente', requiresFirstPieceQuality: false, scrapQuantity: 95, scrapUom: 'piezas', scrapPercentContribution: 0.71 },
+          { stepNumber: 5, process: 'Intercalado y Grapado', machine: 'Muller Martini', setupMinutes: 30, runMinutes: 70, status: progress >= 100 ? 'Completada' : 'Pendiente', requiresFirstPieceQuality: true, scrapQuantity: 54, scrapUom: 'piezas', scrapPercentContribution: 0.40 },
+          { stepNumber: 6, process: 'Empaque', machine: 'Mesa Empaque', setupMinutes: 10, runMinutes: 30, status: progress === 100 ? 'Completada' : 'Pendiente', requiresFirstPieceQuality: false, scrapQuantity: 15, scrapUom: 'piezas', scrapPercentContribution: 0.12 },
         ];
 
   const defaultMaterials: ProductionMaterialItem[] =
@@ -840,6 +1395,7 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
       event: 'Pedido recibido y validado',
       notes: `Pedido PED-RTM-2026-${142 - i} generado con receta maestra vinculada`,
       badgeTone: 'primary',
+      category: 'production',
     },
     {
       id: 'tr-2',
@@ -849,6 +1405,7 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
       event: 'OP creada heredando configuración maestra',
       notes: area === 'Offset' ? 'Paginación Offset calculada según máquina: 64 págs (32+32)' : 'Flexo: 4 tintas UV + barniz + troquel en Scout 10”',
       badgeTone: 'primary',
+      category: 'production',
     },
     {
       id: 'tr-3',
@@ -858,7 +1415,133 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
       event: i === 9 ? 'Alerta: Papel insuficiente en almacén' : 'Material reservado en almacén',
       notes: i === 9 ? 'Faltante de 11,700 pliegos; requiere compra o desviación de sustituto' : 'Insumos reservados para surtido a 24h',
       badgeTone: i === 9 ? 'danger' : 'success',
+      category: 'production',
     },
+    {
+      id: 'tr-4',
+      timestamp: '07 Sep · 08:15',
+      user: ['J. Salinas', 'M. Ríos', 'A. Torres', 'C. Medina'][i % 4],
+      station: machineName,
+      event: 'Setup terminado · Tiraje de prueba listo',
+      notes: 'Calibración de tinteros/anilox y montaje de herramental completado',
+      badgeTone: 'primary',
+      category: 'production',
+    },
+    {
+      id: 'tr-5',
+      timestamp: '07 Sep · 08:20',
+      user: 'Sistema RTM',
+      station: 'Disparador QA',
+      event: 'QA TRIGGER: Primera pieza requerida',
+      notes: 'Producción bloqueada hasta dictamen formal de calidad en piso',
+      badgeTone: 'warning',
+      category: 'qa_trigger',
+      isBlocking: true,
+    },
+    ...(progress > 20
+      ? [
+          {
+            id: 'tr-6',
+            timestamp: '07 Sep · 08:35',
+            user: 'Alicia Ramírez',
+            station: 'Control Calidad',
+            event: 'CALIDAD: Primera pieza liberada',
+            notes: 'Muestra conforme a especificación. Delta E < 1.8, código de barras Grado A. Autorizado arranque.',
+            badgeTone: 'success' as const,
+            category: 'quality' as const,
+          },
+        ]
+      : []),
+    ...(progress > 50
+      ? [
+          {
+            id: 'tr-7',
+            timestamp: '07 Sep · 10:20',
+            user: 'Sistema RTM',
+            station: 'Disparador QA',
+            event: 'QA TRIGGER: Control periódico > 2h generado',
+            notes: 'Corrida continua supera 120 minutos. Requiere muestreo en línea.',
+            badgeTone: 'warning' as const,
+            category: 'qa_trigger' as const,
+            isBlocking: false,
+          },
+          {
+            id: 'tr-8',
+            timestamp: '07 Sep · 10:35',
+            user: 'Alicia Ramírez',
+            station: 'Piso Producción',
+            event: 'CALIDAD: Control > 2h conforme',
+            notes: 'Sin descalce ni variación de color en muestreo de 1,500 piezas. Producción continúa.',
+            badgeTone: 'success' as const,
+            category: 'quality' as const,
+          },
+        ]
+      : []),
+    ...(area === 'Flexografía' && progress > 60
+      ? [
+          {
+            id: 'tr-9',
+            timestamp: '07 Sep · 11:10',
+            user: 'M. Ríos',
+            station: 'Mark Andy Scout',
+            event: 'QA TRIGGER: Cambio de bobina registrado',
+            notes: 'Bobina agotada. Ingreso nuevo lote BOB-BOPP-2026-088. Esperando validación de tensión y corona.',
+            badgeTone: 'warning' as const,
+            category: 'qa_trigger' as const,
+            isBlocking: true,
+          },
+          {
+            id: 'tr-10',
+            timestamp: '07 Sep · 11:22',
+            user: 'Alicia Ramírez',
+            station: 'Control Calidad',
+            event: 'CALIDAD: Validación cambio de bobina aprobada',
+            notes: 'Tratamiento corona y anclaje UV validados en nueva bobina. Autorizado tiro continuo.',
+            badgeTone: 'success' as const,
+            category: 'quality' as const,
+          },
+        ]
+      : []),
+    ...(status === 'Detenida'
+      ? [
+          {
+            id: 'tr-11',
+            timestamp: '07 Sep · 11:45',
+            user: 'Operador / Mantenimiento',
+            station: machineName,
+            event: 'QA TRIGGER: Ajuste de máquina / Paro registrado',
+            notes: 'Descalce en estación de tiro. Máquina en HOLD preventivo hasta nueva liberación QA.',
+            badgeTone: 'danger' as const,
+            category: 'qa_trigger' as const,
+            isBlocking: true,
+          },
+        ]
+      : []),
+    ...(progress === 100
+      ? [
+          {
+            id: 'tr-12',
+            timestamp: '07 Sep · 13:15',
+            user: 'Operador RTM',
+            station: machineName,
+            event: 'QA TRIGGER: Producción completada · Auditoría final solicitada',
+            notes: 'Tiraje terminado. Muestreo de tarima completa para liberación a PT.',
+            badgeTone: 'warning' as const,
+            category: 'qa_trigger' as const,
+            isBlocking: true,
+          },
+          {
+            id: 'tr-13',
+            timestamp: '07 Sep · 13:30',
+            user: 'Alicia Ramírez',
+            station: 'Auditoría PT',
+            event: 'CALIDAD: Auditoría final liberada · Aprobado PT',
+            notes: 'Lote dictaminado CONFORME bajo estándar AQL 0.65. Habilitado ingreso a Almacén de Producto Terminado.',
+            badgeTone: 'success' as const,
+            category: 'quality' as const,
+          },
+        ]
+      : []),
   ];
 
   return {
@@ -958,8 +1641,25 @@ export const PRODUCTION_ORDERS: ProductionOrder[] = Array.from({ length: 20 }, (
       prepressReleased: true,
       firstPieceReleased: progress > 20,
       firstPieceApprover: progress > 20 ? 'Alicia Ramírez (Calidad)' : undefined,
+      firstPieceRequested: progress <= 20 && progress > 5,
+      periodicControlDue: progress > 50 && progress < 85,
+      periodicControlRequested: progress > 60 && progress < 75,
+      bobbinChangePending: area === 'Flexografía' && i === 1,
+      bobbinOldLot: 'BOB-BOPP-2026-041',
+      bobbinNewLot: 'BOB-BOPP-2026-088',
+      machineAdjustmentPending: status === 'Detenida',
+      machineAdjustmentReason: status === 'Detenida' ? 'Ajuste de registro y tensión tras paro de máquina' : undefined,
+      shiftChangePending: false,
+      powerOutagePending: false,
       finalAuditApproved: progress === 100,
+      finalAuditRequested: progress >= 95 && progress < 100,
     },
+    qaControls: getDefaultQaControls(
+      `OP-2026-${95240 + i}`,
+      area,
+      progress,
+      status === 'Detenida' || status === 'Pendiente de calidad'
+    ),
   };
 });
 
