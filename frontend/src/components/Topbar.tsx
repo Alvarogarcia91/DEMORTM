@@ -50,6 +50,7 @@ export const Topbar: React.FC<TopbarProps> = ({
  <span className="font-bold text-theme-main">
  {activeTab === 'mantenimiento' ? 'Mantenimiento' :
  activeTab === 'nomina' ? 'Nómina & Asistencia' :
+ activeTab === 'crm' ? 'CRM' :
  activeTab === 'finanzas' ? 'Finanzas' :
  activeTab === 'tesoreria' ? 'Finanzas · Tesorería' :
  activeTab === 'contabilidad' ? 'Finanzas · Contabilidad' :

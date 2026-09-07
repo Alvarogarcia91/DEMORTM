@@ -4,13 +4,20 @@ import { NavItemKey } from '../components/Sidebar';
 export interface ModuleDefinition {
   key: NavItemKey;
   label: string;
-  category: 'operaciones' | 'compras' | 'ventas' | 'finanzas' | 'nomina' | 'mantenimiento' | 'sistema';
+  category: 'operaciones' | 'compras' | 'comercial' | 'ventas' | 'finanzas' | 'nomina' | 'mantenimiento' | 'sistema';
   categoryLabel: string;
   description: string;
   isLocked?: boolean;
 }
 
 export const MODULE_DEFINITIONS: ModuleDefinition[] = [
+  {
+    key: 'crm',
+    label: 'CRM',
+    category: 'comercial',
+    categoryLabel: 'Comercial',
+    description: 'Prospectos, oportunidades, actividades, pipeline y forecast comercial B2B.',
+  },
   {
     key: 'inicio',
     label: 'Inicio (Dashboard)',
@@ -145,6 +152,7 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'requisiciones': false,
   'compras': false,
   'proveedores': false,
+  'crm': true,
   'cotizaciones': false,
   'pedidos': false,
   'clientes': false,

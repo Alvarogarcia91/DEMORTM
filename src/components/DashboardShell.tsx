@@ -20,6 +20,7 @@ import { FinanceHub } from './Finanzas/FinanceHub';
 import { NominaPage } from './Nomina/NominaPage';
 import { MantenimientoPage } from './Mantenimiento/MantenimientoPage';
 import { CentroAlertasPage } from './CentroAlertasPage';
+import { CrmPage } from './Comercial/CrmPage';
 import { DemoAlert } from '../data/mockAlertasData';
 import {
   SalesInvoice,
@@ -489,6 +490,8 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
             onStartQuoteForCustomer={handleStartQuoteForCustomer}
           />
         );
+      case 'crm':
+        return <CrmPage customers={customers} quotes={quotes} orders={salesOrders} onNavigate={(tab, customerId) => { if (tab === 'cotizaciones' && customerId) setTargetQuoteCustomerId(customerId); setActiveTab(tab); }} />;
       case 'facturacion':
         return (
           <FacturacionPage

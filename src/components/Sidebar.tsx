@@ -32,6 +32,7 @@ export type NavItemKey =
  | 'requisiciones'
  | 'compras'
  | 'proveedores'
+ | 'crm'
  | 'cotizaciones'
  | 'pedidos'
  | 'clientes'
@@ -104,7 +105,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
  ],
  },
  {
- title: 'VENTAS',
+ title: 'COMERCIAL',
+ items: [
+ { key: 'crm', label: 'CRM', icon: UserCheck },
+ ],
+ },
+ {
+ title: 'VENTAS BÁSICO',
  items: [
  { key: 'cotizaciones', label: 'Cotizaciones', icon: FileText },
  { key: 'pedidos', label: 'Pedidos', icon: ShoppingBag },
