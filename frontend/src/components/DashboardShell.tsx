@@ -16,6 +16,7 @@ import { EmbarquesPage } from './Embarques/EmbarquesPage';
 import { FacturacionPage } from './Finanzas/FacturacionPage';
 import { CxcPage } from './Finanzas/CxcPage';
 import { CxpPage } from './Finanzas/CxpPage';
+import { FinanceHub } from './Finanzas/FinanceHub';
 import { NominaPage } from './Nomina/NominaPage';
 import { MantenimientoPage } from './Mantenimiento/MantenimientoPage';
 import { CentroAlertasPage } from './CentroAlertasPage';
@@ -519,6 +520,11 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }) => {
             onNavigateToPurchases={() => setActiveTab('compras')}
           />
         );
+      case 'finanzas':
+      case 'tesoreria':
+      case 'contabilidad':
+      case 'reportes-financieros':
+        return <FinanceHub salesInvoices={salesInvoices} cxc={cxcRecords} cxp={cxpRecords} />;
       case 'nomina':
         return <NominaPage />;
       case 'mantenimiento':
