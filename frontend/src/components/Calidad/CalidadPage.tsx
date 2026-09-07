@@ -40,6 +40,8 @@ import { ZebraLabelPreviewModal } from './ZebraLabelPreviewModal';
 import { GestionSGCWorkspace } from './GestionSGCWorkspace';
 import { AnalizarDesviacionModal } from './AnalizarDesviacionModal';
 import { PisoQaWorkspace } from './PisoQaWorkspace';
+import { CustomerQualityWorkspace } from './CustomerQualityWorkspace';
+import { INITIAL_CUSTOMER_COMPLAINTS } from '../../data/mockCustomerQualityData';
 
 type CalidadTab =
   | 'Dashboard'
@@ -49,6 +51,7 @@ type CalidadTab =
   | 'Liberaciones'
   | 'Trazabilidad'
   | 'No conformes'
+  | 'Quejas & RMA'
   | 'Gestión SGC';
 
 interface CalidadPageProps {
@@ -390,6 +393,7 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
             'Liberaciones',
             'Trazabilidad',
             'No conformes',
+            'Quejas & RMA',
             'Gestión SGC',
           ] as CalidadTab[]
         ).map((item) => (
@@ -417,6 +421,11 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
             {item === 'Auditorías' && (
               <span className="ml-1.5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 px-1.5 py-0.2 text-[9px] font-black">
                 {audits.filter((a) => a.status === 'Pendiente').length}
+              </span>
+            )}
+            {item === 'Quejas & RMA' && (
+              <span className="ml-1.5 rounded-full bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 px-1.5 py-0.2 text-[9px] font-black">
+                {INITIAL_CUSTOMER_COMPLAINTS.filter((c) => c.status !== 'Cerrada' && c.status !== 'Rechazada').length}
               </span>
             )}
           </button>
@@ -542,6 +551,13 @@ export const CalidadPage: React.FC<CalidadPageProps> = ({
             })
           }
           onToast={setToast}
+        />
+      )}
+
+      {tab === 'Quejas & RMA' && (
+        <CustomerQualityWorkspace
+          onToast={setToast}
+          activeRole={activeRole}
         />
       )}
 

@@ -37,6 +37,7 @@ import {
   IcarAction,
   QualityDeviation,
 } from '../../data/mockCalidadData';
+import { ControlDocumentalWorkspace } from './ControlDocumentalWorkspace';
 
 type SgcSubTab =
   | 'Revisión mensual'
@@ -44,7 +45,8 @@ type SgcSubTab =
   | 'Plan de Control'
   | 'Requisitos Cliente'
   | 'Audit Trail & Roles'
-  | 'Integridad & Docs';
+  | 'Control Documental'
+  | 'Integridad & Respaldos';
 
 interface Props {
   deviations: QualityDeviation[];
@@ -123,7 +125,8 @@ export const GestionSGCWorkspace: React.FC<Props> = ({
             'Plan de Control',
             'Requisitos Cliente',
             'Audit Trail & Roles',
-            'Integridad & Docs',
+            'Control Documental',
+            'Integridad & Respaldos',
           ] as SgcSubTab[]
         ).map((item) => (
           <button
@@ -145,6 +148,11 @@ export const GestionSGCWorkspace: React.FC<Props> = ({
             {item === 'Requisitos Cliente' && (
               <span className="ml-1.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 px-1.5 py-0.2 text-[9px] font-black">
                 {CUSTOMER_REQUIREMENTS.length}
+              </span>
+            )}
+            {item === 'Control Documental' && (
+              <span className="ml-1.5 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 px-1.5 py-0.2 text-[9px] font-black">
+                {CONTROLLED_DOCUMENTS.length}
               </span>
             )}
           </button>
@@ -616,8 +624,13 @@ export const GestionSGCWorkspace: React.FC<Props> = ({
         </div>
       )}
 
-      {/* 6. INTEGRIDAD, DOCUMENTOS & CONSULTAS TRANSVERSALES (Sección 20, 21, 22) */}
-      {subTab === 'Integridad & Docs' && (
+      {/* 6. CONTROL DOCUMENTAL (Sección 21 del documento) */}
+      {subTab === 'Control Documental' && (
+        <ControlDocumentalWorkspace onToast={onToast} activeRole={activeRole} />
+      )}
+
+      {/* 7. INTEGRIDAD & RESPALDOS (Sección 20, 22) */}
+      {subTab === 'Integridad & Respaldos' && (
         <div className="space-y-5">
           {/* Card de Integridad & Respaldo */}
           <div className="rounded-3xl border border-theme-subtle bg-theme-surface p-5 space-y-4">
@@ -650,48 +663,6 @@ export const GestionSGCWorkspace: React.FC<Props> = ({
                   <small className="text-theme-muted block">Resp: {log.auditor}</small>
                 </div>
               ))}
-            </div>
-          </div>
-
-          {/* Control Documental */}
-          <div className="rounded-3xl border border-theme-subtle bg-theme-surface p-5 space-y-3">
-            <h3 className="font-black text-sm text-theme-main">
-              Control Documental Vigente (Formatos, WIs y Planos)
-            </h3>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[800px] text-xs">
-                <thead className="bg-theme-muted/30 text-[10px] uppercase font-bold text-theme-muted border-b border-theme-subtle">
-                  <tr>
-                    <th className="p-2.5 text-left">Código & Tipo</th>
-                    <th className="p-2.5 text-left">Título del Documento</th>
-                    <th className="p-2.5 text-left">Revisión Vigente</th>
-                    <th className="p-2.5 text-left">Fecha Efectiva</th>
-                    <th className="p-2.5 text-left">Propietario / Área</th>
-                    <th className="p-2.5 text-left">Estado</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-theme-subtle">
-                  {CONTROLLED_DOCUMENTS.map((doc) => (
-                    <tr key={doc.code} className="hover:bg-theme-muted/10 transition-colors">
-                      <td className="p-2.5 font-mono">
-                        <b className="text-theme-main block">{doc.code}</b>
-                        <small className="text-theme-muted">{doc.type}</small>
-                      </td>
-                      <td className="p-2.5 font-bold text-theme-main">{doc.title}</td>
-                      <td className="p-2.5 font-mono">{doc.revision}</td>
-                      <td className="p-2.5 font-mono text-theme-muted">{doc.effectiveDate}</td>
-                      <td className="p-2.5 text-theme-muted">
-                        {doc.owner} ({doc.applicableArea})
-                      </td>
-                      <td className="p-2.5">
-                        <span className="rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 px-2 py-0.2 text-[9px] font-bold">
-                          {doc.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
             </div>
           </div>
 
