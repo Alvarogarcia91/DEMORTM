@@ -5,20 +5,23 @@ import {
  Menu, 
  ChevronDown
 } from 'lucide-react';
+import { NavItemKey } from './Sidebar';
 
 interface TopbarProps {
  onOpenMobileMenu: () => void;
  onLogout: () => void;
+ activeTab?: NavItemKey;
+ onSelectTab?: (tab: NavItemKey) => void;
 }
 
-export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileMenu, onLogout }) => {
+export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileMenu, onLogout, activeTab, onSelectTab }) => {
  const [showUserMenu, setShowUserMenu] = useState(false);
 
  return (
  <header className="sticky top-0 z-20 h-16 bg-theme-surface/95 backdrop-blur-md border-b border-theme-subtle px-4 sm:px-6 flex items-center justify-between gap-4 transition-colors">
  
- {/* Left: Mobile Menu Trigger (hidden on desktop) */}
- <div className="flex items-center">
+ {/* Left: Mobile Menu Trigger & Current Module Breadcrumb */}
+ <div className="flex items-center gap-3">
  <button
  onClick={onOpenMobileMenu}
  className="lg:hidden p-2 rounded-xl text-theme-muted hover:bg-theme-muted hover:text-theme-main transition-colors cursor-pointer"
@@ -26,6 +29,32 @@ export const Topbar: React.FC<TopbarProps> = ({ onOpenMobileMenu, onLogout }) =>
  >
  <Menu className="w-5 h-5" />
  </button>
+
+ {activeTab && activeTab !== 'inicio' && (
+ <div className="hidden sm:flex items-center gap-2 text-xs">
+ <span className="text-theme-muted font-mono uppercase tracking-wider text-[10px]">RTM ERP</span>
+ <span className="text-theme-muted">/</span>
+ <span className="font-bold text-theme-main">
+ {activeTab === 'mantenimiento' ? 'Mantenimiento' :
+ activeTab === 'nomina' ? 'Nómina & Asistencia' :
+ activeTab === 'facturacion' ? 'Facturación' :
+ activeTab === 'cxc' ? 'Cuentas por Cobrar' :
+ activeTab === 'cxp' ? 'Cuentas por Pagar' :
+ activeTab === 'inventario' ? 'Inventario' :
+ activeTab === 'mesa-verificacion' ? 'Operaciones de Almacén' :
+ activeTab === 'logistica' ? 'Órdenes de Salida' :
+ activeTab === 'compras' ? 'Compras' :
+ activeTab === 'requisiciones' ? 'Requisiciones' :
+ activeTab === 'proveedores' ? 'Proveedores' :
+ activeTab === 'cotizaciones' ? 'Cotizaciones' :
+ activeTab === 'pedidos' ? 'Pedidos' :
+ activeTab === 'clientes' ? 'Clientes' :
+ activeTab === 'articulos' ? 'Artículos' :
+ activeTab === 'configuracion' ? 'Configuración & Temas' :
+ activeTab}
+ </span>
+ </div>
+ )}
  </div>
 
  {/* Right: Server Status, Date & User */}

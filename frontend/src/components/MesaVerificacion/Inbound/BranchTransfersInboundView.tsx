@@ -96,7 +96,7 @@ export const BranchTransfersInboundView: React.FC<BranchTransfersInboundViewProp
  Traspasos por Recibir
  </h2>
  <p className="text-xs text-theme-muted mt-0.5">
- Validación física de colchones serializados arribando de CEDIS. No se generan nuevos UIDs.
+ Validación física de materiales y tarimas serializados arribando de almacén. No se generan nuevos UIDs.
  </p>
  </div>
 

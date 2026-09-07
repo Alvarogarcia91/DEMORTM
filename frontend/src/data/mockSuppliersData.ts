@@ -471,7 +471,7 @@ export const INITIAL_MOCK_SUPPLIERS: SupplierMaster[] = [
         exteriorNumber: '505',
         extNumber: '505',
         neighborhood: 'Residencial San Agustín',
-        city: 'San Pedro Garza García',
+        city: 'Monterrey, N.L.',
         state: 'Nuevo León',
         postalCode: '66260',
         country: 'México',

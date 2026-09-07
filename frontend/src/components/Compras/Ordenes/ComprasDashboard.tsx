@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
  LayoutDashboard,
  ShoppingCart,
@@ -218,7 +218,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  // ---------------------------------------------------------------------------
  const supplierPerformance = [
  {
- name: 'Nayt México',
+ name: 'Sun Chemical México',
  ordersCount: 8,
  onTimeRate: 94,
  avgLeadDays: 4,
@@ -226,7 +226,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  status: 'Bueno' as const,
  },
  {
- name: 'Restonic México',
+ name: 'Bio-Pappel',
  ordersCount: 5,
  onTimeRate: 96,
  avgLeadDays: 5,
@@ -234,7 +234,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  status: 'Bueno' as const,
  },
  {
- name: 'Sealy México',
+ name: 'Fasson Avery Dennison',
  ordersCount: 4,
  onTimeRate: 91,
  avgLeadDays: 6,
@@ -242,7 +242,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  status: 'Bueno' as const,
  },
  {
- name: 'Spring Air México',
+ name: 'WestRock México',
  ordersCount: 6,
  onTimeRate: 82,
  avgLeadDays: 7,
@@ -294,25 +294,25 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  // ---------------------------------------------------------------------------
  const destinationsData = [
  {
- name: 'CEDIS Monterrey Norte',
+ name: 'Almacén Materia Prima',
  amount: 210000,
  inTransitUnits: 42,
  type: 'CEDIS',
  },
  {
- name: 'CEDIS Monterrey Sur',
+ name: 'Almacén Producto Terminado',
  amount: 132000,
  inTransitUnits: 18,
  type: 'CEDIS',
  },
  {
- name: 'Sucursal Valle Oriente',
+ name: 'Almacén Auxiliar Reynosa',
  amount: 64000,
  inTransitUnits: 12,
  type: 'Sucursal',
  },
  {
- name: 'Sucursal Cumbres',
+ name: 'Almacén Matamoros',
  amount: 22000,
  inTransitUnits: 6,
  type: 'Sucursal',
@@ -374,10 +374,10 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  className="bg-theme-muted border border-theme-subtle rounded-2xl px-3 py-1.5 text-xs font-bold text-theme-main cursor-pointer focus:outline-none"
  >
  <option value="ALL">Todos los destinos</option>
- <option value="wh-mty-norte">CEDIS Monterrey Norte</option>
- <option value="wh-mty-sur">CEDIS Monterrey Sur</option>
- <option value="wh-suc-valle-oriente">Sucursal Valle Oriente</option>
- <option value="wh-suc-cumbres">Sucursal Cumbres</option>
+ <option value="alm-rtm-mp">Almacén Materia Prima</option>
+ <option value="alm-rtm-pt">Almacén Producto Terminado</option>
+ <option value="wh-reynosa-aux">Almacén Auxiliar Reynosa</option>
+ <option value="wh-matamoros">Almacén Matamoros</option>
  </select>
 
  {/* Supplier Selector */}
@@ -645,7 +645,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  2 días atraso
  </span>
  </div>
- <strong className="text-xs font-bold text-theme-main block">Spring Air México</strong>
+ <strong className="text-xs font-bold text-theme-main block">WestRock México</strong>
  <p className="text-[11px] text-theme-muted font-mono">$82,400 MXN &bull; 18 unidades</p>
  </div>
 
@@ -670,7 +670,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  Lista para compra
  </span>
  </div>
- <strong className="text-xs font-bold text-theme-main block">Nayt Flow Basic</strong>
+ <strong className="text-xs font-bold text-theme-main block">Papel Couché 90 g</strong>
  <p className="text-[11px] text-theme-muted font-mono">12 unidades &bull; CEDIS Norte</p>
  </div>
 
@@ -696,7 +696,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  Entrega hoy
  </span>
  </div>
- <strong className="text-xs font-bold text-theme-main block">Nayt México</strong>
+ <strong className="text-xs font-bold text-theme-main block">Sun Chemical México</strong>
  <p className="text-[11px] text-theme-muted font-mono">19 unidades &bull; CEDIS Norte</p>
  </div>
 
@@ -721,7 +721,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  Doc. por vencer
  </span>
  </div>
- <strong className="text-xs font-bold text-theme-main block">Restonic México</strong>
+ <strong className="text-xs font-bold text-theme-main block">Bio-Pappel</strong>
  <p className="text-[11px] text-theme-muted">Opinión 32-D SAT vence en 4 días</p>
  </div>
 
@@ -1025,7 +1025,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  OC-2026-0078
  </td>
  <td className="py-3 px-3 font-bold text-theme-main whitespace-nowrap">
- Spring Air México
+ WestRock México
  </td>
  <td className="py-3 px-3 font-mono text-[11px] whitespace-nowrap">
  25 Ago 2026
@@ -1117,10 +1117,10 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
 
  <div className="space-y-3 pt-2">
  {[
- { name: 'Nayt México', amount: 180000, percent: 38 },
- { name: 'Spring Air México', amount: 132000, percent: 28 },
- { name: 'Restonic México', amount: 84000, percent: 18 },
- { name: 'Sealy México', amount: 72000, percent: 15 },
+ { name: 'Sun Chemical México', amount: 180000, percent: 38 },
+ { name: 'WestRock México', amount: 132000, percent: 28 },
+ { name: 'Bio-Pappel', amount: 84000, percent: 18 },
+ { name: 'Fasson Avery Dennison', amount: 72000, percent: 15 },
  ].map((p) => (
  <div key={p.name} className="space-y-1">
  <div className="flex items-center justify-between text-xs">
@@ -1340,7 +1340,7 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
 
  <div className="space-y-3">
  {[
- { time: '27 Ago 22:14', text: 'OC-2026-0084 emitida a Nayt México ($42,000 MXN)', type: 'emit' },
+ { time: '27 Ago 22:14', text: 'OC-2026-0084 emitida a Sun Chemical México ($42,000 MXN)', type: 'emit' },
  { time: '27 Ago 21:42', text: 'REQ-2026-0047 autorizada y lista para compra', type: 'auth' },
  { time: '27 Ago 20:18', text: 'OC-2026-0078 marcada como atrasada (2 días de demora)', type: 'delay' },
  { time: '27 Ago 18:31', text: 'OC-2026-0081 recibió 6 de 10 unidades en rampa REC-01', type: 'rec' },

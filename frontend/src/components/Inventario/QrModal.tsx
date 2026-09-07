@@ -1,14 +1,14 @@
 import React from 'react';
 import { X, QrCode, Printer, CheckCircle2, Copy, Download, Building2, MapPin, Tag } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
-import { PositionSerializedMattress } from '../../data/mockInventoryData';
+import { PositionSerializedItem } from '../../data/mockInventoryData';
 import { ModalPortal } from '../common/ModalPortal';
 
 interface QrModalProps {
-  unit: PositionSerializedMattress | null;
+  unit: PositionSerializedItem | null;
   warehouseName?: string;
   onClose: () => void;
-  onPrint?: (unit: PositionSerializedMattress) => void;
+  onPrint?: (unit: PositionSerializedItem) => void;
 }
 
 export const QrModal: React.FC<QrModalProps> = ({

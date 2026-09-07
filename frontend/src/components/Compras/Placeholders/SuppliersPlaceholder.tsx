@@ -15,7 +15,7 @@ export const SuppliersPlaceholder: React.FC = () => {
  Catálogo de Proveedores
  </h3>
  <p className="text-xs text-theme-muted max-w-lg mx-auto leading-relaxed">
- Este flujo se implementará en una siguiente iteración. Incluirá la administración de fabricantes (Nayt, Spring Air, Restonic, Sealy, etc.), tiempos de entrega pactados, condiciones de pago y listas de precios preferenciales.
+ Este flujo se implementará en una siguiente iteración. Incluirá la administración de fabricantes de sustratos, tintas y empaque (Bio-Pappel, Avery Dennison, Sun Chemical, etc.), tiempos de entrega pactados, condiciones de pago y listas de precios preferenciales.
  </p>
  </div>
 

@@ -25,7 +25,7 @@ export interface CountTaskRecord {
   warehouseName: string;
   locationCode: string;
   locationName: string;
-  zoneType: 'RACK' | 'SHOWROOM' | 'RECEPCION' | 'RETRABAJO' | 'EMBARQUE';
+  zoneType: 'RACK' | 'MUESTRAS' | 'RECEPCION' | 'RETRABAJO' | 'EMBARQUE';
   expectedUnitsCount: number;
   expectedSerials: string[];
   countedUnitsCount: number;

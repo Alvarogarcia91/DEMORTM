@@ -201,7 +201,7 @@ export const SupplierFormModal: React.FC<SupplierFormModalProps> = ({
  required
  value={tradeName}
  onChange={(e) => setTradeName(e.target.value)}
- placeholder="Ej. Nayt México"
+ placeholder="Ej. Sun Chemical México"
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
@@ -212,7 +212,7 @@ export const SupplierFormModal: React.FC<SupplierFormModalProps> = ({
  type="text"
  value={legalName}
  onChange={(e) => setLegalName(e.target.value)}
- placeholder="Ej. Distribuidora Nayt S.A. de C.V."
+ placeholder="Ej. Sun Chemical México S.A. de C.V."
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>
@@ -223,7 +223,7 @@ export const SupplierFormModal: React.FC<SupplierFormModalProps> = ({
  type="text"
  value={rfc}
  onChange={(e) => setRfc(e.target.value)}
- placeholder="Ej. DEMO-NAYT-001"
+ placeholder="Ej. PROV-RTM-001"
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs font-mono font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>

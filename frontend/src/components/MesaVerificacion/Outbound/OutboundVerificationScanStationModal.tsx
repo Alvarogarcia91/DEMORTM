@@ -134,7 +134,7 @@ export const OutboundVerificationScanStationModal: React.FC<OutboundVerification
  setTimeout(() => {
  setIsScanning(false);
  setScanStatus('error');
- setErrorMessage('✕ Unidad no pertenece a esta salida: SC-UID-2026-000333 (Spring Air X en STG-OUT-01). No agregada.');
+ setErrorMessage('✕ Unidad no pertenece a esta salida: TAR-RTM-2026-000333 (Material de otro lote en STG-OUT-01). No agregada.');
  }, 450);
  };
 
@@ -148,7 +148,7 @@ export const OutboundVerificationScanStationModal: React.FC<OutboundVerification
  setTimeout(() => {
  setIsScanning(false);
  setScanStatus('warning');
- setWarningMessage('⚠ Unidad del artículo correcto, pero UID incorrecta: Escaneaste SC-UID-2026-000190. (Cantidad correcta · trazabilidad incorrecta). Se requiere registrar diferencia o escanear la serie esperada.');
+ setWarningMessage('⚠ Unidad del artículo correcto, pero UID incorrecta: Escaneaste TAR-RTM-2026-000190. (Cantidad correcta · trazabilidad incorrecta). Se requiere registrar diferencia o escanear la serie esperada.');
  }, 450);
  };
 
@@ -388,7 +388,7 @@ export const OutboundVerificationScanStationModal: React.FC<OutboundVerification
  ✓ Validada: {lastValidatedItem.uid} &bull; {lastValidatedItem.productName}
  </span>
  ) : (
- <span>Esperando escaneo de sticker QR de colchón individual</span>
+ <span>Esperando escaneo de sticker QR de material / tarima</span>
  )}
  </div>
  </div>
@@ -438,7 +438,7 @@ export const OutboundVerificationScanStationModal: React.FC<OutboundVerification
  className="py-2.5 px-3 rounded-xl bg-theme-muted hover:bg-theme-subtle text-theme-main text-xs font-bold transition-all border border-theme-subtle flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-40"
  >
  <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
- <span>Simular unidad no perteneciente (SC-UID-333)</span>
+ <span>Simular unidad no perteneciente (TAR-RTM-999)</span>
  </button>
 
  <button

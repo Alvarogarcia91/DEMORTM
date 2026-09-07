@@ -18,8 +18,8 @@ import { ModalPortal } from '../common/ModalPortal';
 
 export interface PhysicalLocationMeta {
  code: string; // e.g. "A-C-04", "REC-01", "RET-NORTE", "EMB-03", "SHOW-02"
- name: string; // e.g. "Nivel C · Posición 04 · Pasillo A" o "Bahía de Showroom 02"
- type: 'RACK' | 'RECEPCION' | 'ACOMODO' | 'RETRABAJO' | 'EMBARQUE' | 'SUCURSAL' | 'SHOWROOM';
+ name: string; // e.g. "Nivel C · Posición 04 · Pasillo A" o "Bahía de Muestras QA 02"
+ type: 'RACK' | 'RECEPCION' | 'ACOMODO' | 'RETRABAJO' | 'EMBARQUE' | 'SUCURSAL' | 'MUESTRAS';
  warehouseName: string;
  warehouseCode: string;
  aisle?: string;

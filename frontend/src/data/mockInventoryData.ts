@@ -4,7 +4,7 @@
 // Single logical warehouse: Almacén Virtual / Control (ALM-VIRTUAL)
 // =========================================================================
 
-export interface PositionSerializedMattress {
+export interface PositionSerializedItem {
   uid: string;
   sku: string;
   productName: string;
@@ -28,7 +28,8 @@ export interface PositionSerializedMattress {
   notes?: string;
 }
 
-export type PositionSerializedItem = PositionSerializedMattress;
+export type PositionSerializedUnitItem = PositionSerializedItem;
+
 
 export interface LevelItem {
   levelCode: 'C' | 'B' | 'A';
@@ -37,7 +38,7 @@ export interface LevelItem {
   capacity: number;
   count: number;
   isOccupied: boolean;
-  units: PositionSerializedMattress[];
+  units: PositionSerializedItem[];
 }
 
 export interface PositionRack {
@@ -57,7 +58,7 @@ export interface PositionRack {
     levelA: number;
   };
   levels: LevelItem[];
-  units: PositionSerializedMattress[];
+  units: PositionSerializedItem[];
 }
 
 export interface AisleData {
@@ -84,12 +85,15 @@ export interface SpecialAreaSlot {
   }[];
 }
 
-export interface ShowroomBay {
+export interface SampleBayRecord {
   code: string;
   name: string;
   status: 'Ocupada' | 'Libre';
-  mattress?: PositionSerializedMattress;
+  unitItem?: PositionSerializedItem;
 }
+export type SampleBay = SampleBayRecord;
+
+
 
 export interface WarehouseLayout {
   id: string;
@@ -110,8 +114,9 @@ export interface WarehouseLayout {
   stagingAreas: SpecialAreaSlot[];
   reworkZone: SpecialAreaSlot;
   shippingLanes: SpecialAreaSlot[];
-  showroomBays?: ShowroomBay[];
+  sampleBays?: SampleBay[];
 }
+
 
 export interface InventoryMovement {
   id: string;
@@ -472,11 +477,11 @@ function buildIndustrialAisle(
       countA = 1; countB = 0; countC = 0;
     }
 
-    const units: PositionSerializedMattress[] = [];
+    const units: PositionSerializedItem[] = [];
     let totalAge = 0;
     let committed = 0;
 
-    const generateUnit = (level: 'C' | 'B' | 'A', indexInLevel: number): PositionSerializedMattress => {
+    const generateUnit = (level: 'C' | 'B' | 'A', indexInLevel: number): PositionSerializedItem => {
       // Pick appropriate industrial item based on aisle
       let artList = RTM_INDUSTRIAL_ITEMS;
       if (aisleLetter === 'A') {
@@ -543,21 +548,21 @@ function buildIndustrialAisle(
       };
     };
 
-    const unitsC: PositionSerializedMattress[] = [];
+    const unitsC: PositionSerializedItem[] = [];
     for (let c = 0; c < countC; c++) {
       const u = generateUnit('C', c);
       unitsC.push(u);
       units.push(u);
     }
 
-    const unitsB: PositionSerializedMattress[] = [];
+    const unitsB: PositionSerializedItem[] = [];
     for (let b = 0; b < countB; b++) {
       const u = generateUnit('B', b);
       unitsB.push(u);
       units.push(u);
     }
 
-    const unitsA: PositionSerializedMattress[] = [];
+    const unitsA: PositionSerializedItem[] = [];
     for (let a = 0; a < countA; a++) {
       const u = generateUnit('A', a);
       unitsA.push(u);
@@ -842,9 +847,10 @@ export const MOCK_CEDIS_MONTERREY_SUR = MOCK_ALMACEN_PRINCIPAL_RTM;
 export const MOCK_ALMACEN_MATERIA_PRIMA = MOCK_ALMACEN_PRINCIPAL_RTM;
 export const MOCK_ALMACEN_PRODUCTO_TERMINADO = MOCK_ALMACEN_PRINCIPAL_RTM;
 export const MOCK_SUCURSAL_VALLE_ORIENTE = MOCK_ALMACEN_VIRTUAL;
-export const MOCK_SUCURSAL_CUMBRES = MOCK_ALMACEN_VIRTUAL;
-export const MOCK_SHOWROOM_VALLE_ORIENTE: ShowroomBay[] = [];
-export const MOCK_SHOWROOM_CUMBRES: ShowroomBay[] = [];
+export const MOCK_ALMACEN_MATAMOROS = MOCK_ALMACEN_VIRTUAL;
+export const MOCK_SAMPLES_ALMACEN: SampleBayRecord[] = [];
+
+
 
 export const MOCK_WAREHOUSES_LIST: WarehouseLayout[] = [
   MOCK_ALMACEN_PRINCIPAL_RTM,

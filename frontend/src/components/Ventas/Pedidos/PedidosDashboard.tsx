@@ -271,7 +271,7 @@ export const PedidosDashboard: React.FC<PedidosDashboardProps> = ({
         </div>
       </div>
 
-      {/* DEMANDA DE PRODUCCIÓN & DISPONIBILIDAD PT (Reemplaza Showroom) */}
+      {/* DEMANDA DE PRODUCCIÓN & DISPONIBILIDAD PT */}
       <div className="p-5 rounded-3xl bg-white border border-zinc-200 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>

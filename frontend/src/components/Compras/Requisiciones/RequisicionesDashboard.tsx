@@ -492,7 +492,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  </h3>
  </div>
  <p className="text-[11px] text-theme-muted">
- Evolución reciente de requisiciones y colchones solicitados
+ Evolución reciente de requisiciones y materiales solicitados
  </p>
  </div>
  <span className="text-[11px] font-bold text-zinc-900 bg-white px-2 py-0.5 rounded-full border border-emerald-600 shadow-2xs flex items-center gap-1">
@@ -805,7 +805,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  </div>
 
  <div className="p-3 rounded-2xl bg-theme-muted/20 border border-theme-subtle text-[11px] text-theme-muted leading-relaxed">
- 💡 <strong>Diagnóstico Automático:</strong> Permite evitar compras especulativas en SKUs de baja rotación y concentrar capital en líneas de alto flujo como <em>Nayt Flow</em>.
+ 💡 <strong>Diagnóstico Automático:</strong> Permite evitar compras especulativas en SKUs de baja rotación y concentrar capital en líneas de alto flujo como <em>Papel Couché y Tintas UV</em>.
  </div>
  </div>
 
@@ -864,7 +864,7 @@ export const RequisicionesDashboard: React.FC<RequisicionesDashboardProps> = ({
  </div>
  </div>
 
- {/* Proveedores Más Involucrados (Hero: Nayt México) */}
+ {/* Proveedores Más Involucrados (Hero: Sun Chemical) */}
  <div className="bg-theme-surface p-5 border border-theme-subtle rounded-3xl shadow-xs space-y-4">
  <div className="space-y-0.5">
  <div className="flex items-center gap-2">

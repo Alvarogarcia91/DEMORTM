@@ -15,7 +15,11 @@ import {
  FileText,
  ShoppingBag,
  Users,
- Store
+ Receipt,
+ CreditCard,
+ Scale,
+ UserCheck,
+ Wrench
 } from 'lucide-react';
 import { useNavigationModules } from '../context/NavigationModulesContext';
 
@@ -25,13 +29,17 @@ export type NavItemKey =
  | 'inventario'
  | 'mesa-verificacion'
  | 'logistica'
- | 'showroom-expos'
  | 'requisiciones'
  | 'compras'
  | 'proveedores'
  | 'cotizaciones'
  | 'pedidos'
  | 'clientes'
+ | 'facturacion'
+ | 'cxc'
+ | 'cxp'
+ | 'nomina'
+ | 'mantenimiento'
  | 'configuracion';
 
 interface SidebarProps {
@@ -73,8 +81,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
  { key: 'articulos', label: 'Artículos', icon: Package },
  { key: 'inventario', label: 'Inventario', icon: Boxes },
  { key: 'mesa-verificacion', label: 'Operaciones de Almacén', icon: Scan },
- { key: 'logistica', label: 'Producto Terminado & Embarques', icon: Truck },
- { key: 'showroom-expos', label: 'Showroom & Expos', icon: Store },
+ { key: 'logistica', label: 'Órdenes de Salida', icon: Truck },
+ ],
+ },
+ {
+ title: 'MANTENIMIENTO',
+ items: [
+ { key: 'mantenimiento', label: 'Mantenimiento', icon: Wrench },
  ],
  },
  {
@@ -87,11 +100,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
  },
  {
  title: 'VENTAS',
- badge: 'BÁSICO',
  items: [
  { key: 'cotizaciones', label: 'Cotizaciones', icon: FileText },
  { key: 'pedidos', label: 'Pedidos', icon: ShoppingBag },
  { key: 'clientes', label: 'Clientes', icon: Users },
+ ],
+ },
+ {
+ title: 'FINANZAS',
+ items: [
+ { key: 'facturacion', label: 'Facturación', icon: Receipt },
+ { key: 'cxc', label: 'Cuentas por Cobrar', icon: CreditCard },
+ { key: 'cxp', label: 'Cuentas por Pagar', icon: Scale },
+ ],
+ },
+ {
+ title: 'NÓMINA & RH',
+ items: [
+ { key: 'nomina', label: 'Nómina & Asistencia', icon: UserCheck },
  ],
  },
  {
@@ -254,14 +280,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
  <div className="p-2.5 rounded-2xl bg-theme-muted/50 border border-theme-subtle space-y-2">
  <div className="flex items-center gap-2.5">
  <div className="w-8 h-8 rounded-full bg-theme-primary/10 border border-theme-primary/20 flex items-center justify-center font-black text-xs text-theme-primary shrink-0">
- SC
+ RTM
  </div>
  <div className="min-w-0 flex-1">
  <p className="text-xs font-bold text-theme-main truncate">
  Admin Demo
  </p>
  <p className="text-[10px] text-theme-muted truncate">
- Gerencia de Operaciones
+ Gerencia Comercial RTM
  </p>
  </div>
  </div>

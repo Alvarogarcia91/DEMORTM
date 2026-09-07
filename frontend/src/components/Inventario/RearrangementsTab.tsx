@@ -459,7 +459,7 @@ export const RearrangementsTab: React.FC<RearrangementsTabProps> = ({ onShowToas
  key={sug.id}
  className="bg-theme-surface border border-theme-subtle rounded-2xl p-5 shadow-xs hover:border-theme-primary/40 transition-all flex flex-col lg:flex-row lg:items-center justify-between gap-5"
  >
- {/* Left: Mattress & Warehouse info */}
+ {/* Left: Unit & Warehouse info */}
  <div className="space-y-2 max-w-lg">
  <div className="flex items-center gap-2 flex-wrap">
  <span className="font-mono text-xs font-black text-theme-primary flex items-center gap-1">

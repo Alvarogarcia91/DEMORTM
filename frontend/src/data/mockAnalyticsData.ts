@@ -63,8 +63,11 @@ export interface NodeDashboardData {
     reception: { capacity: number; occupied: number; label: string };
     rework: { capacity: number; occupied: number; label: string };
     shipping: { capacity: number; occupied: number; label: string };
-    showroom?: { capacity: number; occupied: number; label: string };
+    samples?: { capacity: number; occupied: number; label: string };
   };
+
+
+
 }
 
 // Costos unitarios de materiales e insumos gráficos RTM (MXN)
@@ -230,8 +233,8 @@ export const NODE_DASHBOARD_DATA: Record<string, NodeDashboardData> = {
     },
   },
 
-  'wh-mty-sur': {
-    warehouseId: 'wh-mty-sur',
+  'alm-rtm-pt': {
+    warehouseId: 'alm-rtm-pt',
     warehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
     warehouseCode: 'ALM-PT',
     type: 'CEDIS',
@@ -509,5 +512,5 @@ export const MOCK_ANALYTICS_DATA_30D: AnalyticsDataset = {
 };
 
 // Backward-compatible fallback
-NODE_DASHBOARD_DATA['wh-mty-norte'] = NODE_DASHBOARD_DATA['wh-alm-rtm'];
-NODE_DASHBOARD_DATA['wh-mty-sur'] = NODE_DASHBOARD_DATA['wh-alm-rtm'];
+NODE_DASHBOARD_DATA['alm-rtm-mp'] = NODE_DASHBOARD_DATA['wh-alm-rtm'];
+NODE_DASHBOARD_DATA['alm-rtm-pt'] = NODE_DASHBOARD_DATA['wh-alm-rtm'];

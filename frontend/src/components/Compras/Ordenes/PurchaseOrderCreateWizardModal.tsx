@@ -55,7 +55,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  );
  if (match) return match;
  }
- return MOCK_SUPPLIERS[0]; // Default to Nayt
+ return MOCK_SUPPLIERS[0]; // Default to first supplier
  });
 
  // STEP 3: Items Table Configuration
@@ -92,7 +92,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
 
  // STEP 4: Delivery & Commercial Conditions
  const [targetWarehouseId, setTargetWarehouseId] = useState(
- requisition.targetWarehouseId || 'wh-mty-norte'
+ requisition.targetWarehouseId || 'alm-rtm-mp'
  );
  
  // Calculate default delivery date based on current supplier lead time
@@ -887,7 +887,7 @@ export const PurchaseOrderCreateWizardModal: React.FC<PurchaseOrderCreateWizardM
  type="text"
  value={notes}
  onChange={(e) => setNotes(e.target.value)}
- placeholder="Ej. Cargar en tarimas de 10 colchones con plástico protector..."
+ placeholder="Ej. Entregar en tarimas flejadas con plástico protector e identificación de lote..."
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary/30"
  />
  </div>

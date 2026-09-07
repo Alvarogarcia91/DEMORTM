@@ -68,7 +68,7 @@ export const PutawayScanStationModal: React.FC<PutawayScanStationModalProps> = (
  setTimeout(() => {
  setIsScanning(false);
  setScanStatus('error');
- setErrorMessage(`✕ Unidad incorrecta: Esta orden requiere ${item.uid}. Escaneaste SC-UID-2026-000171.`);
+ setErrorMessage(`✕ Unidad incorrecta: Esta orden requiere ${item.uid}. Escaneaste TAR-RTM-2026-000171.`);
  }, 450);
  };
 
@@ -105,7 +105,7 @@ export const PutawayScanStationModal: React.FC<PutawayScanStationModalProps> = (
  // -------------------------------------------------------------------------
  // STEP 3: FINAL CONFIRMATION
  // -------------------------------------------------------------------------
- const isShowroom = item.targetLocation.startsWith('SHOW-');
+ const isQASample = item.targetLocation.startsWith('QA-');
 
  const handleFinalConfirm = () => {
  const now = new Date();
@@ -124,7 +124,7 @@ export const PutawayScanStationModal: React.FC<PutawayScanStationModalProps> = (
  setTimeout(() => {
  onConfirmPutaway(completedItem);
  if (onShowToast) {
- onShowToast(`✓ Unidad ${item.uid} acomodada exitosamente en ${item.targetLocation} (Estado: ${isShowroom ? 'En exhibición' : 'Disponible'})`);
+ onShowToast(`✓ Unidad ${item.uid} acomodada exitosamente en ${item.targetLocation} (Estado: ${isQASample ? 'En exhibición' : 'Disponible'})`);
  }
  }, 800);
  };
@@ -236,7 +236,7 @@ export const PutawayScanStationModal: React.FC<PutawayScanStationModalProps> = (
  PASO 1 — VALIDACIÓN DE ARTÍCULO
  </span>
  <p className="text-xs text-theme-main font-semibold">
- Escanea el código QR del sticker físico pegado en el colchón (Esperado: <strong className="font-mono text-theme-primary">{item.uid}</strong>).
+ Escanea el código QR del sticker físico pegado en el material / tarima (Esperado: <strong className="font-mono text-theme-primary">{item.uid}</strong>).
  </p>
  </div>
 
@@ -423,8 +423,8 @@ export const PutawayScanStationModal: React.FC<PutawayScanStationModalProps> = (
  </div>
  <div>
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Nuevo Estado:</span>
- <strong className={`font-bold ${isShowroom ? 'text-purple-600' : 'text-emerald-700'}`}>
- {isShowroom ? 'En exhibición (Showroom)' : 'Disponible'}
+ <strong className={`font-bold ${isQASample ? 'text-purple-600' : 'text-emerald-700'}`}>
+ {isQASample ? 'En muestra / pruebas' : 'Disponible'}
  </strong>
  </div>
  <div>

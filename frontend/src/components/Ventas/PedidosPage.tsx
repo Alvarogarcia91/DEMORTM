@@ -24,6 +24,7 @@ interface PedidosPageProps {
  onRejectOrder: (orderId: string, notes?: string) => void;
  onNavigateToRequisitions?: (preloadedSku?: string) => void;
  onNavigateToQuote?: (quoteFolio: string) => void;
+ initialSelectedOrderFolio?: string | null;
 }
 
 export const PedidosPage: React.FC<PedidosPageProps> = ({
@@ -34,11 +35,21 @@ export const PedidosPage: React.FC<PedidosPageProps> = ({
  onRejectOrder,
  onNavigateToRequisitions,
  onNavigateToQuote,
+ initialSelectedOrderFolio,
 }) => {
  const [activeSubTab, setActiveSubTab] = useState<'dashboard' | 'pending' | 'list'>('dashboard');
 
  const [selectedOrderForDetail, setSelectedOrderForDetail] = useState<SalesOrder | null>(null);
  const [selectedOrderForAuth, setSelectedOrderForAuth] = useState<SalesOrder | null>(null);
+
+ React.useEffect(() => {
+   if (initialSelectedOrderFolio) {
+     const found = orders.find((o) => o.folio === initialSelectedOrderFolio);
+     if (found) {
+       setSelectedOrderForDetail(found);
+     }
+   }
+ }, [initialSelectedOrderFolio, orders]);
 
  const pendingCount = orders.filter((o) => o.status === 'Pendiente de autorización').length;
 
@@ -151,6 +162,7 @@ export const PedidosPage: React.FC<PedidosPageProps> = ({
  setSelectedOrderForDetail(null);
  }}
  onNavigateToQuote={onNavigateToQuote}
+ onNavigateToRequisitions={onNavigateToRequisitions}
  />
 
  <OrderAuthorizationModal

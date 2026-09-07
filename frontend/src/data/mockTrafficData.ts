@@ -1,4 +1,4 @@
-﻿export interface HourlyTrafficPoint {
+export interface HourlyTrafficPoint {
   hour: string;
   inbound: number;
   putaway: number;
@@ -112,7 +112,7 @@ export interface TrafficDataset {
 }
 
 export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> = {
-  'wh-mty-norte': {
+  'alm-rtm-mp': {
     today: {
       totalMoves: 184,
       pacePerHour: 23,
@@ -144,7 +144,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
         outbound: 9,
       },
       warehouseMoves: [
-        { name: 'CEDIS Monterrey Norte', moves: 184, percentage: 100 },
+        { name: 'Almacén Materia Prima', moves: 184, percentage: 100 },
       ],
       topZones: [
         { zone: 'A-B', label: 'Rack Pasillo A (Nivel B)', moves: 38 },
@@ -196,11 +196,11 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
         { day: 'Sáb', hour: '16:00', intensity: 2, count: 20 },
       ],
       topArticles: [
-        { sku: 'MP-PAP-001', name: 'Nayt Colchón Flow Basic White Individual', brand: 'Nayt', category: 'Sustratos Industriales', inbound: 18, putaway: 16, picking: 16, outbound: 14, totalMoves: 64, percentage: 35 },
-        { sku: 'MP-BOPP-001', name: 'Nayt Colchón Flow Basic White Matrimonial', brand: 'Nayt', category: 'Sustratos Industriales', inbound: 12, putaway: 10, picking: 12, outbound: 8, totalMoves: 42, percentage: 23 },
-        { sku: 'MP-TIN-001', name: 'Spring Air Colchón Record Individual', brand: 'Spring Air', category: 'Sustratos Industriales', inbound: 10, putaway: 8, picking: 10, outbound: 8, totalMoves: 36, percentage: 20 },
-        { sku: 'MP-CAP-001', name: 'Restonic Colchón Ortopedic Matrimonial', brand: 'Restonic', category: 'Sustratos Industriales', inbound: 8, putaway: 6, picking: 6, outbound: 4, totalMoves: 24, percentage: 13 },
-        { sku: 'MP-BAR-001', name: 'Barniz UV Brillante SobreimpresiÃ³n', brand: 'Sealy', category: 'Sustratos Industriales', inbound: 6, putaway: 4, picking: 4, outbound: 4, totalMoves: 18, percentage: 9 },
+        { sku: 'MP-PAP-001', name: 'Papel Couché 300g (Bobina 100cm x 1500m)', brand: 'BioPapel', category: 'Sustratos Industriales', inbound: 18, putaway: 16, picking: 16, outbound: 14, totalMoves: 64, percentage: 35 },
+        { sku: 'MP-BOPP-001', name: 'Película BOPP Transparente 35 micras (Rollo 60cm)', brand: 'BioPapel', category: 'Sustratos Industriales', inbound: 12, putaway: 10, picking: 12, outbound: 8, totalMoves: 42, percentage: 23 },
+        { sku: 'MP-TIN-001', name: 'Tinta Offset Process Cyan (Cubeta 20 Kg)', brand: 'Sun Chemical', category: 'Sustratos Industriales', inbound: 10, putaway: 8, picking: 10, outbound: 8, totalMoves: 36, percentage: 20 },
+        { sku: 'MP-CAP-001', name: 'Cartón Plegadizo Caple 24 pts (Tarima)', brand: 'Cartones Sultana', category: 'Sustratos Industriales', inbound: 8, putaway: 6, picking: 6, outbound: 4, totalMoves: 24, percentage: 13 },
+        { sku: 'MP-BAR-001', name: 'Barniz UV Brillante SobreimpresiÃ³n', brand: 'Flint Group', category: 'Sustratos Industriales', inbound: 6, putaway: 4, picking: 4, outbound: 4, totalMoves: 18, percentage: 9 },
       ],
       topLocations: [
         { code: 'A-A-01', label: 'Pasillo A · Pos 01 · Nivel A', type: 'Rack', moves: 28, occupancyPercentage: 80 },
@@ -248,7 +248,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       stageVolumes: { inbound: 42, putaway: 42, picking: 48, outbound: 45 },
       stageAvgMinutes: { inbound: 11, putaway: 18, picking: 22, outbound: 8 },
-      warehouseMoves: [{ name: 'CEDIS Monterrey Norte', moves: 165, percentage: 100 }],
+      warehouseMoves: [{ name: 'Almacén Materia Prima', moves: 165, percentage: 100 }],
       topZones: [{ zone: 'A-A', label: 'Rack Pasillo A (Nivel A)', moves: 36 }],
       dayHourHeatmap: [],
       topArticles: [],
@@ -280,7 +280,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       stageVolumes: { inbound: 284, putaway: 268, picking: 260, outbound: 240 },
       stageAvgMinutes: { inbound: 11, putaway: 19, picking: 24, outbound: 8 },
-      warehouseMoves: [{ name: 'CEDIS Monterrey Norte', moves: 1180, percentage: 100 }],
+      warehouseMoves: [{ name: 'Almacén Materia Prima', moves: 1180, percentage: 100 }],
       topZones: [{ zone: 'A-B', label: 'Rack Pasillo A (Nivel B)', moves: 240 }],
       dayHourHeatmap: [],
       topArticles: [],
@@ -312,7 +312,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       stageVolumes: { inbound: 1240, putaway: 1224, picking: 1180, outbound: 1110 },
       stageAvgMinutes: { inbound: 12, putaway: 20, picking: 25, outbound: 9 },
-      warehouseMoves: [{ name: 'CEDIS Monterrey Norte', moves: 4890, percentage: 100 }],
+      warehouseMoves: [{ name: 'Almacén Materia Prima', moves: 4890, percentage: 100 }],
       topZones: [{ zone: 'A-B', label: 'Rack Pasillo A (Nivel B)', moves: 980 }],
       dayHourHeatmap: [],
       topArticles: [],
@@ -325,7 +325,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       insights: ['Consolidado mensual con 99.1% de exactitud en inventario serializado.'],
     },
   },
-  'wh-mty-sur': {
+  'alm-rtm-pt': {
     today: {
       totalMoves: 82,
       pacePerHour: 12,
@@ -346,7 +346,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       stageVolumes: { inbound: 24, putaway: 18, picking: 18, outbound: 14 },
       stageAvgMinutes: { inbound: 9, putaway: 16, picking: 20, outbound: 8 },
-      warehouseMoves: [{ name: 'CEDIS Monterrey Sur', moves: 82, percentage: 100 }],
+      warehouseMoves: [{ name: 'Almacén Producto Terminado', moves: 82, percentage: 100 }],
       topZones: [
         { zone: 'B-A', label: 'Rack Pasillo B (Nivel A)', moves: 28 },
         { zone: 'B-B', label: 'Rack Pasillo B (Nivel B)', moves: 19 },
@@ -355,9 +355,9 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       dayHourHeatmap: [],
       topArticles: [
-        { sku: 'MP-CAP-001', name: 'Restonic Colchón Ortopedic Matrimonial', brand: 'Restonic', category: 'Sustratos Industriales', inbound: 10, putaway: 8, picking: 8, outbound: 6, totalMoves: 32, percentage: 39 },
-        { sku: 'PT-ETIQ-001', name: 'Sealy Colchón Celebration Plus King Size', brand: 'Sealy', category: 'Sustratos Industriales', inbound: 8, putaway: 6, picking: 8, outbound: 6, totalMoves: 28, percentage: 34 },
-        { sku: 'MP-TIN-001', name: 'Spring Air Colchón Record Individual', brand: 'Spring Air', category: 'Sustratos Industriales', inbound: 6, putaway: 4, picking: 6, outbound: 6, totalMoves: 22, percentage: 27 },
+        { sku: 'MP-CAP-001', name: 'Cartón Plegadizo Caple 24 pts (Tarima)', brand: 'Cartones Sultana', category: 'Sustratos Industriales', inbound: 10, putaway: 8, picking: 8, outbound: 6, totalMoves: 32, percentage: 39 },
+        { sku: 'PT-ETIQ-001', name: 'Etiqueta Farmacéutica 4x6 en Rollo', brand: 'Flint Group', category: 'Sustratos Industriales', inbound: 8, putaway: 6, picking: 8, outbound: 6, totalMoves: 28, percentage: 34 },
+        { sku: 'MP-TIN-001', name: 'Tinta Offset Process Cyan (Cubeta 20 Kg)', brand: 'Sun Chemical', category: 'Sustratos Industriales', inbound: 6, putaway: 4, picking: 6, outbound: 6, totalMoves: 22, percentage: 27 },
       ],
       topLocations: [
         { code: 'B-A-01', label: 'Pasillo B · Pos 01 · Nivel A', type: 'Rack', moves: 18, occupancyPercentage: 85 },
@@ -369,14 +369,14 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
         { id: 'op-s2', name: 'Miguel Ángel Soto', role: 'Operador Sur', total: 34, inbound: 10, putaway: 6, picking: 10, outbound: 8, movesCount: 34, avgTimeMinutes: 16, errorRatePercentage: 1.1, status: 'Activo' },
       ],
       slowOrders: [
-        { id: 'so-s1', folio: 'OA-2026-0033', type: 'Acomodo', stage: 'Acomodo', progress: '1 / 4 unidades estibadas', timeActive: '45 min', tabTarget: 'putaway', elapsedMinutes: 45, thresholdMinutes: 35, responsible: 'Valeria Torres', reason: 'Acomodo de unidades King Size de alto peso' },
+        { id: 'so-s1', folio: 'OA-2026-0033', type: 'Acomodo', stage: 'Acomodo', progress: '1 / 4 unidades estibadas', timeActive: '45 min', tabTarget: 'putaway', elapsedMinutes: 45, thresholdMinutes: 35, responsible: 'Valeria Torres', reason: 'Acomodo de unidades Bobinas de alto gramaje' },
       ],
       timeBeforePutawayAvg: '19 min',
       timeBeforePutawayMax: '45 min',
       timeBeforeValidationAvg: '14 min',
       insights: [
-        'CEDIS Sur mantiene un flujo ágil con 82 movimientos en jornada matutina.',
-        'La ruta Guadalupe #04 fue despachada en tiempo y forma desde EMB-01.',
+        'Almacén PT mantiene un flujo ágil con 82 movimientos en jornada matutina.',
+        'La ruta Medifarma EMB-01 fue despachada en tiempo y forma desde EMB-01.',
       ],
     },
     yesterday: {
@@ -399,7 +399,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       stageVolumes: { inbound: 20, putaway: 20, picking: 22, outbound: 20 },
       stageAvgMinutes: { inbound: 8, putaway: 14, picking: 18, outbound: 7 },
-      warehouseMoves: [{ name: 'CEDIS Monterrey Sur', moves: 48, percentage: 100 }],
+      warehouseMoves: [{ name: 'Almacén Producto Terminado', moves: 48, percentage: 100 }],
       topZones: [{ zone: 'B-A', label: 'Rack Pasillo B (Nivel A)', moves: 18 }],
       dayHourHeatmap: [],
       topArticles: [],
@@ -431,7 +431,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       stageVolumes: { inbound: 140, putaway: 135, picking: 130, outbound: 120 },
       stageAvgMinutes: { inbound: 9, putaway: 15, picking: 19, outbound: 8 },
-      warehouseMoves: [{ name: 'CEDIS Monterrey Sur', moves: 340, percentage: 100 }],
+      warehouseMoves: [{ name: 'Almacén Producto Terminado', moves: 340, percentage: 100 }],
       topZones: [{ zone: 'B-A', label: 'Rack Pasillo B (Nivel A)', moves: 95 }],
       dayHourHeatmap: [],
       topArticles: [],
@@ -441,7 +441,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       timeBeforePutawayAvg: '20 min',
       timeBeforePutawayMax: '1 h 15 min',
       timeBeforeValidationAvg: '15 min',
-      insights: ['340 movimientos procesados en la semana en CEDIS Sur.'],
+      insights: ['340 movimientos procesados en la semana en Almacén PT.'],
     },
     '30d': {
       totalMoves: 1450,
@@ -463,7 +463,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       stageVolumes: { inbound: 580, putaway: 571, picking: 540, outbound: 510 },
       stageAvgMinutes: { inbound: 9, putaway: 15, picking: 20, outbound: 8 },
-      warehouseMoves: [{ name: 'CEDIS Monterrey Sur', moves: 1450, percentage: 100 }],
+      warehouseMoves: [{ name: 'Almacén Producto Terminado', moves: 1450, percentage: 100 }],
       topZones: [{ zone: 'B-A', label: 'Rack Pasillo B (Nivel A)', moves: 380 }],
       dayHourHeatmap: [],
       topArticles: [],
@@ -473,7 +473,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       timeBeforePutawayAvg: '21 min',
       timeBeforePutawayMax: '1 h 30 min',
       timeBeforeValidationAvg: '16 min',
-      insights: ['Consolidado mensual en CEDIS Sur con alta eficiencia.'],
+      insights: ['Consolidado mensual en Almacén PT con alta eficiencia.'],
     },
   },
   'wh-suc-valle-oriente': {
@@ -493,17 +493,17 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       stageVolumes: { inbound: 6, putaway: 4, picking: 2, outbound: 2 },
       stageAvgMinutes: { inbound: 6, putaway: 10, picking: 12, outbound: 5 },
-      warehouseMoves: [{ name: 'Sucursal Valle Oriente', moves: 14, percentage: 100 }],
+      warehouseMoves: [{ name: 'Almacén Auxiliar Reynosa', moves: 14, percentage: 100 }],
       topZones: [
-        { zone: 'SHOW-02', label: 'Bahía Secundaria Showroom VO', moves: 4 },
+        { zone: 'SHOW-02', label: 'Bahía Staging MP', moves: 4 },
         { zone: 'REC-SUC-VO', label: 'Andén Recepción Traspasos VO', moves: 6 },
       ],
       dayHourHeatmap: [],
       topArticles: [
-        { sku: 'MP-PAP-001', name: 'Nayt Colchón Flow Basic Individual', brand: 'Nayt', category: 'Sustratos Industriales', inbound: 4, putaway: 2, picking: 1, outbound: 1, totalMoves: 8, percentage: 57 },
+        { sku: 'MP-PAP-001', name: 'Papel Couché 300g (Bobina 100cm x 1500m)', brand: 'BioPapel', category: 'Sustratos Industriales', inbound: 4, putaway: 2, picking: 1, outbound: 1, totalMoves: 8, percentage: 57 },
       ],
       topLocations: [
-        { code: 'SHOW-02', label: 'Bahía Showroom 02', type: 'Showroom', moves: 4, occupancyPercentage: 100 },
+        { code: 'SHOW-02', label: 'Bahía Staging 02', type: 'Staging', moves: 4, occupancyPercentage: 100 },
       ],
       operators: [
         { id: 'op-vo-1', name: 'Brenda Cavazos', role: 'Encargada Sucursal', total: 14, inbound: 6, putaway: 4, picking: 2, outbound: 2, movesCount: 14, avgTimeMinutes: 8, errorRatePercentage: 0.0, status: 'Activo' },
@@ -529,8 +529,8 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       stageVolumes: { inbound: 6, putaway: 6, picking: 4, outbound: 4 },
       stageAvgMinutes: { inbound: 5, putaway: 8, picking: 10, outbound: 5 },
-      warehouseMoves: [{ name: 'Sucursal Valle Oriente', moves: 12, percentage: 100 }],
-      topZones: [{ zone: 'SHOW-01', label: 'Bahía Principal Showroom', moves: 4 }],
+      warehouseMoves: [{ name: 'Almacén Auxiliar Reynosa', moves: 12, percentage: 100 }],
+      topZones: [{ zone: 'SHOW-01', label: 'Bahía Staging PT', moves: 4 }],
       dayHourHeatmap: [],
       topArticles: [],
       topLocations: [],
@@ -556,8 +556,8 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       stageVolumes: { inbound: 24, putaway: 21, picking: 16, outbound: 16 },
       stageAvgMinutes: { inbound: 6, putaway: 9, picking: 11, outbound: 5 },
-      warehouseMoves: [{ name: 'Sucursal Valle Oriente', moves: 77, percentage: 100 }],
-      topZones: [{ zone: 'SHOW-01', label: 'Showroom VO', moves: 32 }],
+      warehouseMoves: [{ name: 'Almacén Auxiliar Reynosa', moves: 77, percentage: 100 }],
+      topZones: [{ zone: 'SHOW-01', label: 'Staging Reynosa', moves: 32 }],
       dayHourHeatmap: [],
       topArticles: [],
       topLocations: [],
@@ -583,8 +583,8 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       stageVolumes: { inbound: 98, putaway: 95, picking: 74, outbound: 74 },
       stageAvgMinutes: { inbound: 6, putaway: 9, picking: 11, outbound: 6 },
-      warehouseMoves: [{ name: 'Sucursal Valle Oriente', moves: 341, percentage: 100 }],
-      topZones: [{ zone: 'SHOW-01', label: 'Showroom VO', moves: 140 }],
+      warehouseMoves: [{ name: 'Almacén Auxiliar Reynosa', moves: 341, percentage: 100 }],
+      topZones: [{ zone: 'SHOW-01', label: 'Staging Reynosa', moves: 140 }],
       dayHourHeatmap: [],
       topArticles: [],
       topLocations: [],
@@ -593,10 +593,10 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       timeBeforePutawayAvg: '11 min',
       timeBeforePutawayMax: '25 min',
       timeBeforeValidationAvg: '8 min',
-      insights: ['341 movimientos mensuales en sucursal Valle Oriente.'],
+      insights: ['341 movimientos mensuales en Almacén Auxiliar Reynosa.'],
     },
   },
-  'wh-suc-cumbres': {
+  'wh-matamoros': {
     today: {
       totalMoves: 11,
       pacePerHour: 2,
@@ -612,20 +612,20 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       stageVolumes: { inbound: 4, putaway: 3, picking: 2, outbound: 2 },
       stageAvgMinutes: { inbound: 5, putaway: 8, picking: 10, outbound: 5 },
-      warehouseMoves: [{ name: 'Sucursal Cumbres', moves: 11, percentage: 100 }],
+      warehouseMoves: [{ name: 'Almacén Satélite Matamoros', moves: 11, percentage: 100 }],
       topZones: [
-        { zone: 'SHOW-03', label: 'Bahía Showroom Cumbres 03', moves: 3 },
-        { zone: 'REC-SUC-CUM', label: 'Andén Recepción Traspasos Cumbres', moves: 4 },
+        { zone: 'SHOW-03', label: 'Bahía Staging Matamoros 03', moves: 3 },
+        { zone: 'REC-MAT', label: 'Andén Recepción Almacén Matamoros', moves: 4 },
       ],
       dayHourHeatmap: [],
       topArticles: [
-        { sku: 'MP-TIN-001', name: 'Spring Air Colchón Record Individual', brand: 'Spring Air', category: 'Sustratos Industriales', inbound: 2, putaway: 2, picking: 1, outbound: 1, totalMoves: 6, percentage: 55 },
+        { sku: 'MP-TIN-001', name: 'Tinta Offset Process Cyan (Cubeta 20 Kg)', brand: 'Sun Chemical', category: 'Sustratos Industriales', inbound: 2, putaway: 2, picking: 1, outbound: 1, totalMoves: 6, percentage: 55 },
       ],
       topLocations: [
-        { code: 'SHOW-03', label: 'Bahía Showroom 03', type: 'Showroom', moves: 3, occupancyPercentage: 100 },
+        { code: 'SHOW-03', label: 'Bahía Staging Matamoros 03', type: 'Staging', moves: 3, occupancyPercentage: 100 },
       ],
       operators: [
-        { id: 'op-cum-1', name: 'Jorge Villarreal', role: 'Encargado Cumbres', total: 11, inbound: 4, putaway: 3, picking: 2, outbound: 2, movesCount: 11, avgTimeMinutes: 7, errorRatePercentage: 0.0, status: 'Activo' },
+        { id: 'op-cum-1', name: 'Jorge Villarreal', role: 'Supervisor Almacén Matamoros', total: 11, inbound: 4, putaway: 3, picking: 2, outbound: 2, movesCount: 11, avgTimeMinutes: 7, errorRatePercentage: 0.0, status: 'Activo' },
       ],
       slowOrders: [],
       timeBeforePutawayAvg: '11 min',
@@ -648,8 +648,8 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       stageVolumes: { inbound: 4, putaway: 4, picking: 3, outbound: 3 },
       stageAvgMinutes: { inbound: 5, putaway: 8, picking: 9, outbound: 5 },
-      warehouseMoves: [{ name: 'Sucursal Cumbres', moves: 14, percentage: 100 }],
-      topZones: [{ zone: 'SHOW-01', label: 'Showroom Cumbres', moves: 4 }],
+      warehouseMoves: [{ name: 'Almacén Satélite Matamoros', moves: 14, percentage: 100 }],
+      topZones: [{ zone: 'SHOW-01', label: 'Staging Matamoros', moves: 4 }],
       dayHourHeatmap: [],
       topArticles: [],
       topLocations: [],
@@ -658,7 +658,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       timeBeforePutawayAvg: '10 min',
       timeBeforePutawayMax: '15 min',
       timeBeforeValidationAvg: '7 min',
-      insights: ['Jornada regular en Sucursal Cumbres.'],
+      insights: ['Jornada regular en Almacén Satélite Matamoros.'],
     },
     '7d': {
       totalMoves: 64,
@@ -675,8 +675,8 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       stageVolumes: { inbound: 18, putaway: 16, picking: 14, outbound: 14 },
       stageAvgMinutes: { inbound: 5, putaway: 8, picking: 10, outbound: 5 },
-      warehouseMoves: [{ name: 'Sucursal Cumbres', moves: 64, percentage: 100 }],
-      topZones: [{ zone: 'SHOW-03', label: 'Showroom Cumbres', moves: 25 }],
+      warehouseMoves: [{ name: 'Almacén Satélite Matamoros', moves: 64, percentage: 100 }],
+      topZones: [{ zone: 'SHOW-03', label: 'Staging Matamoros', moves: 25 }],
       dayHourHeatmap: [],
       topArticles: [],
       topLocations: [],
@@ -685,7 +685,7 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       timeBeforePutawayAvg: '10 min',
       timeBeforePutawayMax: '20 min',
       timeBeforeValidationAvg: '8 min',
-      insights: ['Semana con 64 movimientos en tienda Cumbres.'],
+      insights: ['Semana con 64 movimientos en planta Matamoros.'],
     },
     '30d': {
       totalMoves: 270,
@@ -702,8 +702,8 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       ],
       stageVolumes: { inbound: 76, putaway: 74, picking: 60, outbound: 60 },
       stageAvgMinutes: { inbound: 5, putaway: 8, picking: 10, outbound: 5 },
-      warehouseMoves: [{ name: 'Sucursal Cumbres', moves: 270, percentage: 100 }],
-      topZones: [{ zone: 'SHOW-03', label: 'Showroom Cumbres', moves: 110 }],
+      warehouseMoves: [{ name: 'Almacén Satélite Matamoros', moves: 270, percentage: 100 }],
+      topZones: [{ zone: 'SHOW-03', label: 'Staging Matamoros', moves: 110 }],
       dayHourHeatmap: [],
       topArticles: [],
       topLocations: [],
@@ -712,14 +712,14 @@ export const CEDIS_TRAFFIC_DATA: Record<string, Record<string, TrafficDataset>> 
       timeBeforePutawayAvg: '11 min',
       timeBeforePutawayMax: '22 min',
       timeBeforeValidationAvg: '8 min',
-      insights: ['270 movimientos consolidados en Sucursal Cumbres.'],
+      insights: ['270 movimientos consolidados en Almacén Satélite Matamoros.'],
     },
   },
 };
 
 export const getTrafficDataForCedis = (period: string, warehouseId: string): TrafficDataset => {
-  const cedisMap = CEDIS_TRAFFIC_DATA[warehouseId] || CEDIS_TRAFFIC_DATA['wh-mty-norte'];
+  const cedisMap = CEDIS_TRAFFIC_DATA[warehouseId] || CEDIS_TRAFFIC_DATA['alm-rtm-mp'];
   return cedisMap[period] || cedisMap.today;
 };
 
-export const PERIOD_TRAFFIC_DATA = CEDIS_TRAFFIC_DATA['wh-mty-norte'];
+export const PERIOD_TRAFFIC_DATA = CEDIS_TRAFFIC_DATA['alm-rtm-mp'];

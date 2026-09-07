@@ -26,6 +26,8 @@ interface CotizacionesPageProps {
  onSaveCustomer: (customer: SalesCustomer) => void;
  onGenerateOrderFromQuote: (quote: SalesQuote) => void;
  onNavigateToOrder?: (orderFolio: string) => void;
+ initialPreselectedCustomerId?: string | null;
+ initialSelectedQuoteFolio?: string | null;
 }
 
 export const CotizacionesPage: React.FC<CotizacionesPageProps> = ({
@@ -37,6 +39,8 @@ export const CotizacionesPage: React.FC<CotizacionesPageProps> = ({
  onSaveCustomer,
  onGenerateOrderFromQuote,
  onNavigateToOrder,
+ initialPreselectedCustomerId,
+ initialSelectedQuoteFolio,
 }) => {
  const [activeSubTab, setActiveSubTab] = useState<'dashboard' | 'list'>('dashboard');
 
@@ -45,7 +49,25 @@ export const CotizacionesPage: React.FC<CotizacionesPageProps> = ({
  const [selectedQuoteForDetail, setSelectedQuoteForDetail] = useState<SalesQuote | null>(null);
  const [selectedQuoteForAuth, setSelectedQuoteForAuth] = useState<SalesQuote | null>(null);
  const [isQuickClientOpen, setIsQuickClientOpen] = useState(false);
- const [wizardPreselectedCustomerId, setWizardPreselectedCustomerId] = useState<string | undefined>();
+ const [wizardPreselectedCustomerId, setWizardPreselectedCustomerId] = useState<string | undefined>(
+  initialPreselectedCustomerId || undefined
+ );
+
+ React.useEffect(() => {
+  if (initialPreselectedCustomerId) {
+   setWizardPreselectedCustomerId(initialPreselectedCustomerId);
+   setIsWizardOpen(true);
+  }
+ }, [initialPreselectedCustomerId]);
+
+ React.useEffect(() => {
+  if (initialSelectedQuoteFolio) {
+   const found = quotes.find((q) => q.folio === initialSelectedQuoteFolio);
+   if (found) {
+    setSelectedQuoteForDetail(found);
+   }
+  }
+ }, [initialSelectedQuoteFolio, quotes]);
 
  const handleOpenWizardWithCustomer = (customerId?: string) => {
  setWizardPreselectedCustomerId(customerId);
@@ -195,6 +217,7 @@ export const CotizacionesPage: React.FC<CotizacionesPageProps> = ({
  setSelectedQuoteForDetail(null);
  onGenerateOrderFromQuote(q);
  }}
+ onNavigateToOrder={onNavigateToOrder}
  />
 
  {/* Quote Authorization Modal */}

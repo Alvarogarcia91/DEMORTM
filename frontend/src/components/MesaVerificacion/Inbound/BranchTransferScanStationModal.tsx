@@ -138,7 +138,7 @@ export const BranchTransferScanStationModal: React.FC<BranchTransferScanStationM
  };
 
  const handleSimulateInvalid = () => {
- processScan('SC-UID-2026-000333');
+ processScan('TAR-RTM-2026-000333');
  };
 
  // Final confirmation logic
@@ -237,7 +237,7 @@ export const BranchTransferScanStationModal: React.FC<BranchTransferScanStationM
  Validación de UIDs Serializados Existentes
  </span>
  <p className="text-[11px] text-zinc-600 dark:text-zinc-400 leading-relaxed">
- Las unidades que arriban por traspaso ya fueron serializadas en el CEDIS de origen. <strong>No se generan nuevos UIDs ni se imprimen stickers adicionales</strong>. Escanea el código QR de cada colchón para confirmar su arribo físico a sucursal.
+ Las unidades que arriban por traspaso ya fueron serializadas en el almacén de origen. <strong>No se generan nuevos UIDs ni se imprimen stickers adicionales</strong>. Escanea el código QR de cada tarima o bulto para confirmar su arribo físico a sucursal.
  </p>
  </div>
  </div>
@@ -337,7 +337,7 @@ export const BranchTransferScanStationModal: React.FC<BranchTransferScanStationM
  processScan(manualInput);
  }
  }}
- placeholder="Escanea el código QR o ingresa SC-UID-2026-XXXXXX..."
+ placeholder="Escanea el código QR o ingresa TAR-RTM-2026-XXXXXX..."
  className="w-full bg-theme-muted/50 border border-theme-subtle rounded-2xl pl-10 pr-4 py-2.5 text-xs font-mono font-bold text-theme-main focus:outline-none focus:ring-2 focus:ring-theme-primary"
  />
  </div>

@@ -258,7 +258,7 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  {
  id: 'UBICACION',
  title: 'Por Ubicación Física',
- desc: 'Auditar pasillos, racks específicos, recepción, retrabajo o showroom.',
+ desc: 'Auditar pasillos, racks específicos, recepción, retrabajo o staging.',
  badge: 'Recomendado',
  },
  {
@@ -343,7 +343,7 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  Zonas operativas especiales adicionales:
  </span>
  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
- {['Recepción', 'Retrabajo', 'Embarques', 'Showroom'].map((z) => (
+ {['Recepción', 'Retrabajo', 'Embarques', 'Staging Producción'].map((z) => (
  <label key={z} className="p-2.5 rounded-xl border border-theme-subtle bg-theme-surface flex items-center gap-2 cursor-pointer text-xs font-semibold">
  <input type="checkbox" defaultChecked className="rounded text-theme-primary" />
  <span>{z}</span>

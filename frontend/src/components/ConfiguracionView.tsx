@@ -28,16 +28,20 @@ import {
   Boxes,
   Scan,
   Truck,
-  Store,
   ClipboardList,
   ShoppingCart,
   Building2,
   FileText,
   ShoppingBag,
   Users,
+  Receipt,
+  CreditCard,
+  Scale,
+  UserCheck,
   LayoutDashboard,
   CheckCheck,
-  ShieldCheck
+  ShieldCheck,
+  Wrench
 } from 'lucide-react';
 import { NavItemKey } from './Sidebar';
 
@@ -97,13 +101,17 @@ export const ConfiguracionView: React.FC = () => {
       case 'inventario': return Boxes;
       case 'mesa-verificacion': return Scan;
       case 'logistica': return Truck;
-      case 'showroom-expos': return Store;
       case 'requisiciones': return ClipboardList;
       case 'compras': return ShoppingCart;
       case 'proveedores': return Building2;
       case 'cotizaciones': return FileText;
       case 'pedidos': return ShoppingBag;
       case 'clientes': return Users;
+      case 'facturacion': return Receipt;
+      case 'cxc': return CreditCard;
+      case 'cxp': return Scale;
+      case 'nomina': return UserCheck;
+      case 'mantenimiento': return Wrench;
       case 'configuracion': return Palette;
       default: return Layers;
     }
@@ -111,8 +119,11 @@ export const ConfiguracionView: React.FC = () => {
 
   const categories = [
     { id: 'operaciones', label: 'Inventario y Operaciones', desc: 'Módulos de catálogo, almacén físico, control de calidad y logística' },
+    { id: 'mantenimiento', label: 'Mantenimiento & Planta', desc: 'Maquinaria y equipos industriales, órdenes de trabajo (OT), preventivos y refacciones' },
     { id: 'compras', label: 'Cadena de Suministro (Compras)', desc: 'Requisiciones internas, compras y directorio de proveedores' },
     { id: 'ventas', label: 'Gestión Comercial (Ventas)', desc: 'Cotizaciones, órdenes de venta y administración de clientes' },
+    { id: 'finanzas', label: 'Finanzas & Facturación', desc: 'Facturación CFDI 4.0, Cuentas por Cobrar y Cuentas por Pagar' },
+    { id: 'nomina', label: 'Nómina & Recursos Humanos', desc: 'Gestión de asistencia de planta, pre-nómina y timbrado fiscal CFDI' },
     { id: 'sistema', label: 'Módulos Centrales del Sistema', desc: 'Accesos esenciales de administración y control general' },
   ];
 

@@ -24,12 +24,21 @@ interface RequisicionesTabProps {
  onNavigateToPurchasesTab?: () => void;
  requisitions?: Requisition[];
  onSetRequisitions?: React.Dispatch<React.SetStateAction<Requisition[]>>;
+ initialPrefilledItem?: {
+  sku: string;
+  productName: string;
+  brand: string;
+  quantity: number;
+  targetWarehouseId?: string;
+  note?: string;
+ } | null;
 }
 
 export const RequisicionesTab: React.FC<RequisicionesTabProps> = ({
  onNavigateToPurchasesTab,
  requisitions: externalRequisitions,
  onSetRequisitions: externalSetRequisitions,
+ initialPrefilledItem,
 }) => {
  const [activeSubTab, setActiveSubTab] = useState<RequisitionSubTab>('dashboard');
  
@@ -55,6 +64,21 @@ export const RequisicionesTab: React.FC<RequisicionesTabProps> = ({
  suggestedSupplier?: string;
  note?: string;
  } | null>(null);
+
+ React.useEffect(() => {
+  if (initialPrefilledItem) {
+   setEditingRequisition(null);
+   setPrefilledItem({
+    sku: initialPrefilledItem.sku,
+    productName: initialPrefilledItem.productName,
+    brand: initialPrefilledItem.brand,
+    quantity: initialPrefilledItem.quantity,
+    targetWarehouseId: initialPrefilledItem.targetWarehouseId || 'alm-rtm-mp',
+    note: initialPrefilledItem.note,
+   });
+   setIsFormOpen(true);
+  }
+ }, [initialPrefilledItem]);
 
  // Handlers
  const handleOpenCreateNew = () => {

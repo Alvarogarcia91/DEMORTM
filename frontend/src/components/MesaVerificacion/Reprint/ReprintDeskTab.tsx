@@ -45,7 +45,7 @@ export const ReprintDeskTab: React.FC<ReprintDeskTabProps> = ({
  const visibleAuditLogs = auditLogs.filter(
  (l) =>
  !l.warehouseName ||
- (selectedCedisId === 'wh-mty-norte'
+ (selectedCedisId === 'alm-rtm-mp'
  ? l.warehouseName.includes('Norte')
  : l.warehouseName.includes('Sur'))
  );

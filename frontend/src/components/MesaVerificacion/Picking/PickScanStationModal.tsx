@@ -118,7 +118,7 @@ export const PickScanStationModal: React.FC<PickScanStationModalProps> = ({
  setTimeout(() => {
  setIsScanning(false);
  setScanStatus('error');
- const alternateUid = `SC-UID-2026-000${Math.floor(190 + Math.random() * 20)}`;
+ const alternateUid = `TAR-RTM-2026-000${Math.floor(190 + Math.random() * 20)}`;
  setWrongScannedUid(alternateUid);
  setErrorMessage(`✕ Unidad diferente escaneada: ${alternateUid}. La estrategia esperaba ${currentStop.uid}.`);
  }, 450);
@@ -370,7 +370,7 @@ export const PickScanStationModal: React.FC<PickScanStationModalProps> = ({
  </span>
  </div>
  <p className="text-xs text-theme-main font-semibold">
- Escanea el sticker QR del colchón indicado: <strong className="font-mono text-theme-primary">{currentStop.uid}</strong>.
+ Escanea el sticker QR del material/tarima indicado: <strong className="font-mono text-theme-primary">{currentStop.uid}</strong>.
  </p>
  </div>
 

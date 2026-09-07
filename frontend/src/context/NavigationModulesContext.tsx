@@ -4,7 +4,7 @@ import { NavItemKey } from '../components/Sidebar';
 export interface ModuleDefinition {
   key: NavItemKey;
   label: string;
-  category: 'operaciones' | 'compras' | 'ventas' | 'sistema';
+  category: 'operaciones' | 'compras' | 'ventas' | 'finanzas' | 'nomina' | 'mantenimiento' | 'sistema';
   categoryLabel: string;
   description: string;
   isLocked?: boolean;
@@ -42,17 +42,17 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   },
   {
     key: 'logistica',
-    label: 'Producto Terminado & Embarques',
+    label: 'Órdenes de Salida',
     category: 'operaciones',
     categoryLabel: 'Inventario y Operaciones',
-    description: 'Control de tarimas y rollos liberados por QA, staging y despacho de remisiones a clientes.',
+    description: 'Despacho de producto terminado liberado por QA, staging de tarimas y validación de carga para clientes industriales.',
   },
   {
-    key: 'showroom-expos',
-    label: 'Showroom & Expos',
-    category: 'operaciones',
-    categoryLabel: 'Inventario y Operaciones',
-    description: 'Control de mercancía en exhibición, montaje de exposiciones y recolecciones temporales.',
+    key: 'mantenimiento',
+    label: 'Mantenimiento & Equipos',
+    category: 'mantenimiento',
+    categoryLabel: 'Mantenimiento & Planta',
+    description: 'Control de maquinaria y equipos, órdenes de trabajo (OT), refacciones y mantenimiento preventivo.',
   },
   {
     key: 'requisiciones',
@@ -97,6 +97,34 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     description: 'Gestión de cartera de clientes, condiciones de crédito y contactos comerciales.',
   },
   {
+    key: 'facturacion',
+    label: 'Facturación (CFDI 4.0)',
+    category: 'finanzas',
+    categoryLabel: 'Finanzas & Facturación',
+    description: 'Emisión y simulación fiscal de comprobantes CFDI 4.0 a partir de remisiones entregadas.',
+  },
+  {
+    key: 'cxc',
+    label: 'Cuentas por Cobrar (CxC)',
+    category: 'finanzas',
+    categoryLabel: 'Finanzas & Facturación',
+    description: 'Control de cartera, vencimiento de facturas, abonos y antigüedad de saldos.',
+  },
+  {
+    key: 'cxp',
+    label: 'Cuentas por Pagar (CxP)',
+    category: 'finanzas',
+    categoryLabel: 'Finanzas & Facturación',
+    description: 'Gestión de facturas de proveedores con validación y conciliación 3-Way Match.',
+  },
+  {
+    key: 'nomina',
+    label: 'Nómina & Asistencia',
+    category: 'nomina',
+    categoryLabel: 'Nómina & Recursos Humanos',
+    description: 'Gestión de checadas de planta, incidencias con reposición, pre-nómina y timbrado fiscal CFDI 4.0.',
+  },
+  {
     key: 'configuracion',
     label: 'Configuración & Temas',
     category: 'sistema',
@@ -113,18 +141,22 @@ const DEFAULT_VISIBILITY: VisibilityMap = {
   'articulos': false,
   'inventario': true,
   'mesa-verificacion': true,
-  'logistica': true,
-  'showroom-expos': false,
+  'logistica': false,
   'requisiciones': false,
   'compras': false,
   'proveedores': false,
   'cotizaciones': false,
   'pedidos': false,
   'clientes': false,
+  'facturacion': true,
+  'cxc': true,
+  'cxp': true,
+  'nomina': true,
+  'mantenimiento': true,
   'configuracion': true,
 };
 
-const STORAGE_KEY = 'rtm_visible_navigation_modules';
+const STORAGE_KEY = 'rtm_visible_navigation_modules_v6';
 
 interface NavigationModulesContextType {
   visibleModules: VisibilityMap;
@@ -147,7 +179,13 @@ export const NavigationModulesProvider: React.FC<{ children: React.ReactNode }> 
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         try {
-          return { ...DEFAULT_VISIBILITY, ...JSON.parse(saved) };
+          const parsed = JSON.parse(saved);
+          return {
+            ...DEFAULT_VISIBILITY,
+            ...parsed,
+            'mantenimiento': parsed.mantenimiento !== undefined ? parsed.mantenimiento : true,
+            'nomina': parsed.nomina !== undefined ? parsed.nomina : true,
+          };
         } catch {
           return DEFAULT_VISIBILITY;
         }
@@ -163,7 +201,10 @@ export const NavigationModulesProvider: React.FC<{ children: React.ReactNode }> 
   const isModuleVisible = (key: NavItemKey): boolean => {
     // Locked items are always visible
     if (key === 'inicio' || key === 'configuracion') return true;
-    return visibleModules[key] !== false;
+    if (visibleModules[key] === undefined) {
+      return DEFAULT_VISIBILITY[key] ?? true;
+    }
+    return visibleModules[key] === true;
   };
 
   const toggleModule = (key: NavItemKey) => {

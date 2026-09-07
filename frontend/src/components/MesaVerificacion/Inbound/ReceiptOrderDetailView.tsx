@@ -223,7 +223,7 @@ export const ReceiptOrderDetailView: React.FC<ReceiptOrderDetailViewProps> = ({
  Partidas de la Orden de Compra para Validación
  </h3>
  <p className="text-xs text-theme-muted">
- Escanea cada colchón al descargar para emitir su sticker individual con UID y Código QR.
+ Escanea cada tarima o bulto al descargar para emitir su sticker individual con UID y Código QR.
  </p>
  </div>
  {isOrderFullyReceived && !isPutawaySent && (
@@ -297,7 +297,7 @@ export const ReceiptOrderDetailView: React.FC<ReceiptOrderDetailViewProps> = ({
 
  {/* Unidad */}
  <td className="py-3.5 px-3 text-theme-muted font-medium whitespace-nowrap">
- Colchón
+ Tarima / Millar
  </td>
 
  {/* Line Status */}

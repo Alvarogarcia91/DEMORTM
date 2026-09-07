@@ -117,16 +117,19 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [config, setConfig] = useState<ThemeConfig>(() => {
-    const saved = localStorage.getItem('rtm_theme_config') || localStorage.getItem('sc_theme_config');
+    const saved = localStorage.getItem('rtm_theme_config');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (parsed.preset === 'supercolchones') parsed.preset = 'rtm';
+        if (parsed.preset !== 'rtm' && parsed.preset !== 'ocean' && parsed.preset !== 'emerald' && parsed.preset !== 'sunset' && parsed.preset !== 'corporate') {
+          parsed.preset = 'rtm';
+        }
         return { ...DEFAULT_CONFIG, ...parsed };
       } catch {
         return DEFAULT_CONFIG;
       }
     }
+
     return DEFAULT_CONFIG;
   });
 

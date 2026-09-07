@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState } from 'react';
 export type OperatingFacilityType = 'ALMACEN' | 'CEDIS' | 'SUCURSAL';
 
 export interface OperatingFacilityOption {
-  id: string; // 'wh-mty-norte' (ALM-MP) | 'wh-mty-sur' (ALM-PT)
+  id: string; // 'alm-rtm-mp' (ALM-MP) | 'alm-rtm-pt' (ALM-PT)
   code: string; // 'ALM-MP' | 'ALM-PT'
   name: string;
   type: OperatingFacilityType;
@@ -16,7 +16,7 @@ export type CedisOption = OperatingFacilityOption;
 
 export const OPERATING_FACILITIES_LIST: OperatingFacilityOption[] = [
   {
-    id: 'wh-mty-norte',
+    id: 'alm-rtm-mp',
     code: 'ALM-MP',
     name: 'Almacén Materia Prima',
     type: 'ALMACEN',
@@ -24,7 +24,7 @@ export const OPERATING_FACILITIES_LIST: OperatingFacilityOption[] = [
     tempReceivingLocation: 'REC-01',
   },
   {
-    id: 'wh-mty-sur',
+    id: 'alm-rtm-pt',
     code: 'ALM-PT',
     name: 'Almacén Producto Terminado',
     type: 'ALMACEN',
@@ -64,7 +64,7 @@ export const VerificationDeskProvider: React.FC<{ children: React.ReactNode }> =
     } catch {
       // ignore
     }
-    return 'wh-mty-norte';
+    return 'alm-rtm-mp';
   });
 
   const setSelectedFacilityId = (id: string) => {

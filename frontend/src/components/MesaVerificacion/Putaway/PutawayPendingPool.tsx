@@ -81,8 +81,8 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  return units.filter((u) => selectedUids.includes(u.uid));
  }, [units, selectedUids]);
 
- const activeWarehouseName = selectedUnitsObjects[0]?.warehouseName || 'CEDIS Monterrey Norte';
- const activeWarehouseId = selectedUnitsObjects[0]?.warehouseId || 'wh-mty-norte';
+ const activeWarehouseName = selectedUnitsObjects[0]?.warehouseName || 'Almacén Materia Prima';
+ const activeWarehouseId = selectedUnitsObjects[0]?.warehouseId || 'alm-rtm-mp';
 
  return (
  <div className="space-y-4">
@@ -119,9 +119,9 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  className="bg-theme-muted border border-theme-subtle rounded-2xl px-3 py-2 text-xs font-semibold text-theme-main focus:outline-none cursor-pointer"
  >
  <option value="ALL">Todas las ubicaciones</option>
- <option value="wh-mty-norte">CEDIS Monterrey Norte</option>
- <option value="wh-mty-sur">CEDIS Monterrey Sur</option>
- <option value="wh-suc-valle-oriente">Sucursal Valle Oriente</option>
+ <option value="alm-rtm-mp">Almacén Materia Prima</option>
+ <option value="alm-rtm-pt">Almacén Producto Terminado</option>
+ <option value="wh-suc-valle-oriente">Almacén Auxiliar Reynosa</option>
  </select>
 
  <select
@@ -130,10 +130,10 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  className="bg-theme-muted border border-theme-subtle rounded-2xl px-3 py-2 text-xs font-semibold text-theme-main focus:outline-none cursor-pointer"
  >
  <option value="ALL">Todas las marcas</option>
- <option value="Nayt">Nayt</option>
- <option value="Spring Air">Spring Air</option>
- <option value="Restonic">Restonic</option>
- <option value="Sealy">Sealy</option>
+ <option value="Sun Chemical">Sun Chemical</option>
+ <option value="Bio-Pappel">Bio-Pappel</option>
+ <option value="Avery Dennison">Avery Dennison</option>
+ <option value="WestRock">WestRock</option>
  </select>
 
  <select
@@ -142,10 +142,10 @@ export const PutawayPendingPool: React.FC<PutawayPendingPoolProps> = ({
  className="bg-theme-muted border border-theme-subtle rounded-2xl px-3 py-2 text-xs font-semibold text-theme-main focus:outline-none cursor-pointer"
  >
  <option value="ALL">Todas las medidas</option>
- <option value="Individual">Individual</option>
- <option value="Matrimonial">Matrimonial</option>
- <option value="Queen Size">Queen Size</option>
- <option value="King Size">King Size</option>
+ <option value="Pliegos 70x100">Pliegos 70x100</option>
+ <option value="Bobina 2,500m">Bobina 2,500m</option>
+ <option value="Tarima PT">Tarima PT</option>
+ <option value="Cubeta 20kg">Cubeta 20kg</option>
  </select>
 
  <select

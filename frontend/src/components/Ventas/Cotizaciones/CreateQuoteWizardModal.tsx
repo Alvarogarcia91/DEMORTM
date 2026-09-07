@@ -404,7 +404,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
             </div>
           )}
 
-          {/* STEP 2: SUCURSAL Y LISTA */}
+          {/* STEP 2: PLANTA Y TARIFA COMERCIAL */}
           {step === 2 && (
             <div className="space-y-6">
               <div className="space-y-3">
@@ -441,7 +441,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
 
               <div className="space-y-3">
                 <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider block">
-                  2. Lista de Precios de Venta Aplicable
+                  2. Tarifa / Convenio Comercial Aplicable
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {priceLists.map((plist) => {
@@ -731,7 +731,7 @@ export const CreateQuoteWizardModal: React.FC<CreateQuoteWizardModalProps> = ({
                   <span className="text-[10px] text-zinc-500 font-mono">RFC: {currentCustomer?.rfc}</span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-zinc-500 uppercase font-bold block">Sucursal / Lista</span>
+                  <span className="text-[10px] text-zinc-500 uppercase font-bold block">Planta / Tarifa Comercial</span>
                   <strong className="text-zinc-900 block text-xs">{branchName}</strong>
                   <span className="text-[10px] text-zinc-500">{currentPriceList?.name}</span>
                 </div>

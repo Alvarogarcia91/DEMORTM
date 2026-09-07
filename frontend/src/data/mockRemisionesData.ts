@@ -1,6 +1,6 @@
 import { OutboundVerificationOrder } from './mockOutboundVerificationData';
 
-export type RemisionType = 'Venta' | 'Traspaso' | 'Exposición' | 'Despacho B2B';
+export type RemisionType = 'Venta' | 'Traspaso' | 'Despacho B2B';
 export type RemisionStatus = 
   | 'Pendiente de remisión' 
   | 'Remisión generada' 
@@ -44,11 +44,11 @@ export interface OutboundRemision {
   status: RemisionStatus;
   outboundOrderFolio: string; // ej. 'VS-2026-0040'
   sourceDocumentFolio: string; // ej. 'PED-2026-0410'
-  sourceDocumentType: 'Pedido' | 'OTP' | 'Exposición';
+  sourceDocumentType: 'Pedido' | 'OTP' | 'Orden de Salida';
   createdAt: string;
   printedAt?: string;
   originWarehouseId: string;
-  originWarehouseName: string; // ej. 'ALM-PT (Producto Terminado - Nave 2 Reynosa)'
+  originWarehouseName: string; // ej. 'ALM-PT (Almacén Producto Terminado RTM)'
   destinationName: string; // ej. 'Laboratorios Medifarma S.A. de C.V.'
   destinationAddress?: string;
   destinationFacility?: string;
@@ -88,8 +88,8 @@ export const INITIAL_MOCK_REMISSIONES: OutboundRemision[] = [
     sourceDocumentFolio: 'PED-2026-0410',
     sourceDocumentType: 'Pedido',
     createdAt: '06 Sep 2026, 11:45',
-    originWarehouseId: 'wh-mty-sur',
-    originWarehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
+    originWarehouseId: 'alm-rtm-pt',
+    originWarehouseName: 'ALM-PT (Almacén Producto Terminado RTM)',
     destinationName: 'Laboratorios Medifarma S.A. de C.V.',
     destinationAddress: 'Av. Industrial Falcon 1200, Parque Industrial Reynosa, Reynosa, Tamps.',
     assignedLane: 'EMB-01',
@@ -140,8 +140,8 @@ export const INITIAL_MOCK_REMISSIONES: OutboundRemision[] = [
     sourceDocumentFolio: 'PED-2026-0398',
     sourceDocumentType: 'Pedido',
     createdAt: '06 Sep 2026, 13:50',
-    originWarehouseId: 'wh-mty-sur',
-    originWarehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
+    originWarehouseId: 'alm-rtm-pt',
+    originWarehouseName: 'ALM-PT (Almacén Producto Terminado RTM)',
     destinationName: 'Delphi Technologies Reynosa (Planta 2)',
     destinationAddress: 'Av. Las Palmas 500, Parque Industrial Villa Florida, Reynosa, Tamps.',
     assignedLane: 'EMB-02',
@@ -184,8 +184,8 @@ export const INITIAL_MOCK_REMISSIONES: OutboundRemision[] = [
     sourceDocumentFolio: 'PED-2026-0402',
     sourceDocumentType: 'Pedido',
     createdAt: '06 Sep 2026, 14:00',
-    originWarehouseId: 'wh-mty-sur',
-    originWarehouseName: 'ALM-PT (Producto Terminado - Nave 2 Reynosa)',
+    originWarehouseId: 'alm-rtm-pt',
+    originWarehouseName: 'ALM-PT (Almacén Producto Terminado RTM)',
     destinationName: 'Empacadora del Golfo S.A. de C.V.',
     destinationAddress: 'Km 8.5 Carretera Matamoros-Reynosa, Reynosa, Tamps.',
     assignedLane: 'EMB-03',

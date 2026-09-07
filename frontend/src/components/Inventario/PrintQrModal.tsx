@@ -1,11 +1,11 @@
 ﻿import React, { useRef } from 'react';
 import { X, Printer, CheckCircle2, ShieldCheck, Tag, Building2, MapPin } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
-import { PositionSerializedMattress } from '../../data/mockInventoryData';
+import { PositionSerializedItem } from '../../data/mockInventoryData';
 import { ModalPortal } from '../common/ModalPortal';
 
 interface PrintQrModalProps {
-  unit: PositionSerializedMattress | null;
+  unit: PositionSerializedItem | null;
   warehouseName?: string;
   onClose: () => void;
 }

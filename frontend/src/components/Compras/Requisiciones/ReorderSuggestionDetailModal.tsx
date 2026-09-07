@@ -110,7 +110,7 @@ export const ReorderSuggestionDetailModal: React.FC<ReorderSuggestionDetailModal
  <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/25 shadow-xs space-y-1">
  <span className="text-[10px] text-rose-700 dark:text-rose-300 uppercase font-black block">Compra Sugerida</span>
  <strong className="text-2xl font-mono font-black text-rose-600 block">
- {suggestion.suggestedQuantity} <span className="text-xs font-normal text-theme-muted">colchones</span>
+ {suggestion.suggestedQuantity} <span className="text-xs font-normal text-theme-muted">unidades / millares</span>
  </strong>
  <span className="text-[10px] text-rose-700 font-bold block">Mínimo: {suggestion.minStock} pzas</span>
  </div>

@@ -26,9 +26,8 @@ import {
  WarehouseLayout, 
  PositionRack, 
  SpecialAreaSlot, 
- PositionSerializedMattress, 
- MOCK_STOCK_ITEMS, 
- ShowroomBay 
+ PositionSerializedItem, 
+ MOCK_STOCK_ITEMS 
 } from '../../data/mockInventoryData';
 import { PositionDetailModal } from './PositionDetailModal';
 import { UnitDetailModal } from './UnitDetailModal';
@@ -37,7 +36,6 @@ import { PrintQrModal } from './PrintQrModal';
 import { ReworkModal } from './ReworkModal';
 import { LocationQrModal, PhysicalLocationMeta } from './LocationQrModal';
 import { PrintLocationQrModal } from './PrintLocationQrModal';
-import { ShowroomBayModal } from './ShowroomBayModal';
 import { StatusBadge } from '../common/StatusBadge';
 
 interface MapTabProps {
@@ -66,16 +64,15 @@ export const MapTab: React.FC<MapTabProps> = ({ onShowToast }) => {
 
  // Modals state
  const [selectedPosition, setSelectedPosition] = useState<PositionRack | null>(null);
- const [selectedUnitDetail, setSelectedUnitDetail] = useState<PositionSerializedMattress | null>(null);
- const [selectedQrUnit, setSelectedQrUnit] = useState<PositionSerializedMattress | null>(null);
- const [selectedPrintUnit, setSelectedPrintUnit] = useState<PositionSerializedMattress | null>(null);
+ const [selectedUnitDetail, setSelectedUnitDetail] = useState<PositionSerializedItem | null>(null);
+ const [selectedQrUnit, setSelectedQrUnit] = useState<PositionSerializedItem | null>(null);
+ const [selectedPrintUnit, setSelectedPrintUnit] = useState<PositionSerializedItem | null>(null);
  const [selectedReworkZone, setSelectedReworkZone] = useState<SpecialAreaSlot | null>(null);
 
  // Location QR Modals state
  const [selectedLocationQr, setSelectedLocationQr] = useState<PhysicalLocationMeta | null>(null);
  const [selectedPrintLocationQr, setSelectedPrintLocationQr] = useState<PhysicalLocationMeta | null>(null);
- const [selectedShowroomBay, setSelectedShowroomBay] = useState<ShowroomBay | null>(null);
-
+ 
  const searchContainerRef = useRef<HTMLDivElement>(null);
 
  // Active warehouse layout
@@ -174,65 +171,7 @@ export const MapTab: React.FC<MapTabProps> = ({ onShowToast }) => {
  });
  });
 
- // Showroom bays scan
- if (currentWarehouse.showroomBays) {
- currentWarehouse.showroomBays.forEach((bay) => {
- const bayMatch = bay.code.toLowerCase().includes(q) || bay.name.toLowerCase().includes(q) || 'showroom'.includes(q) || 'exhibicion'.includes(q);
- if (bayMatch) {
- const itemKey = `bay-${bay.code}`;
- if (!seenIds.has(itemKey)) {
- seenIds.add(itemKey);
- results.push({
- id: itemKey,
- type: 'location',
- title: `${bay.code} · ${bay.name}`,
- subtitle: bay.status === 'Ocupada' && bay.mattress ? `Exhibición: ${bay.mattress.productName}` : 'Bahía Libre de Showroom',
- positionId: '',
- locationCode: bay.code,
- });
- }
- }
-
- if (bay.mattress) {
- const m = bay.mattress;
- if (m.uid.toLowerCase().includes(q)) {
- const uidKey = `uid-${m.uid}`;
- if (!seenIds.has(uidKey)) {
- seenIds.add(uidKey);
- results.push({
- id: uidKey,
- type: 'unit',
- title: m.uid,
- subtitle: `${m.productName} (Showroom ${bay.code})`,
- positionId: '',
- locationCode: bay.code,
- sku: m.sku,
- uid: m.uid,
- productName: m.productName,
- status: m.status,
- lotNumber: m.lotNumber,
- });
- }
- }
-
- if (m.sku.toLowerCase().includes(q) || m.productName.toLowerCase().includes(q) || m.brand.toLowerCase().includes(q)) {
- const skuKey = `sku-${m.sku}-${bay.code}`;
- if (!seenIds.has(skuKey)) {
- seenIds.add(skuKey);
- results.push({
- id: skuKey,
- type: 'article',
- title: m.sku,
- subtitle: `${m.productName} · Showroom ${bay.code}`,
- positionId: '',
- sku: m.sku,
- productName: m.productName,
- });
- }
- }
- }
- });
- }
+ 
 
  return results.slice(0, 8);
  }, [searchQuery, currentWarehouse]);
@@ -989,15 +928,7 @@ export const MapTab: React.FC<MapTabProps> = ({ onShowToast }) => {
  onClose={() => setSelectedPrintLocationQr(null)}
  />
 
- {/* ========================================================================= */}
- {/* 7. MODAL DE BAHÍA DE SHOWROOM */}
- {/* ========================================================================= */}
- <ShowroomBayModal
- bay={selectedShowroomBay}
- warehouseName={currentWarehouse.name}
- warehouseCode={currentWarehouse.code}
- onClose={() => setSelectedShowroomBay(null)}
- />
+ 
 
  {/* ========================================================================= */}
  {/* MODAL DE ZONA DE RETRABAJO */}

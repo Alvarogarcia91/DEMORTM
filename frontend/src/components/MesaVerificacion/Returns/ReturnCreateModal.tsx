@@ -30,7 +30,7 @@ export const ReturnCreateModal: React.FC<ReturnCreateModalProps> = ({
  onCreateOrder,
 }) => {
  const [sourceType, setSourceType] = useState<ReturnSourceType>('Cliente');
- const [warehouseId, setWarehouseId] = useState('wh-mty-norte');
+ const [warehouseId, setWarehouseId] = useState('alm-rtm-mp');
  const [originClientOrBranch, setOriginClientOrBranch] = useState('Cliente Final (Ruta Domiciliaria)');
  const [reference, setReference] = useState('PED-2026-0195');
  const [reason, setReason] = useState<ReturnReason>('Empaque dañado');
@@ -93,7 +93,7 @@ export const ReturnCreateModal: React.FC<ReturnCreateModalProps> = ({
  reference: reference.trim(),
  originClientOrBranch: originClientOrBranch.trim(),
  warehouseId,
- warehouseName: warehouseId === 'wh-mty-sur' ? 'CEDIS Monterrey Sur' : 'CEDIS Monterrey Norte',
+ warehouseName: warehouseId === 'alm-rtm-pt' ? 'Almacén Producto Terminado' : 'Almacén Materia Prima',
  reason,
  customReason: reason === 'Otro' ? customReason.trim() : undefined,
  notes: notes.trim(),
@@ -172,8 +172,8 @@ export const ReturnCreateModal: React.FC<ReturnCreateModalProps> = ({
  onChange={(e) => setWarehouseId(e.target.value)}
  className="w-full bg-theme-muted border border-theme-subtle rounded-xl p-2.5 text-xs font-bold text-theme-main focus:outline-none cursor-pointer"
  >
- <option value="wh-mty-norte">CEDIS Monterrey Norte</option>
- <option value="wh-mty-sur">CEDIS Monterrey Sur</option>
+ <option value="alm-rtm-mp">Almacén Materia Prima</option>
+ <option value="alm-rtm-pt">Almacén Producto Terminado</option>
  </select>
  </div>
 
@@ -222,7 +222,7 @@ export const ReturnCreateModal: React.FC<ReturnCreateModalProps> = ({
  required
  value={originClientOrBranch}
  onChange={(e) => setOriginClientOrBranch(e.target.value)}
- placeholder="Ej. Cliente Final o Sucursal Valle Oriente"
+ placeholder="Ej. Cliente Industrial o Planta Secundaria"
  className="w-full bg-theme-muted border border-theme-subtle rounded-xl p-2.5 text-xs font-semibold text-theme-main focus:outline-none"
  />
  </div>
@@ -251,7 +251,7 @@ export const ReturnCreateModal: React.FC<ReturnCreateModalProps> = ({
  setUnitSearch(e.target.value);
  setShowUnitDropdown(true);
  }}
- placeholder="Buscar y agregar UID elegible (SC-UID-...)..."
+ placeholder="Buscar y agregar UID elegible (TAR-RTM-...)..."
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl pl-9 pr-4 py-2.5 text-xs text-theme-main font-semibold focus:outline-none shadow-2xs"
  />
  </div>

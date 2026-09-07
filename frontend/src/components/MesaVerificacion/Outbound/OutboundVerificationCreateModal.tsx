@@ -28,7 +28,7 @@ export const OutboundVerificationCreateModal: React.FC<OutboundVerificationCreat
  onClose,
  onCreateOrder,
 }) => {
- const lanes = CEDIS_STAGING_LANES[pendingPickOrder.warehouseId] || CEDIS_STAGING_LANES['wh-mty-norte'];
+ const lanes = CEDIS_STAGING_LANES[pendingPickOrder.warehouseId] || CEDIS_STAGING_LANES['alm-rtm-mp'];
  const defaultLane = lanes.find((l) => l.isSuggested && l.status === 'Disponible')?.code || 'EMB-03';
  const [selectedLaneCode, setSelectedLaneCode] = useState<string>(defaultLane);
  const [operator, setOperator] = useState('Verificador Mesa 01 (Roberto Garza)');

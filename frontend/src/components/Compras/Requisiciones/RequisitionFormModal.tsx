@@ -57,7 +57,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  // General Info States
  const [requester] = useState('Admin Demo');
  const [targetWarehouseId, setTargetWarehouseId] = useState(
- initialRequisition?.targetWarehouseId || prefilledItem?.targetWarehouseId || 'wh-mty-norte'
+ initialRequisition?.targetWarehouseId || prefilledItem?.targetWarehouseId || 'alm-rtm-mp'
  );
  const [requiredDate, setRequiredDate] = useState(
  initialRequisition?.requiredDate || '30 Ago 2026'
@@ -92,7 +92,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  const [unregSize, setUnregSize] = useState('');
  const [unregSpecs, setUnregSpecs] = useState('');
  const [unregQty, setUnregQty] = useState<number>(1);
- const [unregUnit, setUnregUnit] = useState('Colchón');
+ const [unregUnit, setUnregUnit] = useState('Millar');
  const [unregComments, setUnregComments] = useState('');
 
  // Duplicate Warning Modal/State
@@ -117,9 +117,9 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  name: prefilledItem.productName,
  brand: prefilledItem.brand,
  size: prefilledItem.size || 'Individual',
- category: prefilledItem.category || 'Colchones',
+ category: prefilledItem.category || 'Producto Terminado',
  quantity: prefilledItem.quantity,
- unit: 'Colchón',
+ unit: 'Millar',
  comments: prefilledItem.note || 'Sugerencia automática de reorden',
  ...metrics,
  };
@@ -173,7 +173,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  size: selectedArticle.size,
  category: selectedArticle.category,
  quantity: catalogQty,
- unit: selectedArticle.baseUnit || 'Colchón',
+ unit: selectedArticle.baseUnit || 'Millar',
  comments: catalogComments.trim(),
  ...metrics,
  };
@@ -697,7 +697,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  type="text"
  value={unregDesc}
  onChange={(e) => setUnregDesc(e.target.value)}
- placeholder="Ej. Colchón Spring Air Especial Hotelero Queen..."
+ placeholder="Ej. Folleto Plegable Médico 48 Páginas..."
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/30"
  />
  </div>
@@ -708,7 +708,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  type="text"
  value={unregBrand}
  onChange={(e) => setUnregBrand(e.target.value)}
- placeholder="Ej. Spring Air, Nayt..."
+ placeholder="Ej. Bio-Pappel, Sun Chemical..."
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-amber-500/30"
  />
  </div>
@@ -719,7 +719,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  type="text"
  value={unregSize}
  onChange={(e) => setUnregSize(e.target.value)}
- placeholder="Ej. Individual, Queen Size..."
+ placeholder="Ej. Rollo 500m, Tarima 10,000 pzas..."
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-amber-500/30"
  />
  </div>
@@ -741,7 +741,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  type="text"
  value={unregUnit}
  onChange={(e) => setUnregUnit(e.target.value)}
- placeholder="Ej. Colchón, Pza, Lote..."
+ placeholder="Ej. Millar, Bobina, Tarima..."
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-amber-500/30"
  />
  </div>
@@ -752,7 +752,7 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  type="text"
  value={unregSpecs}
  onChange={(e) => setUnregSpecs(e.target.value)}
- placeholder="Ej. Doble colchoneta memory foam con refuerzo perimetral ignífugo..."
+ placeholder="Ej. Papel couché 150g, 4 tintas offset más barniz UV brillante..."
  className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-xs text-theme-main focus:outline-none focus:ring-2 focus:ring-amber-500/30"
  />
  </div>
@@ -806,17 +806,17 @@ export const RequisitionFormModal: React.FC<RequisitionFormModalProps> = ({
  >
  <span className="font-mono font-bold text-[10px] text-theme-primary block">INS-CINTA-48MM</span>
  <strong className="text-xs font-bold text-theme-main block">Cinta Canela de Empaque (24 pzas)</strong>
- <span className="text-[10px] text-theme-muted block">Flejado y embalaje de colchones</span>
+ <span className="text-[10px] text-theme-muted block">Flejado y protección de tarimas</span>
  </button>
 
  <button
  type="button"
- onClick={() => handleAddConsumablePreset('Bolsa Protectora de Polietileno Calibre 400 King Size', 'INS-BOLSA-POLI-KS', 'Pieza', 50)}
+ onClick={() => handleAddConsumablePreset('Bolsa Protectora de Polietileno Calibre 400 Extra Grande (1.80m x 2.20m)', 'INS-BOLSA-POLI-KS', 'Pieza', 50)}
  className="p-3 rounded-2xl bg-theme-muted/40 hover:bg-theme-muted border border-theme-subtle text-left space-y-1 transition-all cursor-pointer"
  >
  <span className="font-mono font-bold text-[10px] text-theme-primary block">INS-BOLSA-KS</span>
- <strong className="text-xs font-bold text-theme-main block">Bolsa Protectora King Size (50 pzas)</strong>
- <span className="text-[10px] text-theme-muted block">Protección de colchones contra polvo</span>
+ <strong className="text-xs font-bold text-theme-main block">Bolsa Protectora Extra Grande (50 pzas)</strong>
+ <span className="text-[10px] text-theme-muted block">Protección contra humedad y polvo</span>
  </button>
  </div>
  </div>
