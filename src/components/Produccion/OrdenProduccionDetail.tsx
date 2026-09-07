@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckCircle2, Circle, X, AlertTriangle, ShieldCheck, Clock, FileText } from 'lucide-react';
+import { CheckCircle2, Circle, X, AlertTriangle, ShieldCheck, Clock, FileText, Printer, Sparkles } from 'lucide-react';
 import { PRODUCTION_INCIDENTS, ProductionOrder, RoutingStep, ToolingRequirement } from '../../data/mockProduccionData';
 import { ModalPortal } from '../common/ModalPortal';
 import { ProductionCard, StatusBadge, formatNumber } from './productionUi';
@@ -11,6 +11,7 @@ interface Props {
   onRelease: () => void;
   onAdvanceOperation?: (stepNumber: number) => void;
   onRequestMaterialExtra?: () => void;
+  onPrintSheet?: (order: ProductionOrder) => void;
 }
 
 export const OrdenProduccionDetail: React.FC<Props> = ({
@@ -20,6 +21,7 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
   onRelease,
   onAdvanceOperation,
   onRequestMaterialExtra,
+  onPrintSheet,
 }) => {
   const [tab, setTab] = useState<'Resumen' | 'Routing' | 'Paginación / Flexo' | 'Materiales' | 'Herramental' | 'Incidencias' | 'Trazabilidad'>('Resumen');
 
@@ -298,24 +300,54 @@ export const OrdenProduccionDetail: React.FC<Props> = ({
               </div>
 
               {/* Estado de Hoja Física Impresa */}
-              <div className="flex flex-wrap items-center justify-between rounded-2xl border border-theme-subtle bg-theme-muted/10 p-3.5 text-xs">
+              <div className="flex flex-wrap items-center justify-between rounded-2xl border border-theme-subtle bg-theme-muted/10 p-3.5 text-xs gap-3">
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-theme-primary" />
                   <span className="text-theme-muted">
                     Hoja de OP Física para Piso:{' '}
                     <b className="text-theme-main">
                       {order.sheetPrintedStatus?.isPrinted
-                        ? `Impresa ✓ (${order.sheetPrintedStatus.printedAt || '07 Sep · 10:30'} por ${order.sheetPrintedStatus.printedBy || 'Supervisor RTM'})`
+                        ? `Impresa ✓ (${order.sheetPrintedStatus.printedAt || '07 Sep · 10:30'} por ${order.sheetPrintedStatus.printedBy || 'Planner RTM'})`
                         : 'No impresa (Pendiente entrega a operador)'}
                     </b>
                   </span>
+                  {order.sheetPrintedStatus?.reprintCount ? (
+                    <span className="rounded-md bg-theme-muted/30 px-2 py-0.5 text-[10px] font-bold text-theme-muted">
+                      {order.sheetPrintedStatus.reprintCount} reimpresiones
+                    </span>
+                  ) : null}
                 </div>
-                {order.sheetPrintedStatus?.reprintCount ? (
-                  <span className="rounded-md bg-theme-muted/30 px-2 py-0.5 text-[10px] font-bold text-theme-muted">
-                    {order.sheetPrintedStatus.reprintCount} reimpresiones registradas
-                  </span>
-                ) : null}
+
+                {onPrintSheet && (
+                  <button
+                    type="button"
+                    onClick={() => onPrintSheet(order)}
+                    className="flex items-center gap-1.5 rounded-xl bg-theme-primary px-3 py-1.5 text-xs font-bold text-white hover:bg-theme-primary/90 shadow-xs"
+                  >
+                    <Printer className="h-3.5 w-3.5" />
+                    {order.sheetPrintedStatus?.isPrinted ? 'Ver / Reimprimir Hoja OP' : '🖨 Imprimir Hoja OP'}
+                  </button>
+                )}
               </div>
+
+              {/* OP Expeditada Banner (si aplica) */}
+              {order.expedited && (
+                <div className="rounded-2xl border-2 border-amber-500/80 bg-amber-50/70 dark:bg-amber-950/30 p-4 text-xs text-amber-950 dark:text-amber-200 flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="rounded-full bg-amber-600 px-2.5 py-0.5 text-[9px] font-black uppercase text-white">
+                        ⚡ OP EXPEDITADA (SOBRETIEMPO AUTORIZADO)
+                      </span>
+                    </div>
+                    <p className="mt-1 text-xs">
+                      <b>Motivo:</b> {order.expeditedReason || 'Compromiso comercial estratégico con cliente'}
+                    </p>
+                  </div>
+                  <span className="rounded-lg bg-emerald-600 px-3 py-1 font-bold text-white text-[11px]">
+                    Fecha Viable ✓
+                  </span>
+                </div>
+              )}
 
               {/* Desviación Técnica de Material Activa (si existe) */}
               {order.activeDeviation && (

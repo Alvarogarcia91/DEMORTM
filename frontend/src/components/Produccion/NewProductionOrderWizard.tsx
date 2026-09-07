@@ -118,6 +118,17 @@ export const NewProductionOrderWizard: React.FC<Props> = ({
   const [assignedShift, setAssignedShift] = useState('Turno A (Matutino)');
   const [notes, setNotes] = useState('OP prioritaria para auditoría de entrega con receta maestra vinculada.');
 
+  // V5: Control de Expeditar Demo y Validación Temprana
+  const [isExpedited, setIsExpedited] = useState(false);
+  const [expeditedReason, setExpeditedReason] = useState('Compromiso comercial estratégico con cliente · Turno adicional autorizado');
+  const [expediteAuthority, setExpediteAuthority] = useState('Ing. Carlos Vega (Gerencia de Planta)');
+  const [expediteShiftType, setExpediteShiftType] = useState('Turno Extra Fin de Semana (8 horas)');
+  const [expediteImpact, setExpediteImpact] = useState('+$3,200 MXN M.O. / Holgura de 1.5 días asegurada');
+  const [expediteComment, setExpediteComment] = useState('Aprobación gerencial para absorber horas extras y garantizar entrega.');
+  const [isExpediteModalOpen, setIsExpediteModalOpen] = useState(false);
+  const [requisitionSent, setRequisitionSent] = useState(false);
+  const [localNotice, setLocalNotice] = useState('');
+
   // Al cambiar receta maestra en el Paso 1, hereda todo automáticamente (punto central de Iván)
   const applyRecipe = (recipe: MasterManufacturingRecipe) => {
     setSelectedRecipeId(recipe.id);
@@ -167,8 +178,19 @@ export const NewProductionOrderWizard: React.FC<Props> = ({
 
   const riskAssessment = calculateLeadTimeRisk();
 
-  // Gates de materiales
+  // Gates de materiales y herramental
   const hasMaterialShortage = materials.some((m) => m.status === 'Insuficiente' || m.status === 'Parcial');
+  const hasToolingAlert = tooling.some((t) => t.status === 'Pendiente');
+
+  // V5: Validación temprana desde Pedido
+  const validationResult: 'LIBERABLE' | 'CON RIESGO' | 'NO LIBERABLE' =
+    hasMaterialShortage && !activeDeviation
+      ? 'NO LIBERABLE'
+      : (riskAssessment.risk === 'Alto' && !isExpedited) || hasToolingAlert
+      ? 'CON RIESGO'
+      : riskAssessment.risk === 'Medio'
+      ? 'CON RIESGO'
+      : 'LIBERABLE';
 
   // Submit final
   const handleCreateOrder = (asBlocked: boolean = false) => {
@@ -221,6 +243,8 @@ export const NewProductionOrderWizard: React.FC<Props> = ({
       activeDeviation,
       selectedRemnant,
       recipeId: currentRecipe.id,
+      expedited: isExpedited,
+      expeditedReason: isExpedited ? expeditedReason : undefined,
       sheetPrintedStatus: {
         isPrinted: false,
       },
@@ -248,6 +272,19 @@ export const NewProductionOrderWizard: React.FC<Props> = ({
           notes: `Ruta de ${routing.length} operaciones programada en ${selectedMachine}. Estado: ${initialStatus}`,
           badgeTone: initialStatus === 'Bloqueada por material' ? 'danger' : 'success',
         },
+        ...(isExpedited
+          ? [
+              {
+                id: `tr-new-exp-${Date.now()}`,
+                timestamp: '07 Sep · 09:12',
+                user: 'Planner RTM',
+                station: 'Planeación / Dirección',
+                event: 'OP Expeditada bajo Autorización Gerencial',
+                notes: `Motivo: ${expeditedReason}. Autorizado por ${expediteAuthority} con ${expediteShiftType}.`,
+                badgeTone: 'warning' as const,
+              },
+            ]
+          : []),
       ],
     };
 
@@ -508,6 +545,124 @@ export const NewProductionOrderWizard: React.FC<Props> = ({
                   </div>
                 </div>
               </div>
+
+              {/* V5: VALIDACIÓN PREVIA DEL PEDIDO (P0 Sección 5) */}
+              <div className="rounded-2xl border border-theme-subtle bg-theme-surface p-5 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-theme-primary">
+                      CONTROL PREVENTIVO DE FACTIBILIDAD RTM
+                    </span>
+                    <h3 className="text-sm font-black text-theme-main">
+                      Validación Previa del Pedido antes de Fabricación
+                    </h3>
+                  </div>
+                  <span
+                    className={`rounded-full px-3 py-1 font-mono text-xs font-black ${
+                      validationResult === 'LIBERABLE'
+                        ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                        : validationResult === 'CON RIESGO'
+                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
+                        : 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300'
+                    }`}
+                  >
+                    Resultado: {validationResult}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7 text-[11px]">
+                  <div className="rounded-lg border border-theme-subtle p-2">
+                    <span className="text-theme-muted block">Receta Maestra</span>
+                    <b className="text-emerald-600 font-bold">✓ Encontrada</b>
+                  </div>
+                  <div className="rounded-lg border border-theme-subtle p-2">
+                    <span className="text-theme-muted block">Stock PT</span>
+                    <b className="font-mono text-theme-main">{stockPT.toLocaleString('es-MX')}</b>
+                  </div>
+                  <div className="rounded-lg border border-theme-subtle p-2">
+                    <span className="text-theme-muted block">A Producir</span>
+                    <b className="font-mono text-theme-main">{toProduceQuantity.toLocaleString('es-MX')}</b>
+                  </div>
+                  <div className="rounded-lg border border-theme-subtle p-2">
+                    <span className="text-theme-muted block">Material Crítico</span>
+                    <b className={hasMaterialShortage ? 'text-amber-600 font-bold' : 'text-emerald-600 font-bold'}>
+                      {hasMaterialShortage ? '⚠ Parcial' : '✓ Completo'}
+                    </b>
+                  </div>
+                  <div className="rounded-lg border border-theme-subtle p-2">
+                    <span className="text-theme-muted block">Herramental</span>
+                    <b className={hasToolingAlert ? 'text-amber-600 font-bold' : 'text-emerald-600 font-bold'}>
+                      {hasToolingAlert ? '⚠ Pendiente' : '✓ Disponible'}
+                    </b>
+                  </div>
+                  <div className="rounded-lg border border-theme-subtle p-2">
+                    <span className="text-theme-muted block">Capacidad</span>
+                    <b className={machineLoad > 85 ? 'text-amber-600 font-bold' : 'text-emerald-600 font-bold'}>
+                      {machineLoad > 85 ? `⚠ ${machineLoad}%` : `✓ ${100 - machineLoad}% libre`}
+                    </b>
+                  </div>
+                  <div className="rounded-lg border border-theme-subtle p-2">
+                    <span className="text-theme-muted block">Lead Time</span>
+                    <b
+                      className={
+                        riskAssessment.risk === 'Alto'
+                          ? 'text-rose-600 font-black'
+                          : riskAssessment.risk === 'Medio'
+                          ? 'text-amber-600 font-bold'
+                          : 'text-emerald-600 font-bold'
+                      }
+                    >
+                      {riskAssessment.risk === 'Alto' ? '✕ Comprometido' : riskAssessment.risk === 'Medio' ? '⚠ Ajustado' : '✓ Viable'}
+                    </b>
+                  </div>
+                </div>
+
+                {localNotice && (
+                  <div className="rounded-xl border border-emerald-500/40 bg-emerald-50/50 dark:bg-emerald-950/30 p-2.5 text-xs text-emerald-900 dark:text-emerald-200">
+                    {localNotice}
+                  </div>
+                )}
+
+                {validationResult !== 'LIBERABLE' && (
+                  <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-amber-500/10 p-3 text-xs border border-amber-500/30">
+                    <span className="text-amber-900 dark:text-amber-200">
+                      <b>Acciones preventivas recomendadas:</b> Mitiga el riesgo antes de pasar la orden a planeación.
+                    </span>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDueCustomerDate('16 Sep');
+                          setLocalNotice('✓ Fecha cliente reprogramada a 16 Sep (+5 días de holgura). Viabilidad garantizada.');
+                        }}
+                        className="rounded-lg border border-theme-subtle bg-theme-surface px-3 py-1.5 font-bold text-theme-main hover:bg-theme-muted/30"
+                      >
+                        Corregir fecha (+5 días)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCurrentStep(4);
+                          setLocalNotice('Revisa los insumos en el paso 4 para aplicar sustituto aprobado o remanente de bobina.');
+                        }}
+                        className="rounded-lg border border-theme-subtle bg-theme-surface px-3 py-1.5 font-bold text-theme-main hover:bg-theme-muted/30"
+                      >
+                        Evaluar desviación
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setRequisitionSent(true);
+                          setLocalNotice('✓ Requisición REQ-2026-089 enviada automáticamente a Compras y Almacén MP.');
+                        }}
+                        className="rounded-lg bg-theme-primary px-3 py-1.5 font-bold text-white hover:bg-theme-primary/90"
+                      >
+                        {requisitionSent ? '✓ Requisición enviada' : 'Enviar requisición · Demo'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -560,10 +715,101 @@ export const NewProductionOrderWizard: React.FC<Props> = ({
           {/* PASO 5: PLANEACIÓN (CON LEAD TIME Y EVALUACIÓN DE RIESGO REAL) */}
           {currentStep === 5 && (
             <div className="max-w-4xl mx-auto space-y-6">
+              {/* V5: Gate de Lead Time (P0 Sección 3) */}
+              {riskAssessment.risk === 'Alto' && !isExpedited && (
+                <div className="rounded-2xl border-2 border-rose-500 bg-rose-50/80 dark:bg-rose-950/40 p-5 text-xs text-rose-950 dark:text-rose-200 space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="rounded-xl bg-rose-600 p-2.5 text-white shrink-0 shadow-xs">
+                      <ShieldAlert className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-rose-700 dark:text-rose-300">
+                        GATE DE CONTROL DE CAPACIDAD Y COMPROMISOS (IVÁN)
+                      </span>
+                      <h3 className="text-base font-black text-rose-900 dark:text-rose-100">
+                        FECHA NO VIABLE · RIESGO ALTO DE INCUMPLIMIENTO
+                      </h3>
+                      <p className="mt-1 text-xs text-rose-800 dark:text-rose-200">
+                        {riskAssessment.reason}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 rounded-xl border border-rose-300 dark:border-rose-900 bg-white/80 dark:bg-zinc-900/80 p-3.5 text-xs">
+                    <div>
+                      <span className="text-theme-muted block">Tiempo requerido:</span>
+                      <b className="font-mono text-base text-theme-main">{totalHours}h {totalMins}m</b>
+                    </div>
+                    <div>
+                      <span className="text-theme-muted block">Capacidad disponible:</span>
+                      <b className="font-mono text-base text-rose-600">6.0 h</b>
+                    </div>
+                    <div>
+                      <span className="text-theme-muted block">Fecha cliente requerida:</span>
+                      <b className="font-mono text-base text-rose-600">{dueCustomerDate}</b>
+                    </div>
+                    <div>
+                      <span className="text-theme-muted block">Fecha estimada sistema:</span>
+                      <b className="font-mono text-base text-theme-main">{internalDate}</b>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-rose-200 dark:border-rose-900">
+                    <span className="text-xs text-rose-800 dark:text-rose-200">
+                      Evitar promesas imposibles: corrige la fecha requerida o autoriza turno adicional con expeditar.
+                    </span>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDueCustomerDate('16 Sep');
+                          setInternalDate('14 Sep');
+                          setLocalNotice('✓ Fecha compromiso cliente extendida a 16 Sep (+5 días). Viabilidad restablecida.');
+                        }}
+                        className="rounded-xl border border-theme-subtle bg-theme-surface px-4 py-2 font-bold text-theme-main hover:bg-theme-muted/30"
+                      >
+                        Corregir fecha (+5 días)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setIsExpediteModalOpen(true)}
+                        className="flex items-center gap-1.5 rounded-xl bg-rose-600 px-4 py-2 font-bold text-white shadow-xs hover:bg-rose-500"
+                      >
+                        ⚡ Solicitar expeditar · Demo
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {isExpedited && (
+                <div className="rounded-2xl border-2 border-amber-500/80 bg-amber-50/70 dark:bg-amber-950/30 p-4 text-xs text-amber-950 dark:text-amber-200 flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="rounded-full bg-amber-600 px-2.5 py-0.5 text-[9px] font-black uppercase text-white">
+                        EXPEDITADA BAJO AUTORIZACIÓN
+                      </span>
+                      <span className="font-mono text-xs font-bold text-amber-800 dark:text-amber-300">
+                        {expediteShiftType}
+                      </span>
+                    </div>
+                    <b className="mt-1 block text-xs">
+                      Autorizado por {expediteAuthority}
+                    </b>
+                    <span className="text-[11px] text-theme-muted">
+                      Motivo: {expeditedReason} · Impacto: {expediteImpact}
+                    </span>
+                  </div>
+                  <span className="rounded-lg bg-emerald-600 px-3 py-1 font-bold text-white text-[11px]">
+                    Gate Desbloqueado ✓
+                  </span>
+                </div>
+              )}
+
               {/* Tarjeta de Riesgo de Entrega Calculado */}
               <div
                 className={`rounded-2xl border p-4 text-xs ${
-                  riskAssessment.risk === 'Alto'
+                  riskAssessment.risk === 'Alto' && !isExpedited
                     ? 'border-rose-400 bg-rose-50/70 dark:bg-rose-950/30 text-rose-950 dark:text-rose-200'
                     : riskAssessment.risk === 'Medio'
                     ? 'border-amber-400 bg-amber-50/70 dark:bg-amber-950/30 text-amber-950 dark:text-amber-200'
@@ -572,13 +818,17 @@ export const NewProductionOrderWizard: React.FC<Props> = ({
               >
                 <div className="flex items-center justify-between">
                   <b className="text-sm font-black">
-                    Evaluación de Viabilidad y Lead Time: Riesgo {riskAssessment.risk}
+                    Evaluación de Viabilidad y Lead Time: Riesgo {isExpedited ? 'Mitigado (Expeditada)' : riskAssessment.risk}
                   </b>
                   <span className="font-mono font-bold text-xs">
                     Carga {selectedMachine}: {machineLoad}%
                   </span>
                 </div>
-                <p className="mt-1 text-xs">{riskAssessment.reason}</p>
+                <p className="mt-1 text-xs">
+                  {isExpedited
+                    ? `Se programó ${expediteShiftType} para compensar la carga de ${selectedMachine} (${machineLoad}%). Entrega comprometida para ${dueCustomerDate}.`
+                    : riskAssessment.reason}
+                </p>
               </div>
 
               <div className="grid gap-3 sm:grid-cols-4 text-xs">
@@ -745,13 +995,24 @@ export const NewProductionOrderWizard: React.FC<Props> = ({
             </button>
 
             {currentStep < 6 ? (
-              <button
-                type="button"
-                onClick={() => setCurrentStep((prev) => (prev + 1) as WizardStep)}
-                className="flex items-center gap-1.5 rounded-xl bg-theme-primary px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-theme-primary/90"
-              >
-                Siguiente <ChevronRight className="h-4 w-4" />
-              </button>
+              currentStep === 5 && riskAssessment.risk === 'Alto' && !isExpedited ? (
+                <button
+                  type="button"
+                  onClick={() => setIsExpediteModalOpen(true)}
+                  title="Fecha cliente en riesgo alto. Requiere Corregir Fecha o Solicitar Expeditar."
+                  className="flex items-center gap-1.5 rounded-xl border border-rose-500 bg-rose-50 dark:bg-rose-950/40 px-5 py-2.5 text-xs font-bold text-rose-700 dark:text-rose-200 hover:bg-rose-100"
+                >
+                  <ShieldAlert className="h-4 w-4" /> Bloqueado: Fecha no viable (Expeditar)
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep((prev) => (prev + 1) as WizardStep)}
+                  className="flex items-center gap-1.5 rounded-xl bg-theme-primary px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-theme-primary/90"
+                >
+                  Siguiente <ChevronRight className="h-4 w-4" />
+                </button>
+              )
             ) : (
               <div className="flex gap-2">
                 {hasMaterialShortage && !activeDeviation && (
@@ -775,6 +1036,124 @@ export const NewProductionOrderWizard: React.FC<Props> = ({
           </div>
         </div>
       </div>
+
+      {/* V5: Modal Expeditar Demo (P0 Sección 3) */}
+      {isExpediteModalOpen && (
+        <ModalPortal onClose={() => setIsExpediteModalOpen(false)}>
+          <div className="w-full max-w-lg rounded-3xl border border-theme-subtle bg-theme-surface p-6 shadow-2xl animate-in zoom-in-95 duration-150">
+            <div className="flex items-start justify-between border-b border-theme-subtle pb-4">
+              <div>
+                <span className="rounded-md bg-rose-500/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-rose-600">
+                  PROCEDIMIENTO DE CONTINGENCIA RTM
+                </span>
+                <h3 className="text-base font-black text-theme-main mt-1">
+                  Solicitud de Expeditar Orden de Producción
+                </h3>
+                <p className="text-xs text-theme-muted">
+                  Habilita la fabricación con fecha comprometida autorizando sobretiempo o turno adicional.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsExpediteModalOpen(false)}
+                className="rounded-xl border border-theme-subtle p-2 text-theme-muted hover:bg-theme-muted/30"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="mt-4 space-y-4 text-xs">
+              <label className="block">
+                <span className="font-semibold text-theme-muted">Motivo de la Urgencia / Justificación</span>
+                <select
+                  value={expeditedReason}
+                  onChange={(e) => setExpeditedReason(e.target.value)}
+                  className="mt-1 w-full rounded-xl border border-theme-subtle bg-theme-surface p-2.5 font-bold text-theme-main"
+                >
+                  <option value="Compromiso comercial estratégico con cliente · Turno adicional autorizado">
+                    Compromiso comercial estratégico con cliente (Black & Decker)
+                  </option>
+                  <option value="Riesgo de penalización contractual por retraso en entrega">
+                    Riesgo de penalización contractual por retraso en entrega
+                  </option>
+                  <option value="Lanzamiento de producto prioritario en piso">
+                    Lanzamiento de producto prioritario en piso
+                  </option>
+                  <option value="Reposición urgente de lote con merma en planta cliente">
+                    Reposición urgente de lote con merma en planta cliente
+                  </option>
+                </select>
+              </label>
+
+              <div className="grid grid-cols-2 gap-3">
+                <label className="block">
+                  <span className="font-semibold text-theme-muted">Autorización Requerida</span>
+                  <input
+                    type="text"
+                    value={expediteAuthority}
+                    onChange={(e) => setExpediteAuthority(e.target.value)}
+                    className="mt-1 w-full rounded-xl border border-theme-subtle bg-theme-surface p-2.5 font-bold text-theme-main"
+                  />
+                </label>
+
+                <label className="block">
+                  <span className="font-semibold text-theme-muted">Turno Adicional / Mecanismo</span>
+                  <select
+                    value={expediteShiftType}
+                    onChange={(e) => setExpediteShiftType(e.target.value)}
+                    className="mt-1 w-full rounded-xl border border-theme-subtle bg-theme-surface p-2.5 font-semibold"
+                  >
+                    <option value="Turno Extra Fin de Semana (8 horas)">Turno Extra Fin de Semana (8 horas)</option>
+                    <option value="Horas Extra Turno Vespertino (2h diarias)">Horas Extra Turno Vespertino (2h)</option>
+                    <option value="Tercer Turno Nocturno de Contingencia">Tercer Turno Nocturno</option>
+                  </select>
+                </label>
+              </div>
+
+              <label className="block">
+                <span className="font-semibold text-theme-muted">Impacto Operativo Estimado</span>
+                <input
+                  type="text"
+                  value={expediteImpact}
+                  onChange={(e) => setExpediteImpact(e.target.value)}
+                  className="mt-1 w-full rounded-xl border border-theme-subtle bg-theme-muted/30 p-2.5 font-mono text-theme-main font-bold"
+                />
+              </label>
+
+              <label className="block">
+                <span className="font-semibold text-theme-muted">Comentarios Técnicos y Acuerdos</span>
+                <textarea
+                  rows={2}
+                  value={expediteComment}
+                  onChange={(e) => setExpediteComment(e.target.value)}
+                  className="mt-1 w-full rounded-xl border border-theme-subtle bg-theme-surface p-2.5"
+                />
+              </label>
+            </div>
+
+            <div className="mt-5 flex items-center justify-end gap-2 border-t border-theme-subtle pt-4">
+              <button
+                type="button"
+                onClick={() => setIsExpediteModalOpen(false)}
+                className="rounded-xl border border-theme-subtle px-4 py-2 text-xs font-bold text-theme-muted hover:bg-theme-muted/30"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsExpedited(true);
+                  setIsExpediteModalOpen(false);
+                  setLocalNotice('⚡ Orden Expeditada autorizada por Gerencia. Gate de lead time desbloqueado.');
+                }}
+                className="flex items-center gap-1.5 rounded-xl bg-rose-600 px-5 py-2 text-xs font-bold text-white shadow-xs hover:bg-rose-500"
+              >
+                ✓ Autorizar y Expeditar OP
+              </button>
+            </div>
+          </div>
+        </ModalPortal>
+      )}
     </ModalPortal>
   );
 };

@@ -138,7 +138,109 @@ export const PlaneacionProduccion: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* 2. Controles de Filtrado y Semáforo */}
+      {/* 2. Plan de Recuperación Operativo por Atraso / Máquina Detenida (P1 Sección 6 de Iván) */}
+      <div className="rounded-2xl border-2 border-amber-500/50 bg-amber-50/30 dark:bg-amber-950/20 p-5 space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <div className="rounded-xl bg-amber-500 p-2 text-white shadow-xs">
+              <AlertTriangle className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="rounded-md bg-amber-600 px-2 py-0.5 text-[10px] font-black uppercase text-white">
+                  PLAN DE RECUPERACIÓN OPERATIVO (IVÁN V5)
+                </span>
+                <span className="font-mono text-xs text-amber-800 dark:text-amber-300 font-bold">
+                  Contingencia Activa · 1 Máquina Detenida
+                </span>
+              </div>
+              <h3 className="text-sm font-black text-theme-main mt-0.5">
+                Opciones de Mitigación para Cumplimiento de Fecha
+              </h3>
+            </div>
+          </div>
+          <span className="rounded-full bg-amber-100 dark:bg-amber-900/50 px-3 py-1 text-xs font-bold text-amber-800 dark:text-amber-200">
+            Afectación: OP-2026-95241 (TYCO)
+          </span>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-12 text-xs">
+          <div className="lg:col-span-5 rounded-xl border border-rose-300 dark:border-rose-900 bg-theme-surface p-4 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-rose-600">🔴 Problema Detectado:</span>
+              <span className="font-mono text-theme-muted">Mark Andy 830 10”</span>
+            </div>
+            <p className="font-black text-theme-main text-xs">
+              Prensa detenida 47 minutos por descalce de suaje y calibración mecánica
+            </p>
+            <p className="text-theme-muted text-[11px]">
+              La OP-2026-95241 (Etiqueta Bopp 101x152 mm para Tyco) desplaza su entrega del 11 Sep al 12 Sep sin holgura si permanece en la máquina actual.
+            </p>
+          </div>
+
+          <div className="lg:col-span-7 rounded-xl border border-emerald-500/40 bg-emerald-50/40 dark:bg-emerald-950/20 p-4 space-y-2.5">
+            <span className="font-bold text-emerald-800 dark:text-emerald-300 block">
+              ⚡ Alternativas de Mitigación Evaluadas por el Sistema:
+            </span>
+
+            <div className="space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-theme-subtle bg-theme-surface p-3">
+                <div>
+                  <b className="text-theme-main block">1. Reprogramar a Mark Andy Scout 10”</b>
+                  <div className="text-[11px] text-theme-muted mt-0.5">
+                    Compatibilidad: <b className="text-emerald-600">100%</b> · Capacidad disponible: <b className="font-mono">8.2 h</b> · Nueva fecha: <b className="text-emerald-600 font-bold">11 Sep (A tiempo)</b>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const targetOrd = orders.find((o) => o.folio === 'OP-2026-95241') || orders[0];
+                    if (targetOrd) {
+                      onMoveOrder(
+                        targetOrd,
+                        'Mark Andy Scout 10”',
+                        '11 Sep',
+                        'Plan de recuperación V5: reprogramada desde Mark Andy 830 por paro de 47 min. Entrega normalizada.'
+                      );
+                    }
+                  }}
+                  className="rounded-lg bg-emerald-600 px-3.5 py-1.5 font-bold text-white hover:bg-emerald-500 text-xs shrink-0 shadow-xs"
+                >
+                  ✓ Aplicar alternativa
+                </button>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-theme-subtle bg-theme-surface p-3">
+                <div>
+                  <b className="text-theme-main block">2. Mantener máquina actual (Turno extra 2h)</b>
+                  <div className="text-[11px] text-theme-muted mt-0.5">
+                    Se absorbe con horas extras al cierre del Turno A. Nueva fecha estimada: <b>11 Sep 19:30</b>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const targetOrd = orders.find((o) => o.folio === 'OP-2026-95241') || orders[0];
+                    if (targetOrd) {
+                      onMoveOrder(
+                        targetOrd,
+                        targetOrd.machine,
+                        '11 Sep',
+                        'Plan de recuperación: turno extra 2h autorizado para absorber paro de 47 min.'
+                      );
+                    }
+                  }}
+                  className="rounded-lg border border-theme-subtle bg-theme-surface px-3.5 py-1.5 font-bold text-theme-main hover:bg-theme-muted/30 text-xs shrink-0"
+                >
+                  Autorizar turno extra
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Controles de Filtrado y Semáforo */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <CalendarDays className="h-4 w-4 text-theme-primary" />

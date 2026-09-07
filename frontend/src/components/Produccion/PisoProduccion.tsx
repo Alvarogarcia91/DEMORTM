@@ -11,6 +11,7 @@ interface Props {
   onUpdate: (id: string, patch: Partial<ProductionOrder>) => void;
   onIncident: (order: ProductionOrder) => void;
   onSaveDailyReport?: (entry: OperatorDailyReportEntry) => void;
+  dailyReports?: OperatorDailyReportEntry[];
 }
 
 export const PisoProduccion: React.FC<Props> = ({
@@ -19,6 +20,7 @@ export const PisoProduccion: React.FC<Props> = ({
   onUpdate,
   onIncident,
   onSaveDailyReport,
+  dailyReports = [],
 }) => {
   const [materialOrder, setMaterialOrder] = useState<ProductionOrder | null>(null);
   const [reportOrder, setReportOrder] = useState<ProductionOrder | null>(null);
@@ -42,7 +44,7 @@ export const PisoProduccion: React.FC<Props> = ({
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Corrección Sección 13.3: Solo sumar scrap si la categoría o motivo es merma / defecto técnico
+  // V5: Material adicional actualiza entrega acumulada y solo suma scrap si aplica (P1 Sección 8)
   const handleRequestMaterialExtra = (
     order: ProductionOrder,
     materialName: string,
@@ -51,20 +53,40 @@ export const PisoProduccion: React.FC<Props> = ({
     category4M: string,
     comment: string
   ) => {
-    const isDefectOrMerma = category4M === 'Material' || category4M === 'Mano de obra' || reason.toLowerCase().includes('merma');
-    const scrapIncrement = isDefectOrMerma ? 100 : 0; // No sumar scrap arbitrariamente si es por faltante o ajuste
+    const extraNum = parseInt(quantity.replace(/[^0-9]/g, ''), 10) || 500;
+    const isFaltante = reason.toLowerCase().includes('faltante') || reason.toLowerCase().includes('almacén');
+    const isDefectOrMerma =
+      (category4M === 'Material' || category4M === 'Mano de obra' || reason.toLowerCase().includes('merma') || reason.toLowerCase().includes('desperdicio')) &&
+      !isFaltante;
+
+    const scrapIncrement = isDefectOrMerma ? Math.min(extraNum, 200) : 0; // Si motivo = faltante de almacén, 0 scrap
+
+    const updatedMaterials = (order.materials ?? []).map((m) => {
+      if (m.item === materialName) {
+        const currentNum = parseInt(m.delivered.replace(/[^0-9]/g, ''), 10) || 0;
+        const newTotal = currentNum + extraNum;
+        return {
+          ...m,
+          delivered: `${newTotal.toLocaleString('es-MX')} (acumulado +${extraNum.toLocaleString('es-MX')} extra)`,
+        };
+      }
+      return m;
+    });
 
     const newTraceabilityEvent = {
       id: `tr-mat-${Date.now()}`,
       timestamp: '07 Sep · 10:45',
       user: order.operator,
       station: order.machine,
-      event: `Material adicional solicitado: ${quantity} de ${materialName}`,
-      notes: `Motivo 4M (${category4M}): ${reason} · ${comment}${scrapIncrement > 0 ? ` (+${scrapIncrement} piezas registradas en scrap)` : ' (Sin incremento de scrap: faltante de almacén)'}`,
+      event: `Material adicional entregado: ${quantity} de ${materialName}`,
+      notes: `Motivo 4M (${category4M}): ${reason} · ${comment} | Entrega acumulada actualizada en máquina${
+        scrapIncrement > 0 ? ` (+${scrapIncrement} piezas registradas en scrap)` : ' (Sin incremento de scrap: faltante de almacén)'
+      }`,
       badgeTone: 'warning' as const,
     };
 
     onUpdate(order.id, {
+      materials: updatedMaterials,
       scrap: order.scrap + scrapIncrement,
       traceability: [newTraceabilityEvent, ...(order.traceability ?? [])],
     });
@@ -308,6 +330,84 @@ export const PisoProduccion: React.FC<Props> = ({
               </ProductionCard>
             );
           })}
+      </div>
+
+      {/* V5: Historial de Reportes Diarios de Operador Persistidos (P1 Sección 9) */}
+      <div className="rounded-2xl border border-theme-subtle bg-theme-surface p-5 space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <FileText className="h-4 w-4 text-theme-primary" />
+            <div>
+              <h3 className="text-xs font-black uppercase tracking-wider text-theme-main">
+                Historial de Reportes Diarios de Operador (Turnos Recientes RTM)
+              </h3>
+              <p className="text-[11px] text-theme-muted">
+                Registros de horas productivas, tiempos muertos y códigos oficiales 100/200/300/400.
+              </p>
+            </div>
+          </div>
+          <span className="rounded-full bg-emerald-100 dark:bg-emerald-950/60 px-2.5 py-0.5 font-mono text-[10px] font-bold text-emerald-800 dark:text-emerald-300">
+            {dailyReports.length} reportes persistidos
+          </span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead className="bg-theme-muted/40 text-[10px] uppercase text-theme-muted">
+              <tr>
+                <th className="p-2.5 text-left">Fecha / Turno</th>
+                <th className="p-2.5 text-left">Operador</th>
+                <th className="p-2.5 text-left">Máquina</th>
+                <th className="p-2.5 text-left">Horario</th>
+                <th className="p-2.5 text-left">Código RTM</th>
+                <th className="p-2.5 text-left">OP / Cliente</th>
+                <th className="p-2.5 text-right">Cant. Producida</th>
+                <th className="p-2.5 text-left">Comentarios Técnicos</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-theme-subtle">
+              {dailyReports.map((r) => (
+                <tr key={r.id} className="hover:bg-theme-muted/20">
+                  <td className="p-2.5">
+                    <b>{r.date}</b>
+                    <small className="block text-theme-muted">{r.shift}</small>
+                  </td>
+                  <td className="p-2.5 font-bold text-theme-main">{r.operator}</td>
+                  <td className="p-2.5">{r.areaMachine}</td>
+                  <td className="p-2.5 font-mono text-[11px]">
+                    {r.startTime} - {r.endTime}
+                  </td>
+                  <td className="p-2.5">
+                    <span
+                      className={`inline-block rounded-md px-2 py-0.5 font-mono text-[10px] font-bold ${
+                        r.code === '100'
+                          ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300'
+                          : r.code === '200'
+                          ? 'bg-rose-100 text-rose-800 dark:bg-rose-950/50 dark:text-rose-300'
+                          : r.code === '300'
+                          ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300'
+                          : 'bg-blue-100 text-blue-800 dark:bg-blue-950/50 dark:text-blue-300'
+                      }`}
+                    >
+                      {r.code}
+                    </span>
+                    <small className="block text-theme-muted text-[10px]">{r.codeDescription}</small>
+                  </td>
+                  <td className="p-2.5">
+                    <b className="font-mono text-theme-primary">{r.opFolio}</b>
+                    <small className="block text-theme-muted truncate max-w-28">{r.client}</small>
+                  </td>
+                  <td className="p-2.5 text-right font-mono font-bold text-theme-main">
+                    {r.producedQuantity.toLocaleString('es-MX')} ejs
+                  </td>
+                  <td className="p-2.5 text-theme-muted text-[11px] max-w-xs truncate">
+                    {r.comments}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Modal para solicitar material adicional */}

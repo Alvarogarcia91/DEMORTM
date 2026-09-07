@@ -229,6 +229,8 @@ export interface ProductionOrder {
     firstPieceRequested?: boolean;
     finalAuditApproved: boolean;
   };
+  expedited?: boolean;
+  expeditedReason?: string;
 }
 
 export interface ProductionMachine {

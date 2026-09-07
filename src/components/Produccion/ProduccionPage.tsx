@@ -1,6 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { Plus } from 'lucide-react';
-import { PRODUCTION_ORDERS, ProductionOrder, MasterManufacturingRecipe, OperatorDailyReportEntry } from '../../data/mockProduccionData';
+import {
+  PRODUCTION_ORDERS,
+  ProductionOrder,
+  MasterManufacturingRecipe,
+  OperatorDailyReportEntry,
+  OPERATOR_DAILY_REPORTS,
+} from '../../data/mockProduccionData';
 import { DashboardProduccion } from './DashboardProduccion';
 import { PlaneacionProduccion } from './PlaneacionProduccion';
 import { OrdenesProduccion } from './OrdenesProduccion';
@@ -11,6 +17,7 @@ import { AnaliticaProduccion } from './AnaliticaProduccion';
 import { ReportarIncidenciaModal } from './ReportarIncidenciaModal';
 import { NewProductionOrderWizard } from './NewProductionOrderWizard';
 import { ConfiguracionFabricacion } from './ConfiguracionFabricacion';
+import { HojaOpPreviewModal } from './HojaOpPreviewModal';
 
 type ProductionTab = 'Dashboard' | 'Planeación' | 'Órdenes' | 'Piso' | 'Procesos' | 'Máquinas' | 'Analítica';
 
@@ -35,6 +42,8 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
   const [notice, setNotice] = useState('');
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [initialRecipe, setInitialRecipe] = useState<MasterManufacturingRecipe | null>(null);
+  const [dailyReports, setDailyReports] = useState<OperatorDailyReportEntry[]>(OPERATOR_DAILY_REPORTS);
+  const [sheetPreviewOrder, setSheetPreviewOrder] = useState<ProductionOrder | null>(null);
 
   const activeOrders = useMemo(
     () => orders.filter((order) => !['Terminada', 'Liberada'].includes(order.status)),
@@ -125,12 +134,17 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
   };
 
   const handlePrintSheet = (order: ProductionOrder) => {
+    setSheetPreviewOrder(order);
+  };
+
+  const confirmPrintSheet = (order: ProductionOrder) => {
     const isAlreadyPrinted = order.sheetPrintedStatus?.isPrinted;
+    const currentReprintCount = order.sheetPrintedStatus?.reprintCount ?? 0;
     const updatedStatus = {
       isPrinted: true,
       printedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      printedBy: 'Supervisor RTM',
-      reprintCount: (order.sheetPrintedStatus?.reprintCount ?? 0) + (isAlreadyPrinted ? 1 : 0),
+      printedBy: 'Planner RTM',
+      reprintCount: isAlreadyPrinted ? currentReprintCount + 1 : 0,
     };
     updateOrder(order.id, {
       sheetPrintedStatus: updatedStatus,
@@ -138,10 +152,10 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
         {
           id: `tr-print-${Date.now()}`,
           timestamp: '07 Sep · 10:30',
-          user: 'Supervisor RTM',
+          user: 'Planner RTM',
           station: 'Oficina de Producción',
           event: isAlreadyPrinted ? `Hoja de OP Reimpresa (copia #${updatedStatus.reprintCount})` : 'Hoja de OP Física Impresa para Piso',
-          notes: 'Entregada al operador para control físico en máquina.',
+          notes: 'Entregada al operador para control físico en máquina (FM-PR-024).',
           badgeTone: 'primary',
         },
         ...(order.traceability ?? []),
@@ -152,6 +166,7 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
         ? `Hoja de OP física reimpresa para ${order.folio} (copia #${updatedStatus.reprintCount}).`
         : `✓ Hoja de OP física para ${order.folio} marcada como impresa y entregada a piso.`
     );
+    setSheetPreviewOrder(null);
   };
 
   const handleMarkMaterialDelivered = (order: ProductionOrder) => {
@@ -175,6 +190,7 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
   };
 
   const handleSaveDailyReport = (entry: OperatorDailyReportEntry) => {
+    setDailyReports((prev) => [entry, ...prev]);
     const ord = orders.find((o) => o.folio === entry.opFolio);
     if (ord) {
       updateOrder(ord.id, {
@@ -283,6 +299,7 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
           onUpdate={updateOrder}
           onIncident={setIncidence}
           onSaveDailyReport={handleSaveDailyReport}
+          dailyReports={dailyReports}
         />
       )}
 
@@ -325,6 +342,7 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
             setSelected(null);
           }}
           onRelease={requestFinalAudit}
+          onPrintSheet={handlePrintSheet}
           onRequestMaterialExtra={() => {
             const ord = orders.find((order) => order.id === selected.id) ?? selected;
             setSelected(null);
@@ -340,6 +358,15 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
           order={incidence}
           onClose={() => setIncidence(null)}
           onSave={saveIncident}
+        />
+      )}
+
+      {/* Modal Vista Previa / Reimpresión de Hoja OP */}
+      {sheetPreviewOrder && (
+        <HojaOpPreviewModal
+          order={orders.find((o) => o.id === sheetPreviewOrder.id) ?? sheetPreviewOrder}
+          onClose={() => setSheetPreviewOrder(null)}
+          onConfirmPrint={confirmPrintSheet}
         />
       )}
     </div>
