@@ -1,3 +1,13 @@
+# ⚠️ BORRADOR BLOQUEADO — NO EJECUTAR TODAVÍA
+
+Este documento fue preparado antes de refinar Producción con el usuario.
+
+**NO debe ejecutarse ni implementarse todavía.**
+
+Antes de usarlo, Producción y Órdenes de Producción deben revisarse/refinarse en conversación y este archivo deberá actualizarse con el flujo confirmado.
+
+---
+
 # RTM DEMO — FASE 4
 ## Producción + Órdenes de Producción (OP)
 
