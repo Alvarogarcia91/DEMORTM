@@ -289,7 +289,7 @@ export const INITIAL_PENDING_PUTAWAY_UNITS: PendingPutawayUnit[] = [
     status: 'Pendiente',
   },
 
-  // Sucursal Valle Oriente
+  // Almacén Auxiliar Reynosa
   {
     uid: 'TAR-RTM-2026-000181',
     sku: 'PT-MAN-001',
@@ -299,7 +299,7 @@ export const INITIAL_PENDING_PUTAWAY_UNITS: PendingPutawayUnit[] = [
     size: 'Individual',
     lotNumber: 'LOTE-2026-W34',
     warehouseId: 'wh-suc-valle-oriente',
-    warehouseName: 'Sucursal Valle Oriente',
+    warehouseName: 'Almacén Auxiliar Reynosa',
     sourceLocation: 'REC-SUC-VO',
     receiptOrderFolio: 'OTP-2026-0044',
     receivedAt: '27 Ago 11:32',
@@ -324,7 +324,7 @@ export const INITIAL_PENDING_PUTAWAY_UNITS: PendingPutawayUnit[] = [
     size: 'Individual',
     lotNumber: 'LOTE-2026-W34',
     warehouseId: 'wh-suc-valle-oriente',
-    warehouseName: 'Sucursal Valle Oriente',
+    warehouseName: 'Almacén Auxiliar Reynosa',
     sourceLocation: 'REC-SUC-VO',
     receiptOrderFolio: 'OTP-2026-0044',
     receivedAt: '27 Ago 11:34',
@@ -349,7 +349,7 @@ export const INITIAL_PENDING_PUTAWAY_UNITS: PendingPutawayUnit[] = [
     size: 'Individual',
     lotNumber: 'LOTE-2026-W34',
     warehouseId: 'wh-suc-valle-oriente',
-    warehouseName: 'Sucursal Valle Oriente',
+    warehouseName: 'Almacén Auxiliar Reynosa',
     sourceLocation: 'REC-SUC-VO',
     receiptOrderFolio: 'OTP-2026-0044',
     receivedAt: '27 Ago 11:35',
@@ -366,7 +366,7 @@ export const INITIAL_PENDING_PUTAWAY_UNITS: PendingPutawayUnit[] = [
     status: 'Pendiente',
   },
 
-  // Sucursal Cumbres
+  // Almacén Satélite Matamoros
   {
     uid: 'TAR-RTM-2026-000191',
     sku: 'PT-ETQ-001',
@@ -376,19 +376,19 @@ export const INITIAL_PENDING_PUTAWAY_UNITS: PendingPutawayUnit[] = [
     size: 'Individual',
     lotNumber: 'LOTE-2026-W34',
     warehouseId: 'wh-suc-cumbres',
-    warehouseName: 'Sucursal Cumbres',
+    warehouseName: 'Almacén Satélite Matamoros',
     sourceLocation: 'REC-SUC-CUM',
     receiptOrderFolio: 'OTP-2026-0045',
     receivedAt: '27 Ago 12:48',
     timeInReceiving: '12 min',
     suggestedLocation: 'SHOW-03',
-    suggestionReason: 'Bahía de inspección QA disponible para muestras Cumbres',
+    suggestionReason: 'Bahía de inspección QA disponible para muestras Matamoros',
     suggestionDetails: {
       matchedSkuCount: 0,
       distanceToShippingMeters: 5,
       zoneActivity: 'Media',
       freeSlotsInRack: 1,
-      explanation: 'Bahía SHOW-03 libre en showroom Cumbres para muestra técnica de producto.',
+      explanation: 'Bahía SHOW-03 libre en almacén Matamoros para muestra técnica de producto.',
     },
     status: 'Pendiente',
   },
@@ -401,19 +401,19 @@ export const INITIAL_PENDING_PUTAWAY_UNITS: PendingPutawayUnit[] = [
     size: 'Individual',
     lotNumber: 'LOTE-2026-W34',
     warehouseId: 'wh-suc-cumbres',
-    warehouseName: 'Sucursal Cumbres',
+    warehouseName: 'Almacén Satélite Matamoros',
     sourceLocation: 'REC-SUC-CUM',
     receiptOrderFolio: 'OTP-2026-0045',
     receivedAt: '27 Ago 12:50',
     timeInReceiving: '10 min',
     suggestedLocation: 'BOD-CUM-01',
-    suggestionReason: 'Bodega local Cumbres · Entrega rápida',
+    suggestionReason: 'Bodega local Matamoros · Entrega rápida',
     suggestionDetails: {
       matchedSkuCount: 1,
       distanceToShippingMeters: 6,
       zoneActivity: 'Media',
       freeSlotsInRack: 2,
-      explanation: 'Bodega local Cumbres para retiro inmediato en mostrador.',
+      explanation: 'Bodega local Matamoros para retiro inmediato en planta.',
     },
     status: 'Pendiente',
   },
@@ -627,31 +627,31 @@ export const INITIAL_PUTAWAY_ORDERS: PutawayOrder[] = [
     ],
   },
 
-  // 8. Sucursal Valle Oriente - Parcial (Envío a Showroom + Mini Almacén)
+  // 8. Almacén Auxiliar Reynosa - Parcial (Envío a Área de Muestras + Almacén)
   {
     id: 'oa-8',
     folio: 'OA-2026-0037',
     warehouseId: 'wh-suc-valle-oriente',
-    warehouseName: 'Sucursal Valle Oriente',
+    warehouseName: 'Almacén Auxiliar Reynosa',
     createdAt: '27 Ago 2026 11:40',
     operatorAssigned: 'Brenda Cavazos (Encargada Sucursal)',
     status: 'Parcial',
     totalUnits: 3,
     completedUnits: 1,
     pendingUnits: 2,
-    notes: 'Acomodo de unidades traspasadas: 1 a bahía de Showroom SHOW-02 y 2 a bodega local BOD-VO-01.',
+    notes: 'Acomodo de unidades traspasadas: 1 a bahía de Showroom STG-02 y 2 a bodega local BOD-REY-01.',
     items: [
       { id: 'oai-8-1', uid: 'TAR-RTM-2026-000181', sku: 'PT-MAN-001', productName: 'Manual Instructivo 24 Páginas Black & Decker', brand: 'Black & Decker', size: 'Individual', lotNumber: 'LOTE-2026-W34', sourceLocation: 'REC-SUC-VO', targetLocation: 'SHOW-02', suggestedLocation: 'SHOW-02', status: 'Acomodado', completedAt: '27 Ago 11:55', operator: 'Brenda Cavazos', notes: 'Colocado en bahía SHOW-02 de exhibición.' },
       { id: 'oai-8-2', uid: 'TAR-RTM-2026-000182', sku: 'PT-MAN-001', productName: 'Manual Instructivo 24 Páginas Black & Decker', brand: 'Black & Decker', size: 'Individual', lotNumber: 'LOTE-2026-W34', sourceLocation: 'REC-SUC-VO', targetLocation: 'BOD-VO-01', suggestedLocation: 'BOD-VO-01', status: 'Pendiente' },
       { id: 'oai-8-3', uid: 'TAR-RTM-2026-000183', sku: 'PT-MAN-001', productName: 'Manual Instructivo 24 Páginas Black & Decker', brand: 'Black & Decker', size: 'Individual', lotNumber: 'LOTE-2026-W34', sourceLocation: 'REC-SUC-VO', targetLocation: 'BOD-VO-02', suggestedLocation: 'BOD-VO-02', status: 'Pendiente' },
     ],
   },
-  // 9. Sucursal Valle Oriente - Completa
+  // 9. Almacén Auxiliar Reynosa - Completa
   {
     id: 'oa-9',
     folio: 'OA-2026-0028',
     warehouseId: 'wh-suc-valle-oriente',
-    warehouseName: 'Sucursal Valle Oriente',
+    warehouseName: 'Almacén Auxiliar Reynosa',
     createdAt: '25 Ago 2026 12:00',
     completedAt: '25 Ago 2026 13:10',
     operatorAssigned: 'Brenda Cavazos (Encargada Sucursal)',
@@ -659,26 +659,26 @@ export const INITIAL_PUTAWAY_ORDERS: PutawayOrder[] = [
     totalUnits: 2,
     completedUnits: 2,
     pendingUnits: 0,
-    notes: 'Acomodo de tarimas de sustratos en showroom y bodega local.',
+    notes: 'Acomodo de tarimas de sustratos en área de inspección y bodega local.',
     items: [
       { id: 'oai-9-1', uid: 'TAR-RTM-2026-000151', sku: 'PT-ETQ-001', productName: 'Etiqueta Farmacéutica 4x6" Medifarma', brand: 'Medifarma', size: 'Individual', lotNumber: 'LOTE-2026-W33', sourceLocation: 'REC-SUC-VO', targetLocation: 'SHOW-01', suggestedLocation: 'SHOW-01', status: 'Acomodado', completedAt: '25 Ago 12:30', operator: 'Brenda Cavazos' },
       { id: 'oai-9-2', uid: 'TAR-RTM-2026-000152', sku: 'PT-ETQ-001', productName: 'Etiqueta Farmacéutica 4x6" Medifarma', brand: 'Medifarma', size: 'Individual', lotNumber: 'LOTE-2026-W33', sourceLocation: 'REC-SUC-VO', targetLocation: 'BOD-VO-01', suggestedLocation: 'BOD-VO-01', status: 'Acomodado', completedAt: '25 Ago 13:00', operator: 'Brenda Cavazos' },
     ],
   },
 
-  // 10. Sucursal Cumbres - En proceso
+  // 10. Almacén Satélite Matamoros - En proceso
   {
     id: 'oa-10',
     folio: 'OA-2026-0038',
     warehouseId: 'wh-suc-cumbres',
-    warehouseName: 'Sucursal Cumbres',
+    warehouseName: 'Almacén Satélite Matamoros',
     createdAt: '27 Ago 2026 13:00',
     operatorAssigned: 'Jorge Villarreal (Encargado Sucursal)',
     status: 'En proceso',
     totalUnits: 2,
     completedUnits: 1,
     pendingUnits: 1,
-    notes: 'Acomodo de traspaso recién arribado a Cumbres.',
+    notes: 'Acomodo de traspaso recién arribado a Matamoros.',
     items: [
       { id: 'oai-10-1', uid: 'TAR-RTM-2026-000191', sku: 'PT-ETQ-001', productName: 'Etiqueta Farmacéutica 4x6" Medifarma', brand: 'Medifarma', size: 'Individual', lotNumber: 'LOTE-2026-W34', sourceLocation: 'REC-SUC-CUM', targetLocation: 'SHOW-03', suggestedLocation: 'SHOW-03', status: 'Acomodado', completedAt: '27 Ago 13:20', operator: 'Jorge Villarreal', notes: 'Colocado en bahía SHOW-03.' },
       { id: 'oai-10-2', uid: 'TAR-RTM-2026-000192', sku: 'PT-ETQ-001', productName: 'Etiqueta Farmacéutica 4x6" Medifarma', brand: 'Medifarma', size: 'Individual', lotNumber: 'LOTE-2026-W34', sourceLocation: 'REC-SUC-CUM', targetLocation: 'BOD-CUM-01', suggestedLocation: 'BOD-CUM-01', status: 'Pendiente' },

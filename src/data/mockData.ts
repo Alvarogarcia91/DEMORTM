@@ -1,4 +1,4 @@
-export interface ColchonProduct {
+export interface IndustrialProduct {
   id: string;
   sku: string;
   name: string;
@@ -57,8 +57,8 @@ export interface ReceiptOrder {
 export interface TruckOutboundOrder {
   id: string;
   orderNumber: string; // ej. EMB-2026-042
-  routeNumber: string; // ej. RUTA-MTY-CUMBRES-03
-  destination: string; // ej. Sucursal Impresos RTM Cumbres + Gonzalitos
+  routeNumber: string; // ej. RUTA-RTM-MAT-01
+  destination: string; // ej. Almacén Satélite Matamoros
   truckPlate: string;  // ej. NL-8492-B (Rabón 14T)
   driverName: string;  // ej. Carlos Mendoza (Chofer)
   scheduledDate: string;
@@ -77,7 +77,7 @@ export interface TruckOutboundOrder {
 // =========================================================================
 // REAL INDUSTRIAL PRODUCTS CATALOG
 // =========================================================================
-export const MOCK_PRODUCTS: ColchonProduct[] = [
+export const MOCK_PRODUCTS: IndustrialProduct[] = [
   {
     id: 'prod-01',
     sku: 'SC-NYT-FLW-IND',
@@ -414,8 +414,8 @@ export const INITIAL_TRUCK_ORDERS: TruckOutboundOrder[] = [
   {
     id: 'emb-01',
     orderNumber: 'EMB-2026-042',
-    routeNumber: 'RUTA-MTY-CUMBRES-03',
-    destination: 'Sucursal Impresos RTM Cumbres + Gonzalitos',
+    routeNumber: 'RUTA-RTM-MAT-01',
+    destination: 'Almacén Satélite Matamoros',
     truckPlate: 'NL-8492-B (Rabón 14T)',
     driverName: 'Carlos Mendoza',
     scheduledDate: '2026-08-27',

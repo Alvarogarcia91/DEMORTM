@@ -94,7 +94,7 @@ export const ExecuteRearrangementModal: React.FC<ExecuteRearrangementModalProps>
  name: `Ubicación Destino ${order.destinationLocation}`,
  type: 'RACK',
  warehouseName: order.warehouseName,
- warehouseCode: order.warehouseName.includes('Sur') ? 'MTY-S' : order.warehouseName.includes('Valle') ? 'SUC-VO' : order.warehouseName.includes('Cumbres') ? 'SUC-CUM' : 'MTY-N',
+ warehouseCode: order.warehouseName.includes('Sur') ? 'MTY-S' : order.warehouseName.includes('Reynosa') ? 'ALM-REY' : order.warehouseName.includes('Matamoros') ? 'ALM-MAT' : 'MTY-N',
  aisle,
  level,
  positionNumber: posNum,

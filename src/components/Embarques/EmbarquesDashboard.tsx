@@ -599,7 +599,7 @@ export const EmbarquesDashboard: React.FC<EmbarquesDashboardProps> = ({ onNaviga
                       Traspaso
                     </span>
                   </td>
-                  <td className="py-2.5 px-3 font-medium text-zinc-900 max-w-[140px] truncate">Sucursal Cumbres</td>
+                  <td className="py-2.5 px-3 font-medium text-zinc-900 max-w-[140px] truncate">Almacén Matamoros</td>
                   <td className="py-2.5 px-2 text-zinc-600">Carlos Medina</td>
                   <td className="py-2.5 px-2 font-mono">9 unidades</td>
                   <td className="py-2.5 px-3 text-right">
@@ -653,7 +653,7 @@ export const EmbarquesDashboard: React.FC<EmbarquesDashboardProps> = ({ onNaviga
                       Traspaso
                     </span>
                   </td>
-                  <td className="py-2.5 px-3 font-medium text-zinc-900 max-w-[140px] truncate">Sucursal Valle Oriente</td>
+                  <td className="py-2.5 px-3 font-medium text-zinc-900 max-w-[140px] truncate">Almacén Auxiliar Reynosa</td>
                   <td className="py-2.5 px-2 text-zinc-600">Carlos Medina</td>
                   <td className="py-2.5 px-2 font-mono">14 unidades</td>
                   <td className="py-2.5 px-3 text-right">

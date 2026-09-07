@@ -17,7 +17,7 @@ import {
  Eye,
  Package
 } from 'lucide-react';
-import { ShowroomBay, PositionSerializedMattress } from '../../data/mockInventoryData';
+import { ShowroomBay, PositionSerializedUnitItem } from '../../data/mockInventoryData';
 import { LocationQrModal, PhysicalLocationMeta } from './LocationQrModal';
 import { PrintLocationQrModal } from './PrintLocationQrModal';
 import { QrModal } from './QrModal';
@@ -39,13 +39,13 @@ export const ShowroomBayModal: React.FC<ShowroomBayModalProps> = ({
 }) => {
  const [selectedLocationQr, setSelectedLocationQr] = useState<PhysicalLocationMeta | null>(null);
  const [selectedPrintLocationQr, setSelectedPrintLocationQr] = useState<PhysicalLocationMeta | null>(null);
- const [selectedQrUnit, setSelectedQrUnit] = useState<PositionSerializedMattress | null>(null);
- const [selectedPrintUnit, setSelectedPrintUnit] = useState<PositionSerializedMattress | null>(null);
+ const [selectedQrUnit, setSelectedQrUnit] = useState<PositionSerializedUnitItem | null>(null);
+ const [selectedPrintUnit, setSelectedPrintUnit] = useState<PositionSerializedUnitItem | null>(null);
 
  if (!bay) return null;
 
- const isOccupied = bay.status === 'Ocupada' && !!bay.mattress;
- const mattress = bay.mattress;
+ const isOccupied = bay.status === 'Ocupada' && !!(bay.unitItem || bay.mattress);
+ const unitItem = bay.unitItem || bay.mattress;
 
  const handleOpenLocationQr = () => {
  setSelectedLocationQr({
@@ -167,7 +167,7 @@ export const ShowroomBayModal: React.FC<ShowroomBayModalProps> = ({
  </div>
 
  {/* Card 2: Contenido / Material en Exhibición */}
- {isOccupied && mattress ? (
+ {isOccupied && unitItem ? (
  <div className="p-5 rounded-3xl bg-theme-surface border border-theme-subtle space-y-4 shadow-xs">
  <div className="flex items-center justify-between border-b border-theme-subtle pb-3">
  <div className="flex items-center gap-2.5">
@@ -176,12 +176,12 @@ export const ShowroomBayModal: React.FC<ShowroomBayModalProps> = ({
  </div>
  <div>
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Material / Muestra en Exhibición</span>
- <h3 className="text-xs font-black text-theme-main">{mattress.productName}</h3>
+ <h3 className="text-xs font-black text-theme-main">{unitItem.productName}</h3>
  </div>
  </div>
 
  <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-purple-500/15 text-purple-700 border border-purple-500/30">
- {mattress.status}
+ {unitItem.status}
  </span>
  </div>
 
@@ -189,22 +189,22 @@ export const ShowroomBayModal: React.FC<ShowroomBayModalProps> = ({
  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
  <div className="p-2.5 rounded-xl bg-theme-muted/40 border border-theme-subtle">
  <span className="text-[9px] uppercase font-bold text-theme-muted block">SKU</span>
- <strong className="font-mono text-xs font-black text-theme-primary block">{mattress.sku}</strong>
+ <strong className="font-mono text-xs font-black text-theme-primary block">{unitItem.sku}</strong>
  </div>
 
  <div className="p-2.5 rounded-xl bg-theme-muted/40 border border-theme-subtle">
  <span className="text-[9px] uppercase font-bold text-theme-muted block">Marca</span>
- <strong className="text-xs font-bold text-theme-main block">{mattress.brand}</strong>
+ <strong className="text-xs font-bold text-theme-main block">{unitItem.brand}</strong>
  </div>
 
  <div className="p-2.5 rounded-xl bg-theme-muted/40 border border-theme-subtle">
  <span className="text-[9px] uppercase font-bold text-theme-muted block">Medida</span>
- <strong className="text-xs font-bold text-theme-main block">{mattress.size}</strong>
+ <strong className="text-xs font-bold text-theme-main block">{unitItem.size}</strong>
  </div>
 
  <div className="p-2.5 rounded-xl bg-theme-muted/40 border border-theme-subtle">
  <span className="text-[9px] uppercase font-bold text-theme-muted block">Lote</span>
- <strong className="font-mono text-xs text-theme-muted block">{mattress.lotNumber}</strong>
+ <strong className="font-mono text-xs text-theme-muted block">{unitItem.lotNumber}</strong>
  </div>
  </div>
 
@@ -213,18 +213,18 @@ export const ShowroomBayModal: React.FC<ShowroomBayModalProps> = ({
  <div className="flex items-center justify-between">
  <span className="text-theme-muted text-[11px]">Número de Serie / UID:</span>
  <span className="font-mono text-xs font-black text-theme-main bg-theme-surface px-2.5 py-1 rounded-lg border border-theme-subtle">
- {mattress.uid}
+ {unitItem.uid}
  </span>
  </div>
 
  <div className="flex items-center justify-between text-[11px] text-theme-muted pt-1 border-t border-theme-subtle">
  <span className="flex items-center gap-1">
  <Calendar className="w-3.5 h-3.5" />
- <span>Fecha de Ingreso: {mattress.entryDate}</span>
+ <span>Fecha de Ingreso: {unitItem.entryDate}</span>
  </span>
  <span className="flex items-center gap-1 font-mono">
  <Clock className="w-3.5 h-3.5" />
- <span>{mattress.ageDays} días en tienda</span>
+ <span>{unitItem.ageDays} días en almacén</span>
  </span>
  </div>
  </div>
@@ -234,14 +234,14 @@ export const ShowroomBayModal: React.FC<ShowroomBayModalProps> = ({
  <span className="text-theme-muted text-[11px]">Código QR de la unidad serializada:</span>
  <div className="flex items-center gap-2">
  <button
- onClick={() => setSelectedQrUnit(mattress)}
+ onClick={() => setSelectedQrUnit(unitItem)}
  className="px-2.5 py-1.5 rounded-xl bg-theme-muted hover:bg-theme-subtle text-purple-700 hover:text-purple-800 font-bold border border-purple-200/50 flex items-center gap-1.5 cursor-pointer text-xs transition-all"
  >
  <QrCode className="w-3.5 h-3.5 text-purple-600" />
  <span>QR Unidad</span>
  </button>
  <button
- onClick={() => setSelectedPrintUnit(mattress)}
+ onClick={() => setSelectedPrintUnit(unitItem)}
  className="px-2.5 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white font-bold flex items-center gap-1.5 cursor-pointer text-xs transition-all shadow-xs"
  >
  <Printer className="w-3.5 h-3.5" />

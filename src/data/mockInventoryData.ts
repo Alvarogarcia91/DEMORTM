@@ -29,6 +29,7 @@ export interface PositionSerializedMattress {
 }
 
 export type PositionSerializedItem = PositionSerializedMattress;
+export type PositionSerializedUnitItem = PositionSerializedItem;
 
 export interface LevelItem {
   levelCode: 'C' | 'B' | 'A';
@@ -88,6 +89,7 @@ export interface ShowroomBay {
   code: string;
   name: string;
   status: 'Ocupada' | 'Libre';
+  unitItem?: PositionSerializedItem;
   mattress?: PositionSerializedMattress;
 }
 
@@ -842,9 +844,9 @@ export const MOCK_CEDIS_MONTERREY_SUR = MOCK_ALMACEN_PRINCIPAL_RTM;
 export const MOCK_ALMACEN_MATERIA_PRIMA = MOCK_ALMACEN_PRINCIPAL_RTM;
 export const MOCK_ALMACEN_PRODUCTO_TERMINADO = MOCK_ALMACEN_PRINCIPAL_RTM;
 export const MOCK_SUCURSAL_VALLE_ORIENTE = MOCK_ALMACEN_VIRTUAL;
-export const MOCK_SUCURSAL_CUMBRES = MOCK_ALMACEN_VIRTUAL;
+export const MOCK_ALMACEN_MATAMOROS = MOCK_ALMACEN_VIRTUAL;
 export const MOCK_SHOWROOM_VALLE_ORIENTE: ShowroomBay[] = [];
-export const MOCK_SHOWROOM_CUMBRES: ShowroomBay[] = [];
+export const MOCK_STAGING_MATAMOROS: ShowroomBay[] = [];
 
 export const MOCK_WAREHOUSES_LIST: WarehouseLayout[] = [
   MOCK_ALMACEN_PRINCIPAL_RTM,

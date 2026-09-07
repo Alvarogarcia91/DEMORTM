@@ -306,13 +306,13 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  type: 'CEDIS',
  },
  {
- name: 'Sucursal Valle Oriente',
+ name: 'Almacén Auxiliar Reynosa',
  amount: 64000,
  inTransitUnits: 12,
  type: 'Sucursal',
  },
  {
- name: 'Sucursal Cumbres',
+ name: 'Almacén Matamoros',
  amount: 22000,
  inTransitUnits: 6,
  type: 'Sucursal',
@@ -376,8 +376,8 @@ export const ComprasDashboard: React.FC<ComprasDashboardProps> = ({
  <option value="ALL">Todos los destinos</option>
  <option value="wh-mty-norte">Almacén Materia Prima</option>
  <option value="wh-mty-sur">Almacén Producto Terminado</option>
- <option value="wh-suc-valle-oriente">Sucursal Valle Oriente</option>
- <option value="wh-suc-cumbres">Sucursal Cumbres</option>
+ <option value="wh-suc-valle-oriente">Almacén Auxiliar Reynosa</option>
+ <option value="wh-suc-cumbres">Almacén Matamoros</option>
  </select>
 
  {/* Supplier Selector */}

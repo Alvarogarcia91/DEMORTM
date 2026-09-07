@@ -191,7 +191,7 @@ export const INITIAL_UNIT_REPRINT_CANDIDATES: UnitReprintCandidate[] = [
     size: 'Individual',
     lotNumber: 'LOTE-2026-W34',
     warehouseId: 'wh-suc-valle-oriente',
-    warehouseName: 'Sucursal Valle Oriente',
+    warehouseName: 'Almacén Auxiliar Reynosa',
     locationCode: 'SHOW-02',
     status: 'Exhibición',
     lastPrintedAt: '27 Ago 2026 11:55',
@@ -204,7 +204,7 @@ export const INITIAL_UNIT_REPRINT_CANDIDATES: UnitReprintCandidate[] = [
     size: 'Individual',
     lotNumber: 'LOTE-2026-W34',
     warehouseId: 'wh-suc-cumbres',
-    warehouseName: 'Sucursal Cumbres',
+    warehouseName: 'Almacén Satélite Matamoros',
     locationCode: 'SHOW-03',
     status: 'Exhibición',
     lastPrintedAt: '27 Ago 2026 13:20',
@@ -233,16 +233,16 @@ export const INITIAL_LOCATION_REPRINT_CANDIDATES: LocationReprintCandidate[] = [
   { code: 'EMB-01', name: 'Carril de Embarque 01', type: 'Carril de Embarque', warehouseId: 'wh-mty-sur', warehouseName: 'Almacén Producto Terminado', status: 'Activa' },
   { code: 'RET-SUR', name: 'Área de Retrabajo PT', type: 'Área de Retrabajo', warehouseId: 'wh-mty-sur', warehouseName: 'Almacén Producto Terminado', status: 'Activa' },
 
-  // Sucursal Valle Oriente locations
-  { code: 'REC-SUC-VO', name: 'Andén Recepción Traspasos VO', type: 'Área de Recepción', warehouseId: 'wh-suc-valle-oriente', warehouseName: 'Sucursal Valle Oriente', status: 'Activa' },
-  { code: 'SHOW-01', name: 'Bahía Principal Showroom VO', type: 'Área de Muestras / QA', warehouseId: 'wh-suc-valle-oriente', warehouseName: 'Sucursal Valle Oriente', status: 'Activa' },
-  { code: 'SHOW-02', name: 'Bahía Secundaria Showroom VO', type: 'Área de Muestras / QA', warehouseId: 'wh-suc-valle-oriente', warehouseName: 'Sucursal Valle Oriente', status: 'Activa' },
-  { code: 'BOD-VO-01', name: 'Bodega Local Posición 01 VO', type: 'Rack de Almacenamiento', warehouseId: 'wh-suc-valle-oriente', warehouseName: 'Sucursal Valle Oriente', status: 'Activa' },
+  // Almacén Auxiliar Reynosa locations
+  { code: 'REC-SUC-VO', name: 'Andén Recepción Traspasos Reynosa', type: 'Área de Recepción', warehouseId: 'wh-suc-valle-oriente', warehouseName: 'Almacén Auxiliar Reynosa', status: 'Activa' },
+  { code: 'SHOW-01', name: 'Bahía Principal Staging Reynosa', type: 'Área de Muestras / QA', warehouseId: 'wh-suc-valle-oriente', warehouseName: 'Almacén Auxiliar Reynosa', status: 'Activa' },
+  { code: 'SHOW-02', name: 'Bahía Secundaria Staging Reynosa', type: 'Área de Muestras / QA', warehouseId: 'wh-suc-valle-oriente', warehouseName: 'Almacén Auxiliar Reynosa', status: 'Activa' },
+  { code: 'BOD-VO-01', name: 'Bodega Local Posición 01 Reynosa', type: 'Rack de Almacenamiento', warehouseId: 'wh-suc-valle-oriente', warehouseName: 'Almacén Auxiliar Reynosa', status: 'Activa' },
 
-  // Sucursal Cumbres locations
-  { code: 'REC-SUC-CUM', name: 'Andén Recepción Traspasos Cumbres', type: 'Área de Recepción', warehouseId: 'wh-suc-cumbres', warehouseName: 'Sucursal Cumbres', status: 'Activa' },
-  { code: 'SHOW-03', name: 'Bahía Showroom Cumbres 03', type: 'Área de Muestras / QA', warehouseId: 'wh-suc-cumbres', warehouseName: 'Sucursal Cumbres', status: 'Activa' },
-  { code: 'BOD-CUM-01', name: 'Bodega Local Cumbres 01', type: 'Rack de Almacenamiento', warehouseId: 'wh-suc-cumbres', warehouseName: 'Sucursal Cumbres', status: 'Activa' },
+  // Almacén Satélite Matamoros locations
+  { code: 'REC-SUC-CUM', name: 'Andén Recepción Almacén Matamoros', type: 'Área de Recepción', warehouseId: 'wh-suc-cumbres', warehouseName: 'Almacén Satélite Matamoros', status: 'Activa' },
+  { code: 'SHOW-03', name: 'Bahía Inspección Matamoros 03', type: 'Área de Muestras / QA', warehouseId: 'wh-suc-cumbres', warehouseName: 'Almacén Satélite Matamoros', status: 'Activa' },
+  { code: 'BOD-CUM-01', name: 'Bodega Local Matamoros 01', type: 'Rack de Almacenamiento', warehouseId: 'wh-suc-cumbres', warehouseName: 'Almacén Satélite Matamoros', status: 'Activa' },
 ];
 
 export const INITIAL_REPRINT_AUDIT_LOGS: ReprintAuditRecord[] = [
@@ -352,7 +352,7 @@ export const INITIAL_REPRINT_AUDIT_LOGS: ReprintAuditRecord[] = [
     warehouseName: 'Almacén Producto Terminado',
     status: 'Impresión completada',
   },
-  // 9. Reimpresión de ubicación (Showroom)
+  // 9. Reimpresión de ubicación (Staging)
   {
     id: 'rep-9',
     reprintedAt: '27 Ago 2026, 12:00',
@@ -362,7 +362,7 @@ export const INITIAL_REPRINT_AUDIT_LOGS: ReprintAuditRecord[] = [
     details: 'Área de Muestras y Pruebas',
     reason: 'Etiqueta dañada',
     requestedBy: 'Brenda Cavazos (Encargada Sucursal)',
-    warehouseName: 'Sucursal Valle Oriente',
+    warehouseName: 'Almacén Auxiliar Reynosa',
     status: 'Impresión completada',
   },
   // 10. Reimpresión de ubicación (Retrabajo)
@@ -392,17 +392,17 @@ export const INITIAL_REPRINT_AUDIT_LOGS: ReprintAuditRecord[] = [
     warehouseName: 'Almacén Producto Terminado',
     status: 'Impresión completada',
   },
-  // 12. Sustitución preventiva (Cumbres)
+  // 12. Sustitución preventiva (Matamoros)
   {
     id: 'rep-12',
     reprintedAt: '27 Ago 2026, 13:45',
     type: 'Ubicación',
     code: 'SHOW-03',
-    title: 'Bahía Showroom Cumbres 03',
-    details: 'Exhibición Tienda Cumbres',
+    title: 'Bahía Inspección Matamoros 03',
+    details: 'Área de Inspección Matamoros',
     reason: 'Sustitución preventiva',
-    requestedBy: 'Jorge Villarreal (Encargado Cumbres)',
-    warehouseName: 'Sucursal Cumbres',
+    requestedBy: 'Ing. Jorge Villarreal (Almacén Matamoros)',
+    warehouseName: 'Almacén Satélite Matamoros',
     status: 'Impresión completada',
   },
 ];

@@ -187,11 +187,11 @@ export const ShippingRouteInteractiveMap: React.FC<ShippingRouteInteractiveMapPr
           <path d="M 80,325 L 300,315 L 500,295 L 750,280" fill="none" stroke="#334155" strokeWidth="5" />
           <path d="M 80,325 L 300,315 L 500,295 L 750,280" fill="none" stroke="#eab308" strokeWidth="2" strokeDasharray="10,4" />
 
-          {/* Av. Lázaro Cárdenas (Valle Oriente) */}
+          {/* Av. Industrias (Parque Industrial) */}
           <path d="M 310,340 L 440,340 L 520,350 L 620,320" fill="none" stroke="#334155" strokeWidth="4" />
           <path d="M 310,340 L 440,340 L 520,350 L 620,320" fill="none" stroke="#22c55e" strokeWidth="1.5" />
 
-          {/* Av. Paseo de los Leones (Cumbres) */}
+          {/* Av. Maquiladoras (Parque del Norte) */}
           <path d="M 120,180 L 220,195 L 280,210" fill="none" stroke="#334155" strokeWidth="4" />
           <path d="M 120,180 L 220,195 L 280,210" fill="none" stroke="#22c55e" strokeWidth="1.5" />
 
@@ -204,10 +204,10 @@ export const ShippingRouteInteractiveMap: React.FC<ShippingRouteInteractiveMapPr
 
           {/* Zone Watermark Labels */}
           <text x="240" y="50" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Escobedo / San Nicolás</text>
-          <text x="140" y="170" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Zona Cumbres</text>
+          <text x="140" y="170" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Parque del Norte</text>
           <text x="400" y="240" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Monterrey Centro</text>
           <text x="310" y="295" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">San Pedro Garza García</text>
-          <text x="430" y="375" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Valle Oriente</text>
+          <text x="430" y="375" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Parque Industrial</text>
           <text x="560" y="390" fill="#64748b" fontSize="10" fontWeight="bold" fontFamily="sans-serif">Zona Sur / Santiago</text>
 
           {/* ACTIVE DISPATCH TRAJECTORY PATH */}

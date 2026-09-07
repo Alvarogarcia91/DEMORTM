@@ -119,7 +119,7 @@ export const CEDIS_STAGING_LANES: Record<string, StagingLane[]> = {
 };
 
 export const INITIAL_PENDING_OUTBOUND_ORDERS: PendingOutboundPickOrder[] = [
-  // 1. CEDIS Norte - Traspaso Valle Oriente
+  // 1. CEDIS Norte - Traspaso Almacén Reynosa
   {
     id: 'pend-out-1',
     folio: 'OR-2026-0118',
@@ -127,7 +127,7 @@ export const INITIAL_PENDING_OUTBOUND_ORDERS: PendingOutboundPickOrder[] = [
     type: 'Orden de Traspaso',
     warehouseId: 'wh-mty-norte',
     warehouseName: 'Almacén Materia Prima',
-    destinationName: 'Sucursal Valle Oriente',
+    destinationName: 'Almacén Auxiliar Reynosa',
     articlesCount: 3,
     totalUnits: 6,
     assignedLane: 'EMB-03',
@@ -176,7 +176,7 @@ export const INITIAL_PENDING_OUTBOUND_ORDERS: PendingOutboundPickOrder[] = [
       { uid: 'TAR-RTM-2026-000245', sku: 'PT-BLI-002', productName: 'Blister Card Termosellable Stanley Tools King Size', brand: 'Stanley Tools', size: 'King Size', lotNumber: 'LOTE-2026-W34' },
     ],
   },
-  // 3. CEDIS Sur - Traspaso Cumbres
+  // 3. CEDIS Sur - Traspaso Almacén Matamoros
   {
     id: 'pend-out-3',
     folio: 'OR-2026-0125',
@@ -184,7 +184,7 @@ export const INITIAL_PENDING_OUTBOUND_ORDERS: PendingOutboundPickOrder[] = [
     type: 'Orden de Traspaso',
     warehouseId: 'wh-mty-sur',
     warehouseName: 'Almacén Producto Terminado',
-    destinationName: 'Sucursal Cumbres',
+    destinationName: 'Almacén Matamoros',
     articlesCount: 2,
     totalUnits: 4,
     assignedLane: 'EMB-01',
@@ -244,7 +244,7 @@ export const INITIAL_OUTBOUND_VERIFICATION_ORDERS: OutboundVerificationOrder[] =
     type: 'Orden de Traspaso',
     warehouseId: 'wh-mty-norte',
     warehouseName: 'Almacén Materia Prima',
-    destinationName: 'Sucursal Valle Oriente',
+    destinationName: 'Almacén Auxiliar Reynosa',
     assignedLane: 'EMB-03',
     priority: 'Alta',
     status: 'En validación',
@@ -276,7 +276,7 @@ export const INITIAL_OUTBOUND_VERIFICATION_ORDERS: OutboundVerificationOrder[] =
     type: 'Orden de Traspaso',
     warehouseId: 'wh-mty-norte',
     warehouseName: 'Almacén Materia Prima',
-    destinationName: 'Sucursal Valle Oriente',
+    destinationName: 'Almacén Auxiliar Reynosa',
     assignedLane: 'EMB-01',
     priority: 'Normal',
     status: 'Lista para carga',
@@ -431,7 +431,7 @@ export const INITIAL_OUTBOUND_VERIFICATION_ORDERS: OutboundVerificationOrder[] =
     type: 'Orden de Traspaso',
     warehouseId: 'wh-mty-sur',
     warehouseName: 'Almacén Producto Terminado',
-    destinationName: 'Sucursal Cumbres',
+    destinationName: 'Almacén Matamoros',
     assignedLane: 'EMB-01',
     priority: 'Alta',
     status: 'En validación',

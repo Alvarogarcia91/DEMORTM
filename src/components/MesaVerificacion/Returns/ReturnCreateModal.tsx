@@ -222,7 +222,7 @@ export const ReturnCreateModal: React.FC<ReturnCreateModalProps> = ({
  required
  value={originClientOrBranch}
  onChange={(e) => setOriginClientOrBranch(e.target.value)}
- placeholder="Ej. Cliente Final o Sucursal Valle Oriente"
+ placeholder="Ej. Cliente Industrial o Planta Secundaria"
  className="w-full bg-theme-muted border border-theme-subtle rounded-xl p-2.5 text-xs font-semibold text-theme-main focus:outline-none"
  />
  </div>

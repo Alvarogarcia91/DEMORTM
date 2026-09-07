@@ -114,7 +114,6 @@ export const ArticuloFormModal: React.FC<ArticuloFormModalProps> = ({
             formatDimensions: size,
             unitPresentation: 'Por Lote / Millar',
             qaApproved: true,
-            mattressType: technology,
             firmness: 'Media',
             heightCm: 1,
             supportTechnology: technology,

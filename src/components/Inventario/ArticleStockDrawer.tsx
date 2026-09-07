@@ -23,7 +23,7 @@ import {
   User,
   CheckCircle2
 } from 'lucide-react';
-import { StockItemRecord, PositionSerializedMattress, InventoryMovement, MOCK_INVENTORY_MOVEMENTS } from '../../data/mockInventoryData';
+import { StockItemRecord, PositionSerializedItem, InventoryMovement, MOCK_INVENTORY_MOVEMENTS } from '../../data/mockInventoryData';
 import { ModalPortal } from '../common/ModalPortal';
 import { StatusBadge } from '../common/StatusBadge';
 import { SemanticVariant } from '../common/semanticTokens';
@@ -72,9 +72,9 @@ export interface ArticleStockSummary {
 interface ArticleStockDrawerProps {
   article: ArticleStockSummary | null;
   onClose: () => void;
-  onOpenUnitDetail: (unit: PositionSerializedMattress) => void;
-  onOpenQr: (unit: PositionSerializedMattress) => void;
-  onPrintQr: (unit: PositionSerializedMattress) => void;
+  onOpenUnitDetail: (unit: PositionSerializedItem) => void;
+  onOpenQr: (unit: PositionSerializedItem) => void;
+  onPrintQr: (unit: PositionSerializedItem) => void;
   onLocateInMap?: (locationCode: string) => void;
 }
 
@@ -104,7 +104,7 @@ export const ArticleStockDrawer: React.FC<ArticleStockDrawerProps> = ({
     }
   };
 
-  const toSerializedMattress = (item: StockItemRecord): PositionSerializedMattress => {
+  const toSerializedItem = (item: StockItemRecord): PositionSerializedItem => {
     const locParts = item.location.split('-');
     const levelCode = (locParts[1] === 'C' || locParts[1] === 'B' || locParts[1] === 'A') ? locParts[1] : 'A';
 
@@ -347,7 +347,7 @@ export const ArticleStockDrawer: React.FC<ArticleStockDrawerProps> = ({
                   </thead>
                   <tbody className="divide-y divide-theme-subtle">
                     {article.allUnits.map((unit) => {
-                      const serialized = toSerializedMattress(unit);
+                      const serialized = toSerializedItem(unit);
                       return (
                         <tr key={unit.uid} className="hover:bg-theme-muted/20 transition-colors">
                           <td className="py-2.5 px-4 font-mono font-bold text-theme-main flex items-center gap-1.5">

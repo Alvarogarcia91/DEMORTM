@@ -30,7 +30,7 @@ import {
   MOCK_INVENTORY_MOVEMENTS,
   RTM_INDUSTRIAL_ITEMS,
   StockItemRecord, 
-  PositionSerializedMattress 
+  PositionSerializedItem 
 } from '../../data/mockInventoryData';
 import { ArticleStockDrawer, ArticleStockSummary, ArticleLotBreakdown } from './ArticleStockDrawer';
 import { UnitDetailModal } from './UnitDetailModal';
@@ -70,9 +70,9 @@ export const StocksTab: React.FC = () => {
 
   // Modals state
   const [selectedArticleSummary, setSelectedArticleSummary] = useState<ArticleStockSummary | null>(null);
-  const [selectedUnitDetail, setSelectedUnitDetail] = useState<PositionSerializedMattress | null>(null);
-  const [selectedQrUnit, setSelectedQrUnit] = useState<PositionSerializedMattress | null>(null);
-  const [selectedPrintUnit, setSelectedPrintUnit] = useState<PositionSerializedMattress | null>(null);
+  const [selectedUnitDetail, setSelectedUnitDetail] = useState<PositionSerializedItem | null>(null);
+  const [selectedQrUnit, setSelectedQrUnit] = useState<PositionSerializedItem | null>(null);
+  const [selectedPrintUnit, setSelectedPrintUnit] = useState<PositionSerializedItem | null>(null);
 
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
@@ -322,8 +322,8 @@ export const StocksTab: React.FC = () => {
     setCurrentPageUnit(1);
   };
 
-  // Convert StockItemRecord to PositionSerializedMattress for modal view
-  const toSerializedMattress = (item: StockItemRecord): PositionSerializedMattress => {
+  // Convert StockItemRecord to PositionSerializedItem for modal view
+  const toSerializedItem = (item: StockItemRecord): PositionSerializedItem => {
     const locParts = item.location.split('-');
     const levelCode = (locParts[1] === 'C' || locParts[1] === 'B' || locParts[1] === 'A') ? locParts[1] : 'A';
 
@@ -691,7 +691,7 @@ export const StocksTab: React.FC = () => {
                   </tr>
                 ) : (
                   paginatedUnits.map((item) => {
-                    const serialized = toSerializedMattress(item);
+                    const serialized = toSerializedItem(item);
                     return (
                       <tr key={item.uid} className="hover:bg-theme-muted/30 transition-colors">
                         <td className="py-3 px-4 font-mono font-bold text-theme-main flex items-center gap-1.5 whitespace-nowrap">

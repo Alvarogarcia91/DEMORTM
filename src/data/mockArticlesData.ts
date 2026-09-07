@@ -83,7 +83,6 @@ export interface MasterArticle {
     qaApproved?: boolean;
 
     // Backward-compatibility deprecated fields
-    mattressType?: string;
     firmness?: 'Suave' | 'Media' | 'Firme' | 'Extra Firme' | string;
     heightCm?: number;
     supportTechnology?: string;
@@ -434,7 +433,6 @@ const createIndustrialArticle = (data: {
       qaApproved: true,
 
       // Deprecated fields preserved for backward compatibility
-      mattressType: data.technology,
       firmness: 'Media',
       heightCm: 1,
       supportTechnology: data.technology,
