@@ -273,7 +273,17 @@ export const ProduccionPage: React.FC<ProduccionPageProps> = ({
       )}
 
       {/* Contenido según pestaña */}
-      {tab === 'Dashboard' && <DashboardProduccion orders={orders} onOpenOrder={openOrder} />}
+      {tab === 'Dashboard' && (
+        <DashboardProduccion
+          orders={orders}
+          onOpenOrder={openOrder}
+          onNavigateTab={(targetTab) => setTab(targetTab)}
+          onNewOrder={() => {
+            setInitialRecipe(null);
+            setIsWizardOpen(true);
+          }}
+        />
+      )}
 
       {tab === 'Planeación' && (
         <PlaneacionProduccion
