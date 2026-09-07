@@ -5,19 +5,19 @@ import { PositionSerializedMattress } from '../../data/mockInventoryData';
 import { ModalPortal } from '../common/ModalPortal';
 
 interface PrintQrModalProps {
- unit: PositionSerializedMattress | null;
- warehouseName: string;
- onClose: () => void;
+  unit: PositionSerializedMattress | null;
+  warehouseName?: string;
+  onClose: () => void;
 }
 
 export const PrintQrModal: React.FC<PrintQrModalProps> = ({
  unit,
- warehouseName,
+ warehouseName = 'Almacén Principal RTM',
  onClose,
 }) => {
  if (!unit) return null;
 
- const qrDataString = `UID=${unit.uid}|SKU=${unit.sku}|LOC=${unit.locationCode}|LOT=${unit.lotNumber}|CEDIS=${warehouseName}`;
+ const qrDataString = `UID=${unit.uid}|SKU=${unit.sku}|LOC=${unit.locationCode}|LOT=${unit.lotNumber}|ALM=${warehouseName}`;
 
  const handlePrint = () => {
  window.print();

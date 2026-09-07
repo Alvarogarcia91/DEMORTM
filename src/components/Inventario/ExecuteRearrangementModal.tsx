@@ -210,7 +210,7 @@ export const ExecuteRearrangementModal: React.FC<ExecuteRearrangementModalProps>
  <div className="p-4 rounded-2xl bg-theme-muted/40 border border-theme-subtle space-y-2">
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Instrucción Operativa</span>
  <p className="text-sm font-bold text-theme-main">
- Escanea el código QR / Serie del colchón indicado en la orden.
+ Escanea el código QR / Serie del material indicado en la orden.
  </p>
  <div className="flex items-center justify-between pt-2 border-t border-theme-subtle text-xs">
  <span className="text-theme-muted">Serie esperada:</span>

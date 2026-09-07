@@ -88,7 +88,7 @@ export const LugaQrScanner: React.FC<LugaQrScannerProps> = ({
  const handleSimulateNextUnit = () => {
  // Pick first serial that hasn't been scanned yet
  const nextExpected = expectedSerials.find(s => !alreadyCountedSerials.includes(s));
- const fallbackSerial = `SC-UID-2026-000${170 + alreadyCountedSerials.length + 1}`;
+ const fallbackSerial = `TAR-RTM-260906-${170 + alreadyCountedSerials.length + 1}`;
  const targetUid = nextExpected || fallbackSerial;
 
  triggerScanSequence(targetUid, true);
@@ -102,13 +102,13 @@ export const LugaQrScanner: React.FC<LugaQrScannerProps> = ({
  setScanStatus('error');
  if (onSimulateDuplicateUnit) onSimulateDuplicateUnit();
  } else {
- triggerScanSequence('SC-UID-2026-000171', true);
+ triggerScanSequence('TAR-RTM-260906-171', true);
  }
  };
 
  // Simulates scanning an unexpected unit from another location (e.g. B-C-06 in A-C-04)
  const handleSimulateUnexpected = () => {
- const unexpectedUid = 'SC-UID-2026-000333';
+ const unexpectedUid = 'TAR-RTM-260906-333';
  setIsScanning(true);
  setScanStatus('scanning');
  setTimeout(() => {
@@ -204,7 +204,7 @@ export const LugaQrScanner: React.FC<LugaQrScannerProps> = ({
  {mode === 'LOCATION' ? (
  <span>Apuntar al QR del espacio: <strong className="text-theme-primary font-bold">{expectedLocation}</strong></span>
  ) : (
- <span>Apuntar al QR cosido del colchón / insumo</span>
+ <span>Apuntar al código QR de la unidad / insumo</span>
  )}
  </div>
 

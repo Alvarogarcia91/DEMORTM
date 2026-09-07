@@ -87,9 +87,9 @@ export const ExecuteCountModal: React.FC<ExecuteCountModalProps> = ({
 
  const newUnit: ScannedUnitItem = {
  uid: scannedUid,
- sku: stockMatch?.sku || 'SC-NAYT-FLOW-IND',
- productName: stockMatch?.productName || 'Nayt Colchón Flow Basic White Individual',
- brand: stockMatch?.brand || 'Nayt',
+ sku: stockMatch?.sku || 'MP-COU-090',
+ productName: stockMatch?.productName || 'Papel Couché 90 g (Pliegos 70x100 cm)',
+ brand: stockMatch?.brand || 'Bio-Pappel',
  isUnexpected: !!isUnexpected,
  registeredLocation: registeredLoc,
  };
@@ -129,8 +129,8 @@ export const ExecuteCountModal: React.FC<ExecuteCountModalProps> = ({
  warehouseName: task.warehouseName,
  locationCode: task.locationCode,
  locationName: task.locationName,
- sku: matchStock?.sku || 'SC-NAYT-FLOW-IND',
- productName: matchStock?.productName || 'Nayt Colchón Flow Individual',
+ sku: matchStock?.sku || 'MP-COU-090',
+ productName: matchStock?.productName || 'Papel Couché 90 g (Pliegos 70x100 cm)',
  uid: mUid,
  expectedLocation: task.locationCode,
  actualLocation: 'No localizada',
@@ -204,13 +204,13 @@ export const ExecuteCountModal: React.FC<ExecuteCountModalProps> = ({
  {/* Header Terminal Style */}
  <div className="px-6 py-4 border-b border-theme-subtle flex items-center justify-between bg-theme-surface">
  <div className="flex items-center gap-3">
- <div className="w-10 h-10 rounded-2xl bg-white text-rose-600 border border-rose-500 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
+ <div className="w-10 h-10 rounded-2xl bg-white text-theme-primary border border-theme-primary/30 shadow-2xs flex items-center justify-center font-bold text-sm shrink-0">
  <Radio className="w-5 h-5 animate-pulse" />
  </div>
  <div>
  <div className="flex items-center gap-2 flex-wrap">
  <span className="font-mono text-xs font-black text-theme-primary">{task.folio}</span>
- <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-700 border border-rose-500/20">
+ <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-theme-primary/10 text-theme-primary border border-theme-primary/20">
  Terminal RF-04 &middot; Modo Conteo
  </span>
  {task.isBlindCount && (
@@ -513,7 +513,7 @@ export const ExecuteCountModal: React.FC<ExecuteCountModalProps> = ({
  </span>
  <div className="flex flex-wrap gap-1">
  {missingUids.map(uid => (
- <span key={uid} className="px-2 py-0.5 rounded font-mono text-[10px] bg-rose-500/10 text-rose-700 border border-rose-500/20 font-bold">
+ <span key={uid} className="px-2 py-0.5 rounded font-mono text-[10px] bg-theme-primary/10 text-theme-primary border border-theme-primary/20 font-bold">
  {uid} (No encontrada)
  </span>
  ))}

@@ -59,7 +59,7 @@ interface AutocompleteItem {
 }
 
 export const MapTab: React.FC<MapTabProps> = ({ onShowToast }) => {
- const [selectedWarehouseId, setSelectedWarehouseId] = useState<string>('wh-mty-norte');
+ const [selectedWarehouseId, setSelectedWarehouseId] = useState<string>('wh-alm-rtm');
  const [searchQuery, setSearchQuery] = useState<string>('');
  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
  const [selectedMatchInfo, setSelectedMatchInfo] = useState<AutocompleteItem | null>(null);
@@ -112,7 +112,7 @@ export const MapTab: React.FC<MapTabProps> = ({ onShowToast }) => {
  id: itemKey,
  type: 'location',
  title: `Posición ${pos.positionId}`,
- subtitle: `${aisle.aisleCode} &middot; Ocupación: ${pos.currentUnitsCount}/7 colchones`,
+ subtitle: `${aisle.aisleCode} &middot; Ocupación: ${pos.currentUnitsCount}/7 unidades`,
  positionId: pos.positionId,
  });
  }
@@ -329,19 +329,13 @@ export const MapTab: React.FC<MapTabProps> = ({ onShowToast }) => {
  Almacén / Sucursal Activa
  </label>
  <select
- value={selectedWarehouseId}
- onChange={(e) => handleWarehouseChange(e.target.value)}
- className="bg-theme-muted border border-theme-subtle text-xs font-bold text-theme-main py-1.5 px-3 rounded-xl focus:outline-none focus:border-theme-primary cursor-pointer"
- >
- <optgroup label="Centros de Distribución">
- <option value="wh-mty-norte">CEDIS Monterrey Norte (MTY-N)</option>
- <option value="wh-mty-sur">CEDIS Monterrey Sur (MTY-S)</option>
- </optgroup>
- <optgroup label="Sucursales Retail">
- <option value="wh-suc-valle-oriente">Sucursal Valle Oriente (SUC-VO)</option>
- <option value="wh-suc-cumbres">Sucursal Cumbres (SUC-CUM)</option>
- </optgroup>
- </select>
+              value={selectedWarehouseId}
+              onChange={(e) => handleWarehouseChange(e.target.value)}
+              className="bg-theme-muted border border-theme-subtle text-xs font-bold text-theme-main py-1.5 px-3 rounded-xl focus:outline-none focus:border-theme-primary cursor-pointer"
+            >
+              <option value="wh-alm-rtm">Almacén Principal RTM (ALM-RTM)</option>
+              <option value="wh-alm-virtual">Almacén Virtual / Control (ALM-VIRTUAL · Control Lógico)</option>
+            </select>
  </div>
  </div>
 
@@ -453,7 +447,7 @@ export const MapTab: React.FC<MapTabProps> = ({ onShowToast }) => {
  </div>
 
  <div className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs col-span-2 sm:col-span-1">
- <span className="text-[10px] uppercase font-bold text-theme-muted block">Colchones Físicos</span>
+ <span className="text-[10px] uppercase font-bold text-theme-muted block">Unidades Físicos</span>
  <span className="text-xl font-extrabold text-theme-main font-mono">{currentWarehouse.kpis.physicalUnits} pzas</span>
  </div>
  </div>
@@ -495,7 +489,7 @@ export const MapTab: React.FC<MapTabProps> = ({ onShowToast }) => {
  }}
  className="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold transition-all shadow-xs inline-flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
  >
- <span>Ver colchones del rack</span>
+ <span>Ver unidades del rack</span>
  <ChevronRight className="w-3.5 h-3.5" />
  </button>
  )}
@@ -503,7 +497,7 @@ export const MapTab: React.FC<MapTabProps> = ({ onShowToast }) => {
  )}
 
  {/* ========================================================================= */}
- {/* MAPA PRINCIPAL DEL CEDIS (EXPANDIDO Y CON CAPACIDAD 7 VISIBLE) */}
+ {/* MAPA DE PLANTA · ALMACÉN PRINCIPAL RTM (EXPANDIDO Y CON CAPACIDAD 7 VISIBLE) */}
  {/* ========================================================================= */}
  <div className="bg-theme-surface p-6 sm:p-8 rounded-2xl border border-theme-subtle shadow-xs space-y-8 w-full">
  
@@ -580,7 +574,7 @@ export const MapTab: React.FC<MapTabProps> = ({ onShowToast }) => {
  ? 'bg-theme-primary/15 hover:bg-theme-primary/25 border-theme-primary/40 text-theme-main font-bold'
  : 'bg-theme-primary/25 hover:bg-theme-primary/35 border-theme-primary/60 text-theme-main font-black'
  }`}
- title={`${aisle.aisleCode} Pos ${pos.positionNumber} (${pos.currentUnitsCount} colchones almacenados)`}
+ title={`${aisle.aisleCode} Pos ${pos.positionNumber} (${pos.currentUnitsCount} unidades almacenados)`}
  >
  {/* Position Code */}
  <div className="flex items-center justify-between w-full px-0.5">
@@ -603,7 +597,7 @@ export const MapTab: React.FC<MapTabProps> = ({ onShowToast }) => {
  <span className={`text-[11px] font-mono font-black tracking-tight ${
  isMatch ? 'text-white' : 'text-theme-main'
  }`}>
- {pos.currentUnitsCount} <span className="text-[8px] font-normal opacity-80">{pos.currentUnitsCount === 1 ? 'colchón' : 'colchones'}</span>
+ {pos.currentUnitsCount} <span className="text-[8px] font-normal opacity-80">{pos.currentUnitsCount === 1 ? 'unidad' : 'unidades'}</span>
  </span>
 
  {/* Level Dots */}
@@ -634,349 +628,238 @@ export const MapTab: React.FC<MapTabProps> = ({ onShowToast }) => {
  </div>
  </div>
 
- {/* SECCIÓN 2: ZONAS ESPECIALES */}
- <div className="pt-6 border-t border-theme-subtle space-y-4">
- <div className="flex items-center justify-between pb-1">
- <h3 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-theme-main flex items-center gap-2">
- <Boxes className="w-5 h-5 text-amber-600" />
- Zonas Especiales de Piso & Operación
- </h3>
- <span className="text-xs text-theme-muted font-mono">3 Áreas operativas con QR</span>
- </div>
+ {/* SECCIÓN 2: ZONAS OPERATIVAS & ESPECIALES */}
+        <div className="pt-6 border-t border-theme-subtle space-y-4">
+          <div className="flex items-center justify-between pb-1">
+            <h3 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-theme-main flex items-center gap-2">
+              <Boxes className="w-5 h-5 text-amber-600" />
+              Zonas Operativas de Piso, Staging & Embarques
+            </h3>
+            <span className="text-xs text-theme-muted font-mono">4 Áreas operativas con QR</span>
+          </div>
 
- <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
- {/* Recepción */}
- <div className="p-5 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs flex flex-col justify-between h-full min-h-[210px] space-y-3 transition-all hover:border-theme-primary/40">
- {/* HEADER */}
- <div className="flex items-start justify-between gap-2 min-w-0">
- <span className="text-[10px] uppercase font-bold tracking-wider text-theme-muted flex items-center gap-1.5 shrink-0">
- <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
- Área de Recepción
- </span>
- <StatusBadge variant="success" label="Rampas de Entrada" size="sm" />
- </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
+            
+            {/* 1. Recepción */}
+            <div className="p-5 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs flex flex-col justify-between h-full min-h-[210px] space-y-3 transition-all hover:border-theme-primary/40">
+              <div className="flex items-start justify-between gap-2 min-w-0">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-theme-muted flex items-center gap-1.5 shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
+                  Área de Recepción
+                </span>
+                <StatusBadge variant="success" label="Rampas de Entrada" size="sm" />
+              </div>
 
- {/* BODY */}
- <div className="space-y-1.5 flex-1 min-w-0">
- <h4 className="text-sm font-bold text-theme-main leading-snug line-clamp-2">
- {currentWarehouse.receptionAreas.map(r => r.name).join(' & ')}
- </h4>
- <p className="text-[11px] text-theme-muted leading-relaxed line-clamp-2">
- Punto de descarga inicial para ingreso a la Mesa de Verificación.
- </p>
- <div className="pt-1 text-[11px] font-mono text-theme-muted">
- <span>Capacidad: <strong className="text-theme-main font-bold">{currentWarehouse.receptionAreas[0]?.capacity || 10} pzas</strong></span>
- </div>
- </div>
+              <div className="space-y-1.5 flex-1 min-w-0">
+                <h4 className="text-sm font-bold text-theme-main leading-snug line-clamp-2">
+                  Rampa de Descarga REC-01 & REC-02
+                </h4>
+                <p className="text-[11px] text-theme-muted leading-relaxed line-clamp-2">
+                  Punto de descarga de sustratos, tintas y químicos para inspección inicial.
+                </p>
+                <div className="pt-1 text-[11px] font-mono text-theme-muted">
+                  <span>Capacidad: <strong className="text-theme-main font-bold">10 tarimas / bobinas</strong></span>
+                </div>
+              </div>
 
- {/* FOOTER */}
- <div className="mt-auto pt-3 border-t border-theme-subtle flex items-center justify-end gap-2 text-xs">
- <button
- onClick={() => {
- const rec = currentWarehouse.receptionAreas[0];
- setSelectedLocationQr({
- code: rec.code,
- name: rec.name,
- type: 'RECEPCION',
- warehouseName: currentWarehouse.name,
- warehouseCode: currentWarehouse.code,
- capacity: rec.capacity,
- currentUnits: rec.currentUnits,
- status: rec.status,
- });
- }}
- className="px-3 py-1.5 rounded-xl bg-theme-muted hover:bg-theme-subtle text-theme-main text-xs font-semibold border border-theme-subtle flex items-center gap-1.5 transition-colors cursor-pointer"
- title="Ver QR de Ubicación"
- >
- <QrCode className="w-3.5 h-3.5 text-theme-primary" />
- <span>QR Ubicación</span>
- </button>
- <button
- onClick={() => {
- const rec = currentWarehouse.receptionAreas[0];
- setSelectedPrintLocationQr({
- code: rec.code,
- name: rec.name,
- type: 'RECEPCION',
- warehouseName: currentWarehouse.name,
- warehouseCode: currentWarehouse.code,
- capacity: rec.capacity,
- currentUnits: rec.currentUnits,
- status: rec.status,
- });
- }}
- className="px-3 py-1.5 rounded-xl bg-theme-muted hover:bg-theme-subtle text-theme-main text-xs font-semibold border border-theme-subtle flex items-center gap-1.5 transition-colors cursor-pointer"
- title="Imprimir etiqueta"
- >
- <Printer className="w-3.5 h-3.5 text-theme-muted" />
- <span>Etiqueta</span>
- </button>
- </div>
- </div>
+              <div className="mt-auto pt-3 border-t border-theme-subtle flex items-center justify-end gap-2 text-xs">
+                <button
+                  onClick={() => {
+                    const rec = currentWarehouse.receptionAreas[0];
+                    if (rec) {
+                      setSelectedLocationQr({
+                        code: rec.code,
+                        name: rec.name,
+                        type: 'RECEPCION',
+                        warehouseName: currentWarehouse.name,
+                        warehouseCode: currentWarehouse.code,
+                        capacity: rec.capacity,
+                        currentUnits: rec.currentUnits,
+                        status: rec.status,
+                      });
+                    }
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-theme-muted hover:bg-theme-subtle text-theme-main text-xs font-semibold border border-theme-subtle flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title="Ver QR de Ubicación"
+                >
+                  <QrCode className="w-3.5 h-3.5 text-theme-primary" />
+                  <span>QR Ubicación</span>
+                </button>
+              </div>
+            </div>
 
- {/* Acomodo Temporal */}
- <div className="p-5 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs flex flex-col justify-between h-full min-h-[210px] space-y-3 transition-all hover:border-theme-primary/40">
- {/* HEADER */}
- <div className="flex items-start justify-between gap-2 min-w-0">
- <span className="text-[10px] uppercase font-bold tracking-wider text-theme-muted flex items-center gap-1.5 shrink-0">
- <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />
- Acomodo Temporal
- </span>
- <StatusBadge variant="info" label="Staging Racks" size="sm" />
- </div>
+            {/* 2. Staging Producción */}
+            <div className="p-5 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs flex flex-col justify-between h-full min-h-[210px] space-y-3 transition-all hover:border-theme-primary/40">
+              <div className="flex items-start justify-between gap-2 min-w-0">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-theme-muted flex items-center gap-1.5 shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />
+                  Staging Producción
+                </span>
+                <StatusBadge variant="info" label="Reserva OP" size="sm" />
+              </div>
 
- {/* BODY */}
- <div className="space-y-1.5 flex-1 min-w-0">
- <h4 className="text-sm font-bold text-theme-main leading-snug line-clamp-2">
- {currentWarehouse.stagingAreas.map(s => s.name).join(' & ')}
- </h4>
- <p className="text-[11px] text-theme-muted leading-relaxed line-clamp-2">
- Colchones serializados pendientes de asignación de pasillo definitivo.
- </p>
- <div className="pt-1 text-[11px] font-mono text-theme-muted">
- <span>Ocupación: <strong className="text-theme-main font-bold">{currentWarehouse.stagingAreas.reduce((a, s) => a + s.currentUnits, 0)} pzas en staging</strong></span>
- </div>
- </div>
+              <div className="space-y-1.5 flex-1 min-w-0">
+                <h4 className="text-sm font-bold text-theme-main leading-snug line-clamp-2">
+                  Staging Producción / Reserva OP (ACO-01)
+                </h4>
+                <p className="text-[11px] text-theme-muted leading-relaxed line-clamp-2">
+                  Material reservado y preparado para surtido a líneas Offset y Flexo.
+                </p>
+                <div className="pt-1 text-[11px] font-mono text-theme-muted">
+                  <span>Ocupación: <strong className="text-theme-main font-bold">6 tarimas preparadas</strong></span>
+                </div>
+              </div>
 
- {/* FOOTER */}
- <div className="mt-auto pt-3 border-t border-theme-subtle flex items-center justify-end gap-2 text-xs">
- <button
- onClick={() => {
- const stg = currentWarehouse.stagingAreas[0];
- setSelectedLocationQr({
- code: stg.code,
- name: stg.name,
- type: 'ACOMODO',
- warehouseName: currentWarehouse.name,
- warehouseCode: currentWarehouse.code,
- capacity: stg.capacity,
- currentUnits: stg.currentUnits,
- status: stg.status,
- });
- }}
- className="px-3 py-1.5 rounded-xl bg-theme-muted hover:bg-theme-subtle text-theme-main text-xs font-semibold border border-theme-subtle flex items-center gap-1.5 transition-colors cursor-pointer"
- title="Ver QR de Ubicación"
- >
- <QrCode className="w-3.5 h-3.5 text-theme-primary" />
- <span>QR Ubicación</span>
- </button>
- <button
- onClick={() => {
- const stg = currentWarehouse.stagingAreas[0];
- setSelectedPrintLocationQr({
- code: stg.code,
- name: stg.name,
- type: 'ACOMODO',
- warehouseName: currentWarehouse.name,
- warehouseCode: currentWarehouse.code,
- capacity: stg.capacity,
- currentUnits: stg.currentUnits,
- status: stg.status,
- });
- }}
- className="px-3 py-1.5 rounded-xl bg-theme-muted hover:bg-theme-subtle text-theme-main text-xs font-semibold border border-theme-subtle flex items-center gap-1.5 transition-colors cursor-pointer"
- title="Imprimir etiqueta"
- >
- <Printer className="w-3.5 h-3.5 text-theme-muted" />
- <span>Etiqueta</span>
- </button>
- </div>
- </div>
+              <div className="mt-auto pt-3 border-t border-theme-subtle flex items-center justify-end gap-2 text-xs">
+                <button
+                  onClick={() => {
+                    const stg = currentWarehouse.stagingAreas[0];
+                    if (stg) {
+                      setSelectedLocationQr({
+                        code: stg.code,
+                        name: stg.name,
+                        type: 'ACOMODO',
+                        warehouseName: currentWarehouse.name,
+                        warehouseCode: currentWarehouse.code,
+                        capacity: stg.capacity,
+                        currentUnits: stg.currentUnits,
+                        status: stg.status,
+                      });
+                    }
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-theme-muted hover:bg-theme-subtle text-theme-main text-xs font-semibold border border-theme-subtle flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title="Ver QR de Ubicación"
+                >
+                  <QrCode className="w-3.5 h-3.5 text-theme-primary" />
+                  <span>QR Ubicación</span>
+                </button>
+              </div>
+            </div>
 
- {/* Retrabajo */}
- <div className="p-5 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs flex flex-col justify-between h-full min-h-[210px] space-y-3 transition-all hover:border-theme-primary/40">
- {/* HEADER */}
- <div className="flex items-start justify-between gap-2 min-w-0">
- <span className="text-[10px] uppercase font-bold tracking-wider text-theme-muted flex items-center gap-1.5 shrink-0">
- <ShieldAlert className="w-3.5 h-3.5 text-amber-600 shrink-0" />
- Retrabajo & Calidad
- </span>
- <StatusBadge variant="warning" label="Zona Especial" size="sm" />
- </div>
+            {/* 3. Cuarentena QA */}
+            <div className="p-5 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs flex flex-col justify-between h-full min-h-[210px] space-y-3 transition-all hover:border-theme-primary/40">
+              <div className="flex items-start justify-between gap-2 min-w-0">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-rose-600 flex items-center gap-1.5 shrink-0">
+                  <ShieldAlert className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                  Cuarentena QA
+                </span>
+                <StatusBadge variant="danger" label="Retención" size="sm" />
+              </div>
 
- {/* BODY */}
- <div className="space-y-1.5 flex-1 min-w-0">
- <h4 className="text-sm font-bold text-theme-main leading-snug line-clamp-2">
- {currentWarehouse.reworkZone.name}
- </h4>
- <p className="text-[11px] text-theme-muted leading-relaxed line-clamp-2">
- Colchones en observación técnica, empaque o revisión de garantía.
- </p>
- <div className="pt-1 text-[11px] font-mono text-theme-muted">
- <span>Capacidad: <strong className="text-zinc-900 font-bold">{currentWarehouse.reworkZone.currentUnits} / {currentWarehouse.reworkZone.capacity} pzas</strong></span>
- </div>
- </div>
+              <div className="space-y-1.5 flex-1 min-w-0">
+                <h4 className="text-sm font-bold text-theme-main leading-snug line-clamp-2">
+                  Zona de Cuarentena & Calidad QA (RET-QA)
+                </h4>
+                <p className="text-[11px] text-theme-muted leading-relaxed line-clamp-2">
+                  Lotes retenidos en inspección. Disponible = 0 pliegos / bobinas.
+                </p>
+                <div className="pt-1 text-[11px] font-mono text-theme-muted">
+                  <span>Capacidad: <strong className="text-rose-600 font-bold">4 unidades en inspección</strong></span>
+                </div>
+              </div>
 
- {/* FOOTER */}
- <div className="mt-auto pt-3 border-t border-theme-subtle flex items-center justify-between gap-2 text-xs">
- <button
- onClick={() => setSelectedReworkZone(currentWarehouse.reworkZone)}
- className="px-3 py-1.5 rounded-xl bg-theme-muted hover:bg-theme-subtle text-theme-main text-xs font-semibold border border-theme-subtle flex items-center gap-1.5 transition-colors cursor-pointer"
- title="Ver detalle de unidades en retrabajo"
- >
- <Eye className="w-3.5 h-3.5 text-theme-primary" />
- <span>Detalle</span>
- </button>
+              <div className="mt-auto pt-3 border-t border-theme-subtle flex items-center justify-between gap-2 text-xs">
+                <button
+                  onClick={() => setSelectedReworkZone(currentWarehouse.reworkZone)}
+                  className="px-3 py-1.5 rounded-xl bg-theme-muted hover:bg-theme-subtle text-theme-main text-xs font-semibold border border-theme-subtle flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title="Ver lotes en cuarentena"
+                >
+                  <Eye className="w-3.5 h-3.5 text-theme-primary" />
+                  <span>Ver Lotes</span>
+                </button>
 
- <div className="flex items-center gap-2">
- <button
- onClick={() => {
- const ret = currentWarehouse.reworkZone;
- setSelectedLocationQr({
- code: ret.code,
- name: ret.name,
- type: 'RETRABAJO',
- warehouseName: currentWarehouse.name,
- warehouseCode: currentWarehouse.code,
- capacity: ret.capacity,
- currentUnits: ret.currentUnits,
- status: ret.status,
- });
- }}
- className="px-3 py-1.5 rounded-xl bg-theme-muted hover:bg-theme-subtle text-theme-main text-xs font-semibold border border-theme-subtle flex items-center gap-1.5 transition-colors cursor-pointer"
- title="Ver QR de ubicación"
- >
- <QrCode className="w-3.5 h-3.5 text-theme-primary" />
- <span>QR</span>
- </button>
- <button
- onClick={() => {
- const ret = currentWarehouse.reworkZone;
- setSelectedPrintLocationQr({
- code: ret.code,
- name: ret.name,
- type: 'RETRABAJO',
- warehouseName: currentWarehouse.name,
- warehouseCode: currentWarehouse.code,
- capacity: ret.capacity,
- currentUnits: ret.currentUnits,
- status: ret.status,
- });
- }}
- className="px-3 py-1.5 rounded-xl bg-theme-muted hover:bg-theme-subtle text-theme-main text-xs font-semibold border border-theme-subtle flex items-center gap-1.5 transition-colors cursor-pointer"
- title="Imprimir etiqueta"
- >
- <Printer className="w-3.5 h-3.5 text-theme-muted" />
- <span>Imprimir</span>
- </button>
- </div>
- </div>
- </div>
- </div>
- </div>
+                <button
+                  onClick={() => {
+                    const ret = currentWarehouse.reworkZone;
+                    if (ret) {
+                      setSelectedLocationQr({
+                        code: ret.code,
+                        name: ret.name,
+                        type: 'RETRABAJO',
+                        warehouseName: currentWarehouse.name,
+                        warehouseCode: currentWarehouse.code,
+                        capacity: ret.capacity,
+                        currentUnits: ret.currentUnits,
+                        status: ret.status,
+                      });
+                    }
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-theme-muted hover:bg-theme-subtle text-theme-main text-xs font-semibold border border-theme-subtle flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title="Ver QR de Ubicación"
+                >
+                  <QrCode className="w-3.5 h-3.5 text-theme-primary" />
+                  <span>QR</span>
+                </button>
+              </div>
+            </div>
 
- {/* SECCIÓN 3: SHOWROOM & EXHIBICIÓN RETAIL (SI APLICA A SUCURSAL) */}
- {currentWarehouse.showroomBays && currentWarehouse.showroomBays.length > 0 && (
- <div className="pt-6 border-t border-theme-subtle space-y-4">
- <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-1 gap-2">
- <div className="flex items-center gap-2">
- <div className="w-8 h-8 rounded-xl bg-white text-purple-600 flex items-center justify-center border border-purple-500 shadow-2xs shrink-0">
- <Sparkles className="w-4 h-4" />
- </div>
- <div>
- <h3 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-theme-main flex items-center gap-2">
- Zona Showroom & Exhibición Retail (6 Bahías)
- </h3>
- <p className="text-[11px] text-theme-muted">
- Espacio físico de exhibición y prueba de confort en piso de venta ({currentWarehouse.name}).
- </p>
- </div>
- </div>
+            {/* 4. Embarques: Carril de Embarque 01 (EMB-01) */}
+            <div className="p-5 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs flex flex-col justify-between h-full min-h-[210px] space-y-3 transition-all hover:border-theme-primary/40">
+              <div className="flex items-start justify-between gap-2 min-w-0">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-purple-600 flex items-center gap-1.5 shrink-0">
+                  <Truck className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                  Zona de Embarques
+                </span>
+                <StatusBadge variant="smart" label="Despacho B2B" size="sm" />
+              </div>
 
- <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20 self-start sm:self-auto">
- {currentWarehouse.showroomBays.filter(b => b.status === 'Ocupada').length} de {currentWarehouse.showroomBays.length} Bahías Exhibidas
- </span>
- </div>
+              <div className="space-y-1.5 flex-1 min-w-0">
+                <h4 className="text-sm font-bold text-theme-main leading-snug line-clamp-2">
+                  Carril de Embarque 01 (EMB-01)
+                </h4>
+                <p className="text-[11px] text-theme-muted leading-relaxed line-clamp-2">
+                  Único carril de despacho de PT hacia transporte y entrega a cliente.
+                </p>
+                <div className="pt-1 text-[11px] font-mono text-theme-muted">
+                  <span>En bahía: <strong className="text-purple-700 font-bold">12 cajas PT (OP-2026-0882)</strong></span>
+                </div>
+              </div>
 
- {/* Grid de 6 Bahías */}
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 items-stretch">
- {currentWarehouse.showroomBays.map((bay) => {
- const isOccupied = bay.status === 'Ocupada' && !!bay.mattress;
- const mat = bay.mattress;
+              <div className="mt-auto pt-3 border-t border-theme-subtle flex items-center justify-end gap-2 text-xs">
+                <button
+                  onClick={() => {
+                    const lane = currentWarehouse.shippingLanes[0];
+                    if (lane) {
+                      setSelectedLocationQr({
+                        code: lane.code,
+                        name: lane.name,
+                        type: 'EMBARQUE',
+                        warehouseName: currentWarehouse.name,
+                        warehouseCode: currentWarehouse.code,
+                        capacity: lane.capacity,
+                        currentUnits: lane.currentUnits,
+                        status: lane.status,
+                      });
+                    }
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-theme-muted hover:bg-theme-subtle text-theme-main text-xs font-semibold border border-theme-subtle flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title="Ver QR de Ubicación"
+                >
+                  <QrCode className="w-3.5 h-3.5 text-theme-primary" />
+                  <span>QR Ubicación</span>
+                </button>
+              </div>
+            </div>
 
- return (
- <div
- key={bay.code}
- onClick={() => setSelectedShowroomBay(bay)}
- className="p-4.5 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs flex flex-col justify-between h-full min-h-[195px] space-y-3 transition-all hover:border-purple-500/40 cursor-pointer group"
- >
- <div className="space-y-2">
- <div className="flex items-center justify-between gap-2 min-w-0">
- <div className="flex items-center gap-2">
- <span className="font-mono text-xs font-black text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded bg-purple-500/15 border border-purple-500/25">
- {bay.code}
- </span>
- <span className="text-[10px] uppercase font-bold text-theme-muted">
- Showroom
- </span>
- </div>
+          </div>
+        </div>
 
- <StatusBadge
- variant={isOccupied ? 'smart' : 'neutral'}
- label={isOccupied ? 'En exhibición' : 'Libre'}
- size="sm"
- />
- </div>
+        {/* SECCIÓN 4: CARRILES DE EMBARQUE */}
+        <div className="pt-6 border-t border-theme-subtle space-y-4">
+          <div className="flex items-center justify-between pb-1">
+            <h3 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-theme-main flex items-center gap-2">
+              <Truck className="w-5 h-5 text-blue-600" />
+              Carriles de Entrega / Embarque ({currentWarehouse.shippingLanes.length} {currentWarehouse.shippingLanes.length === 1 ? 'Carril' : 'Carriles'})
+            </h3>
+            <span className="text-xs text-theme-muted font-mono">Frente de Salida & Reparto</span>
+          </div>
 
- {isOccupied && mat ? (
- <div className="space-y-1.5 pt-1">
- <div className="flex items-center gap-1.5 flex-wrap">
- <span className="text-[10px] font-black px-2 py-0.5 rounded bg-purple-600 text-white shadow-2xs">
- {mat.brand}
- </span>
- <span className="text-[10px] font-bold text-theme-muted bg-theme-muted/60 px-2 py-0.5 rounded border border-theme-subtle">
- {mat.size}
- </span>
- </div>
- <h5 className="text-xs font-black text-theme-main group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors leading-snug line-clamp-2">
- {mat.productName}
- </h5>
- <div className="flex items-center justify-between text-[10px] font-mono text-theme-muted pt-1 border-t border-theme-subtle">
- <span>{mat.sku}</span>
- <span className="font-bold text-theme-main">{mat.uid}</span>
- </div>
- </div>
- ) : (
- <div className="py-3 text-center text-theme-muted space-y-0.5">
- <span className="text-xs font-bold block text-theme-muted">Bahía Libre</span>
- <span className="text-[10px]">Disponible para montaje de exhibición</span>
- </div>
- )}
- </div>
-
- <div className="mt-auto pt-2.5 border-t border-theme-subtle flex items-center justify-between text-xs">
- <span className="font-semibold text-purple-700 dark:text-purple-300 group-hover:underline flex items-center gap-1">
- <span>Ver detalle & QRs</span>
- <ChevronRight className="w-3.5 h-3.5" />
- </span>
- <span className="text-[10px] text-theme-muted font-mono flex items-center gap-1">
- <QrCode className="w-3.5 h-3.5 text-purple-600" />
- <span>QR Bahía</span>
- </span>
- </div>
- </div>
- );
- })}
- </div>
- </div>
- )}
-
- {/* SECCIÓN 4: CARRILES DE EMBARQUE */}
- <div className="pt-6 border-t border-theme-subtle space-y-4">
- <div className="flex items-center justify-between pb-1">
- <h3 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-theme-main flex items-center gap-2">
- <Truck className="w-5 h-5 text-blue-600" />
- Carriles de Entrega / Embarque ({currentWarehouse.shippingLanes.length} {currentWarehouse.shippingLanes.length === 1 ? 'Carril' : 'Carriles'})
- </h3>
- <span className="text-xs text-theme-muted font-mono">Frente de Salida & Reparto</span>
- </div>
-
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5 items-stretch">
- {currentWarehouse.shippingLanes.map((lane) => (
- <div
- key={lane.code}
- className="p-4.5 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs flex flex-col justify-between h-full min-h-[185px] space-y-2.5 transition-all hover:border-blue-500/40"
- >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5 items-stretch">
+            {currentWarehouse.shippingLanes.map((lane) => (
+              <div
+                key={lane.code}
+                className="p-4.5 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs flex flex-col justify-between h-full min-h-[185px] space-y-2.5 transition-all hover:border-blue-500/40"
+              >
  {/* HEADER */}
  <div className="flex items-center justify-between gap-2 min-w-0">
  <span className="font-mono text-xs font-black text-theme-primary px-2.5 py-0.5 rounded-lg bg-theme-primary/10 border border-theme-primary/20 shrink-0">
@@ -1060,7 +943,7 @@ export const MapTab: React.FC<MapTabProps> = ({ onShowToast }) => {
  />
 
  {/* ========================================================================= */}
- {/* 2. MODAL DE FICHA INDIVIDUAL DE COLCHÓN */}
+ {/* 2. MODAL DE FICHA INDIVIDUAL DE ARTÍCULO */}
  {/* ========================================================================= */}
  <UnitDetailModal
  unit={selectedUnitDetail}
@@ -1071,7 +954,7 @@ export const MapTab: React.FC<MapTabProps> = ({ onShowToast }) => {
  />
 
  {/* ========================================================================= */}
- {/* 3. MODAL DE VISUALIZACIÓN DE QR DE UNIDAD (COLCHÓN) */}
+ {/* 3. MODAL DE VISUALIZACIÓN DE QR DE UNIDAD */}
  {/* ========================================================================= */}
  <QrModal
  unit={selectedQrUnit}

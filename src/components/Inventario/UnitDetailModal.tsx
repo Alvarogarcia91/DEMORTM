@@ -50,7 +50,7 @@ export const UnitDetailModal: React.FC<UnitDetailModalProps> = ({
  if (!unit) return null;
 
  const isInTransit = unit.status === 'En tránsito' || !!transferRoute;
- const qrDataString = `UID=${unit.uid}|SKU=${unit.sku}|LOC=${isInTransit ? 'EN_TRANSITO' : unit.locationCode}|LOT=${unit.lotNumber}|CEDIS=${warehouseName}`;
+ const qrDataString = `UID=${unit.uid}|SKU=${unit.sku}|LOC=${isInTransit ? 'EN_TRANSITO' : unit.locationCode}|LOT=${unit.lotNumber}|ALM=${warehouseName}`;
  
  // Extract aisle and position from locationCode (e.g. "A-C-06")
  const locParts = unit.locationCode.split('-');
@@ -142,7 +142,7 @@ export const UnitDetailModal: React.FC<UnitDetailModalProps> = ({
  <div className="p-4 rounded-2xl bg-white border border-blue-500 shadow-2xs space-y-2">
  <div className="flex items-center justify-between">
  <span className="text-[10px] uppercase font-bold text-zinc-900 block">
- Traspaso Inter-CEDIS {transferRoute?.folio ? `(${transferRoute.folio})` : ''}
+ Traspaso Entre Almacenes {transferRoute?.folio ? `(${transferRoute.folio})` : ''}
  </span>
  <span className="font-mono text-[10px] font-bold text-zinc-900 bg-white px-2 py-0.5 rounded-full border border-blue-500 shadow-2xs">
  {transferRoute?.plates || 'Camión #08 (NL-8842-A)'}
@@ -152,14 +152,14 @@ export const UnitDetailModal: React.FC<UnitDetailModalProps> = ({
  <div className="flex items-center justify-between pt-1">
  <div>
  <span className="text-[9px] uppercase font-semibold text-theme-muted block">Origen</span>
- <span className="text-xs font-bold text-theme-main">{transferRoute?.origin || 'CEDIS Monterrey Norte'}</span>
+ <span className="text-xs font-bold text-theme-main">{transferRoute?.origin || 'Almacén Principal RTM'}</span>
  </div>
  <div className="text-blue-600 font-bold text-xs px-2">
  &rarr;
  </div>
  <div className="text-right">
  <span className="text-[9px] uppercase font-semibold text-theme-muted block">Destino</span>
- <span className="text-xs font-bold text-theme-primary">{transferRoute?.destination || 'CEDIS Monterrey Sur'}</span>
+ <span className="text-xs font-bold text-theme-primary">{transferRoute?.destination || 'Almacén Virtual / Control'}</span>
  </div>
  </div>
 
@@ -181,7 +181,7 @@ export const UnitDetailModal: React.FC<UnitDetailModalProps> = ({
  <div className="p-3.5 rounded-xl bg-theme-surface border border-theme-subtle shadow-xs space-y-1">
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Ubicación Actual</span>
  <strong className="text-sm font-mono font-bold text-theme-primary block">
- {isInTransit ? 'En tránsito entre CEDIS' : unit.locationCode}
+ {isInTransit ? 'En tránsito entre almacenes' : unit.locationCode}
  </strong>
  <span className="text-[10px] text-theme-muted block">
  {isInTransit ? 'Traslado en camión' : `${aisleCode} · ${posCode}`}
@@ -223,7 +223,7 @@ export const UnitDetailModal: React.FC<UnitDetailModalProps> = ({
  <div className="p-3.5 rounded-xl bg-theme-surface border border-theme-subtle shadow-xs space-y-1">
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Centro de Distribución</span>
  <strong className="text-xs font-bold text-theme-main block truncate">
- {isInTransit ? `${transferRoute?.origin || 'CEDIS MTY Norte'} → ${transferRoute?.destination || 'CEDIS MTY Sur'}` : warehouseName}
+ {isInTransit ? `${transferRoute?.origin || 'Almacén Principal RTM'} → ${transferRoute?.destination || 'Almacén Virtual'}` : warehouseName}
  </strong>
  <span className="text-[10px] text-theme-muted block">
  {isInTransit ? (transferRoute?.driver || 'Roberto Garza (Chofer)') : 'Racks de almacenamiento'}

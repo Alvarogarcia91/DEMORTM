@@ -164,13 +164,13 @@ function generateWarehouseActivity(warehouse: WarehouseLayout, periodDays: numbe
  code: 'REC',
  name: 'Recepción & Rampas',
  type: 'Recepción',
- touches: Math.round((warehouse.code === 'MTY-N' ? 52 : 36) * multiplier),
+ touches: Math.round((warehouse.code === 'ALM-RTM' ? 52 : 36) * multiplier),
  },
  {
  code: 'RET',
  name: warehouse.reworkZone.name,
  type: 'Retrabajo',
- touches: Math.round((warehouse.code === 'MTY-N' ? 14 : 9) * multiplier),
+ touches: Math.round((warehouse.code === 'ALM-RTM' ? 14 : 9) * multiplier),
  },
  ...warehouse.shippingLanes.map((lane, idx) => ({
  code: lane.code,
@@ -240,7 +240,7 @@ function getHeatColorClass(touches: number): {
 }
 
 export const HeatmapTab: React.FC = () => {
- const [selectedWarehouseId, setSelectedWarehouseId] = useState<string>('wh-mty-norte');
+ const [selectedWarehouseId, setSelectedWarehouseId] = useState<string>('wh-alm-rtm');
  const [periodDays, setPeriodDays] = useState<number>(30);
  
  // Drill-down Modals

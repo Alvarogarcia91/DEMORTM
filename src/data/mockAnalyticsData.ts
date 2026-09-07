@@ -90,10 +90,61 @@ export function getArticleUnitCost(sku: string): number {
 
 // Datos de Dashboard por Nave Industrial
 export const NODE_DASHBOARD_DATA: Record<string, NodeDashboardData> = {
-  'wh-mty-norte': {
-    warehouseId: 'wh-mty-norte',
-    warehouseName: 'ALM-MP (Materia Prima - Nave 1 Reynosa)',
-    warehouseCode: 'ALM-MP',
+  'wh-alm-virtual': {
+    warehouseId: 'wh-alm-virtual',
+    warehouseName: 'Almacén Virtual / Control',
+    warehouseCode: 'ALM-VIRTUAL',
+    type: 'SUCURSAL',
+    kpis: {
+      totalUnits: 5,
+      inventoryCostValue: 125000,
+      costBreakdown: {
+        available: 0,
+        committed: 0,
+        inTransit: 0,
+        rework: 125000,
+      },
+      availableUnits: 0,
+      committedUnits: 0,
+      inTransitUnits: 0,
+      occupancyPercentage: 50.0,
+      reworkUnits: 5,
+      avgAgeDays: 14.2,
+    },
+    todayOperations: {
+      received: 0,
+      pendingStaging: 0,
+      picked: 0,
+      staged: 0,
+      transfersInTransit: 0,
+    },
+    alerts: [
+      {
+        id: 'alt-virt-1',
+        type: 'rework',
+        title: 'Auditoría en proceso: Ajuste de inventario -19,500 pliegos',
+        description: 'Caso demo en investigación de auditoría antes de autorización contable.',
+        ctaLabel: 'Ver auditoría',
+        ctaAction: 'stocks',
+        severity: 'warning',
+      },
+    ],
+    inventoryHealth: [],
+    layoutSummary: {
+      activeSuggestions: 0,
+      savedMetersPerDay: 0,
+      topRecommendations: [],
+    },
+    specialZones: {
+      reception: { capacity: 20, occupied: 2, label: 'Entradas Lógicas' },
+      rework: { capacity: 20, occupied: 3, label: 'Ajustes Administrativos' },
+      shipping: { capacity: 0, occupied: 0, label: 'Sin Carril Físico' },
+    },
+  },
+  'wh-alm-rtm': {
+    warehouseId: 'wh-alm-rtm',
+    warehouseName: 'Almacén Principal RTM',
+    warehouseCode: 'ALM-RTM',
     type: 'CEDIS',
     kpis: {
       totalUnits: 158400,
@@ -456,3 +507,7 @@ export const MOCK_ANALYTICS_DATA_30D: AnalyticsDataset = {
     },
   ],
 };
+
+// Backward-compatible fallback
+NODE_DASHBOARD_DATA['wh-mty-norte'] = NODE_DASHBOARD_DATA['wh-alm-rtm'];
+NODE_DASHBOARD_DATA['wh-mty-sur'] = NODE_DASHBOARD_DATA['wh-alm-rtm'];

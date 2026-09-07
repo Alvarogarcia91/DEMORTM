@@ -35,15 +35,15 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5 | 6>(1);
 
  // Paso 1: Nodo
- const [selectedWarehouseId, setSelectedWarehouseId] = useState<string>('wh-mty-norte');
+ const [selectedWarehouseId, setSelectedWarehouseId] = useState<string>('wh-alm-rtm');
 
  // Paso 2: Tipo
  const [countType, setCountType] = useState<'UBICACION' | 'ARTICULO' | 'CICLICO_SUGERIDO' | 'COMPLETO'>('UBICACION');
 
  // Paso 3: Alcance
  const [selectedAisle, setSelectedAisle] = useState<string>('A');
- const [selectedZones, setSelectedZones] = useState<string[]>(['RACKS', 'SHOWROOM']);
- const [selectedArticleSku, setSelectedArticleSku] = useState<string>('SC-NAYT-FLOW-IND');
+ const [selectedZones, setSelectedZones] = useState<string[]>(['RACKS', 'RECEPCION']);
+ const [selectedArticleSku, setSelectedArticleSku] = useState<string>('MP-COU-090');
 
  // Paso 4: Método
  const [method, setMethod] = useState<'QR_UID' | 'MANUAL'>('QR_UID');
@@ -98,7 +98,7 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  locationName: `Pasillo ${selectedAisle} · Posición 01 · Nivel C`,
  zoneType: 'RACK',
  expectedUnitsCount: 2,
- expectedSerials: ['SC-UID-2026-000101', 'SC-UID-2026-000102'],
+ expectedSerials: ['TAR-RTM-260906-101', 'TAR-RTM-260906-102'],
  countedUnitsCount: 0,
  countedSerials: [],
  isBlindCount,
@@ -116,7 +116,7 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  locationName: `Pasillo ${selectedAisle} · Posición 01 · Nivel B`,
  zoneType: 'RACK',
  expectedUnitsCount: 3,
- expectedSerials: ['SC-UID-2026-000103', 'SC-UID-2026-000104', 'SC-UID-2026-000105'],
+ expectedSerials: ['TAR-RTM-260906-103', 'TAR-RTM-260906-104', 'TAR-RTM-260906-105'],
  countedUnitsCount: 0,
  countedSerials: [],
  isBlindCount,
@@ -134,7 +134,7 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  locationName: `Pasillo ${selectedAisle} · Posición 01 · Nivel A (Piso)`,
  zoneType: 'RACK',
  expectedUnitsCount: 3,
- expectedSerials: ['SC-UID-2026-000106', 'SC-UID-2026-000107', 'SC-UID-2026-000108'],
+ expectedSerials: ['TAR-RTM-260906-106', 'TAR-RTM-260906-107', 'TAR-RTM-260906-108'],
  countedUnitsCount: 0,
  countedSerials: [],
  isBlindCount,
@@ -209,7 +209,7 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  <div className="p-3.5 rounded-2xl bg-theme-muted/40 border border-theme-subtle space-y-1">
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Selección de Instalación</span>
  <p className="text-xs text-theme-main font-semibold">
- Selecciona el Centro de Distribución o Sucursal donde se ejecutará el conteo físico.
+ Selecciona el Almacén o Área donde se ejecutará el conteo físico.
  </p>
  </div>
 
@@ -231,7 +231,7 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  <div className="flex items-center justify-between">
  <span className="font-mono text-xs font-black text-theme-primary">{wh.code}</span>
  <span className="px-2 py-0.2 rounded text-[9px] font-bold bg-theme-muted text-theme-main border border-theme-subtle">
- {isCedis ? 'CEDIS' : 'SUCURSAL'}
+ {wh.code}
  </span>
  </div>
  <h4 className="text-xs font-bold text-theme-main">{wh.name}</h4>
@@ -425,7 +425,7 @@ export const CreateCountPlanModal: React.FC<CreateCountPlanModalProps> = ({
  </span>
  </div>
  <p className="text-[11px] text-theme-muted leading-relaxed">
- Lectura óptica individual de cada código serializado cosido al colchón y validación del QR de ubicación.
+ Lectura óptica individual de cada código serializado de la tarima / bobina / bulto y validación de ubicación.
  </p>
  </div>
 

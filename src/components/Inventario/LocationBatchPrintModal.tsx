@@ -704,7 +704,7 @@ export const LocationBatchPrintModal: React.FC<LocationBatchPrintModalProps> = (
  </span>
  </div>
  <p className="text-xs text-theme-muted mt-0.5">
- Genera paquetes de etiquetas para columnas de rack, niveles completos o áreas operativas de CEDIS y Sucursales.
+ Genera paquetes de etiquetas para columnas de rack, niveles completos o áreas operativas de Almacén Principal y Áreas Operativas.
  </p>
  </div>
  </div>
@@ -879,7 +879,7 @@ export const LocationBatchPrintModal: React.FC<LocationBatchPrintModalProps> = (
  {matchingLoc?.code || `${selectedAisle}-${lvl}-${selectedPosition}`}
  </strong>
  <span className="text-[10px] text-theme-muted">
- Nivel {lvl} ({lvl === 'C' ? 'Superior' : lvl === 'B' ? 'Medio' : 'Piso'}) &middot; Capacidad: 7 colchones
+ Nivel {lvl} ({lvl === 'C' ? 'Superior' : lvl === 'B' ? 'Medio' : 'Piso'}) &middot; Capacidad: 7 tarimas/unidades
  </span>
  </div>
  </div>

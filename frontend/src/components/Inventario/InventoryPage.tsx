@@ -54,7 +54,7 @@ export const InventoryPage: React.FC = () => {
     { id: 'heatmap', label: 'Mapa de calor', icon: Flame },
     { id: 'rearrangements', label: 'Reacomodos', icon: ArrowLeftRight },
     { id: 'counts', label: 'Conteos Cíclicos', icon: ClipboardCheck },
-    { id: 'warehouses', label: 'Almacenes & Áreas de Planta', icon: Building2 },
+    { id: 'warehouses', label: 'Almacenes & Áreas', icon: Building2 },
   ];
 
   return (

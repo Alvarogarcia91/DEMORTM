@@ -45,7 +45,7 @@ interface CountsTabProps {
 export const CountsTab: React.FC<CountsTabProps> = ({ onShowToast }) => {
  // Subtabs: 'panel' | 'plans' | 'tasks' | 'differences' (Default: 'panel')
  const [subTab, setSubTab] = useState<'panel' | 'plans' | 'tasks' | 'differences'>('panel');
- const [selectedWarehouseId, setSelectedWarehouseId] = useState<string>('wh-mty-norte');
+ const [selectedWarehouseId, setSelectedWarehouseId] = useState<string>('wh-alm-rtm');
 
  // Active state data
  const [plans, setPlans] = useState<CountPlanRecord[]>(MOCK_COUNT_PLANS);
@@ -104,7 +104,7 @@ export const CountsTab: React.FC<CountsTabProps> = ({ onShowToast }) => {
  locationName: sug.locationName,
  zoneType: 'RACK',
  expectedUnitsCount: 3,
- expectedSerials: ['SC-UID-2026-000171', 'SC-UID-2026-000172', 'SC-UID-2026-000173'],
+ expectedSerials: ['TAR-RTM-260906-182', 'TAR-RTM-260906-183', 'BOB-RTM-260906-014'],
  countedUnitsCount: 0,
  countedSerials: [],
  isBlindCount: true,
@@ -447,7 +447,7 @@ export const CountsTab: React.FC<CountsTabProps> = ({ onShowToast }) => {
  <thead>
  <tr className="bg-theme-muted/40 border-b border-theme-subtle text-theme-muted font-bold uppercase tracking-wider text-[10px]">
  <th className="py-3 px-4">Folio</th>
- <th className="py-3 px-3">Almacén / CEDIS</th>
+ <th className="py-3 px-3">Almacén</th>
  <th className="py-3 px-3">Tipo</th>
  <th className="py-3 px-4">Alcance</th>
  <th className="py-3 px-3">Método</th>
@@ -544,7 +544,7 @@ export const CountsTab: React.FC<CountsTabProps> = ({ onShowToast }) => {
  <thead>
  <tr className="bg-theme-muted/40 border-b border-theme-subtle text-theme-muted font-bold uppercase tracking-wider text-[10px]">
  <th className="py-3 px-4">Folio</th>
- <th className="py-3 px-3">Almacén / CEDIS</th>
+ <th className="py-3 px-3">Almacén</th>
  <th className="py-3 px-3">Ubicación</th>
  <th className="py-3 px-3">Espacio Físico</th>
  <th className="py-3 px-3 text-center">Progreso Físico</th>

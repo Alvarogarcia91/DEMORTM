@@ -1,15 +1,29 @@
+// =========================================================================
+// RTM INDUSTRIAL INVENTORY DATASET (CENTRAL MOCK)
+// Single physical warehouse: Almacén Principal RTM (ALM-RTM)
+// Single logical warehouse: Almacén Virtual / Control (ALM-VIRTUAL)
+// =========================================================================
+
 export interface PositionSerializedMattress {
   uid: string;
   sku: string;
   productName: string;
   brand: string;
   size: string;
+  category?: string;
+  uom?: string;
   levelCode: 'C' | 'B' | 'A';
-  locationCode: string; // ej. 'B-C-09', 'A-B-03'
+  locationCode: string; // ej. 'PAP-A-03', 'FLX-B-04', 'RET-QA'
   lotNumber: string;
   entryDate: string;
   ageDays: number;
-  status: 'Disponible' | 'Comprometido' | 'En inspección' | 'En retrabajo' | 'En embarque' | 'En acomodo' | 'En tránsito' | 'En exhibición';
+  status: 'Disponible' | 'Comprometido' | 'En inspección' | 'En retrabajo' | 'En embarque' | 'En acomodo' | 'En tránsito' | 'Cuarentena' | 'Rechazado' | 'En exhibición';
+  qaStatus?: 'Pendiente QA' | 'Liberado' | 'Cuarentena' | 'Rechazado';
+  physicalQuantity?: number;
+  reservedQuantity?: number;
+  qaBlockedQuantity?: number;
+  availableQuantity?: number;
+  relatedOp?: string;
   classification: string;
   notes?: string;
 }
@@ -65,6 +79,8 @@ export interface SpecialAreaSlot {
     productName: string;
     reason?: string;
     entryDate: string;
+    lotNumber?: string;
+    qaStatus?: string;
   }[];
 }
 
@@ -103,10 +119,34 @@ export interface InventoryMovement {
   uid: string;
   sku: string;
   productName: string;
-  movementType: 'RECEPCIÓN' | 'ACOMODO' | 'REUBICACIÓN' | 'RESERVA' | 'SURTIDO OP' | 'DEVOLUCIÓN PRODUCCIÓN' | 'SCRAP' | 'AJUSTE' | 'LIBERACIÓN QA' | 'CUARENTENA' | 'PT GENERADO' | 'EMBARQUE' | 'ENTRADA' | 'TRASPASO' | 'RETRABAJO' | 'SURTIDO' | 'PICKING';
+  lotNumber?: string;
+  quantity?: number;
+  uom?: string;
+  movementType: 
+    | 'RECEPCIÓN'
+    | 'ACOMODO'
+    | 'REUBICACIÓN'
+    | 'RESERVA'
+    | 'LIBERACIÓN DE RESERVA'
+    | 'SURTIDO OP'
+    | 'DEVOLUCIÓN PRODUCCIÓN'
+    | 'REMANENTE'
+    | 'SCRAP'
+    | 'AJUSTE +'
+    | 'AJUSTE -'
+    | 'CUARENTENA QA'
+    | 'LIBERACIÓN QA'
+    | 'PRODUCTO TERMINADO'
+    | 'EMBARQUE'
+    | 'ENTRADA'
+    | 'TRASPASO'
+    | 'RETRABAJO'
+    | 'SURTIDO'
+    | 'PICKING';
   origin: string;
   destination: string;
   user: string;
+  reference?: string; // e.g. OP-2026-0891, OC-2026-0081, PLC-2026-0020
   notes?: string;
 }
 
@@ -145,129 +185,238 @@ export interface IndustrialItemDefinition {
   brand: string;
   size: string;
   category: string;
-  prefix: 'TAR' | 'BOB' | 'CJ' | 'ROL';
+  uom: string;
+  prefix: 'TAR' | 'BOB' | 'CJ' | 'ROL' | 'REM';
   classification: string;
+  mainLocation: string;
+  defaultLot: string;
+  totalPhysical: number;
+  reserved: number;
+  qaBlocked: number;
+  available: number;
+  relatedOp?: string;
 }
 
 export const RTM_INDUSTRIAL_ITEMS: IndustrialItemDefinition[] = [
   {
-    sku: 'PAP-COU-090',
+    sku: 'MP-COU-090',
     name: 'Papel Couché 90 g (Pliegos 70x100 cm)',
     brand: 'Bio-Pappel',
     size: 'Tarima 18,000 pliegos',
     category: 'Papel Offset',
+    uom: 'pliego',
     prefix: 'TAR',
     classification: 'Sustrato Offset / Grado Editorial',
+    mainLocation: 'PAP-A-03',
+    defaultLot: 'RTM-MP-260901-004',
+    totalPhysical: 18000,
+    reserved: 4200,
+    qaBlocked: 0,
+    available: 13800,
+    relatedOp: 'OP-2026-0891',
   },
   {
-    sku: 'PAP-BND-075',
+    sku: 'MP-COU-150',
+    name: 'Papel Couché 150 g (Pliegos 70x100 cm)',
+    brand: 'Bio-Pappel',
+    size: 'Tarima 12,000 pliegos',
+    category: 'Papel Offset',
+    uom: 'pliego',
+    prefix: 'TAR',
+    classification: 'Sustrato Offset / Grado Publicitario',
+    mainLocation: 'PAP-A-05',
+    defaultLot: 'RTM-MP-260901-008',
+    totalPhysical: 12000,
+    reserved: 2000,
+    qaBlocked: 0,
+    available: 10000,
+    relatedOp: 'OP-2026-0882',
+  },
+  {
+    sku: 'MP-BND-075',
     name: 'Papel Bond 75 g (Pliegos 61x90 cm)',
     brand: 'Copamex',
     size: 'Tarima 20,000 pliegos',
     category: 'Papel Offset',
+    uom: 'pliego',
     prefix: 'TAR',
     classification: 'Sustrato Offset / Grado Comercial',
+    mainLocation: 'PAP-A-02',
+    defaultLot: 'RTM-MP-260901-001',
+    totalPhysical: 20000,
+    reserved: 5000,
+    qaBlocked: 0,
+    available: 15000,
+    relatedOp: 'OP-2026-0904',
   },
   {
-    sku: 'PAP-SBS-14',
-    name: 'Cartulina Sulfatada SBS 14 pts',
+    sku: 'MP-SBS-240',
+    name: 'Cartulina Sulfatada SBS 240 g / 14 pts',
     brand: 'WestRock',
-    size: 'Tarima 12,000 pliegos',
+    size: 'Tarima 8,000 pliegos',
     category: 'Papel Offset',
+    uom: 'pliego',
     prefix: 'TAR',
     classification: 'Cartulina SBS / Empaque Plegadizo',
+    mainLocation: 'PAP-A-07',
+    defaultLot: 'RTM-MP-260902-005',
+    totalPhysical: 8000,
+    reserved: 0,
+    qaBlocked: 2000,
+    available: 6000,
   },
   {
-    sku: 'FLX-BOPP-WHT',
+    sku: 'MP-BOP-WHT',
     name: 'Sustrato BOPP Blanco Brillante 60 mic',
     brand: 'Fasson Avery',
     size: 'Bobina 2,500 m',
     category: 'Sustratos Flexo',
+    uom: 'bobina',
     prefix: 'BOB',
     classification: 'Película Autoadherible Flexo',
+    mainLocation: 'FLX-B-04',
+    defaultLot: 'RTM-MP-260902-011',
+    totalPhysical: 29, // 25 liberadas + 4 en cuarentena QA
+    reserved: 6,
+    qaBlocked: 4, // 4 bobinas bloqueadas en QA (Caso B)
+    available: 19,
+    relatedOp: 'OP-2026-0882',
   },
   {
-    sku: 'FLX-BOPP-CLR',
+    sku: 'MP-BOP-TRP',
     name: 'Sustrato BOPP Transparente Ultra-Clear',
     brand: 'Fasson Avery',
     size: 'Bobina 2,000 m',
     category: 'Sustratos Flexo',
+    uom: 'bobina',
     prefix: 'BOB',
     classification: 'Película Transparente Flexo',
+    mainLocation: 'FLX-B-02',
+    defaultLot: 'RTM-MP-260903-008',
+    totalPhysical: 16,
+    reserved: 4,
+    qaBlocked: 0,
+    available: 12,
   },
   {
-    sku: 'FLX-THM-DIR',
-    name: 'Papel Térmico Directo Top-Coated',
+    sku: 'MP-THM-ADH',
+    name: 'Papel Térmico Autoadherible Top-Coated',
     brand: 'UPM Raflatac',
     size: 'Bobina 3,000 m',
     category: 'Sustratos Flexo',
+    uom: 'bobina',
     prefix: 'BOB',
     classification: 'Papel Térmico / Código de Barras',
+    mainLocation: 'FLX-B-06',
+    defaultLot: 'RTM-MP-260904-012',
+    totalPhysical: 20,
+    reserved: 5,
+    qaBlocked: 0,
+    available: 15,
   },
   {
-    sku: 'TNT-PMS-186C',
-    name: 'Tinta Especial Rojo Corporativo PMS 186 C',
+    sku: 'MP-INK-186',
+    name: 'Tinta Especial Pantone PMS 186 C',
     brand: 'Siegwerk',
     size: 'Cubeta 10 kg',
-    category: 'Tintas & Barnices',
+    category: 'Tintas & Consumibles',
+    uom: 'cubeta',
     prefix: 'CJ',
     classification: 'Tinta Directa Pantone Especial',
+    mainLocation: 'TNT-C-03',
+    defaultLot: 'RTM-MP-260903-002',
+    totalPhysical: 30,
+    reserved: 8,
+    qaBlocked: 2,
+    available: 20,
+    relatedOp: 'OP-2026-0891',
   },
   {
-    sku: 'TNT-PROC-BLK',
-    name: 'Tinta Offset Proceso Black Intensa',
+    sku: 'MP-INK-BLK',
+    name: 'Tinta Process Black Offset Intensa',
     brand: 'Sun Chemical',
     size: 'Lata 5 kg',
-    category: 'Tintas & Barnices',
+    category: 'Tintas & Consumibles',
+    uom: 'lata',
     prefix: 'CJ',
     classification: 'Tinta Proceso Cuatricromía',
+    mainLocation: 'TNT-C-01',
+    defaultLot: 'RTM-MP-260902-003',
+    totalPhysical: 40,
+    reserved: 12,
+    qaBlocked: 0,
+    available: 28,
   },
   {
-    sku: 'BRN-UV-GLS',
+    sku: 'MP-VAR-UV',
     name: 'Barniz UV Ultra Brillo Curado Rápido',
     brand: 'Flint Group',
     size: 'Cubeta 20 kg',
-    category: 'Tintas & Barnices',
+    category: 'Tintas & Consumibles',
+    uom: 'cubeta',
     prefix: 'CJ',
     classification: 'Barniz y Químicos de Acabado',
+    mainLocation: 'TNT-C-05',
+    defaultLot: 'RTM-MP-260904-006',
+    totalPhysical: 15,
+    reserved: 3,
+    qaBlocked: 0,
+    available: 12,
   },
   {
     sku: 'EMP-CAJ-COR',
     name: 'Cajas Corrugadas 30x20x25 cm para Etiquetas',
     brand: 'Smurfit Kappa',
     size: 'Paquete 50 pzas',
-    category: 'Empaque & Insumos',
+    category: 'Tintas & Consumibles',
+    uom: 'paquete',
     prefix: 'CJ',
     classification: 'Material de Empaque & Protección',
+    mainLocation: 'D-02',
+    defaultLot: 'RTM-MP-260905-018',
+    totalPhysical: 50,
+    reserved: 10,
+    qaBlocked: 0,
+    available: 40,
   },
   {
-    sku: 'PT-ETIQ-FAR',
-    name: 'Etiqueta Farmacéutica 4x6" (Rollo 1,000 u)',
+    sku: 'PT-ETQ-001',
+    name: 'Etiqueta Farmacéutica 4x6" en Rollo',
     brand: 'Impresos RTM',
-    size: 'Caja 12 rollos',
+    size: 'Caja 12 rollos (12,000 etiquetas)',
     category: 'Producto Terminado',
+    uom: 'caja',
     prefix: 'ROL',
     classification: 'Producto Terminado / Aprobado QA',
+    mainLocation: 'PT-01',
+    defaultLot: 'RTM-PT-260905-001',
+    totalPhysical: 48,
+    reserved: 24, // reservado para despacho
+    qaBlocked: 0,
+    available: 12, // 12 cajas listas en EMB-01 y 12 disponibles en rack
+    relatedOp: 'OP-2026-0882',
   },
   {
-    sku: 'PT-FOL-MED',
-    name: 'Folleto Plegado Cuatricromía Laboratorio',
+    sku: 'PT-ETQ-002',
+    name: 'Etiqueta Promocional Flexo 6 Tintas',
     brand: 'Impresos RTM',
     size: 'Caja 2,500 u',
     category: 'Producto Terminado',
+    uom: 'caja',
     prefix: 'CJ',
     classification: 'Producto Terminado / Aprobado QA',
-  },
-  {
-    sku: 'PT-EMP-ALM',
-    name: 'Caja Plegadiza Alimentos 6 Tintas + UV',
-    brand: 'Impresos RTM',
-    size: 'Tarima 15,000 u',
-    category: 'Producto Terminado',
-    prefix: 'TAR',
-    classification: 'Producto Terminado / Aprobado QA',
+    mainLocation: 'PT-03',
+    defaultLot: 'RTM-PT-260906-007',
+    totalPhysical: 35,
+    reserved: 20,
+    qaBlocked: 2,
+    available: 13,
+    relatedOp: 'OP-2026-0891',
   },
 ];
+
+// Backwards compatibility alias
+export const RTM_INDUSTRIAL_ITEMS_CATALOG = RTM_INDUSTRIAL_ITEMS;
 
 // =========================================================================
 // HELPER FOR SEEDING AISLE POSITION RACKS
@@ -276,8 +425,7 @@ function buildIndustrialAisle(
   aisleLetter: string,
   zoneName: string,
   numPositions: number,
-  densityBias: number,
-  whCode: string
+  densityBias: number
 ): AisleData {
   const positions: PositionRack[] = [];
 
@@ -328,22 +476,47 @@ function buildIndustrialAisle(
     let totalAge = 0;
     let committed = 0;
 
-    const generateUnit = (level: 'C' | 'B' | 'A', indexInLevel: number) => {
-      const artIndex = (aisleLetter.charCodeAt(0) + i * 3 + indexInLevel * 2 + (level === 'C' ? 1 : level === 'B' ? 2 : 0)) % RTM_INDUSTRIAL_ITEMS.length;
-      const art = RTM_INDUSTRIAL_ITEMS[artIndex];
+    const generateUnit = (level: 'C' | 'B' | 'A', indexInLevel: number): PositionSerializedMattress => {
+      // Pick appropriate industrial item based on aisle
+      let artList = RTM_INDUSTRIAL_ITEMS;
+      if (aisleLetter === 'A') {
+        artList = RTM_INDUSTRIAL_ITEMS.filter(item => item.category === 'Papel Offset');
+      } else if (aisleLetter === 'B') {
+        artList = RTM_INDUSTRIAL_ITEMS.filter(item => item.category === 'Sustratos Flexo');
+      } else if (aisleLetter === 'C') {
+        artList = RTM_INDUSTRIAL_ITEMS.filter(item => item.category === 'Tintas & Consumibles');
+      } else if (aisleLetter === 'D') {
+        artList = RTM_INDUSTRIAL_ITEMS.filter(item => item.sku === 'EMP-CAJ-COR' || item.category === 'Tintas & Consumibles');
+      } else if (aisleLetter === 'E') {
+        artList = RTM_INDUSTRIAL_ITEMS.filter(item => item.category === 'Producto Terminado');
+      }
+
+      const artIndex = (i + indexInLevel * 2) % artList.length;
+      const art = artList[artIndex];
       const age = (i * 2 + indexInLevel * 3) % 15;
       totalAge += age;
 
-      const isCommitted = (seed + indexInLevel * 7 + (level === 'C' ? 1 : 0)) % 5 === 0;
+      // Special case: Couché 90g in A-03 (Level B) -> OP-2026-0891
+      const isCoucheFlagship = aisleLetter === 'A' && i === 3 && level === 'B';
+      const isCommitted = isCoucheFlagship || (seed + indexInLevel * 7) % 4 === 0;
       if (isCommitted) committed++;
 
       const serialSuffix = ((aisleLetter.charCodeAt(0) * 100 + i * 10 + indexInLevel + 1) % 900 + 100);
-      const uid = `${art.prefix}-RTM-260906-${serialSuffix.toString().padStart(3, '0')}`;
-      const locationCode = `${aisleLetter}-${level}-${posNum}`;
+      const uid = isCoucheFlagship && indexInLevel === 0
+        ? 'TAR-RTM-260906-182'
+        : isCoucheFlagship && indexInLevel === 1
+        ? 'TAR-RTM-260906-183'
+        : `${art.prefix}-RTM-260906-${serialSuffix.toString().padStart(3, '0')}`;
 
-      const lotNumber = art.sku.startsWith('PT-')
-        ? `RTM-PT-260905-${(10 + ((i + indexInLevel) % 5)).toString().padStart(3, '0')}`
-        : `RTM-MP-260901-${(10 + ((i + indexInLevel) % 5)).toString().padStart(3, '0')}`;
+      const locationCode = `${aisleLetter}-${level}-${posNum}`;
+      const lotNumber = isCoucheFlagship
+        ? 'RTM-MP-260901-004'
+        : art.defaultLot;
+
+      const qaStatus = 'Liberado';
+      const physicalQty = art.uom === 'pliego' ? 6000 : art.uom === 'm lineal' ? 2500 : 1;
+      const reservedQty = isCommitted ? (art.uom === 'pliego' ? 2100 : 1) : 0;
+      const availableQty = physicalQty - reservedQty;
 
       return {
         uid,
@@ -351,14 +524,22 @@ function buildIndustrialAisle(
         productName: art.name,
         brand: art.brand,
         size: art.size,
+        category: art.category,
+        uom: art.uom,
         levelCode: level,
         locationCode,
         lotNumber,
         entryDate: `${Math.max(1, 27 - age)} Ago 2026`,
         ageDays: age,
-        status: (isCommitted ? 'Comprometido' : 'Disponible') as any,
+        status: (isCommitted ? 'Comprometido' : 'Disponible'),
+        qaStatus,
+        physicalQuantity: physicalQty,
+        reservedQuantity: reservedQty,
+        qaBlockedQuantity: 0,
+        availableQuantity: availableQty,
+        relatedOp: isCommitted ? (art.relatedOp || 'OP-2026-0891') : undefined,
         classification: art.classification,
-        notes: `Inspección de calidad aprobada en recepción ${whCode}.`,
+        notes: `Material inspeccionado y liberado en Almacén Principal RTM.`,
       };
     };
 
@@ -438,266 +619,240 @@ function buildIndustrialAisle(
 }
 
 // =========================================================================
-// WAREHOUSE 1: ALMACÉN MATERIA PRIMA (ALM-MP)
+// WAREHOUSE 1: ALMACÉN PRINCIPAL RTM (ALM-RTM) - ÚNICO ALMACÉN FÍSICO
 // =========================================================================
-const mpAisles: AisleData[] = [
-  buildIndustrialAisle('A', 'Zona Papel Offset & Pliegos', 12, 0.85, 'ALM-MP'),
-  buildIndustrialAisle('B', 'Zona Bobinas Flexo & Térmico', 12, 0.75, 'ALM-MP'),
-  buildIndustrialAisle('C', 'Zona Tintas Especiales & Químicos', 12, 0.65, 'ALM-MP'),
-  buildIndustrialAisle('D', 'Zona Empaque & Corrugados', 10, 0.55, 'ALM-MP'),
-  buildIndustrialAisle('E', 'Zona Staging & Remanentes Producción', 10, 0.45, 'ALM-MP'),
+const rtmAisles: AisleData[] = [
+  buildIndustrialAisle('A', 'Zona Papel & Sustratos Offset', 12, 0.85),
+  buildIndustrialAisle('B', 'Zona Bobinas & Sustratos Flexo', 12, 0.75),
+  buildIndustrialAisle('C', 'Zona Tintas & Consumibles', 12, 0.65),
+  buildIndustrialAisle('D', 'Zona Empaque & Insumos', 10, 0.55),
+  buildIndustrialAisle('E', 'Zona Producto Terminado', 10, 0.45),
 ];
 
-let mpTotalCap = 0;
-let mpUsedUnits = 0;
-let mpOccupiedPositions = 0;
-let mpTotalPositions = 0;
+let rtmTotalCap = 0;
+let rtmUsedUnits = 0;
+let rtmOccupiedPositions = 0;
+let rtmTotalPositions = 0;
 
-mpAisles.forEach((a) => {
+rtmAisles.forEach((a) => {
   a.positions.forEach((p) => {
-    mpTotalPositions++;
-    mpTotalCap += p.capacity;
-    mpUsedUnits += p.currentUnitsCount;
-    if (p.currentUnitsCount > 0) mpOccupiedPositions++;
+    rtmTotalPositions++;
+    rtmTotalCap += p.capacity;
+    rtmUsedUnits += p.currentUnitsCount;
+    if (p.currentUnitsCount > 0) rtmOccupiedPositions++;
   });
 });
 
-export const MOCK_CEDIS_MONTERREY_NORTE: WarehouseLayout = {
-  id: 'wh-mty-norte',
-  code: 'ALM-MP',
-  name: 'Almacén Materia Prima',
-  type: 'Almacén Principal de Materias Primas',
-  address: 'Planta Principal Reynosa, Tamps. (Nave 1)',
+export const MOCK_ALMACEN_PRINCIPAL_RTM: WarehouseLayout = {
+  id: 'wh-alm-rtm',
+  code: 'ALM-RTM',
+  name: 'Almacén Principal RTM',
+  type: 'Almacén Central Industrial & Producción',
+  address: 'Planta Principal Impresos RTM · Reynosa, Tamps. (Nave Industrial 1)',
   isActive: true,
   kpis: {
-    totalLocations: mpTotalPositions,
-    usedLocations: mpOccupiedPositions,
-    freeLocations: mpTotalPositions - mpOccupiedPositions,
-    occupancyPercentage: Math.round((mpUsedUnits / mpTotalCap) * 1000) / 10,
-    physicalUnits: mpUsedUnits + 22,
+    totalLocations: rtmTotalPositions,
+    usedLocations: rtmOccupiedPositions,
+    freeLocations: rtmTotalPositions - rtmOccupiedPositions,
+    occupancyPercentage: Math.round((rtmUsedUnits / rtmTotalCap) * 1000) / 10,
+    physicalUnits: rtmUsedUnits + 22,
   },
-  aisles: mpAisles,
+  aisles: rtmAisles,
   receptionAreas: [
     {
       code: 'REC-01',
-      name: 'Rampa de Descarga de Sustratos R-01',
+      name: 'Rampa de Descarga de Sustratos y Químicos',
       type: 'recepcion',
       capacity: 10,
       currentUnits: 4,
       status: 'Operativa',
       units: [
-        { uid: 'TAR-RTM-260906-182', sku: 'PAP-COU-090', productName: 'Papel Couché 90 g (Pliegos 70x100 cm)', entryDate: '27 Ago 2026' },
-        { uid: 'TAR-RTM-260906-183', sku: 'PAP-COU-090', productName: 'Papel Couché 90 g (Pliegos 70x100 cm)', entryDate: '27 Ago 2026' },
+        { 
+          uid: 'TAR-RTM-260906-182', 
+          sku: 'MP-COU-090', 
+          productName: 'Papel Couché 90 g (Pliegos 70x100 cm)', 
+          lotNumber: 'RTM-MP-260901-004',
+          qaStatus: 'Liberado',
+          entryDate: '27 Ago 2026' 
+        },
+        { 
+          uid: 'TAR-RTM-260906-183', 
+          sku: 'MP-COU-090', 
+          productName: 'Papel Couché 90 g (Pliegos 70x100 cm)', 
+          lotNumber: 'RTM-MP-260901-004',
+          qaStatus: 'Liberado',
+          entryDate: '27 Ago 2026' 
+        },
       ],
     },
     {
       code: 'REC-02',
-      name: 'Rampa de Químicos & Tintas R-02',
+      name: 'Rampa de Descarga de Químicos & Tintas',
       type: 'recepcion',
       capacity: 10,
       currentUnits: 2,
       status: 'Operativa',
       units: [
-        { uid: 'CJ-RTM-260906-184', sku: 'TNT-PMS-186C', productName: 'Tinta Especial Rojo PMS 186 C', entryDate: '27 Ago 2026' },
+        { 
+          uid: 'CJ-RTM-260906-184', 
+          sku: 'MP-INK-186', 
+          productName: 'Tinta Especial Pantone PMS 186 C', 
+          lotNumber: 'RTM-MP-260903-002',
+          qaStatus: 'Liberado',
+          entryDate: '27 Ago 2026' 
+        },
       ],
     },
   ],
   stagingAreas: [
     {
       code: 'ACO-01',
-      name: 'Staging Acomodo Sustratos Offset',
+      name: 'Staging Producción / Reserva OP',
       type: 'acomodo',
       capacity: 15,
       currentUnits: 6,
-      status: 'En proceso de asignación de racks',
+      status: 'Surtido preparado para OP-2026-0891 (Offset)',
       units: [
-        { uid: 'TAR-RTM-260906-165', sku: 'PAP-BND-075', productName: 'Papel Bond 75 g (Pliegos 61x90 cm)', entryDate: '27 Ago 2026' },
+        { 
+          uid: 'TAR-RTM-260906-165', 
+          sku: 'MP-BND-075', 
+          productName: 'Papel Bond 75 g (Pliegos 61x90 cm)', 
+          lotNumber: 'RTM-MP-260901-001',
+          qaStatus: 'Liberado',
+          entryDate: '27 Ago 2026' 
+        },
       ],
-    },
-    {
-      code: 'ACO-02',
-      name: 'Staging Acomodo Bobinas Flexo',
-      type: 'acomodo',
-      capacity: 15,
-      currentUnits: 3,
-      status: 'Libre para recepción de turno vespertino',
-      units: [],
     },
   ],
   reworkZone: {
-    code: 'RET-NORTE',
+    code: 'RET-QA',
     name: 'Zona de Cuarentena & Calidad QA',
     type: 'retrabajo',
     capacity: 12,
     currentUnits: 4,
-    status: 'Operativa',
+    status: 'Operativa (Retención de Lotes para Inspección)',
     units: [
-      { uid: 'BOB-RTM-260906-091', sku: 'FLX-BOPP-WHT', productName: 'Sustrato BOPP Blanco Brillante 60 mic', reason: 'Tensión irregular en bobina de proveedor', entryDate: '26 Ago 2026' },
-      { uid: 'CJ-RTM-260906-092', sku: 'TNT-PMS-186C', productName: 'Tinta Especial Rojo PMS 186 C', reason: 'Revisión de viscosidad y tono en laboratorio QA', entryDate: '26 Ago 2026' },
-      { uid: 'TAR-RTM-260906-093', sku: 'PAP-COU-090', productName: 'Papel Couché 90 g (Pliegos 70x100 cm)', reason: 'Pliegos con humedad en esquinas de tarima', entryDate: '25 Ago 2026' },
-      { uid: 'TAR-RTM-260906-094', sku: 'PAP-SBS-14', productName: 'Cartulina Sulfatada SBS 14 pts', reason: 'Inspección de calibre por variación de lote', entryDate: '24 Ago 2026' },
+      { 
+        uid: 'BOB-RTM-260906-091', 
+        sku: 'MP-BOP-WHT', 
+        productName: 'Sustrato BOPP Blanco Brillante 60 mic', 
+        lotNumber: 'RTM-MP-260906-091',
+        qaStatus: 'Cuarentena',
+        reason: 'Tensión irregular en bobina de proveedor (Caso B: Físico existe, disponible = 0)', 
+        entryDate: '26 Ago 2026' 
+      },
+      { 
+        uid: 'CJ-RTM-260906-092', 
+        sku: 'MP-INK-186', 
+        productName: 'Tinta Especial Pantone PMS 186 C', 
+        lotNumber: 'RTM-MP-260903-002',
+        qaStatus: 'Cuarentena',
+        reason: 'Revisión preventiva de viscosidad y tono en laboratorio QA', 
+        entryDate: '26 Ago 2026' 
+      },
+      { 
+        uid: 'TAR-RTM-260906-094', 
+        sku: 'MP-SBS-240', 
+        productName: 'Cartulina Sulfatada SBS 240 g / 14 pts', 
+        lotNumber: 'RTM-MP-260902-005',
+        qaStatus: 'Cuarentena',
+        reason: 'Inspección de calibre por variación en tarima de proveedor', 
+        entryDate: '24 Ago 2026' 
+      },
     ],
   },
+  // Exactamente UN SOLO carril según sección 2.3 de la especificación
   shippingLanes: [
     {
       code: 'EMB-01',
-      name: 'Bahía Surtido Offset Heidelberg #01',
-      type: 'embarque',
-      capacity: 20,
-      currentUnits: 14,
-      status: 'Surtido programado OP-2026-0891',
-      units: [],
-    },
-    {
-      code: 'EMB-02',
-      name: 'Bahía Surtido Flexo Mark Andy #02',
-      type: 'embarque',
-      capacity: 20,
-      currentUnits: 18,
-      status: 'Surtido en proceso OP-2026-0882',
-      units: [],
-    },
-    {
-      code: 'EMB-03',
-      name: 'Bahía Surtido Acabados & Suajes #03',
-      type: 'embarque',
-      capacity: 20,
-      currentUnits: 0,
-      status: 'Disponible para staging',
-      units: [],
-    },
-    {
-      code: 'EMB-04',
-      name: 'Bahía Retorno de Remanentes #04',
-      type: 'embarque',
-      capacity: 20,
-      currentUnits: 8,
-      status: 'En verificación de metros devueltos',
-      units: [],
-    },
-    {
-      code: 'EMB-05',
-      name: 'Bahía Consumibles Generales #05',
-      type: 'embarque',
-      capacity: 20,
-      currentUnits: 6,
-      status: 'Surtido de cajas y cores',
-      units: [],
-    },
-  ],
-};
-
-// =========================================================================
-// WAREHOUSE 2: ALMACÉN PRODUCTO TERMINADO (ALM-PT)
-// =========================================================================
-const ptAisles: AisleData[] = [
-  buildIndustrialAisle('A', 'Zona Etiquetas en Rollo (Farma / Industria)', 10, 0.70, 'ALM-PT'),
-  buildIndustrialAisle('B', 'Zona Folletería & Plegados Offset', 10, 0.60, 'ALM-PT'),
-  buildIndustrialAisle('C', 'Zona Empaque Plegadizo & Cajas', 10, 0.50, 'ALM-PT'),
-  buildIndustrialAisle('D', 'Zona Tarimas Completas Listas para Despacho', 8, 0.40, 'ALM-PT'),
-];
-
-let ptTotalCap = 0;
-let ptUsedUnits = 0;
-let ptOccupiedPositions = 0;
-let ptTotalPositions = 0;
-
-ptAisles.forEach((a) => {
-  a.positions.forEach((p) => {
-    ptTotalPositions++;
-    ptTotalCap += p.capacity;
-    ptUsedUnits += p.currentUnitsCount;
-    if (p.currentUnitsCount > 0) ptOccupiedPositions++;
-  });
-});
-
-export const MOCK_CEDIS_MONTERREY_SUR: WarehouseLayout = {
-  id: 'wh-mty-sur',
-  code: 'ALM-PT',
-  name: 'Almacén Producto Terminado',
-  type: 'Almacén de Producto Terminado & Despacho',
-  address: 'Planta Principal Reynosa, Tamps. (Nave 2)',
-  isActive: true,
-  kpis: {
-    totalLocations: ptTotalPositions,
-    usedLocations: ptOccupiedPositions,
-    freeLocations: ptTotalPositions - ptOccupiedPositions,
-    occupancyPercentage: Math.round((ptUsedUnits / ptTotalCap) * 1000) / 10,
-    physicalUnits: ptUsedUnits + 15,
-  },
-  aisles: ptAisles,
-  receptionAreas: [
-    {
-      code: 'REC-PT',
-      name: 'Entrada de Líneas de Empaque Final',
-      type: 'recepcion',
-      capacity: 10,
-      currentUnits: 3,
-      status: 'Operativa',
-      units: [
-        { uid: 'ROL-RTM-260906-501', sku: 'PT-ETIQ-FAR', productName: 'Etiqueta Farmacéutica 4x6" (Rollo 1,000 u)', entryDate: '27 Ago 2026' },
-      ],
-    },
-  ],
-  stagingAreas: [
-    {
-      code: 'ACO-PT',
-      name: 'Staging Inspección QA de PT',
-      type: 'acomodo',
-      capacity: 12,
-      currentUnits: 4,
-      status: 'Pendiente de liberación de lote',
-      units: [],
-    },
-  ],
-  reworkZone: {
-    code: 'RET-PT',
-    name: 'Cuarentena PT / Re-empaque',
-    type: 'retrabajo',
-    capacity: 10,
-    currentUnits: 2,
-    status: 'Operativa',
-    units: [
-      { uid: 'CJ-RTM-260906-520', sku: 'PT-FOL-MED', productName: 'Folleto Plegado Cuatricromía Laboratorio', reason: 'Re-empaque por caja dañada en tarima', entryDate: '26 Ago 2026' },
-    ],
-  },
-  shippingLanes: [
-    {
-      code: 'EMB-01',
-      name: 'Rampa de Despacho Cliente Farmacéutica',
+      name: 'Carril de Embarque 01',
       type: 'embarque',
       capacity: 20,
       currentUnits: 12,
-      status: 'Consolidando Remisión REM-2026-0044',
-      units: [],
-    },
-    {
-      code: 'EMB-02',
-      name: 'Rampa de Despacho Local Reynosa',
-      type: 'embarque',
-      capacity: 20,
-      currentUnits: 8,
-      status: 'Listo para carga Camión Unidad C-04',
-      units: [],
+      status: 'Consolidando Producto Terminado PT-ETQ-001 (OP-2026-0882)',
+      units: [
+        {
+          uid: 'ROL-RTM-260906-501',
+          sku: 'PT-ETQ-001',
+          productName: 'Etiqueta Farmacéutica 4x6" en Rollo',
+          lotNumber: 'RTM-PT-260905-001',
+          qaStatus: 'Liberado',
+          entryDate: '27 Ago 2026',
+        }
+      ],
     },
   ],
 };
 
-// Backward compatible aliases
-export const MOCK_ALMACEN_MATERIA_PRIMA = MOCK_CEDIS_MONTERREY_NORTE;
-export const MOCK_ALMACEN_PRODUCTO_TERMINADO = MOCK_CEDIS_MONTERREY_SUR;
-export const MOCK_SUCURSAL_VALLE_ORIENTE = MOCK_CEDIS_MONTERREY_NORTE;
-export const MOCK_SUCURSAL_CUMBRES = MOCK_CEDIS_MONTERREY_SUR;
+// =========================================================================
+// WAREHOUSE 2: ALMACÉN VIRTUAL / CONTROL (ALM-VIRTUAL) - CONTROL LÓGICO
+// =========================================================================
+export const MOCK_ALMACEN_VIRTUAL: WarehouseLayout = {
+  id: 'wh-alm-virtual',
+  code: 'ALM-VIRTUAL',
+  name: 'Almacén Virtual / Control',
+  type: 'Almacén Virtual / Control Lógico',
+  address: 'Control Administrativo y Conciliación RTM (Demo Lógica)',
+  isActive: true,
+  kpis: {
+    totalLocations: 4,
+    usedLocations: 2,
+    freeLocations: 2,
+    occupancyPercentage: 50.0,
+    physicalUnits: 5,
+  },
+  aisles: [],
+  receptionAreas: [
+    {
+      code: 'VIRT-REC',
+      name: 'Entradas Pendientes de Validación Lógica',
+      type: 'recepcion',
+      capacity: 20,
+      currentUnits: 2,
+      status: 'Pendiente de Conciliación',
+      units: [],
+    }
+  ],
+  stagingAreas: [
+    {
+      code: 'VIRT-INV',
+      name: 'Material en Investigación de Auditoría',
+      type: 'acomodo',
+      capacity: 30,
+      currentUnits: 3,
+      status: 'Bloqueado por Discrepancia',
+      units: [],
+    }
+  ],
+  reworkZone: {
+    code: 'VIRT-ADJ',
+    name: 'Ajustes Administrativos Temporales',
+    type: 'retrabajo',
+    capacity: 20,
+    currentUnits: 0,
+    status: 'Libre',
+    units: [],
+  },
+  shippingLanes: [],
+};
+
+// Backward-compatible exports
+export const MOCK_CEDIS_MONTERREY_NORTE = MOCK_ALMACEN_PRINCIPAL_RTM;
+export const MOCK_CEDIS_MONTERREY_SUR = MOCK_ALMACEN_PRINCIPAL_RTM;
+export const MOCK_ALMACEN_MATERIA_PRIMA = MOCK_ALMACEN_PRINCIPAL_RTM;
+export const MOCK_ALMACEN_PRODUCTO_TERMINADO = MOCK_ALMACEN_PRINCIPAL_RTM;
+export const MOCK_SUCURSAL_VALLE_ORIENTE = MOCK_ALMACEN_VIRTUAL;
+export const MOCK_SUCURSAL_CUMBRES = MOCK_ALMACEN_VIRTUAL;
 export const MOCK_SHOWROOM_VALLE_ORIENTE: ShowroomBay[] = [];
 export const MOCK_SHOWROOM_CUMBRES: ShowroomBay[] = [];
 
-export const MOCK_WAREHOUSES_LIST = [
-  MOCK_CEDIS_MONTERREY_NORTE,
-  MOCK_CEDIS_MONTERREY_SUR,
+export const MOCK_WAREHOUSES_LIST: WarehouseLayout[] = [
+  MOCK_ALMACEN_PRINCIPAL_RTM,
+  MOCK_ALMACEN_VIRTUAL,
 ];
 
 // =========================================================================
-// FULL STOCK ITEMS (EXISTENCIAS REALES COHERENTES)
+// FULL STOCK ITEMS (EXISTENCIAS REALES COHERENTES CON RTM)
 // =========================================================================
 export interface StockItemRecord {
   uid: string;
@@ -705,204 +860,148 @@ export interface StockItemRecord {
   productName: string;
   brand: string;
   size: string;
+  category: string;
+  uom: string;
   warehouseId: string;
   warehouseName: string;
   location: string;
   lotNumber: string;
   entryDate: string;
   ageDays: number;
-  status: 'Disponible' | 'Comprometido' | 'En acomodo' | 'En retrabajo' | 'En embarque' | 'En tránsito' | 'En exhibición';
+  status: 'Disponible' | 'Comprometido' | 'En acomodo' | 'En retrabajo' | 'En embarque' | 'En tránsito' | 'Cuarentena' | 'Rechazado' | 'En exhibición';
+  qaStatus: 'Pendiente QA' | 'Liberado' | 'Cuarentena' | 'Rechazado';
+  physicalQuantity: number;
+  reservedQuantity: number;
+  qaBlockedQuantity: number;
+  availableQuantity: number;
+  relatedOp?: string;
 }
 
 function generateFullStockItems(): StockItemRecord[] {
   const stockList: StockItemRecord[] = [];
-
-  const articleStockConfig = [
-    {
-      sku: 'PAP-COU-090',
-      name: 'Papel Couché 90 g (Pliegos 70x100 cm)',
-      brand: 'Bio-Pappel',
-      size: 'Tarima 18,000 pliegos',
-      prefix: 'TAR',
-      lot: 'RTM-MP-260901-004',
-      north: { disp: 22, comp: 8, acomodo: 2, embarque: 0, retrabajo: 2, transito: 0 },
-      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-    },
-    {
-      sku: 'PAP-BND-075',
-      name: 'Papel Bond 75 g (Pliegos 61x90 cm)',
-      brand: 'Copamex',
-      size: 'Tarima 20,000 pliegos',
-      prefix: 'TAR',
-      lot: 'RTM-MP-260901-001',
-      north: { disp: 18, comp: 5, acomodo: 1, embarque: 0, retrabajo: 0, transito: 0 },
-      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-    },
-    {
-      sku: 'PAP-SBS-14',
-      name: 'Cartulina Sulfatada SBS 14 pts',
-      brand: 'WestRock',
-      size: 'Tarima 12,000 pliegos',
-      prefix: 'TAR',
-      lot: 'RTM-MP-260902-005',
-      north: { disp: 14, comp: 4, acomodo: 2, embarque: 0, retrabajo: 1, transito: 0 },
-      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-    },
-    {
-      sku: 'FLX-BOPP-WHT',
-      name: 'Sustrato BOPP Blanco Brillante 60 mic',
-      brand: 'Fasson Avery',
-      size: 'Bobina 2,500 m',
-      prefix: 'BOB',
-      lot: 'RTM-MP-260902-011',
-      north: { disp: 25, comp: 6, acomodo: 3, embarque: 0, retrabajo: 1, transito: 0 },
-      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-    },
-    {
-      sku: 'FLX-BOPP-CLR',
-      name: 'Sustrato BOPP Transparente Ultra-Clear',
-      brand: 'Fasson Avery',
-      size: 'Bobina 2,000 m',
-      prefix: 'BOB',
-      lot: 'RTM-MP-260903-008',
-      north: { disp: 16, comp: 4, acomodo: 1, embarque: 0, retrabajo: 0, transito: 0 },
-      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-    },
-    {
-      sku: 'FLX-THM-DIR',
-      name: 'Papel Térmico Directo Top-Coated',
-      brand: 'UPM Raflatac',
-      size: 'Bobina 3,000 m',
-      prefix: 'BOB',
-      lot: 'RTM-MP-260904-012',
-      north: { disp: 20, comp: 5, acomodo: 2, embarque: 0, retrabajo: 0, transito: 0 },
-      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-    },
-    {
-      sku: 'TNT-PMS-186C',
-      name: 'Tinta Especial Rojo Corporativo PMS 186 C',
-      brand: 'Siegwerk',
-      size: 'Cubeta 10 kg',
-      prefix: 'CJ',
-      lot: 'RTM-MP-260903-002',
-      north: { disp: 30, comp: 8, acomodo: 2, embarque: 0, retrabajo: 1, transito: 0 },
-      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-    },
-    {
-      sku: 'TNT-PROC-BLK',
-      name: 'Tinta Offset Proceso Black Intensa',
-      brand: 'Sun Chemical',
-      size: 'Lata 5 kg',
-      prefix: 'CJ',
-      lot: 'RTM-MP-260902-003',
-      north: { disp: 40, comp: 12, acomodo: 4, embarque: 0, retrabajo: 0, transito: 0 },
-      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-    },
-    {
-      sku: 'BRN-UV-GLS',
-      name: 'Barniz UV Ultra Brillo Curado Rápido',
-      brand: 'Flint Group',
-      size: 'Cubeta 20 kg',
-      prefix: 'CJ',
-      lot: 'RTM-MP-260904-006',
-      north: { disp: 15, comp: 3, acomodo: 1, embarque: 0, retrabajo: 0, transito: 0 },
-      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-    },
-    {
-      sku: 'EMP-CAJ-COR',
-      name: 'Cajas Corrugadas 30x20x25 cm para Etiquetas',
-      brand: 'Smurfit Kappa',
-      size: 'Paquete 50 pzas',
-      prefix: 'CJ',
-      lot: 'RTM-MP-260905-018',
-      north: { disp: 50, comp: 10, acomodo: 5, embarque: 0, retrabajo: 0, transito: 0 },
-      south: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-    },
-    {
-      sku: 'PT-ETIQ-FAR',
-      name: 'Etiqueta Farmacéutica 4x6" (Rollo 1,000 u)',
-      brand: 'Impresos RTM',
-      size: 'Caja 12 rollos',
-      prefix: 'ROL',
-      lot: 'RTM-PT-260905-001',
-      north: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-      south: { disp: 35, comp: 12, acomodo: 4, embarque: 8, retrabajo: 1, transito: 0 },
-    },
-    {
-      sku: 'PT-FOL-MED',
-      name: 'Folleto Plegado Cuatricromía Laboratorio',
-      brand: 'Impresos RTM',
-      size: 'Caja 2,500 u',
-      prefix: 'CJ',
-      lot: 'RTM-PT-260906-007',
-      north: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-      south: { disp: 28, comp: 10, acomodo: 2, embarque: 6, retrabajo: 1, transito: 0 },
-    },
-    {
-      sku: 'PT-EMP-ALM',
-      name: 'Caja Plegadiza Alimentos 6 Tintas + UV',
-      brand: 'Impresos RTM',
-      size: 'Tarima 15,000 u',
-      prefix: 'TAR',
-      lot: 'RTM-PT-260906-015',
-      north: { disp: 0, comp: 0, acomodo: 0, embarque: 0, retrabajo: 0, transito: 0 },
-      south: { disp: 20, comp: 8, acomodo: 2, embarque: 4, retrabajo: 0, transito: 0 },
-    },
-  ];
-
   let seqCounter = 100;
 
-  articleStockConfig.forEach((cfg) => {
-    const addBatch = (
-      whId: string,
-      whName: string,
-      counts: { disp: number; comp: number; acomodo: number; embarque: number; retrabajo: number; transito: number },
-      aisleBase: string
-    ) => {
-      const statuses: Array<{ count: number; status: StockItemRecord['status']; locPrefix: string }> = [
-        { count: counts.disp, status: 'Disponible', locPrefix: `${aisleBase}-A` },
-        { count: counts.comp, status: 'Comprometido', locPrefix: `${aisleBase}-B` },
-        { count: counts.acomodo, status: 'En acomodo', locPrefix: 'ACO-01' },
-        { count: counts.embarque, status: 'En embarque', locPrefix: 'EMB-01' },
-        { count: counts.retrabajo, status: 'En retrabajo', locPrefix: 'RET-NORTE' },
-      ];
+  RTM_INDUSTRIAL_ITEMS.forEach((cfg) => {
+    // 1. Available physical units
+    const dispUnits = cfg.uom === 'pliego' ? 2 : Math.max(1, Math.min(8, Math.floor(cfg.available / (cfg.uom === 'bobina' ? 3 : 4))));
+    for (let i = 0; i < dispUnits; i++) {
+      seqCounter++;
+      const pos = (i % 10) + 1;
+      const posStr = pos < 10 ? `0${pos}` : `${pos}`;
+      const aisle = cfg.category === 'Papel Offset' ? 'A' : cfg.category === 'Sustratos Flexo' ? 'B' : cfg.category === 'Tintas & Consumibles' ? 'C' : 'E';
+      const location = `${aisle}-A-${posStr}`;
+      const age = 3 + (seqCounter % 14);
 
-      statuses.forEach(({ count, status, locPrefix }) => {
-        for (let i = 0; i < count; i++) {
-          seqCounter++;
-          const pos = (i % 12) + 1;
-          const posStr = pos < 10 ? `0${pos}` : `${pos}`;
-          const location = locPrefix.startsWith('ACO') || locPrefix.startsWith('EMB') || locPrefix.startsWith('RET')
-            ? locPrefix
-            : `${locPrefix}-${posStr}`;
-          const age = 3 + (seqCounter % 14);
+      const unitPhys = cfg.uom === 'pliego' ? Math.round(cfg.available / dispUnits) : (cfg.uom === 'bobina' ? 3 : 1);
 
-          stockList.push({
-            uid: `${cfg.prefix}-RTM-260906-${seqCounter}`,
-            sku: cfg.sku,
-            productName: cfg.name,
-            brand: cfg.brand,
-            size: cfg.size,
-            warehouseId: whId,
-            warehouseName: whName,
-            location,
-            lotNumber: cfg.lot,
-            entryDate: `${Math.max(1, 27 - age)} Ago 2026`,
-            ageDays: age,
-            status,
-          });
-        }
+      stockList.push({
+        uid: `${cfg.prefix}-RTM-260906-${seqCounter}`,
+        sku: cfg.sku,
+        productName: cfg.name,
+        brand: cfg.brand,
+        size: cfg.size,
+        category: cfg.category,
+        uom: cfg.uom,
+        warehouseId: 'wh-alm-rtm',
+        warehouseName: 'Almacén Principal RTM',
+        location: i === 0 ? cfg.mainLocation : location,
+        lotNumber: cfg.defaultLot,
+        entryDate: `${Math.max(1, 27 - age)} Ago 2026`,
+        ageDays: age,
+        status: 'Disponible',
+        qaStatus: 'Liberado',
+        physicalQuantity: unitPhys,
+        reservedQuantity: 0,
+        qaBlockedQuantity: 0,
+        availableQuantity: unitPhys,
       });
-    };
-
-    if (cfg.north.disp + cfg.north.comp > 0) {
-      const aisle = cfg.sku.startsWith('PAP') ? 'A' : cfg.sku.startsWith('FLX') ? 'B' : cfg.sku.startsWith('TNT') ? 'C' : 'D';
-      addBatch('wh-mty-norte', 'Almacén Materia Prima', cfg.north, aisle);
     }
 
-    if (cfg.south.disp + cfg.south.comp > 0) {
-      const aisle = cfg.sku.startsWith('PT-ETIQ') ? 'A' : cfg.sku.startsWith('PT-FOL') ? 'B' : 'C';
-      addBatch('wh-mty-sur', 'Almacén Producto Terminado', cfg.south, aisle);
+    // 2. Reserved units (for OP)
+    if (cfg.reserved > 0) {
+      seqCounter++;
+      const aisle = cfg.category === 'Papel Offset' ? 'A' : cfg.category === 'Sustratos Flexo' ? 'B' : cfg.category === 'Tintas & Consumibles' ? 'C' : 'E';
+      const reservedUid = cfg.sku === 'MP-COU-090' ? 'TAR-RTM-260906-182' : `${cfg.prefix}-RTM-260906-${seqCounter}`;
+
+      stockList.push({
+        uid: reservedUid,
+        sku: cfg.sku,
+        productName: cfg.name,
+        brand: cfg.brand,
+        size: cfg.size,
+        category: cfg.category,
+        uom: cfg.uom,
+        warehouseId: 'wh-alm-rtm',
+        warehouseName: 'Almacén Principal RTM',
+        location: cfg.mainLocation,
+        lotNumber: cfg.defaultLot,
+        entryDate: '26 Ago 2026',
+        ageDays: 2,
+        status: 'Comprometido',
+        qaStatus: 'Liberado',
+        physicalQuantity: cfg.reserved,
+        reservedQuantity: cfg.reserved,
+        qaBlockedQuantity: 0,
+        availableQuantity: 0,
+        relatedOp: cfg.relatedOp || 'OP-2026-0891',
+      });
+    }
+
+    // 3. QA Blocked units (Caso B)
+    if (cfg.qaBlocked > 0) {
+      seqCounter++;
+      const blockedUid = cfg.sku === 'MP-BOP-WHT' 
+        ? 'BOB-RTM-260906-091' 
+        : `${cfg.prefix}-RTM-260906-${seqCounter}`;
+
+      stockList.push({
+        uid: blockedUid,
+        sku: cfg.sku,
+        productName: cfg.name,
+        brand: cfg.brand,
+        size: cfg.size,
+        category: cfg.category,
+        uom: cfg.uom,
+        warehouseId: 'wh-alm-rtm',
+        warehouseName: 'Almacén Principal RTM',
+        location: 'RET-QA',
+        lotNumber: cfg.sku === 'MP-BOP-WHT' ? 'RTM-MP-260906-091' : cfg.defaultLot,
+        entryDate: '26 Ago 2026',
+        ageDays: 3,
+        status: 'Cuarentena',
+        qaStatus: 'Cuarentena',
+        physicalQuantity: cfg.qaBlocked,
+        reservedQuantity: 0,
+        qaBlockedQuantity: cfg.qaBlocked,
+        availableQuantity: 0, // Regla de negocio: Disponible = 0
+      });
+    }
+
+    // 4. Staging / Embarque unit for PT (Caso E)
+    if (cfg.sku === 'PT-ETQ-001') {
+      seqCounter++;
+      stockList.push({
+        uid: 'ROL-RTM-260906-501',
+        sku: cfg.sku,
+        productName: cfg.name,
+        brand: cfg.brand,
+        size: cfg.size,
+        category: cfg.category,
+        uom: cfg.uom,
+        warehouseId: 'wh-alm-rtm',
+        warehouseName: 'Almacén Principal RTM',
+        location: 'EMB-01',
+        lotNumber: 'RTM-PT-260905-001',
+        entryDate: '27 Ago 2026',
+        ageDays: 1,
+        status: 'En embarque',
+        qaStatus: 'Liberado',
+        physicalQuantity: 12,
+        reservedQuantity: 12,
+        qaBlockedQuantity: 0,
+        availableQuantity: 0,
+        relatedOp: 'OP-2026-0882',
+      });
     }
   });
 
@@ -912,118 +1011,182 @@ function generateFullStockItems(): StockItemRecord[] {
 export const MOCK_STOCK_ITEMS: StockItemRecord[] = generateFullStockItems();
 
 // =========================================================================
-// MOVEMENTS / KARDEX LOG
+// MOVEMENTS / KARDEX LOG (APPEND-ONLY)
 // =========================================================================
 export const MOCK_INVENTORY_MOVEMENTS: InventoryMovement[] = [
+  {
+    id: 'mov-108',
+    timestamp: '27 Ago 12:45',
+    uid: 'ROL-RTM-260906-501',
+    sku: 'PT-ETQ-001',
+    productName: 'Etiqueta Farmacéutica 4x6" en Rollo',
+    lotNumber: 'RTM-PT-260905-001',
+    quantity: 12,
+    uom: 'caja',
+    movementType: 'EMBARQUE',
+    origin: 'Rack PT-01 (ALM-RTM)',
+    destination: 'Carril de Embarque 01 (EMB-01)',
+    user: 'despacho_pt',
+    reference: 'REM-2026-0044',
+    notes: 'Consolidación de 12 cajas de producto terminado para entrega a cliente Farmacéutica del Norte.',
+  },
+  {
+    id: 'mov-107',
+    timestamp: '27 Ago 12:00',
+    uid: 'ROL-RTM-260906-501',
+    sku: 'PT-ETQ-001',
+    productName: 'Etiqueta Farmacéutica 4x6" en Rollo',
+    lotNumber: 'RTM-PT-260905-001',
+    quantity: 48,
+    uom: 'caja',
+    movementType: 'PRODUCTO TERMINADO',
+    origin: 'Línea de Empaque & Rebobinado Flexo',
+    destination: 'Rack PT-01 (ALM-RTM)',
+    user: 'operador_flexo',
+    reference: 'OP-2026-0882',
+    notes: 'Entrada a inventario de lote completo de 48 cajas aprobado por aseguramiento de calidad.',
+  },
+  {
+    id: 'mov-106',
+    timestamp: '27 Ago 11:45',
+    uid: 'ROL-RTM-260906-501',
+    sku: 'PT-ETQ-001',
+    productName: 'Etiqueta Farmacéutica 4x6" en Rollo',
+    lotNumber: 'RTM-PT-260905-001',
+    quantity: 48,
+    uom: 'caja',
+    movementType: 'LIBERACIÓN QA',
+    origin: 'Staging Inspección QA (ALM-RTM)',
+    destination: 'Rack PT-01 (PT Liberado)',
+    user: 'calidad_rtm',
+    reference: 'QA-LIB-2026-0092',
+    notes: 'Inspección de registro de color, lectura de código de barras y adhesión aprobada 100%.',
+  },
   {
     id: 'mov-105',
     timestamp: '27 Ago 11:30',
     uid: 'BOB-RTM-260906-014',
-    sku: 'FLX-BOPP-WHT',
+    sku: 'MP-BOP-WHT',
     productName: 'Sustrato BOPP Blanco Brillante 60 mic',
+    lotNumber: 'RTM-MP-260902-011',
+    quantity: 680,
+    uom: 'metro lineal',
     movementType: 'DEVOLUCIÓN PRODUCCIÓN',
     origin: 'Línea Flexo Mark Andy #02',
-    destination: 'Rack B-A-04 (ALM-MP)',
+    destination: 'Rack B-04 (ALM-RTM)',
     user: 'operador_flexo',
-    notes: 'Devolución de remanente 680 m de bobina surtida con 2,500 m (Lote RTM-MP-260902-011)',
+    reference: 'OP-2026-0882',
+    notes: 'Devolución de remanente 680 m de bobina surtida con 2,500 m (Lote RTM-MP-260902-011). Etiqueta REM-RTM-0041 colocada.',
   },
   {
     id: 'mov-104',
     timestamp: '27 Ago 10:45',
-    uid: 'ROL-RTM-260906-501',
-    sku: 'PT-ETIQ-FAR',
-    productName: 'Etiqueta Farmacéutica 4x6" (Rollo 1,000 u)',
-    movementType: 'LIBERACIÓN QA',
-    origin: 'Staging Inspección QA (ALM-PT)',
-    destination: 'Rack PT-B-01 (PT Liberado)',
-    user: 'calidad_reynosa',
-    notes: 'Inspección de registro de color y código de barras aprobada 100% (Lote RTM-PT-260905-001)',
+    uid: 'TAR-RTM-260906-182',
+    sku: 'MP-COU-090',
+    productName: 'Papel Couché 90 g (Pliegos 70x100 cm)',
+    lotNumber: 'RTM-MP-260901-004',
+    quantity: 4200,
+    uom: 'pliego',
+    movementType: 'SURTIDO OP',
+    origin: 'PAP-A-03 (ALM-RTM)',
+    destination: 'Línea Offset Heidelberg Speedmaster',
+    user: 'almacenista_offset',
+    reference: 'OP-2026-0891',
+    notes: 'Surtido de 4,200 pliegos para OP-2026-0891 (Folleto Corporativo Cuatricromía).',
   },
   {
     id: 'mov-103',
     timestamp: '27 Ago 10:15',
     uid: 'TAR-RTM-260906-182',
-    sku: 'PAP-COU-090',
+    sku: 'MP-COU-090',
     productName: 'Papel Couché 90 g (Pliegos 70x100 cm)',
-    movementType: 'SURTIDO OP',
-    origin: 'Rack A-B-03 (ALM-MP)',
-    destination: 'Línea Offset Heidelberg Speedmaster',
-    user: 'almacenista_offset',
-    notes: 'Surtido de 4,200 pliegos para OP-2026-0891 (Folleto Corporativo Cuatricromía)',
+    lotNumber: 'RTM-MP-260901-004',
+    quantity: 4200,
+    uom: 'pliego',
+    movementType: 'RESERVA',
+    origin: 'PAP-A-03 (ALM-RTM)',
+    destination: 'Staging Producción (Staging OP)',
+    user: 'planeacion_prod',
+    reference: 'OP-2026-0891',
+    notes: 'Reserva automática de sustrato para orden de producción OP-2026-0891.',
   },
   {
     id: 'mov-102',
     timestamp: '27 Ago 09:30',
     uid: 'TAR-RTM-260906-183',
-    sku: 'PAP-COU-090',
+    sku: 'MP-COU-090',
     productName: 'Papel Couché 90 g (Pliegos 70x100 cm)',
+    lotNumber: 'RTM-MP-260901-004',
+    quantity: 18000,
+    uom: 'pliego',
     movementType: 'ACOMODO',
     origin: 'Rampa de Descarga REC-01',
-    destination: 'Rack A-B-03 (ALM-MP)',
+    destination: 'PAP-A-03 (ALM-RTM)',
     user: 'montacargas01',
-    notes: 'Acomodo de tarima completa 18,000 pliegos lote RTM-MP-260901-004',
+    reference: 'ACM-2026-0045',
+    notes: 'Acomodo de tarima completa 18,000 pliegos lote RTM-MP-260901-004 en rack de papel offset.',
   },
   {
     id: 'mov-101',
     timestamp: '27 Ago 09:00',
     uid: 'TAR-RTM-260906-183',
-    sku: 'PAP-COU-090',
+    sku: 'MP-COU-090',
     productName: 'Papel Couché 90 g (Pliegos 70x100 cm)',
+    lotNumber: 'RTM-MP-260901-004',
+    quantity: 18000,
+    uom: 'pliego',
     movementType: 'RECEPCIÓN',
-    origin: 'Proveedor Bio-Pappel (OC-2026-0081)',
+    origin: 'Proveedor Bio-Pappel',
     destination: 'Rampa de Descarga REC-01',
     user: 'recibo_almacen',
-    notes: 'Recepción conforme contra remisión de proveedor. Factura BP-88912',
+    reference: 'OC-2026-0081',
+    notes: 'Recepción conforme contra remisión y factura BP-88912 de proveedor Bio-Pappel.',
   },
   {
     id: 'mov-100',
     timestamp: '26 Ago 16:30',
     uid: 'BOB-RTM-260906-091',
-    sku: 'FLX-BOPP-WHT',
+    sku: 'MP-BOP-WHT',
     productName: 'Sustrato BOPP Blanco Brillante 60 mic',
-    movementType: 'CUARENTENA',
+    lotNumber: 'RTM-MP-260906-091',
+    quantity: 4,
+    uom: 'bobina',
+    movementType: 'CUARENTENA QA',
     origin: 'Rampa de Descarga REC-01',
-    destination: 'Zona de Cuarentena QA (RET-NORTE)',
-    user: 'calidad_reynosa',
-    notes: 'Lote retenido preventivamente por tensión irregular en bobina de lote proveedor',
+    destination: 'Zona de Cuarentena QA (RET-QA)',
+    user: 'calidad_rtm',
+    reference: 'NC-2026-0012',
+    notes: 'Lote retenido preventivamente por tensión irregular en bobina de proveedor (Caso B: disponible = 0).',
   },
   {
     id: 'mov-099',
     timestamp: '26 Ago 14:15',
     uid: 'TAR-RTM-260906-165',
-    sku: 'PAP-BND-075',
+    sku: 'MP-BND-075',
     productName: 'Papel Bond 75 g (Pliegos 61x90 cm)',
+    lotNumber: 'RTM-MP-260901-001',
+    quantity: 5000,
+    uom: 'pliego',
     movementType: 'RESERVA',
-    origin: 'Rack A-A-02',
+    origin: 'PAP-A-02 (ALM-RTM)',
     destination: 'Staging Producción (Staging OP)',
     user: 'planeacion_prod',
-    notes: 'Reserva automática para OP-2026-0904 programada para turno nocturno',
-  },
-  {
-    id: 'mov-098',
-    timestamp: '26 Ago 11:20',
-    uid: 'CJ-RTM-260906-520',
-    sku: 'PT-FOL-MED',
-    productName: 'Folleto Plegado Cuatricromía Corporativo',
-    movementType: 'EMBARQUE',
-    origin: 'Rack PT-B-02 (ALM-PT)',
-    destination: 'Rampa de Despacho EMB-01',
-    user: 'despacho_pt',
-    notes: 'Despacho de 10 cajas con remisión REM-2026-0039 a cliente industrial de Reynosa',
+    reference: 'OP-2026-0904',
+    notes: 'Reserva automática para OP-2026-0904 programada para turno nocturno.',
   },
 ];
 
 // =========================================================================
-// TRANSFERS (TRANSFERENCIAS ENTRE ÁREAS RTM)
+// TRANSFERS (TRANSFERENCIAS INTERNAS RTM)
 // =========================================================================
 export const MOCK_TRANSFERS: InventoryTransferOrder[] = [
   {
     id: 'trf-01',
     folio: 'TRF-2026-0012',
-    sourceWarehouseId: 'wh-mty-norte',
-    sourceWarehouseName: 'Almacén Materia Prima',
-    destinationWarehouseId: 'wh-mty-sur',
-    destinationWarehouseName: 'Almacén Producto Terminado',
+    sourceWarehouseId: 'wh-alm-rtm',
+    sourceWarehouseName: 'Almacén Principal RTM',
+    destinationWarehouseId: 'wh-alm-virtual',
+    destinationWarehouseName: 'Almacén Virtual / Control',
     totalUnits: 10,
     status: 'Listo para salida',
     plannedDate: '27 Ago 2026',

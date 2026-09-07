@@ -105,11 +105,9 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ onShowToast }) => {
  onChange={(e) => setSelectedNode(e.target.value)}
  className="bg-theme-muted border border-theme-subtle text-xs font-bold text-theme-main py-2 px-3 rounded-xl focus:outline-none focus:border-theme-primary cursor-pointer"
  >
- <option value="all">Todas las Instalaciones</option>
- <option value="CEDIS Monterrey Norte">CEDIS Monterrey Norte</option>
- <option value="CEDIS Monterrey Sur">CEDIS Monterrey Sur</option>
- <option value="Sucursal Valle Oriente">Sucursal Valle Oriente</option>
- <option value="Sucursal Cumbres">Sucursal Cumbres</option>
+ <option value="all">Todas las Instalaciones RTM</option>
+ <option value="Almacén Principal RTM">Almacén Principal RTM</option>
+                <option value="Almacén Virtual / Control">Almacén Virtual / Control</option>
  </select>
 
  {/* Period Filter */}

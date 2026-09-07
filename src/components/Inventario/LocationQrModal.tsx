@@ -140,7 +140,7 @@ export const LocationQrModal: React.FC<LocationQrModalProps> = ({
 
  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-theme-subtle text-[11px] text-theme-muted">
  <div>
- <span className="text-[10px] uppercase font-bold text-theme-muted block">Almacén / CEDIS:</span>
+ <span className="text-[10px] uppercase font-bold text-theme-muted block">Almacén:</span>
  <strong className="text-theme-main">{location.warehouseName}</strong>
  </div>
  <div>
@@ -156,7 +156,7 @@ export const LocationQrModal: React.FC<LocationQrModalProps> = ({
  {location.currentUnits !== undefined && (
  <div>
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Ocupación Actual:</span>
- <strong className="text-theme-primary font-mono">{location.currentUnits} colchones</strong>
+ <strong className="text-theme-primary font-mono">{location.currentUnits} unidades</strong>
  </div>
  )}
  </div>

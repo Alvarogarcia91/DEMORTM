@@ -71,8 +71,8 @@ export const WarehousesTab: React.FC = () => {
  const [invSearch, setInvSearch] = useState('');
  const [invStatusFilter, setInvStatusFilter] = useState('all');
 
- const cedisList = MOCK_WAREHOUSES_LIST.filter(w => w.type.includes('Distribución') || w.type.includes('Primario') || w.type.includes('Regional') || w.code.startsWith('MTY-'));
- const retailList = MOCK_WAREHOUSES_LIST.filter(w => w.type.includes('Sucursal') || w.type.includes('Retail') || w.code.startsWith('SUC-'));
+ const physicalWarehouses = MOCK_WAREHOUSES_LIST.filter(w => w.code === 'ALM-RTM' || w.id === 'wh-alm-rtm');
+  const virtualWarehouses = MOCK_WAREHOUSES_LIST.filter(w => w.code === 'ALM-VIRTUAL' || w.id === 'wh-alm-virtual');
 
  // Handler to open warehouse detail
  const handleOpenWarehouseDetail = (wh: WarehouseLayout, initialTab: 'summary' | 'layout' | 'locations' | 'inventory' | 'zones' | 'qrs' = 'summary') => {
@@ -261,194 +261,196 @@ export const WarehousesTab: React.FC = () => {
  }
  };
 
- const renderWarehouseCard = (wh: WarehouseLayout, isRetail: boolean) => {
- const isNorth = wh.code === 'MTY-N';
- const isSur = wh.code === 'MTY-S';
- const isVO = wh.code === 'SUC-VO';
- const isCUM = wh.code === 'SUC-CUM';
+ const renderWarehouseCard = (wh: WarehouseLayout) => {
+    const isVirtual = wh.code === 'ALM-VIRTUAL';
+    const unitsCount = wh.kpis.physicalUnits;
+    const positionsCount = wh.kpis.totalLocations;
+    const aislesCount = wh.aisles.length;
+    const lanesCount = wh.shippingLanes.length;
 
- const unitsCount = isNorth ? 226 : isSur ? 184 : isVO ? 28 : isCUM ? 21 : wh.kpis.physicalUnits;
- const positionsCount = wh.kpis.totalLocations;
- const aislesCount = wh.aisles.length;
- const lanesCount = wh.shippingLanes.length;
+    return (
+      <div
+        key={wh.id}
+        className="bg-theme-surface border border-theme-subtle rounded-3xl p-6 shadow-xs hover:border-theme-primary/50 transition-all flex flex-col justify-between space-y-5 group"
+      >
+        <div className="space-y-4">
+          {/* Top Title & Code Badge */}
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3.5">
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all ${
+                isVirtual 
+                  ? 'bg-purple-500/10 text-purple-600 border-purple-500/20 group-hover:scale-105' 
+                  : 'bg-theme-primary/10 text-theme-primary border-theme-primary/20 group-hover:scale-105'
+              }`}>
+                {isVirtual ? <ShieldAlert className="w-6 h-6" /> : <Building2 className="w-6 h-6" />}
+              </div>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="text-base font-black text-theme-main">{wh.name}</h3>
+                  <span className="font-mono text-xs font-black text-theme-primary bg-theme-primary/10 px-2.5 py-0.5 rounded-lg border border-theme-primary/20">
+                    {wh.code}
+                  </span>
+                </div>
+                <span className="text-xs text-theme-muted font-medium block mt-0.5">
+                  {isVirtual ? 'Control Administrativo y Conciliación Lógica' : 'Almacén Central Industrial & Producción'}
+                </span>
+              </div>
+            </div>
 
- return (
- <div
- key={wh.id}
- className="bg-theme-surface border border-theme-subtle rounded-3xl p-6 shadow-xs hover:border-theme-primary/50 transition-all flex flex-col justify-between space-y-5 group"
- >
- <div className="space-y-4">
- {/* Top Title & Code Badge */}
- <div className="flex items-start justify-between gap-3">
- <div className="flex items-center gap-3.5">
- <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all ${
- isRetail 
- ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 group-hover:scale-105' 
- : 'bg-theme-primary/10 text-theme-primary border-theme-primary/20 group-hover:scale-105'
- }`}>
- {isRetail ? <Store className="w-6 h-6" /> : <Building2 className="w-6 h-6" />}
- </div>
- <div>
- <div className="flex items-center gap-2 flex-wrap">
- <h3 className="text-base font-black text-theme-main">{wh.name}</h3>
- <span className="font-mono text-xs font-black text-theme-primary bg-theme-primary/10 px-2.5 py-0.5 rounded-lg border border-theme-primary/20">
- {wh.code}
- </span>
- </div>
- <span className="text-xs text-theme-muted font-medium block mt-0.5">
- {isRetail ? 'Sucursal Retail con Mini-Almacén' : 'Centro de Distribución Primario'}
- </span>
- </div>
- </div>
+            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
+              isVirtual 
+                ? 'bg-purple-500/10 text-purple-700 border-purple-500/20' 
+                : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
+            }`}>
+              {isVirtual ? 'Control Lógico' : 'Activo · Operativo'}
+            </span>
+          </div>
 
- <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
- Activo
- </span>
- </div>
+          {/* Address */}
+          <div className="flex items-start gap-2 text-xs text-theme-muted bg-theme-muted/40 p-3 rounded-2xl border border-theme-subtle">
+            <MapPin className="w-4 h-4 text-theme-muted shrink-0 mt-0.5" />
+            <span className="line-clamp-2">{wh.address}</span>
+          </div>
 
- {/* Address */}
- <div className="flex items-start gap-2 text-xs text-theme-muted bg-theme-muted/40 p-3 rounded-2xl border border-theme-subtle">
- <MapPin className="w-4 h-4 text-theme-muted shrink-0 mt-0.5" />
- <span className="line-clamp-2">{wh.address}</span>
- </div>
+          {/* Core Metrics Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
+            <div className="p-3 rounded-2xl bg-theme-muted/50 border border-theme-subtle">
+              <span className="text-[9px] uppercase font-bold text-theme-muted block">
+                {isVirtual ? 'Registros Lógicos' : 'Inventario Físico'}
+              </span>
+              <strong className="text-sm sm:text-base font-extrabold text-theme-primary font-mono block mt-0.5">
+                {unitsCount} {isVirtual ? 'reg' : 'pzas'}
+              </strong>
+              <span className="text-[10px] text-theme-muted">{isVirtual ? 'en investigación' : 'tarimas / bobinas'}</span>
+            </div>
 
- {/* Core Metrics Grid */}
- <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
- <div className="p-3 rounded-2xl bg-theme-muted/50 border border-theme-subtle">
- <span className="text-[9px] uppercase font-bold text-theme-muted block">Inventario Actual</span>
- <strong className="text-sm sm:text-base font-extrabold text-theme-primary font-mono block mt-0.5">
- {unitsCount} pzas
- </strong>
- <span className="text-[10px] text-theme-muted">unidades / bobinas</span>
- </div>
+            <div className="p-3 rounded-2xl bg-theme-muted/50 border border-theme-subtle">
+              <span className="text-[9px] uppercase font-bold text-theme-muted block">Posiciones</span>
+              <strong className="text-sm sm:text-base font-extrabold text-theme-main font-mono block mt-0.5">
+                {isVirtual ? 'Virtuales' : positionsCount}
+              </strong>
+              <span className="text-[10px] text-theme-muted">{isVirtual ? 'sin rack físico' : 'racks en planta'}</span>
+            </div>
 
- <div className="p-3 rounded-2xl bg-theme-muted/50 border border-theme-subtle">
- <span className="text-[9px] uppercase font-bold text-theme-muted block">Posiciones</span>
- <strong className="text-sm sm:text-base font-extrabold text-theme-main font-mono block mt-0.5">
- {positionsCount}
- </strong>
- <span className="text-[10px] text-theme-muted">ubicaciones</span>
- </div>
+            <div className="p-3 rounded-2xl bg-theme-muted/50 border border-theme-subtle">
+              <span className="text-[9px] uppercase font-bold text-theme-muted block">Zonas Operativas</span>
+              <strong className="text-sm sm:text-base font-extrabold text-theme-main font-mono block mt-0.5">
+                {isVirtual ? 'Control' : `${aislesCount} pasillos`}
+              </strong>
+              <span className="text-[10px] text-theme-muted">{isVirtual ? 'conciliación' : 'Offset / Flexo / Tintas'}</span>
+            </div>
 
- <div className="p-3 rounded-2xl bg-theme-muted/50 border border-theme-subtle">
- <span className="text-[9px] uppercase font-bold text-theme-muted block">Pasillos</span>
- <strong className="text-sm sm:text-base font-extrabold text-theme-main font-mono block mt-0.5">
- {aislesCount}
- </strong>
- <span className="text-[10px] text-theme-muted">{isRetail ? 'racks bajos' : 'racks estándar'}</span>
- </div>
+            <div className="p-3 rounded-2xl bg-theme-muted/50 border border-theme-subtle">
+              <span className="text-[9px] uppercase font-bold text-theme-muted block">
+                Embarques
+              </span>
+              <strong className="text-sm sm:text-base font-extrabold text-blue-600 font-mono block mt-0.5">
+                {isVirtual ? 'N/A' : 'Carril 01'}
+              </strong>
+              <span className="text-[10px] text-theme-muted">{isVirtual ? 'sin rampa física' : 'EMB-01'}</span>
+            </div>
+          </div>
 
- <div className="p-3 rounded-2xl bg-theme-muted/50 border border-theme-subtle">
- <span className="text-[9px] uppercase font-bold text-theme-muted block">
- {isRetail ? 'Entrega / Despacho' : 'Embarques'}
- </span>
- <strong className="text-sm sm:text-base font-extrabold text-blue-600 font-mono block mt-0.5">
- {lanesCount} {lanesCount === 1 ? 'carril' : 'carriles'}
- </strong>
- <span className="text-[10px] text-theme-muted">{isRetail ? 'bahía local' : 'secuenciación'}</span>
- </div>
- </div>
+          {/* Occupancy Progress Bar */}
+          <div className="space-y-1.5 pt-1">
+            <div className="flex justify-between text-xs">
+              <span className="text-theme-muted font-medium">Nivel de Ocupación</span>
+              <strong className="font-mono font-bold text-theme-main">{wh.kpis.occupancyPercentage}%</strong>
+            </div>
+            <div className="w-full bg-theme-muted h-2 rounded-full overflow-hidden">
+              <div 
+                className={`h-full rounded-full transition-all ${
+                  wh.kpis.occupancyPercentage > 80 ? 'bg-amber-500' : 'bg-theme-primary'
+                }`}
+                style={{ width: `${Math.min(100, wh.kpis.occupancyPercentage)}%` }}
+              />
+            </div>
+          </div>
+        </div>
 
- {/* Occupancy Progress Bar */}
- <div className="space-y-1.5 pt-1">
- <div className="flex justify-between text-xs">
- <span className="text-theme-muted font-medium">Nivel de Ocupación del Almacén</span>
- <strong className="font-mono font-bold text-theme-main">{wh.kpis.occupancyPercentage}%</strong>
- </div>
- <div className="w-full bg-theme-muted h-2 rounded-full overflow-hidden">
- <div 
- className={`h-full rounded-full transition-all ${
- wh.kpis.occupancyPercentage > 80 ? 'bg-amber-500' : 'bg-theme-primary'
- }`}
- style={{ width: `${Math.min(100, wh.kpis.occupancyPercentage)}%` }}
- />
- </div>
- </div>
- </div>
-
- {/* CTA Button */}
- <button
- onClick={() => handleOpenWarehouseDetail(wh, 'summary')}
- className="w-full py-3 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-black transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer group-hover:shadow-lg"
- >
- <span>Ver detalle de la instalación</span>
- <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
- </button>
- </div>
- );
- };
+        {/* CTA Button */}
+        <button
+          onClick={() => handleOpenWarehouseDetail(wh, 'summary')}
+          className="w-full py-3 rounded-2xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-black transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer group-hover:shadow-lg"
+        >
+          <span>{isVirtual ? 'Ver control lógico y auditoría' : 'Ver detalle de la planta y zonas'}</span>
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </button>
+      </div>
+    );
+  };
 
  return (
  <div className="space-y-8 animate-in fade-in duration-200">
  
  {/* Top Banner with Logistics Network Overview */}
- <div className="bg-theme-surface p-6 border border-theme-subtle rounded-3xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
- <div className="space-y-1">
- <div className="flex items-center gap-2.5">
- <div className="w-8 h-8 rounded-xl bg-theme-primary/10 text-theme-primary flex items-center justify-center">
- <Building2 className="w-4 h-4" />
- </div>
- <h2 className="text-base font-black text-theme-main">Almacenes & Sucursales</h2>
- </div>
- <p className="text-xs text-theme-muted">
- Red logística integral de Impresos RTM: Centros de Distribución Regionales y Sucursales Retail con mini-almacén físico de resurtido.
- </p>
- </div>
+      <div className="bg-theme-surface p-6 border border-theme-subtle rounded-3xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-theme-primary/10 text-theme-primary flex items-center justify-center">
+              <Building2 className="w-4 h-4" />
+            </div>
+            <h2 className="text-base font-black text-theme-main">Almacenes & Áreas de Planta</h2>
+          </div>
+          <p className="text-xs text-theme-muted">
+            Estructura operativa de Impresos RTM: Almacén Principal físico con sus zonas de producción y Almacén Virtual para control y conciliación.
+          </p>
+        </div>
 
- <div className="flex items-center gap-2 flex-wrap">
- <span className="px-3 py-1.5 rounded-xl text-xs font-bold bg-theme-muted text-theme-main border border-theme-subtle">
- 🏢 2 Centros de Distribución
- </span>
- <span className="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
- 🏪 2 Sucursales Retail
- </span>
- <button
- onClick={() => setIsBatchPrintOpen(true)}
- className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-black transition-all shadow-md flex items-center gap-2 cursor-pointer"
- >
- <Printer className="w-4 h-4" />
- <span>Imprimir por columna</span>
- </button>
- </div>
- </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="px-3 py-1.5 rounded-xl text-xs font-bold bg-theme-muted text-theme-main border border-theme-subtle">
+            🏭 1 Almacén Físico Principal (ALM-RTM)
+          </span>
+          <span className="px-3 py-1.5 rounded-xl text-xs font-bold bg-purple-500/10 text-purple-700 border border-purple-500/20">
+            🧠 1 Almacén Virtual / Control (ALM-VIRTUAL)
+          </span>
+          <button
+            onClick={() => setIsBatchPrintOpen(true)}
+            className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-black transition-all shadow-md flex items-center gap-2 cursor-pointer"
+          >
+            <Printer className="w-4 h-4" />
+            <span>Imprimir etiquetas por columna</span>
+          </button>
+        </div>
+      </div>
 
- {/* ========================================================================= */}
- {/* GRUPO 1: CENTROS DE DISTRIBUCIÓN (CEDIS) */}
- {/* ========================================================================= */}
- <div className="space-y-4">
- <div className="flex items-center justify-between pb-1 border-b border-theme-subtle">
- <div className="flex items-center gap-2.5">
- <Building2 className="w-5 h-5 text-theme-primary" />
- <h3 className="text-sm font-black uppercase tracking-wider text-theme-main">
- Centros de Distribución Principales (CEDIS)
- </h3>
- </div>
- <span className="text-xs text-theme-muted font-mono">2 CEDIS de alta capacidad · 5 carriles c/u</span>
- </div>
+      {/* ========================================================================= */}
+      {/* GRUPO 1: ALMACÉN PRINCIPAL RTM (ÚNICO ALMACÉN FÍSICO) */}
+      {/* ========================================================================= */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between pb-1 border-b border-theme-subtle">
+          <div className="flex items-center gap-2.5">
+            <Building2 className="w-5 h-5 text-theme-primary" />
+            <h3 className="text-sm font-black uppercase tracking-wider text-theme-main">
+              Almacén Físico Principal (Planta Reynosa)
+            </h3>
+          </div>
+          <span className="text-xs text-theme-muted font-mono">5 Zonas Operativas · 1 Carril de Embarque (EMB-01)</span>
+        </div>
 
- <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
- {cedisList.map(wh => renderWarehouseCard(wh, false))}
- </div>
- </div>
+        <div className="grid grid-cols-1 gap-6">
+          {physicalWarehouses.map(wh => renderWarehouseCard(wh))}
+        </div>
+      </div>
 
- {/* ========================================================================= */}
- {/* GRUPO 2: SUCURSALES RETAIL (MINI ALMACENES) */}
- {/* ========================================================================= */}
- <div className="space-y-4 pt-2">
- <div className="flex items-center justify-between pb-1 border-b border-theme-subtle">
- <div className="flex items-center gap-2.5">
- <Store className="w-5 h-5 text-emerald-600" />
- <h3 className="text-sm font-black uppercase tracking-wider text-theme-main">
- Sucursales Retail con Mini-Almacén
- </h3>
- </div>
- <span className="text-xs text-theme-muted font-mono">2 Tiendas retail · Surtido y entrega local</span>
- </div>
+      {/* ========================================================================= */}
+      {/* GRUPO 2: ALMACÉN VIRTUAL / CONTROL (NODO LÓGICO) */}
+      {/* ========================================================================= */}
+      <div className="space-y-4 pt-2">
+        <div className="flex items-center justify-between pb-1 border-b border-theme-subtle">
+          <div className="flex items-center gap-2.5">
+            <ShieldAlert className="w-5 h-5 text-purple-600" />
+            <h3 className="text-sm font-black uppercase tracking-wider text-theme-main">
+              Almacén Virtual / Control Lógico
+            </h3>
+          </div>
+          <span className="text-xs text-theme-muted font-mono">Control Administrativo · Auditoría & Conciliación Demo</span>
+        </div>
 
- <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
- {retailList.map(wh => renderWarehouseCard(wh, true))}
- </div>
- </div>
+        <div className="grid grid-cols-1 gap-6">
+          {virtualWarehouses.map(wh => renderWarehouseCard(wh))}
+        </div>
+      </div>
 
  {/* ========================================================================= */}
  {/* MODAL COMPLETO DE DETALLE DEL NODO LOGÍSTICO (6 SUBTABS) */}

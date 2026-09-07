@@ -75,11 +75,11 @@ export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({
 
  let countText = '';
  if (occupiedCount === 0) {
- countText = 'Sin colchones';
+ countText = 'Sin unidades';
  } else if (occupiedCount === 1) {
- countText = '1 colchón';
+ countText = '1 unidad';
  } else {
- countText = `${occupiedCount} colchones`;
+ countText = `${occupiedCount} unidades`;
  }
 
  return {
@@ -105,14 +105,14 @@ export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({
  name: `Nivel ${code} · Posición ${position.positionNumber} · Pasillo ${position.aisle}`,
  type: 'RACK',
  warehouseName: warehouseName,
- warehouseCode: warehouseName.includes('Sur') ? 'MTY-S' : warehouseName.includes('Valle') ? 'SUC-VO' : warehouseName.includes('Cumbres') ? 'SUC-CUM' : 'MTY-N',
+ warehouseCode: warehouseName.includes('Virtual') ? 'ALM-VIRTUAL' : 'ALM-RTM',
  aisle: `Pasillo ${position.aisle}`,
  level: code,
  positionNumber: position.positionNumber,
  capacity: 7,
  currentUnits: unitsCount,
  status: 'Activa · Operativa',
- description: 'Espacio físico en rack selectivo para almacenamiento de colchones terminados.',
+ description: 'Espacio físico para almacenamiento de sustratos, materias primas y producto terminado.',
  });
  };
 
@@ -122,14 +122,14 @@ export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({
  name: `Nivel ${code} · Posición ${position.positionNumber} · Pasillo ${position.aisle}`,
  type: 'RACK',
  warehouseName: warehouseName,
- warehouseCode: warehouseName.includes('Sur') ? 'MTY-S' : warehouseName.includes('Valle') ? 'SUC-VO' : warehouseName.includes('Cumbres') ? 'SUC-CUM' : 'MTY-N',
+ warehouseCode: warehouseName.includes('Virtual') ? 'ALM-VIRTUAL' : 'ALM-RTM',
  aisle: `Pasillo ${position.aisle}`,
  level: code,
  positionNumber: position.positionNumber,
  capacity: 7,
  currentUnits: unitsCount,
  status: 'Activa · Operativa',
- description: 'Espacio físico en rack selectivo para almacenamiento de colchones terminados.',
+ description: 'Espacio físico para almacenamiento de sustratos, materias primas y producto terminado.',
  });
  };
 
@@ -177,10 +177,10 @@ export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({
  </div>
  <p className="text-[11px] text-theme-muted mt-0.5">
  {activeLevelData.occupiedCount === 0
- ? 'Sin colchones almacenados'
+ ? 'Sin unidades almacenadas'
  : activeLevelData.occupiedCount === 1
- ? '1 colchón almacenado en este nivel'
- : `${activeLevelData.occupiedCount} colchones almacenados en este nivel`}
+ ? '1 unidad almacenada en este nivel'
+ : `${activeLevelData.occupiedCount} unidades almacenadas en este nivel`}
  </p>
  </div>
  ) : (
@@ -198,10 +198,10 @@ export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({
  : 'bg-theme-primary/10 text-theme-primary border-theme-primary/30'
  }`}>
  {totalOccupied === 0
- ? 'Sin colchones'
+ ? 'Sin unidades'
  : totalOccupied === 1
- ? '1 colchón'
- : `${totalOccupied} colchones`}
+ ? '1 unidad'
+ : `${totalOccupied} unidades`}
  </span>
  </div>
  <p className="text-[11px] text-theme-muted mt-0.5">
@@ -236,7 +236,7 @@ export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({
  <div className="p-3.5 rounded-2xl bg-theme-muted/40 border border-theme-subtle shadow-xs space-y-1">
  <span className="text-[10px] uppercase font-bold text-theme-muted block">Ocupación Actual</span>
  <strong className="text-base font-mono font-black text-theme-main block">
- {totalOccupied} colchones
+ {totalOccupied} unidades
  </strong>
  <span className="text-[10px] text-theme-muted font-medium">
  {totalOccupied === 0 ? 'Posición vacía' : 'En esta posición'}
@@ -275,7 +275,7 @@ export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({
  Distribución por Niveles Físicos & QRs de Ubicación
  </span>
  <span className="text-[10px] text-theme-muted font-mono">
- Selecciona un nivel para ver sus colchones o gestiona el QR del espacio
+ Selecciona un nivel para ver sus unidades o gestiona el QR del espacio
  </span>
  </div>
 
@@ -406,11 +406,11 @@ export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({
  </div>
  </div>
 
- {/* Lista de Colchones ÚNICAMENTE de este Nivel */}
+ {/* Lista de Unidades ÚNICAMENTE de este Nivel */}
  {activeLevelData.units.length === 0 ? (
  <div className="p-8 text-center rounded-2xl border border-dashed border-theme-subtle bg-theme-muted/20 space-y-2">
  <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
- <p className="text-xs font-bold text-theme-main">Este nivel no tiene colchones almacenados</p>
+ <p className="text-xs font-bold text-theme-main">Este nivel no tiene unidades almacenadas</p>
  <p className="text-[11px] text-theme-muted">
  Ubicación física <strong className="font-mono">{activeLevelData.locationCode}</strong> disponible para asignación.
  </p>
@@ -419,10 +419,10 @@ export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({
  <div className="space-y-3">
  <div className="flex items-center justify-between">
  <span className="text-[10px] uppercase font-bold text-theme-muted tracking-wider block">
- Colchones Serializados Almacenados en este Nivel ({activeLevelData.units.length} pzas):
+ Unidades Físicas Almacenadas en este Nivel ({activeLevelData.units.length} pzas):
  </span>
  <span className="text-[10px] text-theme-muted font-mono">
- QRs individuales por colchón
+ QRs individuales por unidad física
  </span>
  </div>
 
@@ -490,7 +490,7 @@ export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({
  <button
  onClick={() => onOpenUnitDetail(unit)}
  className="px-2.5 py-1.5 rounded-xl bg-theme-muted hover:bg-theme-subtle text-theme-main text-xs font-semibold transition-colors flex items-center gap-1 cursor-pointer border border-theme-subtle"
- title="Ver ficha individual del colchón"
+ title="Ver ficha individual del artículo"
  >
  <Eye className="w-3.5 h-3.5 text-theme-muted" />
  <span>Detalle</span>
@@ -499,7 +499,7 @@ export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({
  <button
  onClick={() => onOpenQr(unit)}
  className="px-2.5 py-1.5 rounded-xl bg-theme-muted hover:bg-theme-subtle text-purple-700 hover:text-purple-800 text-xs font-semibold transition-colors flex items-center gap-1 cursor-pointer border border-purple-200/40"
- title="Ver código QR del colchón"
+ title="Ver código QR de la unidad"
  >
  <QrCode className="w-3.5 h-3.5 text-purple-600" />
  <span>QR Unidad</span>
@@ -508,7 +508,7 @@ export const PositionDetailModal: React.FC<PositionDetailModalProps> = ({
  <button
  onClick={() => onPrintQr(unit)}
  className="px-3 py-1.5 rounded-xl bg-theme-primary hover:bg-theme-primary-hover text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer"
- title="Imprimir etiqueta térmica del colchón"
+ title="Imprimir etiqueta térmica"
  >
  <Printer className="w-3.5 h-3.5" />
  <span>Imprimir QR</span>
