@@ -61,7 +61,7 @@ export const ThreeWayMatchModal: React.FC<ThreeWayMatchModalProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-base font-bold text-theme-main">
-                  Conciliación 3-Way Match (OC vs Recepción vs Factura)
+                  Validación de Factura: Orden de Compra ↔ Recepción ↔ Factura
                 </h3>
                 <span
                   className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
@@ -70,7 +70,7 @@ export const ThreeWayMatchModal: React.FC<ThreeWayMatchModalProps> = ({
                       : 'bg-emerald-50 text-emerald-700 border border-emerald-300'
                   }`}
                 >
-                  {hasDiscrepancy ? 'Discrepancia Detectada' : '3-Way Match Conciliado'}
+                  {hasDiscrepancy ? 'Con diferencia' : 'Validada'}
                 </span>
               </div>
               <p className="text-xs text-theme-muted">
@@ -96,11 +96,11 @@ export const ThreeWayMatchModal: React.FC<ThreeWayMatchModalProps> = ({
                 <ShieldAlert className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-xs text-rose-900">
-                    Factura Bloqueada para Pago por Políticas de Control Interno RTM
+                    ⚠ Factura con diferencias — Bloqueada para pago
                   </h4>
                   <p className="text-[11px] text-rose-800 leading-relaxed mt-1">
                     {invoice.motivoDiscrepancia ||
-                      'Se detectó una discrepancia entre lo recibido físicamente en el almacén y lo cobrado en el CFDI del proveedor. No se autorizan pagos sobre mercancía no ingresada a planta.'}
+                      'Se detectó una discrepancia entre lo recibido físicamente en el almacén y lo cobrado en la factura del proveedor. Requiere revisión antes de liberar el pago.'}
                   </p>
                 </div>
               </div>
@@ -108,9 +108,12 @@ export const ThreeWayMatchModal: React.FC<ThreeWayMatchModalProps> = ({
           ) : (
             <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex items-center gap-2.5">
               <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-              <p className="text-[11px]">
-                <strong>Conciliación Perfecta:</strong> Las cantidades y precios pactados en la Orden de Compra coinciden exactamente con la remisión física de entrada y el CFDI del proveedor. Esta factura está autorizada para pago.
-              </p>
+              <div>
+                <p className="text-xs font-bold text-emerald-950">✓ Factura validada</p>
+                <p className="text-[11px] text-emerald-800">
+                  OC, recepción y factura coinciden en cantidades y precios. Factura autorizada para programar pago.
+                </p>
+              </div>
             </div>
           )}
 
@@ -170,9 +173,9 @@ export const ThreeWayMatchModal: React.FC<ThreeWayMatchModalProps> = ({
                       2. Almacén (Recibido)
                     </th>
                     <th className="px-3 py-2.5 text-center bg-emerald-50/40 border-r border-theme-subtle">
-                      3. Factura (Cobrado)
+                      3. Factura proveedor (Cobrado)
                     </th>
-                    <th className="px-3 py-2.5 text-center">Resultado Match</th>
+                    <th className="px-3 py-2.5 text-center">Resultado</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-theme-subtle">
@@ -299,7 +302,7 @@ export const ThreeWayMatchModal: React.FC<ThreeWayMatchModalProps> = ({
                     className="px-4 py-2 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <FileText className="w-3.5 h-3.5" />
-                    <span>Solicitar Nota de Crédito / Corrección al Proveedor</span>
+                    <span>Solicitar corrección</span>
                   </button>
 
                   <button
@@ -307,7 +310,7 @@ export const ThreeWayMatchModal: React.FC<ThreeWayMatchModalProps> = ({
                     className="px-4 py-2 rounded-xl bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <AlertTriangle className="w-3.5 h-3.5" />
-                    <span>Autorizar Pago como Excepción Gerencial</span>
+                    <span>Autorizar excepción</span>
                   </button>
                 </div>
               )}
@@ -321,7 +324,7 @@ export const ThreeWayMatchModal: React.FC<ThreeWayMatchModalProps> = ({
             onClick={onClose}
             className="px-5 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary/90 text-white text-xs font-bold transition-colors cursor-pointer"
           >
-            Cerrar Conciliación
+            Cerrar
           </button>
         </div>
       </div>

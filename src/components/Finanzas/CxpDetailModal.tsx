@@ -45,7 +45,7 @@ export const CxpDetailModal: React.FC<CxpDetailModalProps> = ({
                       : 'bg-amber-50 text-amber-700 border border-amber-300'
                   }`}
                 >
-                  {isPaid ? 'Liquidada' : isBlocked ? 'Bloqueada por Match' : 'Programada para Pago'}
+                  {isPaid ? 'Liquidada' : isBlocked ? 'Con diferencia' : 'Validada para Pago'}
                 </span>
               </div>
               <p className="text-xs text-theme-muted">
@@ -64,14 +64,24 @@ export const CxpDetailModal: React.FC<CxpDetailModalProps> = ({
 
         {/* Body */}
         <div className="p-6 overflow-y-auto space-y-6 text-xs">
-          {/* Discrepancy warning if blocked */}
-          {isBlocked && (
+          {/* Status Alert Banner */}
+          {isBlocked ? (
             <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 flex items-start gap-2.5">
               <ShieldAlert className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
               <div>
-                <strong className="block text-xs">Bloqueo Preventivo Activo</strong>
-                <p className="text-[11px] text-rose-800 mt-0.5">
-                  {invoice.motivoDiscrepancia || 'Discrepancia detectada en la conciliación con almacén. No se puede emitir pago.'}
+                <strong className="block text-xs">⚠ Factura con diferencias</strong>
+                <p className="text-[11px] text-rose-800 mt-0.5 leading-relaxed">
+                  {invoice.motivoDiscrepancia || 'Requiere revisión antes de liberar el pago. Se detectó diferencia entre la orden de compra, la recepción de almacén o la factura.'}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex items-start gap-2.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <div>
+                <strong className="block text-xs">✓ Factura validada</strong>
+                <p className="text-[11px] text-emerald-800 mt-0.5 leading-relaxed">
+                  Orden de Compra, recepción de almacén y factura coinciden en cantidades y precios.
                 </p>
               </div>
             </div>
@@ -108,9 +118,9 @@ export const CxpDetailModal: React.FC<CxpDetailModalProps> = ({
           <div className="p-4 rounded-xl border border-theme-subtle bg-theme-surface space-y-3">
             <h4 className="font-bold text-xs uppercase tracking-wider text-theme-main flex items-center gap-2">
               <Scale className="w-4 h-4 text-theme-primary" />
-              <span>Trazabilidad Operativa y Conciliación</span>
+              <span>Validación: Orden de Compra ↔ Recepción ↔ Factura</span>
             </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-[11px]">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-[11px]">
               <div>
                 <span className="text-theme-muted block">Orden de Compra:</span>
                 <strong className="text-theme-main font-mono">{invoice.ordenCompraFolio}</strong>
@@ -120,9 +130,13 @@ export const CxpDetailModal: React.FC<CxpDetailModalProps> = ({
                 <strong className="text-theme-main font-mono">{invoice.recepcionFolio}</strong>
               </div>
               <div>
-                <span className="text-theme-muted block">UUID SAT Proveedor:</span>
-                <span className="text-blue-700 font-mono text-[10px] truncate block" title={invoice.uuidSat}>
-                  {invoice.uuidSat}
+                <span className="text-theme-muted block">Factura Proveedor:</span>
+                <strong className="text-theme-main font-mono">{invoice.folioProveedor}</strong>
+              </div>
+              <div>
+                <span className="text-theme-muted block">Estado Validación:</span>
+                <span className={`inline-block font-bold mt-0.5 ${isBlocked ? 'text-rose-600' : 'text-emerald-600'}`}>
+                  {isBlocked ? 'Con diferencia' : 'Validada'}
                 </span>
               </div>
             </div>
@@ -182,7 +196,7 @@ export const CxpDetailModal: React.FC<CxpDetailModalProps> = ({
               className="px-4 py-2 rounded-xl border border-theme-subtle hover:bg-theme-muted text-xs font-bold text-theme-main flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Scale className="w-3.5 h-3.5 text-theme-primary" />
-              <span>Ver Conciliación 3-Way Match</span>
+              <span>Ver Validación Detallada</span>
             </button>
           )}
 

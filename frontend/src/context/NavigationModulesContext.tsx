@@ -115,7 +115,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     label: 'Cuentas por Pagar (CxP)',
     category: 'finanzas',
     categoryLabel: 'Finanzas & Facturación',
-    description: 'Gestión de facturas de proveedores con validación y conciliación 3-Way Match.',
+    description: 'Gestión de facturas de proveedores con validación contra compras y almacén.',
   },
   {
     key: 'nomina',

@@ -98,7 +98,7 @@ export const RegistrarFacturaProveedorModal: React.FC<RegistrarFacturaProveedorM
                 Registrar Factura de Proveedor (Recepción CFDI)
               </h3>
               <p className="text-xs text-theme-muted">
-                Captura de comprobante fiscal para conciliación 3-Way Match con OC y Almacén
+                Captura de comprobante fiscal para validación contra Orden de Compra y Almacén
               </p>
             </div>
           </div>
@@ -187,7 +187,7 @@ export const RegistrarFacturaProveedorModal: React.FC<RegistrarFacturaProveedorM
 
           <div className="p-3.5 rounded-xl border border-theme-subtle bg-theme-muted/20 space-y-2">
             <span className="font-bold text-[11px] uppercase tracking-wider text-theme-main block">
-              Concepto Principal para Validación 3-Way Match
+              Validación contra Orden de Compra y Recepción
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <div>
@@ -240,7 +240,7 @@ export const RegistrarFacturaProveedorModal: React.FC<RegistrarFacturaProveedorM
               className="px-5 py-2 rounded-xl bg-theme-primary hover:bg-theme-primary/90 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
             >
               <CheckCircle2 className="w-4 h-4" />
-              <span>Registrar y Ejecutar 3-Way Match</span>
+              <span>Registrar y Validar Factura</span>
             </button>
           </div>
         </form>

@@ -160,14 +160,14 @@ export const CxpPage: React.FC<CxpPageProps> = ({
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="text-2xl font-black tracking-tight text-theme-main">
-              Cuentas por Pagar (CxP) & 3-Way Match
+              Cuentas por Pagar (CxP)
             </h1>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
               Control Fiscal & Almacén
             </span>
           </div>
           <p className="text-xs text-theme-muted mt-1">
-            Validación estricta de facturas contra Orden de Compra y Recepción física en planta antes de liberar pagos
+            Control de facturas de proveedores, vencimientos, pagos y validación contra compras y recepciones.
           </p>
         </div>
 
@@ -207,7 +207,7 @@ export const CxpPage: React.FC<CxpPageProps> = ({
 
         <div className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs">
           <div className="flex items-center justify-between text-theme-muted mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Bloqueadas (3-Way Match)</span>
+            <span className="text-xs font-bold uppercase tracking-wider">Facturas bloqueadas</span>
             <ShieldAlert className="w-4 h-4 text-rose-600" />
           </div>
           <div className="text-xl font-black text-rose-700 font-mono">
@@ -231,7 +231,7 @@ export const CxpPage: React.FC<CxpPageProps> = ({
 
         <div className="p-4 rounded-2xl bg-theme-surface border border-theme-subtle shadow-xs">
           <div className="flex items-center justify-between text-theme-muted mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Conciliadas 100%</span>
+            <span className="text-xs font-bold uppercase tracking-wider">Facturas validadas</span>
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
           </div>
           <div className="text-xl font-black text-emerald-700 font-mono">
@@ -241,7 +241,7 @@ export const CxpPage: React.FC<CxpPageProps> = ({
         </div>
       </div>
 
-      {/* Tab Selector: Todas vs Tablero 3-Way Match */}
+      {/* Tab Selector: Todas vs Facturas con discrepancias */}
       <div className="flex items-center gap-2 border-b border-theme-subtle pb-2">
         <button
           onClick={() => setActiveView('todas')}
@@ -251,7 +251,7 @@ export const CxpPage: React.FC<CxpPageProps> = ({
               : 'text-theme-muted hover:text-theme-main hover:bg-theme-muted'
           }`}
         >
-          Todas las Facturas ({invoices.length})
+          Todas las facturas ({invoices.length})
         </button>
 
         <button
@@ -263,12 +263,7 @@ export const CxpPage: React.FC<CxpPageProps> = ({
           }`}
         >
           <Scale className="w-4 h-4" />
-          <span>Tablero de Discrepancias 3-Way Match</span>
-          {facturasBloqueadas.length > 0 && (
-            <span className="px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[10px] font-mono">
-              {facturasBloqueadas.length}
-            </span>
-          )}
+          <span>Facturas con discrepancias ({facturasBloqueadas.length})</span>
         </button>
       </div>
 
@@ -296,9 +291,9 @@ export const CxpPage: React.FC<CxpPageProps> = ({
             onChange={(e) => setMatchFilter(e.target.value)}
             className="px-3 py-2 rounded-xl border border-theme-subtle bg-theme-base text-theme-main text-xs font-medium focus:ring-2 focus:ring-theme-primary/20 outline-none"
           >
-            <option value="todos">3-Way Match: Todos</option>
-            <option value="conciliada">Conciliadas OK</option>
-            <option value="discrepancia">Con Discrepancia</option>
+            <option value="todos">Validación: Todas</option>
+            <option value="conciliada">Validadas</option>
+            <option value="discrepancia">Con diferencia</option>
           </select>
 
           <select
@@ -327,7 +322,7 @@ export const CxpPage: React.FC<CxpPageProps> = ({
                 <th className="px-4 py-3">Vencimiento</th>
                 <th className="px-4 py-3 text-right">Total Factura</th>
                 <th className="px-4 py-3 text-right">Saldo Pendiente</th>
-                <th className="px-4 py-3 text-center">3-Way Match</th>
+                <th className="px-4 py-3 text-center">Validación</th>
                 <th className="px-4 py-3 text-center">Estado Pago</th>
                 <th className="px-4 py-3 text-right">Acciones</th>
               </tr>
@@ -393,7 +388,7 @@ export const CxpPage: React.FC<CxpPageProps> = ({
                         </span>
                       </td>
 
-                      {/* 3-Way Match Badge */}
+                      {/* Validación Badge */}
                       <td className="px-4 py-3 text-center">
                         <button
                           onClick={() => {
@@ -407,7 +402,7 @@ export const CxpPage: React.FC<CxpPageProps> = ({
                           }`}
                         >
                           <Scale className="w-3 h-3" />
-                          <span>{isMatched ? 'Conciliado' : 'Discrepancia'}</span>
+                          <span>{isMatched ? 'Validada' : 'Con diferencia'}</span>
                         </button>
                       </td>
 
@@ -446,7 +441,7 @@ export const CxpPage: React.FC<CxpPageProps> = ({
                               setIsMatchOpen(true);
                             }}
                             className="p-1.5 rounded-lg text-theme-primary hover:bg-theme-muted transition-colors cursor-pointer"
-                            title="Explorador 3-Way Match"
+                            title="Ver validación (OC ↔ Recepción ↔ Factura)"
                           >
                             <Scale className="w-4 h-4" />
                           </button>
