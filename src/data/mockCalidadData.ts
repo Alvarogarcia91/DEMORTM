@@ -17,3 +17,8 @@ export const NON_CONFORMANCES: NonConformance[] = [
  {id:'MNC-000350',op:'OP-2026-95255',client:'TYCO',area:'Acabados',location:'No Conforme / Acabados',defect:'Troquel incompleto',quantity:28,status:'Scrap'},
 ];
 export const PREPRESS_CHECKS = ['Variables de medición dentro de tolerancia','Paginado correcto','Consecutivo e idiomas correctos','Impresión legible y completa','Diseño coincide con herramienta','Texto coincide con herramienta','Colores conformes a la OP','Revisión correcta','Negativo 100% negro cuando aplique','Pantallas adecuadas para placa'];
+export const OPERATION_CHECKLISTS: Record<string, [string, string, string][]> = {
+ 'Flexografía': [['Registro y repetición','± 0.010 in','4.003 in'],['Color / densidad','PMS aprobado','Conforme'],['Barniz y laminado','Cobertura completa','Conforme'],['Troquel','Kiss-cut sin corte de liner','Conforme'],['Código / texto','Revisión vigente','Conforme']],
+ 'Offset': [['Registro de impresión','± 0.010 in','0.006 in'],['Color','Muestra aprobada','Conforme'],['Corte','Escuadra y medida','Conforme'],['Doblado / grapado','Secuencia correcta','Conforme'],['Revisión','Placa y arte vigentes','Conforme']],
+ 'Acabados': [['Corte / troquel','Medida de OP','Conforme'],['Intercalado','Secuencia de páginas','Conforme'],['Empaque','Cantidad por caja','Conforme'],['Identificación','Etiqueta vigente','Conforme']],
+};
