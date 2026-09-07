@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 70" fill="none">
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="rtm_cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0369A1" />
+    </linearGradient>
+    <linearGradient id="rtm_navy" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A8A" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+    <linearGradient id="rtm_accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+  </defs>
+
+  <!-- Graphic Icon: Precision Printing / Offset Layers & Diamond Fold -->
+  <g transform="translate(6, 7)">
+    <!-- Base Shadow Sheet -->
+    <rect x="4" y="10" width="38" height="38" rx="8" fill="#E2E8F0" />
+    <!-- Layer 1: Navy Base Sheet -->
+    <rect x="8" y="6" width="38" height="38" rx="8" fill="url(#rtm_navy)" />
+    <!-- Layer 2: Cyan Precision Sheet -->
+    <rect x="12" y="2" width="38" height="38" rx="8" fill="url(#rtm_cyan)" />
+    <!-- Dynamic Graphic Aperture / Printing registration mark -->
+    <circle cx="31" cy="21" r="9" stroke="#FFFFFF" stroke-width="2.5" fill="none" opacity="0.9" />
+    <line x1="31" y1="9" x2="31" y2="33" stroke="#FFFFFF" stroke-width="2" opacity="0.9" />
+    <line x1="19" y1="21" x2="43" y2="21" stroke="#FFFFFF" stroke-width="2" opacity="0.9" />
+    <!-- Center Dot -->
+    <circle cx="31" cy="21" r="2.5" fill="#38BDF8" />
+  </g>
+
+  <!-- Typography -->
+  <!-- "IMPRESOS" Small overline -->
+  <text x="68" y="26" font-family="'Plus Jakarta Sans', Inter, -apple-system, sans-serif" font-size="11" font-weight="800" letter-spacing="0.28em" fill="#0284C7">
+    IMPRESOS
+  </text>
+  
+  <!-- "RTM" Bold Primary -->
+  <text x="67" y="55" font-family="'Plus Jakarta Sans', Inter, -apple-system, sans-serif" font-size="30" font-weight="900" letter-spacing="-0.03em" fill="#0F172A">
+    RTM
+  </text>
+
+  <!-- Subtitle Tag / Badge -->
+  <rect x="156" y="38" width="82" height="18" rx="4" fill="#F1F5F9" />
+  <text x="162" y="51" font-family="'Plus Jakarta Sans', Inter, -apple-system, sans-serif" font-size="9" font-weight="700" letter-spacing="0.12em" fill="#475569">
+    PACKAGING
+  </text>
+</svg>

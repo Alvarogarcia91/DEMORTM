@@ -1,12 +1,14 @@
 services:
   frontend:
-    image: node:20-slim
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: nexora_rtm_app
     working_dir: /app
     ports:
       - "3000:3000"
     volumes:
-      - .:/app
+      - ./frontend:/app
       - /app/node_modules
     environment:
       - NODE_ENV=development

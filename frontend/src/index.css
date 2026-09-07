@@ -1,0 +1,331 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: #D0212C;
+    --color-primary-hover: #B31B24;
+    --color-primary-light: #FEE2E2;
+    --color-primary-text: #FFFFFF;
+    --color-accent: #E11D24;
+    --color-bg-base: #F4F4F6;
+    --color-bg-surface: #FFFFFF;
+    --color-bg-elevated: #FFFFFF;
+    --color-bg-muted: #F4F4F5;
+    --color-text-main: #18181B;
+    --color-text-muted: #71717A;
+    --color-border-subtle: #E4E4E7;
+    --color-border-strong: #D4D4D8;
+  }
+
+  .dark {
+    --color-bg-base: #09090B;
+    --color-bg-surface: #18181B;
+    --color-bg-elevated: #27272A;
+    --color-bg-muted: #27272A;
+    --color-text-main: #F4F4F5;
+    --color-text-muted: #A1A1AA;
+    --color-border-subtle: #27272A;
+    --color-border-strong: #3F3F46;
+  }
+
+  body {
+    background-color: var(--color-bg-base);
+    color: var(--color-text-main);
+    font-family: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+}
+
+/* Custom Theme Dynamic Classes */
+.bg-theme-base {
+  background-color: var(--color-bg-base) !important;
+}
+
+.bg-theme-surface {
+  background-color: var(--color-bg-surface) !important;
+}
+
+.bg-theme-elevated {
+  background-color: var(--color-bg-elevated) !important;
+}
+
+.bg-theme-muted {
+  background-color: var(--color-bg-muted) !important;
+}
+
+.bg-theme-primary {
+  background-color: var(--color-primary) !important;
+  color: var(--color-primary-text) !important;
+}
+
+.bg-theme-primary-hover:hover {
+  background-color: var(--color-primary-hover) !important;
+}
+
+.bg-theme-primary-light {
+  background-color: var(--color-primary-light) !important;
+}
+
+.text-theme-primary {
+  color: var(--color-primary) !important;
+}
+
+.text-theme-main {
+  color: var(--color-text-main) !important;
+}
+
+.text-theme-muted {
+  color: var(--color-text-muted) !important;
+}
+
+.border-theme-subtle {
+  border-color: var(--color-border-subtle) !important;
+}
+
+.border-theme-strong {
+  border-color: var(--color-border-strong) !important;
+}
+
+.border-theme-primary {
+  border-color: var(--color-primary) !important;
+}
+
+/* Custom discreet scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* ========================================================================= */
+/* LOGIN ENTERPRISE ENTRANCE ANIMATIONS                                      */
+/* ========================================================================= */
+@keyframes loginBgFade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes loginCardEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes loginSlideLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes loginSlideRight {
+  0% {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes loginLogoEntrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.97);
+    filter: blur(1.5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes loginRedScanline {
+  0% {
+    left: -20%;
+    width: 0%;
+    opacity: 0;
+  }
+  25% {
+    width: 25%;
+    opacity: 0.85;
+  }
+  75% {
+    width: 25%;
+    opacity: 0.85;
+  }
+  100% {
+    left: 100%;
+    width: 0%;
+    opacity: 0;
+  }
+}
+
+@keyframes loginDotSinglePulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes loginFormItemStagger {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes loginBtnSheen {
+  0% {
+    transform: translateX(-100%) skewX(-15deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.25;
+  }
+  80% {
+    opacity: 0.25;
+  }
+  100% {
+    transform: translateX(220%) skewX(-15deg);
+    opacity: 0;
+  }
+}
+
+@keyframes loginFadeSimple {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Entrance Utility Classes (Doubled duration to ~1.8s for smooth elegant entrance) */
+.login-anim-bg {
+  animation: loginBgFade 600ms ease-out forwards;
+}
+
+.login-anim-card {
+  animation: loginCardEntrance 960ms cubic-bezier(0.16, 1, 0.3, 1) 120ms backwards;
+}
+
+.login-anim-scanline {
+  position: absolute;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #D0212C, transparent);
+  animation: loginRedScanline 1000ms ease-in-out 520ms forwards;
+  pointer-events: none;
+}
+
+.login-anim-left {
+  animation: loginSlideLeft 840ms cubic-bezier(0.16, 1, 0.3, 1) 280ms backwards;
+}
+
+.login-anim-right {
+  animation: loginSlideRight 840ms cubic-bezier(0.16, 1, 0.3, 1) 440ms backwards;
+}
+
+.login-anim-logo {
+  animation: loginLogoEntrance 760ms cubic-bezier(0.16, 1, 0.3, 1) 400ms backwards;
+}
+
+.login-anim-dot {
+  animation: loginDotSinglePulse 800ms ease-out 1000ms backwards;
+}
+
+.login-anim-item-1 {
+  animation: loginFormItemStagger 680ms cubic-bezier(0.16, 1, 0.3, 1) 560ms backwards;
+}
+
+.login-anim-item-2 {
+  animation: loginFormItemStagger 680ms cubic-bezier(0.16, 1, 0.3, 1) 660ms backwards;
+}
+
+.login-anim-item-3 {
+  animation: loginFormItemStagger 680ms cubic-bezier(0.16, 1, 0.3, 1) 760ms backwards;
+}
+
+.login-anim-item-4 {
+  animation: loginFormItemStagger 680ms cubic-bezier(0.16, 1, 0.3, 1) 860ms backwards;
+}
+
+.login-anim-item-5 {
+  animation: loginFormItemStagger 680ms cubic-bezier(0.16, 1, 0.3, 1) 960ms backwards;
+}
+
+.login-anim-sheen {
+  animation: loginBtnSheen 960ms ease-out 1200ms forwards;
+}
+
+.login-anim-footer {
+  animation: loginFadeSimple 760ms ease-out 1040ms backwards;
+}
+
+/* Reduced Motion Accessibility Override */
+@media (prefers-reduced-motion: reduce) {
+  .login-anim-bg,
+  .login-anim-card,
+  .login-anim-left,
+  .login-anim-right,
+  .login-anim-logo,
+  .login-anim-scanline,
+  .login-anim-dot,
+  .login-anim-item-1,
+  .login-anim-item-2,
+  .login-anim-item-3,
+  .login-anim-item-4,
+  .login-anim-item-5,
+  .login-anim-sheen,
+  .login-anim-footer {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
